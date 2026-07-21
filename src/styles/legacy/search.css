@@ -1,0 +1,131 @@
+/* =========================================================
+   Sawt — Search (shared across index / about / content)
+   ---------------------------------------------------------
+   - Mobile search icon reveals a slide-down input
+   - Submitting the search jumps to the matching word on the
+     current page and highlights it
+   ========================================================= */
+
+/* Mobile search icon: hidden on tablet/desktop, shown on phones */
+.mobile-nav-search {
+  display: none;
+  background: transparent;
+  border: none;
+  box-shadow: none;
+  padding: 0;
+}
+
+/* Slide-down search panel under the header (mobile only) */
+.mobile-search-panel {
+  display: none;
+  background: #fff;
+  border-bottom: 1px solid rgba(76, 92, 55, 0.15);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.06);
+  overflow: hidden;
+  max-height: 0;
+  opacity: 0;
+  transition: max-height 0.25s ease, opacity 0.2s ease, padding 0.25s ease;
+  padding: 0;
+}
+
+.mobile-search-panel.open {
+  max-height: 120px;
+  opacity: 1;
+  padding: 10px 0;
+}
+
+.mobile-search-form {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.mobile-search-form .mobile-search-input {
+  flex: 1 1 auto;
+  border-radius: 8px !important;
+  border: 1px solid rgba(76, 92, 55, 0.35);
+  padding: 0.5rem 0.75rem;
+}
+
+.mobile-search-form .mobile-search-input:focus {
+  border-color: rgba(76, 92, 55, 0.9);
+  box-shadow: 0 0 0 0.15rem rgba(76, 92, 55, 0.15);
+  outline: none;
+}
+
+.mobile-search-form .mobile-search-submit,
+.mobile-search-form .mobile-search-close {
+  flex: 0 0 auto;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.mobile-search-form .mobile-search-submit {
+  background: rgba(76, 92, 55, 1);
+}
+
+.mobile-search-form .mobile-search-close {
+  background: transparent;
+}
+
+@media (max-width: 767.98px) {
+  .mobile-nav-search {
+    display: inline-flex !important;
+    align-items: center;
+    justify-content: center;
+  }
+  .mobile-search-panel {
+    display: block;
+  }
+}
+
+/* Highlighted match on the page after a search */
+mark.search-highlight {
+  background: #ffe27a;
+  color: inherit;
+  padding: 0 2px;
+  border-radius: 3px;
+  animation: searchPulse 1.2s ease 1;
+}
+
+@keyframes searchPulse {
+  0% {
+    box-shadow: 0 0 0 0 rgba(255, 176, 32, 0.7);
+  }
+  70% {
+    box-shadow: 0 0 0 10px rgba(255, 176, 32, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(255, 176, 32, 0);
+  }
+}
+
+/* Small non-blocking toast for "no results on this page" */
+.search-toast {
+  position: fixed;
+  left: 50%;
+  bottom: 24px;
+  transform: translateX(-50%) translateY(20px);
+  background: rgba(30, 30, 30, 0.92);
+  color: #fff;
+  padding: 10px 18px;
+  border-radius: 24px;
+  font-size: 14px;
+  z-index: 3000;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.25s ease, transform 0.25s ease;
+  max-width: 90vw;
+  text-align: center;
+}
+
+.search-toast.show {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+}
