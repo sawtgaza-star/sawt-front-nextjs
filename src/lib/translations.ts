@@ -34,6 +34,71 @@ export const translations: any = {
     search_placeholder: "ابحث هنا...",
     search_not_found: "لا توجد نتائج في هذه الصفحة",
 
+    // Content Creators page (صناع المحتوى)
+    brand_sawt: "صوت",
+    creators_hero_title: "صنّاع المحتوى في صوت",
+    creators_hero_desc:
+      "تعرّف على صنّاع المحتوى في صوت، حيث كل فكرة إلها صوت، وكل مبدع إله حكاية.",
+    creators_grid_count: "+47",
+    creators_grid_title_pre: "صانع محتوى ناجح في",
+    creators_grid_sub:
+      "تعرّف على صنّاع المحتوى في صوت، حيث كل فكرة إلها صوت، وكل مبدع إله حكاية.",
+    creators_card_name: "محمود عبد الله زعيتر",
+    creators_card_role: "ممثل مسرحي",
+    creators_followers: "متابع",
+    creators_stats_title_pre: "انجازات",
+    creators_stats_title_mid: "صناع محتوى",
+    creators_stats_sub: "أرقام حقيقية تعكس قوة مجتمعنا",
+    creators_stat_reach: "شخص وصلهم المحتوى",
+    creators_stat_funding: "دعم مالي وُزّع",
+    creators_stat_ads: "إعلان تعاوني نُفّذ",
+    creators_stat_active: "صانع محتوى نشط",
+    creators_join_title: "انضم إلينا كصانع محتوى",
+    creators_join_desc: "صوت تجمع صنّاع المحتوى، كن صوتاً لمن لا صوت له",
+    creators_join_btn: "طلب الانضمام",
+    creators_companies_title_pre: "شركات",
+    creators_companies_title_hl: "إعلانية",
+    creators_companies_title_post: "تعاونت مع صناع محتوى",
+    creators_companies_sub: "شكراً للشركات التي حملت صوت أهل غزة إلى العالم",
+    creators_company_name: "شركة الإبداع",
+    creators_collab_title_pre: "كيف يبدأ التعاون مع",
+    creators_collab_title_hl: "صناع محتوى صوت؟",
+    creators_collab_sub:
+      "وصلنا شركات من حول العالم بصنّاع المحتوى في غزة — صوت ميديا هي الجسر الذي يوصلك",
+    creators_flow_brands: "الشركات والعلامات",
+    creators_flow_brands_sub: "التجارية حول العالم",
+    creators_flow_media: "ميديا صوت",
+    creators_flow_trusted: "الوسيط الرسمي الموثوق",
+    creators_flow_creators: "صناع المحتوى",
+    creators_flow_creators_sub: "مبدعو غزة وفلسطين",
+    creators_steps_title: "خطوات التعاون",
+    creators_step_1:
+      "استعرض ملفات صنّاعنا وفلتر حسب التخصص والميزانية والوصول الجماهيري",
+    creators_step_2:
+      "فريق صوت ميديا يتولى التنسيق الكامل بينك وبين صانع المحتوى — من التفاصيل حتى العقد",
+    creators_step_3:
+      "المحتوى يُنتج ويُنشر، وتحصل على تقرير تفصيلي بالنتائج والوصول والتفاعل",
+    creators_collab_cta: "تواصل مع صوت ميديا للتعاقد مع صناع المحتوى",
+    creators_faq_title_pre: "الأسئلة التي",
+    creators_faq_title_hl: "تدور ببالك؟",
+    creators_faq_title_post: "إليك ردودها",
+    creators_faq_sub: "كل ما تحتاج معرفته قبل أن تبدأ رحلتك مع صوت",
+    creators_faq_q1: "كيف يمكنني الانضمام كصانع محتوى؟",
+    creators_faq_a1:
+      "سجّل حسابك عبر زر «طلب الانضمام»، أكمل ملفك التعريفي وأضف نماذج من أعمالك، وسيتواصل معك فريق صوت لإتمام التفعيل.",
+    creators_faq_q2: "هل الدفع مضمون للإعلانات التعاونية؟",
+    creators_faq_a2:
+      "عملية الدفع بسيطة جداً — احجز المبلغ وطريقة الدفع (بطاقة ائتمانية، PayPal، أو تحويل بنكي) واضغط «توزيع الآن». لن تأخذ أكثر من دقيقتين، ويصلك تأكيد فوري على بريدك الإلكتروني.",
+    creators_faq_q3: "كيف تختار الشركات صانع المحتوى المناسب؟",
+    creators_faq_a3:
+      "تستعرض الشركات ملفات الصنّاع وتفلتر حسب التخصص والجمهور والميزانية، ويتولى فريق صوت ميديا الترشيح والتنسيق لضمان أفضل تطابق.",
+    creators_faq_q4: "هل يمكنني الانضمام من أي بلد؟",
+    creators_faq_a4:
+      "نعم، الانضمام متاح لصنّاع المحتوى من فلسطين والعالم العربي، مع أولوية لإبراز أصوات غزة.",
+    creators_faq_q5: "هل هناك رسوم للانضمام إلى المنصة؟",
+    creators_faq_a5:
+      "الانضمام مجاني بالكامل، وتحصل صوت على نسبة رمزية فقط عند إتمام تعاون إعلاني ناجح.",
+
     // Hero
     hero_title: "منصة صوت",
     hero_subtitle: "نروي قصص غزة بكرامة... ونبني جيلاً جديداً من صناع المحتوى",
@@ -458,6 +523,73 @@ export const translations: any = {
     nav_media: "Sawt Media",
     search_placeholder: "Search here...",
     search_not_found: "No results on this page",
+
+    // Content Creators page
+    brand_sawt: "Sawt",
+    creators_hero_title: "Content Creators at Sawt",
+    creators_hero_desc:
+      "Meet the content creators at Sawt, where every idea has a voice, and every creator has a story.",
+    creators_grid_count: "+47",
+    creators_grid_title_pre: "successful content creators at",
+    creators_grid_sub:
+      "Meet the content creators at Sawt, where every idea has a voice, and every creator has a story.",
+    creators_card_name: "Mahmoud Abdullah Zaiter",
+    creators_card_role: "Stage Actor",
+    creators_followers: "followers",
+    creators_stats_title_pre: "Achievements of",
+    creators_stats_title_mid: "content creators at",
+    creators_stats_sub: "Real numbers that reflect the power of our community",
+    creators_stat_reach: "people reached",
+    creators_stat_funding: "financial support distributed",
+    creators_stat_ads: "collaborative ads delivered",
+    creators_stat_active: "active content creators",
+    creators_join_title: "Join us as a content creator",
+    creators_join_desc:
+      "Sawt brings content creators together — be a voice for the voiceless",
+    creators_join_btn: "Request to join",
+    creators_companies_title_pre: "Advertising",
+    creators_companies_title_hl: "companies",
+    creators_companies_title_post: "that collaborated with content creators at",
+    creators_companies_sub:
+      "Thanks to the companies that carried the voice of Gaza's people to the world",
+    creators_company_name: "Ebdaa Company",
+    creators_collab_title_pre: "How does collaboration with",
+    creators_collab_title_hl: "Sawt's content creators begin?",
+    creators_collab_sub:
+      "We connect companies from around the world with content creators in Gaza — Sawt Media is the bridge that reaches you",
+    creators_flow_brands: "Companies & Brands",
+    creators_flow_brands_sub: "worldwide",
+    creators_flow_media: "Sawt Media",
+    creators_flow_trusted: "The official trusted intermediary",
+    creators_flow_creators: "Content Creators",
+    creators_flow_creators_sub: "Creators of Gaza & Palestine",
+    creators_steps_title: "Collaboration steps",
+    creators_step_1:
+      "Browse our creators' profiles and filter by specialty, budget, and audience reach",
+    creators_step_2:
+      "The Sawt Media team handles full coordination between you and the creator — from details to contract",
+    creators_step_3:
+      "Content is produced and published, and you get a detailed report on results, reach, and engagement",
+    creators_collab_cta: "Contact Sawt Media to contract content creators",
+    creators_faq_title_pre: "The questions on",
+    creators_faq_title_hl: "your mind?",
+    creators_faq_title_post: "Here are the answers",
+    creators_faq_sub: "Everything you need to know before starting your journey with Sawt",
+    creators_faq_q1: "How can I join as a content creator?",
+    creators_faq_a1:
+      "Register your account via the “Request to join” button, complete your profile and add samples of your work, and the Sawt team will contact you to finalize activation.",
+    creators_faq_q2: "Is payment guaranteed for collaborative ads?",
+    creators_faq_a2:
+      "The payment process is very simple — reserve the amount and payment method (credit card, PayPal, or bank transfer) and press “Distribute now.” It takes no more than two minutes, and you get instant confirmation by email.",
+    creators_faq_q3: "How do companies choose the right content creator?",
+    creators_faq_a3:
+      "Companies browse creators' profiles and filter by specialty, audience, and budget, while the Sawt Media team handles shortlisting and coordination to ensure the best match.",
+    creators_faq_q4: "Can I join from any country?",
+    creators_faq_a4:
+      "Yes, joining is open to content creators from Palestine and the Arab world, with priority given to amplifying Gaza's voices.",
+    creators_faq_q5: "Are there any fees to join the platform?",
+    creators_faq_a5:
+      "Joining is completely free, and Sawt takes only a small percentage upon completing a successful advertising collaboration.",
     one_thousand: "K",
     // Hero
     hero_title: "Sawt Platform",
