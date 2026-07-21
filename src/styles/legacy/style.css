@@ -5225,7 +5225,8 @@ svg {
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
-  border-radius: 16px;
+  border-radius: 16px; 
+  
   padding: 20px;
   max-width: 1320px;
   margin: 0 auto;
