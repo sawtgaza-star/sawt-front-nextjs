@@ -16,7 +16,7 @@ export type Creator = {
 export default function CreatorCard({ item }: { item: Creator }) {
   return (
     <div className="item">
-      <a href="#" className="text-decoration-none">
+      <a href={`/creators/${item.id}`} className="text-decoration-none">
         <div className="main-container">
           <div className="the-card">
             <div className="face front-face-img w-100 h-100 overflow-hidden text-white">

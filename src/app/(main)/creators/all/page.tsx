@@ -27,7 +27,11 @@ function buildPages(current, total) {
   const pages = [];
   let prev = 0;
   for (let i = 1; i <= total; i++) {
-    if (i === 1 || i === total || (i >= current - delta && i <= current + delta)) {
+    if (
+      i === 1 ||
+      i === total ||
+      (i >= current - delta && i <= current + delta)
+    ) {
       if (prev && i - prev > 1) pages.push("dots-" + prev);
       pages.push(i);
       prev = i;
@@ -46,7 +50,8 @@ export default function Page() {
   const goTo = (p) => {
     if (p < 1 || p > totalPages || p === page) return;
     setPage(p);
-    if (typeof window !== "undefined") window.scrollTo({ top: 0, behavior: "smooth" });
+    if (typeof window !== "undefined")
+      window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
   // Rendered right-to-left (descending) to match the RTL design: 10 … 3 2 1.
@@ -57,7 +62,18 @@ export default function Page() {
       <LegacyInit page="creators" />
       <CreatorsHero />
       <main>
-        <section className="content-section cr-grid-section">
+        <section className="content-section cr-grid-section position-relative">
+          <img
+            src="/assets/images/leaf_cutout.png"
+            className="olive-branch branch-right-top-creators-grid-section"
+            alt="Olive Branch"
+          />
+          <img
+            src="/assets/images/leaf_cutout.png"
+            className="olive-branch branch-left-bottom-creators-grid-section"
+            alt="Olive Branch"
+          />
+
           <div className="container">
             <div className="cr-creators-grid">
               {pageItems.map((c) => (
@@ -101,7 +117,7 @@ export default function Page() {
                   <span key={p} className="cr-page-dots">
                     ..
                   </span>
-                )
+                ),
               )}
 
               <button

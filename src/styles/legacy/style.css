@@ -2376,7 +2376,7 @@ svg {
 .review-reels .reel-actions {
   position: absolute;
   top: 12px;
-  inset-inline-start: 12px;
+  inset-inline-end: 12px;
   display: flex;
   gap: 8px;
   z-index: 3;
@@ -2444,7 +2444,7 @@ svg {
 .review-reels .reel-caption {
   background: #1b1b1b;
   padding: 12px 16px 16px;
-  text-align: end;
+  text-align: start;
   flex-shrink: 0;
   max-height: 120px;
   overflow: hidden;
@@ -3586,12 +3586,12 @@ svg {
 }
 
 /* --- أغصان الزيتون الأربعة --- */
-.olive-branch {
+/* .olive-branch {
   position: absolute;
   width: 220px;
   z-index: 2;
   pointer-events: none;
-}
+} */
 
 /* اليسار - غصن سفلي */
 .branch-left-bottom {
@@ -3599,6 +3599,25 @@ svg {
   left: 1px;
   transform: rotate(180deg) scaleY(-1);
 }
+
+.branch-left-bottom-home-section {
+  bottom: 4%;
+  left: -173px;
+  transform: scaleX(-1) rotate(343deg);
+}
+
+.branch-right-top-home-section {
+  top: -24%;
+  right: -184px;
+  transform: scaleX(-1) rotate(163deg);
+}
+
+.about-the-platform-card-inner {
+  border-radius: 20px;
+  background-color: #edefeb !important;
+  padding: 20px !important;
+}
+
 .branch-left-bottom-about {
   top: -18%;
   left: 1px;
@@ -3611,7 +3630,6 @@ svg {
   left: -35px;
   transform: rotate(205deg) scaleY(-1);
 }
-
 
 .team-section .branch-left-top {
   top: 75% !important;
@@ -5225,8 +5243,8 @@ svg {
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
-  border-radius: 16px; 
-  
+  border-radius: 16px;
+
   padding: 20px;
   max-width: 1320px;
   margin: 0 auto;

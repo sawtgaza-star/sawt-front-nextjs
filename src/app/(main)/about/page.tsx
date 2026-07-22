@@ -277,13 +277,7 @@ export default function Page() {
         {" "}
         <div className="about-the-platform-card">
           {" "}
-          <div
-            style={{
-              borderRadius: "20px !important",
-              backgroundColor: "#EDEFEB !important",
-              padding: '20px !important',
-            }}
-          >
+          <div className="about-the-platform-card-inner">
             {" "}
             <img
               className="birds-img"
@@ -307,8 +301,8 @@ export default function Page() {
                 >
                   نؤمن أن لكل إنسان قصة تستحق أن تُروى، لذلك جاءت صوت لتكون
                   مساحة حرة للتعبير، حيث يلتقي الأفراد لمشاركة تجاربهم وأفكارهم
-                  بصدق. نساعدك على إيصال صوتك إلى الآخرين، ونمنح المحتوى
-                  الإنساني مساحة حقيقية ليُرى، ويُسمع، ويترك أثرًا.
+                  بصدق.نساعدك على إيصال صوتك إلى الآخرين، ونمنح المحتوى الإنساني
+                  مساحة حقيقية ليُرى، ويُسمع، ويترك أثرًا.
                 </p>{" "}
               </div>{" "}
               <div className="col-12 col-lg-7 about-the-platform-visual">

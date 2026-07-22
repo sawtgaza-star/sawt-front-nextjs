@@ -9,8 +9,8 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="ar" dir="rtl">
-      <head>
+    <html lang="ar" dir="rtl" suppressHydrationWarning>
+      <head suppressHydrationWarning>
         <link
           rel="stylesheet"
           href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css"
@@ -26,7 +26,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           href="https://cdn.jsdelivr.net/npm/flag-icons@7.2.3/css/flag-icons.min.css"
         />
       </head>
-      <body dir="rtl">{children}</body>
+      <body dir="rtl" suppressHydrationWarning>{children}</body>
     </html>
   );
 }

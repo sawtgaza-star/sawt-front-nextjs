@@ -9,7 +9,9 @@ export const IconMail = () => (
     height="1.3em"
     viewBox="0 0 24 24"
   >
-    {" "}
+
+
+
     <path d="M0 0h24v24H0z" fill="none"></path>{" "}
     <g
       fill="none"
@@ -17,7 +19,7 @@ export const IconMail = () => (
       strokeLinejoin="round"
       strokeWidth="1.5"
     >
-      {" "}
+   
       <path
         strokeLinecap="round"
         d="m7 8.5l2.942 1.74c1.715 1.014 2.4 1.014 4.116 0L17 8.5"

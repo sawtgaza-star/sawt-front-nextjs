@@ -21,7 +21,7 @@ export default function Page() {
       <LegacyInit page="home" />
       <HeroHeader />
       <main className="my-5">
-                <SoutSection />
+       <SoutSection />
         <LatestNews />
         <ContentCreators />
         <PlatformSections />
