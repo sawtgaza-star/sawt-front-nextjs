@@ -59,7 +59,15 @@ function FlowArrow({ dir }: { dir: "left" | "right" }) {
 export default function CollaborationSteps() {
   return (
     <section className="cr-collab-section">
-      <div className="container">
+      <div className="container position-relative ">
+
+
+          <img
+            src="/assets/images/leaf_cutout.png"
+            className="olive-branch branch-right-top-CollaborationSteps-section"
+            alt="Olive Branch"
+          />
+
         <div className="cr-section-head">
           <h2 className="cr-section-title">
             <span data-i18n="creators_collab_title_pre">

@@ -16,7 +16,18 @@ const CREATORS = Array.from({ length: 10 }, (_, i) => ({
 export default function CreatorsGrid() {
   return (
     <section className="content-section cr-grid-section">
-      <div className="container">
+          <div className="container position-relative">
+        
+          <img
+            src="/assets/images/leaf_cutout.png"
+            className="olive-branch branch-right-top-creators-section"
+            alt="Olive Branch"
+          />
+          <img
+            src="/assets/images/leaf_cutout.png"
+            className="olive-branch branch-left-bottom-creators-section"
+            alt="Olive Branch"
+          />{" "}
         <div className="cr-section-head">
           <h2 className="cr-section-title">
             <span className="cr-title-orange" data-i18n="creators_grid_count">

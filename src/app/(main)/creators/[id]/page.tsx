@@ -3,28 +3,24 @@
 /* eslint-disable */
 import "@/styles/creators.css";
 import LegacyInit from "@/components/LegacyInit";
-import CreatorsHero from "@/components/creators/CreatorsHero";
-import CreatorsGrid from "@/components/creators/CreatorsGrid";
-import CreatorsStats from "@/components/creators/CreatorsStats";
-import PartnerCompanies from "@/components/creators/PartnerCompanies";
+import CreatorProfileHero from "@/components/creators/CreatorProfileHero";
+import CreatorContent from "@/components/creators/CreatorContent";
+import CreatorCollaborations from "@/components/creators/CreatorCollaborations";
 import CollaborationSteps from "@/components/creators/CollaborationSteps";
-import CreatorsFaq from "@/components/creators/CreatorsFaq";
 import SiteFooter from "@/components/site/SiteFooter";
-import JoinUs from "@/components/home/JoinUs";
 import JoinModal from "@/components/site/JoinModal";
 
+/* Single content-creator detail page — reached from the hover-arrow on any
+   CreatorCard (/creators/[id]). Composes the shared creators-page sections. */
 export default function Page() {
   return (
     <div className="cr-page">
       <LegacyInit page="creators" />
-      <CreatorsHero />
+      <CreatorProfileHero />
       <main>
-        <CreatorsGrid />
-        <CreatorsStats />
-        <JoinUs creator={"creator"} />
-        <PartnerCompanies />
+        <CreatorContent />
+        <CreatorCollaborations />
         <CollaborationSteps />
-        <CreatorsFaq />
       </main>
       <SiteFooter />
       <JoinModal />

@@ -10,12 +10,12 @@ export default function ContentCreators() {
           {" "}
           <img
             src="/assets/images/leaf_cutout.png"
-            className="olive-branch branch-left-top-content-section"
+            className="olive-branch branch-right-top-home-section"
             alt="Olive Branch"
           />{" "}
           <img
             src="/assets/images/leaf_cutout.png"
-            className="olive-branch branch-right-bottom-content-section"
+            className="olive-branch branch-left-bottom-home-section"
             alt="Olive Branch"
           />{" "}
           <div className="text-center mb-5">
@@ -44,7 +44,7 @@ export default function ContentCreators() {
             {/*  Card 1  */}{" "}
             <div className="item">
               {" "}
-              <a href="#" className="text-decoration-none">
+              <a href="/creators/1" className="text-decoration-none">
                 {" "}
                 <div className="main-container">
                   {" "}
@@ -110,7 +110,7 @@ export default function ContentCreators() {
             {/*  Card 2  */}{" "}
             <div className="item">
               {" "}
-              <a href="#" className="text-decoration-none">
+              <a href="/creators/1" className="text-decoration-none">
                 {" "}
                 <div className="main-container">
                   {" "}
@@ -176,7 +176,7 @@ export default function ContentCreators() {
             {/*  Card 3  */}{" "}
             <div className="item">
               {" "}
-              <a href="#" className="text-decoration-none">
+              <a href="/creators/1" className="text-decoration-none">
                 {" "}
                 <div className="main-container">
                   {" "}
@@ -242,7 +242,7 @@ export default function ContentCreators() {
             {/*  Card 4  */}{" "}
             <div className="item">
               {" "}
-              <a href="#" className="text-decoration-none">
+              <a href="/creators/1" className="text-decoration-none">
                 {" "}
                 <div className="main-container">
                   {" "}
@@ -308,7 +308,7 @@ export default function ContentCreators() {
             {/*  Card 5  */}{" "}
             <div className="item">
               {" "}
-              <a href="#" className="text-decoration-none">
+              <a href="/creators/1" className="text-decoration-none">
                 {" "}
                 <div className="main-container">
                   {" "}
@@ -374,7 +374,7 @@ export default function ContentCreators() {
           </div>{" "}
           <div className="text-center" style={{ marginTop: "50px " }}>
             {" "}
-            <a href="#" className="px-4 py-2 fw-bold show-more-news">
+            <a href="/creators" className="px-4 py-2 fw-bold show-more-news">
               {" "}
               <span data-i18n="view_all">عرض الكل</span>{" "}
               <i className="fa-solid fa-angle-left me-2 arrow"></i>{" "}
