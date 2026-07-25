@@ -34,6 +34,22 @@ export const translations: any = {
     search_placeholder: "ابحث هنا...",
     search_not_found: "لا توجد نتائج في هذه الصفحة",
 
+    // محتوانا page (/content)
+    content_hero_desc:
+      "خلف كل محتوى تشاهده وتسمعه فريق من المختصين في تكنولوجيا المعلومات والإنتاج الإعلامي، نؤمن أن التكنولوجيا هي وسيلتنا لنقل الحقيقة، وأن إبداعنا هو الصوت الذي يصل بصدى غزة إلى آفاق العالم.",
+    content_cat_all: "الكل",
+    content_cat_economy: "الاقتصاد (13)",
+    content_cat_war: "قصص الحرب (45)",
+    content_cat_business: "المال والأعمال (13)",
+    content_cat_news: "الاخبار (13)",
+    content_sort_label: "الترتيب",
+    content_sort_newest: "من الأحدث إلى الأقدم",
+    content_sort_oldest: "من الأقدم إلى الأحدث",
+    content_sort_views: "الأكثر مشاهدة",
+    content_most_watched_pre: "الأكثر",
+    content_most_watched_hl: "مشاهدة",
+    content_view_more: "رؤية المزيد",
+
     // Content Creators page (صناع المحتوى)
     brand_sawt: "صوت",
     creators_hero_title: "صنّاع المحتوى في صوت",
@@ -72,16 +88,20 @@ export const translations: any = {
     creators_flow_creators: "صناع المحتوى",
     creators_flow_creators_sub: "مبدعو غزة وفلسطين",
     creators_steps_title: "خطوات التعاون",
+    creators_step_1_title: "ابحث واختر",
     creators_step_1:
       "استعرض ملفات صنّاعنا وفلتر حسب التخصص والميزانية والوصول الجماهيري",
+    creators_step_2_title: "تواصل وتفاهم",
     creators_step_2:
       "فريق صوت ميديا يتولى التنسيق الكامل بينك وبين صانع المحتوى — من التفاصيل حتى العقد",
+    creators_step_3_title: "أطلق وقس",
     creators_step_3:
       "المحتوى يُنتج ويُنشر، وتحصل على تقرير تفصيلي بالنتائج والوصول والتفاعل",
     creators_collab_cta: "تواصل مع صوت ميديا للتعاقد مع صناع المحتوى",
     creators_faq_title_pre: "الأسئلة التي",
     creators_faq_title_hl: "تدور ببالك؟",
     creators_faq_title_post: "إليك ردودها",
+    creators_faq_title_mobile: "الأسئلة المتكررة",
     creators_faq_sub: "كل ما تحتاج معرفته قبل أن تبدأ رحلتك مع صوت",
     creators_faq_q1: "كيف يمكنني الانضمام كصانع محتوى؟",
     creators_faq_a1:
@@ -212,6 +232,24 @@ export const translations: any = {
     team_subtitle: "تعرّف على فريق صوت، مبدعين يصنعون الفرق",
     view_profile: "عرض الملف الشخصي",
 
+    // Team page (/team)
+    team_hero_title: "صناع الأثر..الفريق خلف منصة صوت",
+    team_cat_all: "الكل",
+    team_cat_design: "فريق التصميم",
+    team_cat_marketing: "فريق التسويق",
+    team_cat_management: "فريق الإدارة",
+    team_cat_montage: "فريق المونتاج",
+    team_card_name: "سمير البطل",
+    team_card_role: "UI/UX Designer",
+    team_detail_experience: "5 سنوات من الخبرة",
+    team_detail_about_title: "نبذه عنه",
+    team_detail_bio:
+      "متخصص في تحويل الأفكار والرؤى المعقدة إلى تجارب (UI/UX) مصمم واجهات وتجربة مستخدم رقمية بخبرة تمتد لأكثر من 5 سنوات في فهم سلوك المستخدمين وتحليل احتياجاتهم، أركز في عملي على تحقيق التوازن المثالي بين جمالية الواجهات وأعلى معايير سهولة الاستخدام والوصول. الشغف المهني لفريق «صوت» غزة يترجم إيماني بأهمية تكنولوجيا الإعلام؛ حيث أعمل على تطوير وتصميم واجهات المنصة لتكون الجسر البصري والرقمي الذي يضمن تدفق المحتوى الإبداعي والقصص الإنسانية بسلاسة تامة وبأعلى جودة ممكنة.",
+    team_detail_follow: "تابعنا على :",
+    team_members_title: "اعضاء الفريق",
+    team_members_title_pre: "اعضاء",
+    team_members_title_highlight: "الفريق",
+
     // Footer
     footer_about:
       "منصة صوت، تأسست لتكون مساحة للمبدعين، تجمع الحاضنة، صوت ميديا، والصوت نفسه، لتقديم محتوى ملهم وتجارب فريدة لكل من يسعى لصوته أن يُسمع.",
@@ -219,6 +257,7 @@ export const translations: any = {
     footer_quick_links: "روابط سريعة",
     footer_backstage: "الكواليس",
     footer_media_kit: "MEDIA KIT",
+    footer_impact_stories: "Impact Stories",
     footer_blog: "المدونة",
     footer_faq: "الأسئلة الشائعة",
     footer_stay_updated: "ابقَ على اطلاع",
@@ -531,18 +570,6 @@ export const translations: any = {
     story_paragraph_impact_2:
       'نقيس أثرنا بعدد <span class="highlight-word">الأصوات التي مكّنّاها</span>، لا بأرقام المتابعين فقط. كل تجربة نجاح تؤكد أن الإعلام الإنساني قادر على صناعة التغيير.',
 
-    // Content page
-    tab_money_business: "المال والأعمال",
-    tab_economy: "الاقتصاد",
-    tab_economy_philosophy: "الاقتصاد والفلسفة",
-    sort_label: "الترتيب:",
-    sort_most_viewed: "الأكثر مشاهدة",
-    sort_option_one: "واحد",
-    sort_option_two: "اثنان",
-    sort_option_three: "ثلاثة",
-    most_watched_pre: "الأكثر",
-    most_watched_highlight: "مشاهدة",
-
     // Real stories (قصص من الواقع)
     realstories_title_pre: "قصص من",
     realstories_title_word: "الواقع",
@@ -584,6 +611,22 @@ export const translations: any = {
     search_placeholder: "Search here...",
     search_not_found: "No results on this page",
 
+    // Our Content page (/content)
+    content_hero_desc:
+      "Behind every piece of content you watch and hear is a team of information-technology and media-production specialists. We believe technology is our means of carrying the truth, and that our creativity is the voice that takes Gaza's echo to the far horizons of the world.",
+    content_cat_all: "All",
+    content_cat_economy: "Economy (13)",
+    content_cat_war: "War Stories (45)",
+    content_cat_business: "Money & Business (13)",
+    content_cat_news: "News (13)",
+    content_sort_label: "Sort",
+    content_sort_newest: "Newest to oldest",
+    content_sort_oldest: "Oldest to newest",
+    content_sort_views: "Most watched",
+    content_most_watched_pre: "Most",
+    content_most_watched_hl: "Watched",
+    content_view_more: "View more",
+
     // Content Creators page
     brand_sawt: "Sawt",
     creators_hero_title: "Content Creators at Sawt",
@@ -624,16 +667,20 @@ export const translations: any = {
     creators_flow_creators: "Content Creators",
     creators_flow_creators_sub: "Creators of Gaza & Palestine",
     creators_steps_title: "Collaboration steps",
+    creators_step_1_title: "Search & choose",
     creators_step_1:
       "Browse our creators' profiles and filter by specialty, budget, and audience reach",
+    creators_step_2_title: "Connect & align",
     creators_step_2:
       "The Sawt Media team handles full coordination between you and the creator — from details to contract",
+    creators_step_3_title: "Launch & measure",
     creators_step_3:
       "Content is produced and published, and you get a detailed report on results, reach, and engagement",
     creators_collab_cta: "Contact Sawt Media to contract content creators",
     creators_faq_title_pre: "The questions on",
     creators_faq_title_hl: "your mind?",
     creators_faq_title_post: "Here are the answers",
+    creators_faq_title_mobile: "Frequently asked questions",
     creators_faq_sub: "Everything you need to know before starting your journey with Sawt",
     creators_faq_q1: "How can I join as a content creator?",
     creators_faq_a1:
@@ -794,6 +841,24 @@ export const translations: any = {
     team_subtitle: "Meet the Sawt team — creators who make a difference",
     view_profile: "View Profile",
 
+    // Team page (/team)
+    team_hero_title: "The Impact Makers — The Team Behind Sawt",
+    team_cat_all: "All",
+    team_cat_design: "Design Team",
+    team_cat_marketing: "Marketing Team",
+    team_cat_management: "Management Team",
+    team_cat_montage: "Editing Team",
+    team_card_name: "Samir Al-Batal",
+    team_card_role: "UI/UX Designer",
+    team_detail_experience: "5 years of experience",
+    team_detail_about_title: "About",
+    team_detail_bio:
+      "Specialized in transforming complex ideas and visions into (UI/UX) experiences. A digital interface and user-experience designer with over 5 years of experience in understanding user behavior and analyzing their needs. In my work I focus on striking the perfect balance between interface aesthetics and the highest standards of usability and accessibility. My professional passion for the Sawt Gaza team reflects my belief in the importance of media technology; I work on developing and designing the platform's interfaces to be the visual and digital bridge that ensures creative content and human stories flow seamlessly and at the highest possible quality.",
+    team_detail_follow: "Follow us :",
+    team_members_title: "Team Members",
+    team_members_title_pre: "Team",
+    team_members_title_highlight: "Members",
+
     // Footer
     footer_about:
       "Sawt platform was founded to be a space for creators — bringing together the Incubator, Sawt Media, and the voice itself — to deliver inspiring content and unique experiences for everyone who wants their voice to be heard.",
@@ -801,6 +866,7 @@ export const translations: any = {
     footer_quick_links: "Quick Links",
     footer_backstage: "Backstage",
     footer_media_kit: "MEDIA KIT",
+    footer_impact_stories: "Impact Stories",
     footer_blog: "Blog",
     footer_faq: "FAQ",
     footer_stay_updated: "Stay Updated",
@@ -1091,18 +1157,6 @@ export const translations: any = {
       'Sawt\'s stories have reached <span class="highlight-word">millions of views</span> and turned into public conversations, advocacy campaigns, and on-the-ground initiatives that have made a real difference.',
     story_paragraph_impact_2:
       'We measure impact by the number of <span class="highlight-word">voices we have empowered</span>, not by follower counts alone. Every success story confirms that human-centered media can shape change.',
-
-    // Content page
-    tab_money_business: "Money & Business",
-    tab_economy: "Economy",
-    tab_economy_philosophy: "Economy & Philosophy",
-    sort_label: " Sort by: ",
-    sort_most_viewed: " Most Viewed",
-    sort_option_one: "One",
-    sort_option_two: "Two",
-    sort_option_three: "Three",
-    most_watched_pre: "Most",
-    most_watched_highlight: "Watched",
 
     // Real stories
     realstories_title_pre: "Stories from",

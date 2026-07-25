@@ -6,7 +6,6 @@ import { useState } from "react";
 import LegacyInit from "@/components/LegacyInit";
 import CreatorsHero from "@/components/creators/CreatorsHero";
 import CreatorCard from "@/components/creators/CreatorCard";
-import SiteFooter from "@/components/site/SiteFooter";
 import JoinModal from "@/components/site/JoinModal";
 
 /* Full, paginated listing of every content creator — the "عرض الكل" target
@@ -142,7 +141,6 @@ export default function Page() {
           </div>
         </section>
       </main>
-      <SiteFooter />
       <JoinModal />
     </div>
   );

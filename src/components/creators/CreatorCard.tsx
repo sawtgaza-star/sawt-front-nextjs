@@ -16,7 +16,7 @@ export type Creator = {
 export default function CreatorCard({ item }: { item: Creator }) {
   return (
     <div className="item">
-      <a href={`/creators/${item.id}`} className="text-decoration-none">
+      <div className="text-decoration-none">
         <div className="main-container">
           <div className="the-card">
             <div className="face front-face-img w-100 h-100 overflow-hidden text-white">
@@ -54,14 +54,14 @@ export default function CreatorCard({ item }: { item: Creator }) {
                 <p className="hover-desc" data-i18n="creator_quote">
                   تجربتي مع صوت كانت مختلفة، أخيراً لقيت مكان بيفهمني كمبدع ....
                 </p>
-                <span className="hover-arrow">
+                <a href={`/creators/${item.id}`} className="hover-arrow">
                   <i className="fa-solid fa-arrow-up"></i>
-                </span>
+                </a>
               </div>
             </div>
           </div>
         </div>
-      </a>
+      </div>
     </div>
   );
 }

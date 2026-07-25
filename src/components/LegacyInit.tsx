@@ -12,7 +12,7 @@ export default function LegacyInit({ page }: { page: string }) {
 
       const { initTranslate } = await import("@/lib/translations");
 
-      if (["home", "about", "content", "creators"].includes(page)) {
+      if (["home", "about", "creators", "team", "content"].includes(page)) {
         const { initMainScripts } = await import("@/lib/legacy-main");
         const { initSearch } = await import("@/lib/legacy-search");
         initMainScripts();
@@ -22,14 +22,10 @@ export default function LegacyInit({ page }: { page: string }) {
         const { initOwlSliders } = await import("@/lib/owl-sliders");
         await initOwlSliders();
       }
-      // "انضم إلينا" join-modal logic (button + stepper) — home & creators both host it
-      if (page === "home" || page === "creators") {
+      // "انضم إلينا" join-modal logic (button + stepper) — home, creators & team host it
+      if (page === "home" || page === "creators" || page === "team") {
         const { initHomeInline } = await import("@/lib/legacy-home");
         initHomeInline();
-      }
-      if (page === "content") {
-        const { initContentInline } = await import("@/lib/legacy-content");
-        initContentInline();
       }
       if (["login", "register", "forgot-password", "set-new-password"].includes(page)) {
         const { initLoginPage } = await import("@/lib/legacy-login");

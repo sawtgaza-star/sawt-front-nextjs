@@ -7,16 +7,22 @@ import { IconArrowUpLeft } from "@/components/ui/icons";
 const STEPS = [
   {
     num: "01",
+    title: "ابحث واختر",
+    titleKey: "creators_step_1_title",
     text: "استعرض ملفات صنّاعنا وفلتر حسب التخصص والميزانية والوصول الجماهيري",
     key: "creators_step_1",
   },
   {
     num: "02",
+    title: "تواصل وتفاهم",
+    titleKey: "creators_step_2_title",
     text: "فريق صوت ميديا يتولى التنسيق الكامل بينك وبين صانع المحتوى — من التفاصيل حتى العقد",
     key: "creators_step_2",
   },
   {
     num: "03",
+    title: "أطلق وقس",
+    titleKey: "creators_step_3_title",
     text: "المحتوى يُنتج ويُنشر، وتحصل على تقرير تفصيلي بالنتائج والوصول والتفاعل",
     key: "creators_step_3",
   },
@@ -145,15 +151,20 @@ export default function CollaborationSteps() {
           {STEPS.map((s) => (
             <div className="cr-step-card" key={s.key}>
               <span className="cr-step-num">{s.num}</span>
-              <span data-i18n={s.key}>{s.text}</span>
+              <span className="cr-step-title" data-i18n={s.titleKey}>
+                {s.title}
+              </span>
+              <span className="cr-step-text" data-i18n={s.key}>
+                {s.text}
+              </span>
             </div>
           ))}
         </div>
 
         <div className="cr-collab-cta">
           <a href="#">
-            <span data-i18n="creators_collab_cta">
-              تواصل مع صوت ميديا للتعاقد مع صناع المحتوى
+            <span>
+            تواصل مع فريق صوت للانضمام
             </span>
             <IconArrowUpLeft />
           </a>

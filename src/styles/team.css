@@ -1,0 +1,484 @@
+/* ================= Team page (الفريق) =================
+   Scoped styles for /team. The breadcrumb hero reuses the about-* classes
+   (defined in style.css, loaded by the (main) layout); everything below is
+   specific to the team roster: filter pills, the grid, and the member card. */
+
+.team-grid-section {
+  padding: 110px 0 40px;
+  overflow: hidden;
+}
+
+/* ---------- Filter pills (right-aligned in RTL) ---------- */
+.team-filter {
+  list-style: none;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-start;
+  gap: 10px;
+  padding: 0;
+  margin: 0 0 50px;
+}
+.team-tab {
+  background: #F5F5F5;
+  border: 1px solid #f5f5f5;
+  border-radius: 8px;
+  padding: 7px 18px;
+  font-size: 16px;
+  font-weight: 500;
+  color: #7a7a7a;
+  cursor: pointer;
+  transition:
+    background 0.2s ease,
+    color 0.2s ease,
+    border-color 0.2s ease;
+}
+.team-tab:hover {
+  border-color: #cfd4c4;
+}
+.team-tab.active {
+  background: #4C5C37;
+  border-color: #4C5C37;
+  color: #fff;
+}
+.team-tab-count {
+  margin-inline-start: 2px;
+}
+
+/* ---------- Roster grid ---------- */
+.team-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 28px 22px;
+}
+
+/* ---------- Member card: portrait + green name/role badge ---------- */
+.team-member-card {
+  position: relative;
+}
+.team-member-photo {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 1 / 1.12;
+  border-radius: 14px;
+  overflow: hidden;
+  background: #949494;
+}
+.team-member-photo img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  border-radius: 14px;
+  transition: transform 0.4s ease;
+}
+
+.team-detail-branch {    position: absolute;
+    
+    height: 27%;
+    bottom: -80px;
+    left: -50px;
+    z-index: -1;
+    transform:rotate(60deg)
+  }
+
+/* Hover: the portrait zooms in while staying clipped inside the card. */
+.team-member-card:hover .team-member-photo img {
+  transform: scale(1.12);
+}
+.team-member-badge {
+  position: absolute;
+  left: 50%;
+  bottom: 8px;
+  transform: translateX(-50%);
+  width: calc(100% - 28px);
+  background: #364127;
+  color: #fff;
+  border-radius: 10px;
+  padding: 9px 12px;
+  text-align: center;
+}
+.team-member-name {
+  font-size: 18px;
+  font-weight: 700;
+  margin-bottom: 2px;
+}
+.team-member-role {
+  font-size: 16px;
+  font-weight: 400;
+  color: white;
+}
+
+/* Circular arrow, revealed on hover on the badge's left (RTL end) side. */
+[dir='ltr'] .team-member-arrow {
+  position: absolute;
+  right:12px !important;
+}
+
+[dir='ltr'] .team-member-arrow i {
+    transform:rotate(45deg)
+}
+
+[dir='rtl'] .team-member-arrow  {
+position: absolute;
+left: 12px;
+}
+
+.team-member-arrow {
+  position: absolute;
+  top: 50%;
+  
+  width: 34px;
+  height: 34px;
+  border: 1px solid rgba(255, 255, 255, 0.7);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff !important;
+  font-size: 13px;
+  text-decoration: none;
+  opacity: 0;
+  transform: translateY(-50%) scale(0.6);
+  transition:
+    opacity 0.25s ease,
+    transform 0.25s ease,
+    background 0.2s ease;
+  pointer-events: none;
+}
+.team-member-arrow i {
+  transform: rotate(-45deg);
+}
+.team-member-card:hover .team-member-arrow {
+  opacity: 1;
+  transform: translateY(-50%) scale(1);
+  pointer-events: auto;
+}
+.team-member-arrow:hover {
+  background: rgba(255, 255, 255, 0.18);
+}
+/* On hover, name/role shift to the start (right in RTL) to clear the arrow. */
+.team-member-card:hover .team-member-badge {
+  text-align: start;
+  padding-inline-end: 50px;
+}
+
+/* ---------- Decorative olive branches (match the mock watermarks) ---------- */
+.branch-team-right {
+  top: 0;
+  right: -70px;
+  transform: scaleX(-1) rotate(62deg);
+  z-index: 0;
+  opacity: 0.9;
+}
+.branch-team-left {
+  bottom: 4%;
+  left: -67px;
+  transform: scaleX(-1) rotate(349deg);
+  z-index: 0;
+  opacity: 0.9;
+}
+.team-grid-section .container {
+  position: relative;
+  z-index: 1;
+}
+
+/* ================= Member detail page (/team/[id]) ================= */
+
+/* ---------- Profile: mic portrait (left in RTL) + info (right) ---------- */
+.team-detail-section {
+  padding: 100px 0 30px;
+  position:relative;
+}
+.team-detail-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr);
+  align-items: center;
+  gap: 40px;
+}
+.team-detail-photo {
+  order: 2; /* image sits on the left (visual start) in RTL */
+}
+.team-detail-photo img {
+  width: 110%;
+  height: auto;
+  display: block;
+}
+
+.team-detail-name {
+  font-size: 36px;
+  font-weight: 800;
+  color: #1c1c1c;
+  margin: 0 0 6px;
+  text-align: start;
+}
+.team-detail-role {
+  font-size: 22px;
+  color: #919191;
+  margin: 10px 0 8px;
+  text-align: start;
+}
+.team-detail-experience {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 18px;
+  font-weight: 600;
+  color: #4C5C37;
+  margin: 0 0 26px;
+  text-align: start;
+}
+.team-detail-experience i {
+  color: #FCD53F;
+  font-size: 16px;
+  text-align: start;
+}
+
+.team-detail-about-title {
+  font-size: 27px;
+  font-weight: 700;
+  color: #1c1c1c;
+  margin: 0 0 12px;
+  text-align: start;
+}
+.team-detail-bio {
+  font-size: 18px;
+  line-height: 2;
+  color: #6D6D6D;
+  margin: 0 0 26px;
+  text-align: start;
+}
+
+.team-detail-follow {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 14px;
+}
+.team-detail-follow-label {
+  font-size: 27px;
+  font-weight: 700;
+  color: black;
+}
+.team-detail-social {
+  display: flex;
+  gap: 10px;
+}
+.team-detail-social a {
+  width: 48px;
+  height: 48px;
+  border-radius: 8px;
+  border: 1px solid #4C5C37;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #4C5C37 !important;
+  font-size: 22px;
+  text-decoration: none;
+  transition:
+    background 0.2s ease,
+    color 0.2s ease,
+    border-color 0.2s ease;
+}
+.team-detail-social a:hover {
+  background: #4c5c37;
+  border-color: #4c5c37;
+  color: #fff !important;
+}
+
+/* ---------- "اعضاء الفريق" block ---------- */
+.team-members-section {
+  padding: 30px 0 90px;
+}
+.team-members-title {
+  text-align: center;
+  font-size: 42px;
+  font-weight: 800;
+  color: #1c1c1c;
+  margin: 0 0 45px;
+}
+/* Orange brush-stroke highlight under "الفريق" (mirrors .cr-highlight). */
+.team-members-highlight {
+  background-image: url("/assets/images/stroke_peach_top_transparent.png");
+  background-size: 100% 32%;
+  background-repeat: no-repeat;
+  background-position: center bottom;
+  color: #1c1c1c;
+  padding-bottom: 6px;
+}
+
+.team-members-row {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 22px;
+}
+
+.team-members-more {
+  text-align: center;
+  margin-top: 34px;
+}
+.team-members-more a {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 17px;
+  font-weight: 600;
+  color: #4c5c37 !important;
+  text-decoration: none;
+  transition:
+    color 0.2s ease,
+    background-color 0.2s ease;
+  padding: 10px 20px;
+  border-radius: 20px;
+}
+.team-members-more a:hover {
+  color: white !important;
+  background-color:#4c5c37;
+}
+
+[dir='ltr'] .team-members-more i {
+  transform: rotate(180deg);
+}
+
+/* ---------- Detail responsive ---------- */
+@media (max-width: 991.98px) {
+  .team-detail-grid {
+    grid-template-columns: 1fr;
+    gap: 28px;
+  }
+  .team-detail-photo {
+    max-width: 420px;
+    margin: 0 auto;
+  }
+  /* Desktop bleeds the portrait 10% past its box; on stacked mobile that
+     overflows the centered column, so pin it back to the box width. */
+  .team-detail-photo img {
+    width: 100%;
+  }
+  .team-members-row {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+@media (max-width: 767.98px) {
+  .team-members-row {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  /* On phones show the portrait first, above the name/bio/socials. The photo
+     carries order: 2 (to sit left in the desktop RTL grid); flip the order so
+     the stacked column leads with the image. */
+  .team-detail-photo {
+    order: 0;
+  }
+  .team-detail-info {
+    order: 1;
+  }
+}
+@media (max-width: 479.98px) {
+  .team-members-row {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 14px;
+  }
+}
+
+/* On phones the desktop hero type is oversized; scale it down and tighten
+   the section padding so the profile reads comfortably on a narrow screen. */
+@media (max-width: 575.98px) {
+  .team-detail-section {
+    padding: 40px 0 20px;
+  }
+  .team-detail-name {
+    font-size: 28px;
+  }
+  .team-detail-role {
+    font-size: 18px;
+    margin: 6px 0;
+  }
+  .team-detail-experience {
+    font-size: 16px;
+    margin-bottom: 20px;
+  }
+  .team-detail-about-title {
+    font-size: 22px;
+  }
+  .team-detail-bio {
+    font-size: 16px;
+    line-height: 1.9;
+    margin-bottom: 22px;
+  }
+  .team-detail-follow-label {
+    font-size: 22px;
+  }
+  .team-detail-social a {
+    width: 44px;
+    height: 44px;
+    font-size: 20px;
+  }
+  .team-members-title {
+    font-size: 30px;
+    margin-bottom: 32px;
+  }
+}
+
+/* ---------- Responsive ---------- */
+@media (max-width: 1199.98px) {
+  .team-grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+@media (max-width: 991.98px) {
+  .team-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+@media (max-width: 767.98px) {
+      .team-detail-section {
+                padding: 20px 0 40px;
+      }
+
+      .team-detail-name , .team-detail-role ,.team-detail-experience , .team-detail-about-title,.team-detail-follow-label{
+        font-size:16px;
+      }
+
+      .team-detail-bio {
+        font-size:13px;
+      }
+
+          .team-detail-social a {
+        width: 35px;
+        height: 35px;
+        font-size: 16px;
+    }
+
+  .team-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .team-grid-section {
+       padding: 20px 0 40px
+  }
+
+  .team-tab {
+    font-size:13px;
+  }
+  .team-filter{
+    margin:0 0 20px
+  }
+  .team-members-more a {
+    font-size: 14px;
+  }
+.team-members-section {
+padding:0;
+}
+
+  .team-member-name {
+    font-size: 14px;
+  }
+
+  .team-member-role{
+    font-size: 12px;
+  }
+}
+@media (max-width: 479.98px) {
+  .team-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px 14px;
+  }
+}
