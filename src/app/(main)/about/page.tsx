@@ -1,7 +1,6 @@
 // @ts-nocheck
 /* eslint-disable */
 import LegacyInit from "@/components/LegacyInit";
-import SiteFooter from "@/components/site/SiteFooter";
 import AboutHero from "./_components/AboutHero";
 import AboutIntro from "./_components/AboutIntro";
 import CoreValues from "./_components/CoreValues";
@@ -19,7 +18,6 @@ export default function Page() {
       <AboutPlatform />
       <SawtStory />
       <JoinUs />
-      <SiteFooter /> {/*  Modal  */} {/*  .....................  */}
     </>
   );
 }

@@ -8,7 +8,7 @@ export default function CreatorCard({ cardClass }: { cardClass: string }) {
   return (
     <div className="item">
       {" "}
-      <a href="/creators/1" className="text-decoration-none">
+      <div className="text-decoration-none">
         {" "}
         <div className="main-container">
           {" "}
@@ -61,15 +61,15 @@ export default function CreatorCard({ cardClass }: { cardClass: string }) {
                   تجربتي مع صوت كانت مختلفة، أخيراً لقيت مكان بيفهمني
                   كمبدع ....
                 </p>{" "}
-                <span className="hover-arrow">
+                <a href="/creators/1" className="hover-arrow">
                   {" "}
                   <i className="fa-solid fa-arrow-up"></i>{" "}
-                </span>{" "}
+                </a>{" "}
               </div>{" "}
             </div>{" "}
           </div>{" "}
         </div>{" "}
-      </a>{" "}
+      </div>{" "}
     </div>
   );
 }

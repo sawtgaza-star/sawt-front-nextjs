@@ -43,17 +43,7 @@ export default function FooterMainSections() {
             <li className="mb-4">
               {" "}
               <a
-                href="#"
-                className="text-white text-decoration-none small"
-              >
-                {" "}
-                <span data-i18n="nav_content">محتوانا</span>
-              </a>{" "}
-            </li>{" "}
-            <li className="mb-4">
-              {" "}
-              <a
-                href="#"
+                href="/team"
                 className="text-white text-decoration-none small"
               >
                 {" "}

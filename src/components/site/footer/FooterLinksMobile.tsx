@@ -34,6 +34,13 @@ export default function FooterLinksMobile() {
             {" "}
             <a href="#" className="text-white text-decoration-none">
               {" "}
+              <span data-i18n="footer_impact_stories">Impact Stories</span>
+            </a>{" "}
+          </li>{" "}
+          <li>
+            {" "}
+            <a href="#" className="text-white text-decoration-none">
+              {" "}
               <span data-i18n="footer_blog">المدونة</span>
             </a>{" "}
           </li>{" "}
@@ -75,14 +82,7 @@ export default function FooterLinksMobile() {
             </li>{" "}
             <li>
               {" "}
-              <a href="#" className="text-white text-decoration-none">
-                {" "}
-                <span data-i18n="nav_content">محتوانا</span>
-              </a>{" "}
-            </li>{" "}
-            <li>
-              {" "}
-              <a href="#" className="text-white text-decoration-none">
+              <a href="/team" className="text-white text-decoration-none">
                 {" "}
                 <span data-i18n="nav_team">الفريق</span>
               </a>{" "}

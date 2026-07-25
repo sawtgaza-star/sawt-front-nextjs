@@ -173,6 +173,7 @@ a {
   border-radius: 20px;
   color: rgba(76, 92, 55, 1) !important;
   transition: all 0.2s ease-in-out;
+  
 }
 .show-more-news:hover {
   background-color: rgb(50, 59, 38);
@@ -1303,7 +1304,7 @@ svg {
   color: rgba(255, 255, 255, 1) !important;
   border-radius: 20px;
   margin: 12px;
-  font-size: 11px;
+  font-size: 12px;
 }
 
 .quote-box {
@@ -2754,6 +2755,9 @@ svg {
 
 /* Keep the reviews reels consistent on mobile (override legacy reels rules) */
 @media (max-width: 768px) {
+  .name-tag , .job-tag , .hover-title , .hover-desc {
+    font-size:14px !important;
+  }
   .contact-info-nav {
     display: flex !important  ;
   }
@@ -2835,7 +2839,7 @@ svg {
   /* content-section cards need an explicit size on mobile, otherwise the
      absolutely-positioned photo leaves the card with 0 height and it vanishes */
   .content-section .main-container {
-    height: 350px !important;
+    height: 300px !important;
     width: 240px !important;
     margin: 0 auto;
   }
@@ -6647,6 +6651,7 @@ svg {
   border-radius: 50%;
   color: #4c5c37;
   background: inherit;
+  text-decoration: none;
 }
 
 .hover-arrow:hover {
@@ -7149,7 +7154,7 @@ svg {
 @media (max-width: 767.98px) {
   .content-section .creators-title {
     font-size: 24px !important;
-    margin-top: 0;
+    margin-top: 0 !important;
   }
 
   .content-section .creators-subtitle {
@@ -7213,7 +7218,7 @@ svg {
   }
 
   .content-section {
-    padding: 0;
+    padding: 0 !important;
   }
 
   .content-section .the-card {
@@ -7633,7 +7638,7 @@ svg {
     flex: 2;
   }
   .footer-links-mobile-title {
-    text-align: center;
+    text-align: start;
     color: #fff;
     font-size: 16px;
     font-weight: 700;
@@ -7650,7 +7655,7 @@ svg {
   .footer-links-mobile-single {
     margin: 0;
     padding: 0;
-    text-align: center;
+    text-align: start;
   }
   .footer-links-mobile-single li {
     margin-bottom: 22px !important;
@@ -7662,7 +7667,7 @@ svg {
     grid-template-columns: repeat(2, 1fr);
     column-gap: 8px;
     row-gap: 0;
-    text-align: center;
+    text-align: start;
   }
   .footer-links-mobile-two ul {
     margin: 0;

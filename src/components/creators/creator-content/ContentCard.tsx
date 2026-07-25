@@ -73,39 +73,6 @@ export default function ContentCard({ card, index, onOpen }) {
       >
         <i className="fa-solid fa-play"></i>
       </button>
-
-      {/* bottom control bar */}
-      <div className="cr-content-bar">
-        <button
-          type="button"
-          className="cr-content-ctrl"
-          onClick={() => skip(-SKIP)}
-          aria-label="rewind"
-        >
-          <i className="fa-solid fa-backward"></i>
-        </button>
-        <div
-          className="cr-content-progress"
-          ref={progressRef}
-          onPointerDown={onProgressPointerDown}
-          role="slider"
-          aria-label="seek"
-          aria-valuemin={0}
-          aria-valuemax={Math.round(duration)}
-          aria-valuenow={Math.round(current)}
-        >
-          <div className="cr-content-progress-fill" style={{ width: pct + "%" }} />
-          <div className="cr-content-progress-thumb" style={{ left: pct + "%" }} />
-        </div>
-        <button
-          type="button"
-          className="cr-content-ctrl"
-          onClick={() => skip(SKIP)}
-          aria-label="forward"
-        >
-          <i className="fa-solid fa-forward"></i>
-        </button>
-      </div>
     </div>
   );
 }

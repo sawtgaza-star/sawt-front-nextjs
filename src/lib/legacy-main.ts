@@ -741,12 +741,6 @@ __ready(function () {
     );
     if (home) home.classList.add("active");
   }
-  if (!matched && (path === "" || path === "content.html")) {
-    const contact = document.querySelector(
-      '.navbar-nav .nav-link[data-i18n="nav_content"]',
-    );
-    if (contact) contact.classList.add("active");
-  }
 });
 
 __ready(function () {

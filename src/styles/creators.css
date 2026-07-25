@@ -55,7 +55,7 @@ margin-top:100px !important;
      the join modal overlay (z-index 2000). */
   z-index: 1000;
   background-size: cover !important;
-  background-position: center !important;
+  background-position: top !important;
   background-repeat: no-repeat !important;
 }
 /* Keep the navbar — and the .header-bar wrapper the sticky script injects —
@@ -98,12 +98,12 @@ margin-top:100px !important;
   z-index: 1;
 }
 .cr-hero {
-  padding: 70px 15px 100px;
+  padding: 70px 15px 50px;
   text-align: center;
   color: #fff;
 }
 .cr-breadcrumb {
-  font-size: 20px;
+  font-size: 15px;
   font-weight: 500;
   margin-bottom: 26px;
 }
@@ -125,7 +125,7 @@ margin-top:100px !important;
   color: #fff !important;
 }
 .cr-breadcrumb-active {
-  color: var(--sout-orange);
+  color: #FF7420;
   font-weight: 700;
 }
 .cr-hero-title {
@@ -342,7 +342,7 @@ margin-top:100px !important;
 
 /* ---------- Achievements / stats ---------- */
 .cr-stats-section {
-  padding: 60px 0 40px;
+  padding: 20px 0 40px;
 }
 .cr-stats-grid {
   display: grid;
@@ -357,15 +357,16 @@ margin-top:100px !important;
   text-align: center;
 }
 .cr-stat-icon {
-  width: 46px;
+  width: 76px;
   height: 46px;
   margin: 0 auto 12px;
-  border-radius: 10px;
-  background: rgba(74, 87, 56, 0.1);
+  background-image: url("/assets/images/stroke_gray_top.png");
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
   display: flex;
   align-items: center;
   justify-content: center;
-  color: var(--dark-green);
   font-size: 20px;
   color:#FF7420
 }
@@ -690,16 +691,29 @@ margin-top:100px !important;
   grid-template-columns: repeat(3, 1fr);
   gap: 18px;
 }
+[dir ='ltr'] .cr-step-card {
+  text-align:start;
+  padding: 20px 46px 20px 47px;
+}
+[dir='ltr'] .cr-step-num{
+  left:7px;
+}
+
 .cr-step-card {
   position: relative;
   background: #fff;
   border: 1px solid #4C5C37;
   border-radius: 12px;
   padding: 20px 46px 20px 5px;
-  font-size: 14px;
-  font-weight: 600;
+  font-size: 13px;
+  font-weight: 500;
   color: #4a4a4a;
   line-height: 1.8;
+}
+/* Step title is a mobile-only element (see the mobile mock); the desktop
+   step cards keep their number + single description line unchanged. */
+.cr-step-title {
+  display: none;
 }
 .cr-step-num {
   position: absolute;
@@ -709,7 +723,7 @@ margin-top:100px !important;
   width: 30px;
   height: 30px;
   border-radius: 50%;
-  background: var(--sout-orange);
+  background: #FF7420;
   color: #fff;
   font-size: 13px;
   font-weight: 800;
@@ -730,7 +744,7 @@ margin-top:100px !important;
   color: #fff !important;
   border-radius: 30px;
   padding: 12px 30px;
-  font-weight: 700;
+  font-weight: 600;
   text-decoration: none;
   transition: background 0.2s ease;
 }
@@ -740,17 +754,33 @@ margin-top:100px !important;
 .cr-collab-cta a i {
   font-size: 13px;
 }
+[dir='ltr'] .cr-collab-cta a svg {
+  transform: rotate(90deg) !important;
+}
 
 /* ---------- FAQ ---------- */
 .cr-faq-section {
-  padding: 50px 0 70px;
+  padding: 20px 0 0px;
   position: relative;
 }
-/* First question pulled out as a full-width bar above the section title */
+
+
+
+/* The stroked one-line heading is mobile-only (see the mobile mock). */
+.cr-faq-title-mobile {
+  display: none;
+}
+/* First question shown as a full-bleed bar above the section title. It now
+   lives inside .container, so break it out to the viewport width with the
+   left:50%/translateX trick (clipped by .cr-page overflow:hidden). The mobile
+   query below neutralises this so it sits inline under the title. */
 .cr-faq-featured {
   position: relative;
   z-index: 1;
-  margin-bottom: 40px;
+  /* Full-bleed to the viewport regardless of the container's breakpoint width:
+     negative left/right margins of (50% − 50vw) stretch the bar edge-to-edge
+     and keep it centred (clipped by .cr-page overflow:hidden). */
+  margin: 0 calc(50% - 50vw) 40px;
 }
 .cr-faq-featured .cr-faq-item {
   margin-bottom: 0;
@@ -802,6 +832,7 @@ margin-top:100px !important;
 }
 .cr-faq-item.cr-faq-open .cr-faq-q {
   border-bottom: 1px solid #B6B6B6;
+  color:#374C1C;
 }
 .cr-faq-q {
   width: 100%;
@@ -819,11 +850,12 @@ margin-top:100px !important;
 }
 .cr-faq-q .cr-faq-chevron {
   transition: transform 0.25s ease;
-  color: #8a8a8a;
+  color: #000;
   font-size: 14px;
 }
 .cr-faq-q[aria-expanded="true"] .cr-faq-chevron {
   transform: rotate(180deg);
+  color:black;
 }
 
 
@@ -834,6 +866,14 @@ margin-top:100px !important;
   font-size: 16px;
   color: #6d6d6d;
   line-height: 2;
+  text-align: start;
+}
+
+[dir='ltr'] .cr-faq-a::before {
+  left:0;
+}
+[dir='rtl'] .cr-faq-a::before {
+  right:0;
 }
 
 .cr-faq-a::before {
@@ -841,7 +881,6 @@ margin-top:100px !important;
   position: absolute;
   top: 16px;
   bottom: 16px;
-  right: 0;
   width: 4px;
   background: #E1723B;
   border-radius: 999px;
@@ -858,6 +897,7 @@ margin-top:100px !important;
   top: -42px;
   left: -30px;
   transform: rotate(70deg);
+  display:none;
 }
 
 /* ---------- Responsive ---------- */
@@ -894,8 +934,87 @@ margin-top:100px !important;
   .cr-hero-title {
     font-size: 24px;
   }
+  .cr-grid-section {
+    padding:0;
+    margin-top:30px;
+  }
+
+  /* CreatorsFaq — mobile mock: stroked one-line title on top, then a single
+     stacked list (featured question first), no side image, no subtitle. */
+  .cr-faq-section .container {
+    display: flex;
+    flex-direction: column;
+  }
+  .cr-faq-section .cr-section-head-qs {
+    order: -1;
+    margin: 10px 0 18px !important;
+    text-align: right;
+  }
+  .cr-faq-title-desktop {
+    display: none;
+  }
+  .cr-faq-title-mobile {
+    display: block;
+    text-align: center;
+  }
+  .cr-faq-section .cr-section-sub {
+    display: none;
+  }
+  .cr-faq-featured {
+    width: auto;
+    left: auto;
+    transform: none;
+    margin: 0 calc(55% - 50vw) 14px;
+    
+  }
+  .cr-collab-cta a {
+    border-radius: 24px;
+  }
+  .cr-faq-visual {
+    display: none;
+  }
+  .cr-faq-q {
+    font-size: 16px;
+    padding: 16px;
+  }
+  .cr-faq-a {
+    font-size: 14px;
+    padding: 14px 16px 16px;
+  }
+
+
+  .cr-section-sub,
+  .cr-hero-desc , .cr-stat-num , .cr-stat-label {
+    font-size: 16px;
+  }
   .cr-hero {
     padding: 45px 15px 60px;
+  }
+  /* Mobile: drop the photo hero on the creators LIST page — keep only the
+     breadcrumb on a plain white header (matches the mobile mock). The detail
+     page (.cr-detail-header) keeps its full hero. */
+  .cr-header:not(.cr-detail-header) {
+    background: #fff !important;
+  }
+  .cr-header:not(.cr-detail-header)::before {
+    display: none;
+  }
+  .cr-header:not(.cr-detail-header) .cr-hero {
+    padding: 22px 15px 0;
+  }
+  .cr-header:not(.cr-detail-header) .cr-breadcrumb {
+    margin-bottom: 0;
+  }
+  .cr-header:not(.cr-detail-header) .cr-hero-title,
+  .cr-header:not(.cr-detail-header) .cr-hero-desc {
+    display: none;
+  }
+  .cr-header:not(.cr-detail-header) .cr-breadcrumb a {
+    color: #555 !important;
+    opacity: 1;
+  }
+  .cr-header:not(.cr-detail-header) .cr-breadcrumb-sep {
+    color: #555 !important;
   }
   .cr-grid {
     grid-template-columns: repeat(2, 1fr);
@@ -903,29 +1022,106 @@ margin-top:100px !important;
   }
   .cr-creators-grid {
     grid-template-columns: repeat(2, 1fr);
-    gap: 24px 14px;
+    gap: 0px 14px;
+  }
+  .cr-creators-grid .main-container {
+    height: 235px;
   }
   .cr-stats-grid {
     grid-template-columns: repeat(2, 1fr);
   }
+  /* CollaborationSteps — mobile mock: drop the horizontal flow diagram +
+     divider, stack the steps as centred cards inside a light panel (number
+     circle → bold title → description), and let the CTA span the full width. */
+  .cr-flow-outer,
+  .cr-steps-divider {
+    display: none;
+  }
   .cr-steps-grid {
     grid-template-columns: 1fr;
+    gap: 0;
+    background: #EDEFEB;
+    border: 1px solid #DFE1DB;
+    border-radius: 20px;
+    padding: 10px 18px 18px;
+    margin-top: 6px;
+  }
+  .cr-step-card {
+    background: transparent;
+    border: none;
+    border-radius: 0;
+    text-align: center;
+    padding: 10px 6px;
+  }
+  .cr-step-num {
+    position: static;
+    transform: none;
+    width: 52px;
+    height: 52px;
+    font-size: 20px;
+    margin: 0 auto 16px;
+  }
+  .cr-step-title {
+    display: block;
+    font-size: 16px;
+    font-weight: 800;
+    color: #1c1c1c;
+    margin-bottom: 12px;
+  }
+  .cr-step-text {
+    display: block;
+    font-size: 13px;
+    font-weight: 500;
+    color: #5A5A5A;
+    line-height: 1.9;
+  }
+
+  [dir = 'ltr'] .cr-collab-cta a svg{
+    transform: rotate(145deg) !important
+  }
+
+  .cr-collab-cta {
+    margin-top: 20px;
+    font-size: 16px;
+  }
+  .cr-collab-cta a {
+    width: 100%;
+    justify-content: center;
+    padding: 16px 24px;
+  }
+  /* Mock button is text-only — hide the trailing arrow on mobile. */
+  .cr-collab-cta a svg {
+    display: none;
   }
   .cr-companies-panel,
   .cr-flow-panel {
     padding: 26px 18px;
+  }
+  .cr-companies-grid {
+    gap: 14px;
+    margin-top: 24px;
+  }
+  .cr-company-card {
+    padding: 20px 12px 16px;
+  }
+  .cr-company-logo {
+    height: 72px;
+    margin-bottom: 12px;
+  }
+  .cr-company-name {
+    font-size: 18px;
+    width: 90%;
   }
   .cr-join-title {
     font-size: 22px;
   }
 }
 @media (max-width: 479.98px) {
-  .cr-grid,
-  .cr-creators-grid {
+  .cr-grid {
     grid-template-columns: 1fr;
   }
   .cr-companies-grid {
-    grid-template-columns: 1fr;
+    grid-template-columns: repeat(2, 1fr);
   }
 }
 
@@ -1277,6 +1473,7 @@ margin-top:100px !important;
   z-index: 2;
   display: flex;
   align-items: center;
+  justify-content: space-between;
   gap: 10px;
   padding: 22px 12px 12px;
   background: linear-gradient(to top, rgba(0, 0, 0, 0.65), rgba(0, 0, 0, 0));

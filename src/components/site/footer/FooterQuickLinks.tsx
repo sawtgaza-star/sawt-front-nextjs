@@ -34,6 +34,13 @@ export default function FooterQuickLinks() {
           {" "}
           <a href="#" className="text-white text-decoration-none small">
             {" "}
+            <span data-i18n="footer_impact_stories">Impact Stories</span>
+          </a>{" "}
+        </li>{" "}
+        <li className="mb-4">
+          {" "}
+          <a href="#" className="text-white text-decoration-none small">
+            {" "}
             <span data-i18n="footer_blog">المدونة</span>
           </a>{" "}
         </li>{" "}

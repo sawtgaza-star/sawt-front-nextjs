@@ -9,7 +9,6 @@ import CreatorsStats from "@/components/creators/CreatorsStats";
 import PartnerCompanies from "@/components/creators/PartnerCompanies";
 import CollaborationSteps from "@/components/creators/CollaborationSteps";
 import CreatorsFaq from "@/components/creators/CreatorsFaq";
-import SiteFooter from "@/components/site/SiteFooter";
 import JoinUs from "@/components/home/JoinUs";
 import JoinModal from "@/components/site/JoinModal";
 
@@ -26,7 +25,6 @@ export default function Page() {
         <CollaborationSteps />
         <CreatorsFaq />
       </main>
-      <SiteFooter />
       <JoinModal />
     </div>
   );

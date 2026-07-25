@@ -74,13 +74,21 @@ export default function CreatorsFaq() {
         alt=""
       />
       
-      <div className="cr-faq-featured">{renderItem(FAQS[0], 0)}</div>
       <div className="container">
-        {/* First question — full-width featured bar above the section title */}
-        
+        {/* First question — full-width featured bar above the section title.
+           Kept inside the container (full-bleed via CSS) so the mobile layout
+           can reorder the title above it with flex `order`. */}
+        <div className="cr-faq-featured">{renderItem(FAQS[0], 0)}</div>
 
         <div className="cr-section-head cr-section-head-qs">
-          <h2 className="cr-section-title">
+          {/* Mobile mock uses a single stroked heading; the desktop title
+             (3 spans) is hidden on mobile via CSS. */}
+          <h2 className="cr-section-title cr-faq-title-mobile">
+            <span className="cr-highlight" data-i18n="creators_faq_title_mobile">
+              الأسئلة المتكررة
+            </span>
+          </h2>
+          <h2 className="cr-section-title cr-faq-title-desktop">
             <span data-i18n="creators_faq_title_pre">الأسئلة التي</span>{" "}
             <span  data-i18n="creators_faq_title_hl">
               تدور ببالك؟

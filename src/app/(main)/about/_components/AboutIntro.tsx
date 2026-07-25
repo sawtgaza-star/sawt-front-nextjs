@@ -41,7 +41,7 @@ export default function AboutIntro() {
                   src="/assets/images/صوت 1.png"
                   alt=""
                   width="100"
-                  height="100"
+                  height="70"
                 />{" "}
               </div>{" "}
             </div>{" "}
