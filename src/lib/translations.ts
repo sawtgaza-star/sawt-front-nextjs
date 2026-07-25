@@ -26,12 +26,29 @@ export const translations: any = {
     // Nav
     nav_home: "الرئيسية",
     nav_about: "من نحن",
+    nav_content: "محتوانا",
     nav_team: "الفريق",
     nav_creators: "صناع المحتوى",
     nav_incubator: "حاضنة صوت",
     nav_media: "صوت ميديا",
     search_placeholder: "ابحث هنا...",
     search_not_found: "لا توجد نتائج في هذه الصفحة",
+
+    // محتوانا page (/content)
+    content_hero_desc:
+      "خلف كل محتوى تشاهده وتسمعه فريق من المختصين في تكنولوجيا المعلومات والإنتاج الإعلامي، نؤمن أن التكنولوجيا هي وسيلتنا لنقل الحقيقة، وأن إبداعنا هو الصوت الذي يصل بصدى غزة إلى آفاق العالم.",
+    content_cat_all: "الكل",
+    content_cat_economy: "الاقتصاد (13)",
+    content_cat_war: "قصص الحرب (45)",
+    content_cat_business: "المال والأعمال (13)",
+    content_cat_news: "الاخبار (13)",
+    content_sort_label: "الترتيب",
+    content_sort_newest: "من الأحدث إلى الأقدم",
+    content_sort_oldest: "من الأقدم إلى الأحدث",
+    content_sort_views: "الأكثر مشاهدة",
+    content_most_watched_pre: "الأكثر",
+    content_most_watched_hl: "مشاهدة",
+    content_view_more: "رؤية المزيد",
 
     // Content Creators page (صناع المحتوى)
     brand_sawt: "صوت",
@@ -586,12 +603,29 @@ export const translations: any = {
     // Nav
     nav_home: "Home",
     nav_about: "About",
+    nav_content: "Our Content",
     nav_team: "Team",
     nav_creators: "Content Creators",
     nav_incubator: "Sawt Incubator",
     nav_media: "Sawt Media",
     search_placeholder: "Search here...",
     search_not_found: "No results on this page",
+
+    // Our Content page (/content)
+    content_hero_desc:
+      "Behind every piece of content you watch and hear is a team of information-technology and media-production specialists. We believe technology is our means of carrying the truth, and that our creativity is the voice that takes Gaza's echo to the far horizons of the world.",
+    content_cat_all: "All",
+    content_cat_economy: "Economy (13)",
+    content_cat_war: "War Stories (45)",
+    content_cat_business: "Money & Business (13)",
+    content_cat_news: "News (13)",
+    content_sort_label: "Sort",
+    content_sort_newest: "Newest to oldest",
+    content_sort_oldest: "Oldest to newest",
+    content_sort_views: "Most watched",
+    content_most_watched_pre: "Most",
+    content_most_watched_hl: "Watched",
+    content_view_more: "View more",
 
     // Content Creators page
     brand_sawt: "Sawt",

@@ -45,6 +45,19 @@ export default function NavLinks() {
         <a
           className={
             "nav-link font-16" +
+            (pathname === "/content" ? " active" : "")
+          }
+          href="/content"
+          data-i18n="nav_content"
+        >
+          محتوانا
+        </a>{" "}
+      </li>{" "}
+      <li className="nav-item ms-lg-3">
+        {" "}
+        <a
+          className={
+            "nav-link font-16" +
             (pathname === "/team" ? " active" : "")
           }
           href="/team"

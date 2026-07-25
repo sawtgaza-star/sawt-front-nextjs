@@ -12,7 +12,7 @@ export default function LegacyInit({ page }: { page: string }) {
 
       const { initTranslate } = await import("@/lib/translations");
 
-      if (["home", "about", "creators", "team"].includes(page)) {
+      if (["home", "about", "creators", "team", "content"].includes(page)) {
         const { initMainScripts } = await import("@/lib/legacy-main");
         const { initSearch } = await import("@/lib/legacy-search");
         initMainScripts();
