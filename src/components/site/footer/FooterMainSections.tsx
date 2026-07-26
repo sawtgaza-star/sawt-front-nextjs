@@ -4,8 +4,9 @@
 export default function FooterMainSections() {
   return (
     <div
-      className="col col-lg-3 col-md-6 text-white"
-      style={{ textAlign: "start" }}
+      className="col col-lg-3 col-md-6 text-white   "
+      style={{ textAlign: "right", marginRight: "70px" }}
+      // style={{ textAlign: "start" }}
     >
       {" "}
       <h5
@@ -14,7 +15,7 @@ export default function FooterMainSections() {
       >
         الأقسام الرئيسية
       </h5>{" "}
-      <div className="row">
+      <div className="row  ">
         {" "}
         <div className="col col-lg-6">
           {" "}
@@ -24,7 +25,8 @@ export default function FooterMainSections() {
               {" "}
               <a
                 href="#"
-                className="text-white text-decoration-none small"
+                className="text-white text-decoration-none small "
+                style={{ fontSize: "14px" }}
               >
                 {" "}
                 <span data-i18n="nav_home">الرئيسية</span>
@@ -34,7 +36,8 @@ export default function FooterMainSections() {
               {" "}
               <a
                 href="#"
-                className="text-white text-decoration-none small"
+                className="text-white text-decoration-none small "
+                style={{ fontSize: "14px" }}
               >
                 {" "}
                 <span data-i18n="nav_about">من نحن</span>
@@ -45,6 +48,7 @@ export default function FooterMainSections() {
               <a
                 href="/team"
                 className="text-white text-decoration-none small"
+                style={{ fontSize: "14px" }}
               >
                 {" "}
                 <span data-i18n="nav_team">الفريق</span>
@@ -52,7 +56,7 @@ export default function FooterMainSections() {
             </li>{" "}
           </ul>{" "}
         </div>{" "}
-        <div className="col-lg-6 main-links">
+        <div className="col-lg-6 main-links ">
           {" "}
           <ul className="list-unstyled p-0 footer-links">
             {" "}
@@ -61,6 +65,7 @@ export default function FooterMainSections() {
               <a
                 href="#"
                 className="text-white text-decoration-none small"
+                style={{ fontSize: "14px" }}
               >
                 {" "}
                 <span data-i18n="nav_creators">صناع المحتوى</span>
@@ -71,6 +76,7 @@ export default function FooterMainSections() {
               <a
                 href="#"
                 className="text-white text-decoration-none small"
+                style={{ fontSize: "14px" }}
               >
                 {" "}
                 <span data-i18n="nav_incubator">حاضنة صوت</span>
@@ -81,6 +87,7 @@ export default function FooterMainSections() {
               <a
                 href="#"
                 className="text-white text-decoration-none small"
+                style={{ fontSize: "14px" }}
               >
                 {" "}
                 <span data-i18n="nav_media">صوت ميديا</span>

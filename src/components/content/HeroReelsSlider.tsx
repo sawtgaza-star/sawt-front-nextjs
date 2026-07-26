@@ -1,58 +1,104 @@
 "use client";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Autoplay } from "swiper/modules";
-import type { Swiper as SwiperClass } from "swiper";
 import "swiper/css";
 import { HERO_SLIDES } from "./content-data";
 
-/* degrees of tilt added per step away from the focused poster, and the step at
-   which the fan stops opening further */
-const FAN_STEP = 1.3;
-const FAN_MAX = 4;
-
-type FanSlide = HTMLElement & { progress?: number };
-
-/* Fanned strip of reel posters at the bottom of the hero: the focused poster
-   stands upright, scaled up and ringed in orange; the rest tilt away from it —
-   a rigid rotation, mirrored on each side — and are softly blurred (both in
-   content.css). Swiper has no fan effect, and coverflow tilts in 3D, which
-   foreshortens the posters and bunches the outer ones together, so the rotation
-   is written per slide from its own progress: 0 for the focused slide, ±1 for
-   its neighbours, ±2 for theirs … */
 export default function HeroReelsSlider() {
-  const fan = (swiper: SwiperClass) => {
-    (swiper.slides as FanSlide[]).forEach((slide) => {
-      const steps = Math.max(-FAN_MAX, Math.min(FAN_MAX, slide.progress ?? 0));
-      slide.style.transform = `rotate(${-steps * FAN_STEP}deg)`;
-    });
-  };
-
   return (
-    <div className="ct-hero-slider">
+    <div className="ct-hero-slider py-4 overflow-hidden" dir="ltr">
+      <style jsx>{`
+        .ct-hero-slide {
+          transition: all 0.4s ease-in-out;
+          opacity: 1 !important; 
+          filter: none !important;
+          transform: none !important;
+        }
+
+        /* القياسات الافتراضية للشاشات الصغيرة جداً (الهواتف المحمولة) */
+        .ct-hero-thumb {
+          width: 100px;
+          height: 180px;
+          border-radius: 0.6rem;
+          overflow: hidden;
+          transition: all 0.4s ease-in-out;
+          filter: none !important;
+        }
+
+        /* الهواتف المتوسطة */
+        @media (min-width: 480px) {
+          .ct-hero-thumb {
+            width: 115px;
+            height: 210px;
+            border-radius: 0.7rem;
+          }
+        }
+
+        /* التابلت والشاشات الكبيرة */
+        @media (min-width: 768px) {
+          .ct-hero-thumb {
+            width: 130px;
+            height: 240px;
+            border-radius: 0.75rem;
+          }
+        }
+
+        .ct-hero-swiper .swiper-slide-active {
+          z-index: 30;
+        }
+
+        /* حجم البطاقة النشطة في المنتصف للموبايل */
+        .ct-hero-swiper .swiper-slide-active .ct-hero-thumb {
+          width: 110px;
+          height: 200px;
+          border: 2px solid #FE712B;
+          box-shadow: 0 0.4rem 1.2rem rgba(0, 0, 0, 0.3);
+          border-radius: 0.6rem;
+        }
+
+        @media (min-width: 480px) {
+          .ct-hero-swiper .swiper-slide-active .ct-hero-thumb {
+            width: 130px;
+            height: 235px;
+            border: 2.5px solid #FE712B;
+          }
+        }
+
+        @media (min-width: 768px) {
+          .ct-hero-swiper .swiper-slide-active .ct-hero-thumb {
+            width: 145px;
+            height: 270px;
+          }
+        }
+      `}</style>
+
       <Swiper
-        className="ct-hero-swiper"
+        className="ct-hero-swiper pb-4"
         modules={[Autoplay]}
         grabCursor
         centeredSlides
         loop
         watchSlidesProgress
-        slidesPerView={3.3}
-        spaceBetween={12}
+        slidesPerView={2.5} 
+        spaceBetween={8}
         autoplay={{ delay: 3000, disableOnInteraction: false }}
         breakpoints={{
-          768: { slidesPerView: 5.3, spaceBetween: 16 },
-          /* the mock: eight-and-a-bit posters across, ~20px apart */
-          992: { slidesPerView: 8.3, spaceBetween: 20 },
+          // الهواتف الصغيرة جداً
+          360: { slidesPerView: 2.8, spaceBetween: 8 },
+          // الهواتف العادية
+          480: { slidesPerView: 3.5, spaceBetween: 10 },
+          // التابلت والأجهزة اللوحية
+          768: { slidesPerView: 5.3, spaceBetween: 14 },
+          // شاشات اللابتوب الصغيرة
+          992: { slidesPerView: 7.3, spaceBetween: 16 },
+          // الشاشات الكبيرة
+          1200: { slidesPerView: 8.5, spaceBetween: 18 },
         }}
-        onAfterInit={fan}
-        onProgress={fan}
-        onSetTranslate={fan}
-        onResize={fan}
       >
         {HERO_SLIDES.map((slide) => (
-          <SwiperSlide key={slide.id} className="ct-hero-slide">
+          <SwiperSlide key={slide.id} className="ct-hero-slide d-flex justify-content-center align-items-center">
             <div className="ct-hero-thumb">
-              <img src={slide.img} alt="" />
+              <img src={slide.img} alt="reel poster" className="w-100 h-100 object-fit-cover" />
             </div>
           </SwiperSlide>
         ))}

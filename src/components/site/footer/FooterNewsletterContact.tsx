@@ -5,7 +5,7 @@ export default function FooterNewsletterContact() {
   return (
     <div
       className="col-lg-3 col-md-6 text-white"
-      style={{ textAlign: "start !important" }}
+      style={{ textAlign: "start !important" , marginRight:"60px"}}
     >
       {" "}
       <div className="footer-newsletter-desktop">

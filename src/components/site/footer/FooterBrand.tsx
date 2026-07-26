@@ -13,8 +13,8 @@ export default function FooterBrand() {
           width="100"
         />{" "}
       </div>{" "}
-      <p className="lh-lg text-white font-16" data-i18n="footer_about">
-        منصة صوت، تأسست لتكون مساحة للمبدعين، تجمع الحاضنة، صوت ميديا،
+      <p className="lh-lg text-white font-13" style={{ textAlign: "justify" }} data-i18n="footer_about">
+        منصة صوت، تأسست لتكون مساحة للمبدعين، تجمع الحاضنة، صوت ميديا，
         والصوت نفسه، لتقديم محتوى ملهم وتجارب فريدة لكل من يسعى لصوته أن
         يُسمع.
       </p>{" "}
