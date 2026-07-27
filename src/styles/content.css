@@ -39,16 +39,27 @@
 
 /* ---------- Hero poster fan ---------- */
 .ct-hero-slider {
-  padding-bottom: 18px;
+  padding-bottom: 55px;
 }
+/* the perspective the posters recede into; it has to sit on the viewport and
+   be carried through the wrapper Swiper translates, or the slides' rotateY
+   would flatten out */
 .ct-hero-swiper {
   width: 100%;
   padding: 24px 0 10px;
   overflow: hidden;
+  perspective: 1300px;
+}
+.ct-hero-swiper .swiper-wrapper {
+  transform-style: preserve-3d;
 }
 /* Swiper sets each slide's width from slidesPerView — only the height is ours */
 .ct-hero-slide {
   height: 262px;
+  transform-style: preserve-3d;
+  /* the fan transform is a fixed value per position, so it changes in one jump
+     when a poster moves to the next position — ease it to match the autoplay */
+  transition: transform 0.4s ease;
 }
 /* the poster itself — the ring, the focus scale and the blur all live here so
    the fan rotation written on the slide itself is left untouched */
@@ -57,6 +68,10 @@
   height: 100%;
   border-radius: 14px;
   overflow: hidden;
+  /* the fan pushes the outer posters back in z, so they render ~11% smaller
+     than their slot; the scale wins that back and lets the row reach both
+     screen edges without dropping to a half-card at the ends */
+  transform: scale(1.1);
   transition: transform 0.4s ease, filter 0.4s ease, box-shadow 0.4s ease;
 }
 .ct-hero-thumb img {
@@ -71,10 +86,9 @@
 }
 /* in focus: scaled up out of the row with the orange ring */
 .ct-hero-slide.swiper-slide-active .ct-hero-thumb {
-  transform: scale(1.18);
-  box-shadow:
-    0 0 0 3px #ff7420,
-    0 0 30px 6px rgba(255, 116, 32, 0.35);
+stroke-width: 5px;
+stroke: #FE712B;
+filter: drop-shadow(4px 4px 10px #FF7420) drop-shadow(0 4px 10px #000);
 }
 
 /* ---------- Filter + sort bar ---------- */
@@ -170,6 +184,10 @@
   color: #1c1c1c;
   margin: 0;
 }
+/* Here the brush-stroke word stays black instead of the global green .cr-highlight */
+.ct-mw-title .cr-highlight {
+  color: #1c1c1c;
+}
 .ct-mw-more {
   font-size: 18px;
   font-weight: 600;
@@ -196,6 +214,12 @@
   padding: 26px 0 30px;
   padding-inline-start: max(calc((100vw - 1320px) / 2 + 12px), 12px);
   scrollbar-width: none;
+  /* press-and-drag scrolling (see MostWatchedSection) */
+  cursor: grab;
+  user-select: none;
+}
+.ct-mw-track:active {
+  cursor: grabbing;
 }
 .ct-mw-track::-webkit-scrollbar {
   display: none;

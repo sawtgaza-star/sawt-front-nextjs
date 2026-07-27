@@ -13,10 +13,14 @@ export default function LegacyInit({ page }: { page: string }) {
       const { initTranslate } = await import("@/lib/translations");
 
       if (["home", "about", "creators", "team", "content"].includes(page)) {
-        const { initMainScripts } = await import("@/lib/legacy-main");
+        const { initMainScripts, initHeaderPin } = await import("@/lib/legacy-main");
         const { initSearch } = await import("@/lib/legacy-search");
         initMainScripts();
         initSearch();
+        // Re-pin the header on every visit: each page mounts its own <header>,
+        // so client-side navigation drops the wrapper + scroll listener that
+        // the one-time-guarded initMainScripts built. See initHeaderPin.
+        initHeaderPin();
       }
       if (page === "home") {
         const { initOwlSliders } = await import("@/lib/owl-sliders");
@@ -42,8 +46,9 @@ export default function LegacyInit({ page }: { page: string }) {
       // Replay the hero stat counters on every home visit — initMainScripts is
       // one-time-guarded, so it can't drive them on client-side navigation.
       if (page === "home") {
-        const { runCounters } = await import("@/lib/legacy-main");
+        const { runCounters, replayComments } = await import("@/lib/legacy-main");
         runCounters();
+        replayComments();
       }
     })();
   }, [page]);

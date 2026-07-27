@@ -55,6 +55,89 @@ export function runCounters() {
   });
 }
 
+/* Re-render the reviews comments list. initMainScripts is one-time-guarded, so
+   on client-side navigation back to home its __ready() pass can't refill the
+   freshly-mounted #commentsList — LegacyInit replays this instead. */
+export function replayComments() {
+  if (!document.getElementById("commentsList")) return;
+  const render = (window as any).renderComments;
+  if (typeof render === "function") render();
+}
+
+/* Pin the top contact bar (nav-face) + navbar to the top while scrolling.
+   Exported so LegacyInit can re-run it on every visit: each page renders its
+   own <header> (SiteNav lives inside the hero), so a client-side navigation
+   destroys the wrapper this builds together with its scroll listener — and
+   initMainScripts() is one-time-guarded, so it can't rebuild them. */
+export function initHeaderPin() {
+  // drop the previous page's listeners — they point at a detached wrapper
+  if ((window as any).__headerPinCleanup) {
+    (window as any).__headerPinCleanup();
+    (window as any).__headerPinCleanup = null;
+  }
+
+  const navbar = document.querySelector("header .navbar");
+  if (!navbar) return;
+  const navFace = document.querySelector("header .nav-face");
+
+  // Wrap nav-face + navbar so they pin together as one bar while keeping
+  // their own centered layout (and the hero's negative-margin overlap).
+  // Reuse the wrapper if this header is already wrapped (double-init guard).
+  let bar = navbar.closest(".header-bar");
+  if (!bar) {
+    bar = document.createElement("div");
+    bar.className = "header-bar";
+    const firstNode = navFace || navbar;
+    firstNode.parentNode.insertBefore(bar, firstNode);
+    if (navFace) bar.appendChild(navFace);
+    bar.appendChild(navbar);
+  }
+
+  // Spacer preserves the bar's height in the flow once it goes fixed.
+  // Adopt the one this header may already carry: a re-init (client-side nav,
+  // fast refresh) used to build a fresh element and lose track of the old one,
+  // which then sat in the flow forever as a nav-height gap above the bar.
+  let spacer = bar.parentNode.querySelector(":scope > .header-bar-spacer");
+  if (!spacer) {
+    spacer = document.createElement("div");
+    spacer.className = "header-bar-spacer";
+  }
+  // an adopted spacer only belongs in the flow while the bar is actually
+  // pinned — otherwise it is dead height, and it would skew triggerPoint too
+  if (!bar.classList.contains("is-fixed") && spacer.parentNode) {
+    spacer.parentNode.removeChild(spacer);
+  }
+  let triggerPoint = bar.offsetTop;
+
+  function onScroll() {
+    const shouldFix = window.scrollY > triggerPoint;
+    if (shouldFix && !bar.classList.contains("is-fixed")) {
+      spacer.style.height = bar.offsetHeight + "px";
+      bar.parentNode.insertBefore(spacer, bar);
+      bar.classList.add("is-fixed");
+    } else if (!shouldFix && bar.classList.contains("is-fixed")) {
+      bar.classList.remove("is-fixed");
+      if (spacer.parentNode) spacer.parentNode.removeChild(spacer);
+    }
+  }
+
+  function onResize() {
+    if (!bar.classList.contains("is-fixed")) triggerPoint = bar.offsetTop;
+  }
+
+  window.addEventListener("scroll", onScroll, { passive: true });
+  window.addEventListener("resize", onResize);
+  (window as any).__headerPinCleanup = function () {
+    window.removeEventListener("scroll", onScroll);
+    window.removeEventListener("resize", onResize);
+    // hand the header back unpinned: the next init calls onScroll() and will
+    // re-pin it immediately if the page is still scrolled past the trigger
+    bar.classList.remove("is-fixed");
+    if (spacer.parentNode) spacer.parentNode.removeChild(spacer);
+  };
+  onScroll();
+}
+
 export function initMainScripts() {
   const __ready = (fn) => { try { fn(); } catch (e) { console.error(e); } };
   if ((window as any).__initMainScripts) return; (window as any).__initMainScripts = true;
@@ -826,45 +909,10 @@ __ready(function () {
   selectStory(initial ? initial.dataset.story : "journey");
 });
 
-// Pin the top contact bar (nav-face) and the navbar to the top while scrolling
+// Pin the top contact bar (nav-face) and the navbar to the top while scrolling.
+// LegacyInit re-runs this on every page mount — see initHeaderPin above.
 __ready(function () {
-  // guard against double-init (some pages include script.js twice)
-  if (document.querySelector(".header-bar")) return;
-
-  const navFace = document.querySelector("header .nav-face");
-  const navbar = document.querySelector("header .navbar");
-  if (!navbar) return;
-
-  // Wrap nav-face + navbar so they pin together as one bar while keeping
-  // their own centered layout (and the hero's negative-margin overlap).
-  const bar = document.createElement("div");
-  bar.className = "header-bar";
-  const firstNode = navFace || navbar;
-  firstNode.parentNode.insertBefore(bar, firstNode);
-  if (navFace) bar.appendChild(navFace);
-  bar.appendChild(navbar);
-
-  // Spacer preserves the bar's height in the flow once it goes fixed
-  const spacer = document.createElement("div");
-  let triggerPoint = bar.offsetTop;
-
-  function onScroll() {
-    const shouldFix = window.scrollY > triggerPoint;
-    if (shouldFix && !bar.classList.contains("is-fixed")) {
-      spacer.style.height = bar.offsetHeight + "px";
-      bar.parentNode.insertBefore(spacer, bar);
-      bar.classList.add("is-fixed");
-    } else if (!shouldFix && bar.classList.contains("is-fixed")) {
-      bar.classList.remove("is-fixed");
-      if (spacer.parentNode) spacer.parentNode.removeChild(spacer);
-    }
-  }
-
-  window.addEventListener("scroll", onScroll, { passive: true });
-  window.addEventListener("resize", function () {
-    if (!bar.classList.contains("is-fixed")) triggerPoint = bar.offsetTop;
-  });
-  onScroll();
+  initHeaderPin();
 });
 
   // expose functions used by inline JSX handlers
@@ -883,5 +931,6 @@ __ready(function () {
   (window as any).addComment = typeof addComment !== 'undefined' ? addComment : (window as any).addComment;
   (window as any).scrollToTop = typeof scrollToTop !== 'undefined' ? scrollToTop : (window as any).scrollToTop;
   (window as any).skipReel = typeof skipReel !== 'undefined' ? skipReel : (window as any).skipReel;
+  (window as any).renderComments = typeof renderComments !== 'undefined' ? renderComments : (window as any).renderComments;
 
 }

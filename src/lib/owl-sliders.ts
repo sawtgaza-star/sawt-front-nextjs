@@ -5,14 +5,16 @@
 "use client";
 
 export async function initOwlSliders() {
-  if ((window as any).__owlSliders) return;
-  (window as any).__owlSliders = true;
-
   const $ = (await import("jquery")).default;
   (window as any).$ = (window as any).jQuery = $;
   await import("owl.carousel");
 
-  $(".creators-carousel").owlCarousel({
+  // NO global run-once guard: on client-side navigation React mounts a brand new
+  // (un-initialized) DOM, and Owl's CSS keeps `.owl-carousel` display:none until
+  // it adds `.owl-loaded` — so a skipped init leaves the section blank until a
+  // hard refresh. Instead we skip per element via `:not(.owl-loaded)`, which
+  // makes repeat calls on an already-initialized carousel a no-op.
+  $(".creators-carousel:not(.owl-loaded)").owlCarousel({
     loop: true,
     margin: 20,
     rtl: true, // مهم عشان العربي
@@ -29,7 +31,7 @@ export async function initOwlSliders() {
     },
   });
 
-  $(".creators-carousel2").owlCarousel({
+  $(".creators-carousel2:not(.owl-loaded)").owlCarousel({
     loop: true,
     margin: 25,
     rtl: true,
@@ -49,7 +51,7 @@ export async function initOwlSliders() {
     },
   });
 
-  $(".real-stories-carousel").owlCarousel({
+  $(".real-stories-carousel:not(.owl-loaded)").owlCarousel({
     loop: true,
     margin: 20,
     rtl: true,
@@ -61,7 +63,7 @@ export async function initOwlSliders() {
     },
   });
 
-  const owl = $(".team-carousel");
+  const owl = $(".team-carousel:not(.owl-loaded)");
   owl.owlCarousel({
     rtl: true,
     loop: true,

@@ -6,11 +6,11 @@
 export const VIDEO =
   "/assets/videos/WhatsApp Video 2026-03-23 at 11.59.11 AM.mp4";
 
-/* hero coverflow — the four reel posters, repeated enough times that the
-   carousel can loop with eight of them on screen */
+/* hero coverflow — cycles the five reel posters 1.png … 5.png, repeated enough
+   times that the carousel can loop with nine of them on screen */
 export const HERO_SLIDES = Array.from({ length: 20 }, (_, i) => ({
   id: i,
-  img: `/assets/images/${(i % 4) + 1}.png`,
+  img: `/assets/images/1.png`,
 }));
 
 export const CATEGORIES = [

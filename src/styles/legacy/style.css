@@ -3750,16 +3750,21 @@ svg {
 }
 
 .btn-view-profile {
-  display: inline-block;
+  display: flex;
+  gap:8px;
+  justify-content: center;
+  align-items:center;
   color: rgba(76, 92, 55, 1) !important;
   padding: 6px 18px;
-  border-radius: 20px;
+  border-radius: 24px;
   border: 1px solid rgba(76, 92, 55, 1) !important;
   text-decoration: none;
   font-size: 0.95rem;
   font-weight: 500;
   transition: 0.2s ease-in-out !important;
   font-weight: 600;
+  width: 72%;
+  margin:0 auto;
 }
 
 .btn-view-profile:hover {
@@ -6323,7 +6328,7 @@ svg {
 
 /* ===================== Real Stories (قصص من الواقع) ===================== */
 .real-stories-section {
-  background-color: rgba(237, 239, 235, 1);
+  background-color: #EDEFEB;
 }
 
 /* --- Intro / text + comment column --- */
@@ -6445,7 +6450,6 @@ svg {
   position: relative;
   border-radius: 32px;
   overflow: hidden;
-  box-shadow: 0 14px 35px rgba(0, 0, 0, 0.12);
 }
 
 .rs-card-bg {
@@ -6542,29 +6546,38 @@ svg {
 
 /* --- Carousel dots --- */
 .real-stories-carousel .owl-dots {
-  text-align: center;
-  margin-top: 26px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  width: fit-content;
+  margin: 26px auto 0;
+  padding: 5px 12px;
+  border: 1px solid rgba(76, 92, 55, 1);
+  border-radius: 999px;
 }
 
 .real-stories-carousel .owl-dots .owl-dot {
   outline: none;
+  display: flex;
+  align-items: center;
 }
 
 .real-stories-carousel .owl-dots .owl-dot span {
-  width: 8px;
-  height: 8px;
-  margin: 0 6px;
-  background: rgba(180, 184, 175, 1);
+  width: 9px;
+  height: 9px;
+  margin: 0;
+  background: rgba(199, 201, 204, 1);
   border-radius: 50%;
   display: inline-block;
   transition: all 0.2s ease;
 }
 
 .real-stories-carousel .owl-dots .owl-dot.active span {
+  width: 13px;
+  height: 13px;
   background: rgba(76, 92, 55, 1);
-  box-shadow:
-    0 0 0 3px rgba(237, 239, 235, 1),
-    0 0 0 5px rgba(76, 92, 55, 1);
+  box-shadow: none;
 }
 
 @media (max-width: 991px) {
@@ -8090,7 +8103,9 @@ svg {
   transform: rotate(180deg);
 }
 
-.join-country-flag {
+/* Scoped by .join-country-box so it outranks flag-icons' `.fi` rules
+   (position/width/background-size), which load after this file. */
+.join-country-box .join-country-flag {
   position: absolute;
   right: 12px;
   width: 22px;
@@ -8100,6 +8115,10 @@ svg {
   background-position: center;
   box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.08);
   pointer-events: none;
+}
+
+.join-country-box .join-country-code {
+  white-space: nowrap;
 }
 
 /* Custom country dropdown menu */
@@ -8193,7 +8212,7 @@ svg {
   font-weight: 600;
 }
 
-.join-country-option-flag {
+.join-country-option .join-country-option-flag {
   flex: 0 0 auto;
   width: 22px;
   height: 16px;
