@@ -38,6 +38,13 @@ export default function LegacyInit({ page }: { page: string }) {
 
       // translations last so they apply to any JS-rendered markup too
       initTranslate();
+
+      // Replay the hero stat counters on every home visit — initMainScripts is
+      // one-time-guarded, so it can't drive them on client-side navigation.
+      if (page === "home") {
+        const { runCounters } = await import("@/lib/legacy-main");
+        runCounters();
+      }
     })();
   }, [page]);
 

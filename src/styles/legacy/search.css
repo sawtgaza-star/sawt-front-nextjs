@@ -43,14 +43,30 @@
 .mobile-search-form .mobile-search-input {
   flex: 1 1 auto;
   border-radius: 8px !important;
-  border: 1px solid rgba(76, 92, 55, 0.35);
+  border: 1px solid #dee2e6;
   padding: 0.5rem 0.75rem;
 }
 
+/* Neutral focus: no Bootstrap blue ring, no green tint */
+.search-input:focus,
 .mobile-search-form .mobile-search-input:focus {
-  border-color: rgba(76, 92, 55, 0.9);
-  box-shadow: 0 0 0 0.15rem rgba(76, 92, 55, 0.15);
+  border-color: #dee2e6;
+  box-shadow: none;
   outline: none;
+}
+
+/* Chrome paints autofilled fields with its own pale-blue background — force white */
+.search-input:-webkit-autofill,
+.search-input:-webkit-autofill:hover,
+.search-input:-webkit-autofill:focus,
+.mobile-search-form .mobile-search-input:-webkit-autofill,
+.mobile-search-form .mobile-search-input:-webkit-autofill:hover,
+.mobile-search-form .mobile-search-input:-webkit-autofill:focus {
+  -webkit-box-shadow: 0 0 0 1000px #fff inset;
+  box-shadow: 0 0 0 1000px #fff inset;
+  -webkit-text-fill-color: #1e1e1e;
+  caret-color: #1e1e1e;
+  transition: background-color 9999s ease-in-out 0s;
 }
 
 .mobile-search-form .mobile-search-submit,
@@ -67,7 +83,7 @@
 }
 
 .mobile-search-form .mobile-search-submit {
-  background: rgba(76, 92, 55, 1);
+  background: transparent;
 }
 
 .mobile-search-form .mobile-search-close {

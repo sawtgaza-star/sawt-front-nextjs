@@ -4,6 +4,57 @@
 "use client";
 import { t, translations } from "./translations";
 
+/* Animated stat counters (home hero "الشريط الإحصائي").
+   Exported so LegacyInit can replay it on every visit to the home page:
+   initMainScripts() is one-time-guarded, so a client-side navigation back to
+   `/` remounts the markup but would otherwise leave the numbers static. */
+export function runCounters() {
+  // جلب كل العناصر التي تحمل كلاس counter
+  const counters = document.querySelectorAll(".counter");
+
+  counters.forEach((element) => {
+    // ألغِ أي عدّاد ما زال يعمل على نفس العنصر (تنقّل سريع ذهاباً وإياباً)
+    if ((element as any).__counterTimer) {
+      clearInterval((element as any).__counterTimer);
+      (element as any).__counterTimer = null;
+    }
+
+    // نبحث عن العقدة النصية التي تحتوي على الرقم، حتى لا نمسح أي عنصر
+    // فرعي مثل span الخاص بكلمة "ألف"
+    const textNode = [...element.childNodes].find(
+      (node) => node.nodeType === Node.TEXT_NODE && /\d/.test(node.nodeValue)
+    );
+    if (!textNode) return;
+
+    // نحفظ القيمة الأصلية حتى لا تبدأ الإعادة من رقم نصف مُحرّك
+    if (!element.dataset.counterFrom) {
+      element.dataset.counterFrom = textNode.nodeValue;
+    }
+
+    // نفصل ما قبل الرقم (مثل "+") والرقم وما بعده لنحافظ على مكان كل جزء
+    const match = element.dataset.counterFrom.match(/(\D*)(\d+)(\D*)/);
+    if (!match) return;
+
+    const prefix = match[1];
+    const targetNumber = parseInt(match[2], 10);
+    const suffix = match[3];
+
+    let currentNumber = 0;
+    const duration = 2000;
+    const stepTime = Math.max(Math.floor(duration / targetNumber), 20);
+
+    (element as any).__counterTimer = setInterval(() => {
+      currentNumber += 1;
+      if (currentNumber >= targetNumber) {
+        currentNumber = targetNumber;
+        clearInterval((element as any).__counterTimer);
+        (element as any).__counterTimer = null;
+      }
+      textNode.nodeValue = prefix + currentNumber + suffix;
+    }, stepTime);
+  });
+}
+
 export function initMainScripts() {
   const __ready = (fn) => { try { fn(); } catch (e) { console.error(e); } };
   if ((window as any).__initMainScripts) return; (window as any).__initMainScripts = true;
@@ -27,40 +78,7 @@ const observerOptions = {
   threshold: 0.5,
 };
 
-__ready(() => {
-  // جلب كل العناصر التي تحمل كلاس counter
-  const counters = document.querySelectorAll(".counter");
-
-  counters.forEach((element) => {
-    // نبحث عن العقدة النصية التي تحتوي على الرقم، حتى لا نمسح أي عنصر
-    // فرعي مثل span الخاص بكلمة "ألف"
-    const textNode = [...element.childNodes].find(
-      (node) => node.nodeType === Node.TEXT_NODE && /\d/.test(node.nodeValue)
-    );
-    if (!textNode) return;
-
-    // نفصل ما قبل الرقم (مثل "+") والرقم وما بعده لنحافظ على مكان كل جزء
-    const match = textNode.nodeValue.match(/(\D*)(\d+)(\D*)/);
-    if (!match) return;
-
-    const prefix = match[1];
-    const targetNumber = parseInt(match[2], 10);
-    const suffix = match[3];
-
-    let currentNumber = 0;
-    const duration = 2000;
-    const stepTime = Math.max(Math.floor(duration / targetNumber), 20);
-
-    const timer = setInterval(() => {
-      currentNumber += 1;
-      if (currentNumber >= targetNumber) {
-        currentNumber = targetNumber;
-        clearInterval(timer);
-      }
-      textNode.nodeValue = prefix + currentNumber + suffix;
-    }, stepTime);
-  });
-});
+// العدّادات تُشغَّل من LegacyInit عند كل زيارة للصفحة الرئيسية — انظر runCounters أعلاه
 
 const observer = new IntersectionObserver((entries) => {
   entries.forEach((entry) => {

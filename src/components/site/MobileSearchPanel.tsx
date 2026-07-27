@@ -55,7 +55,7 @@ export default function MobileSearchPanel() {
             <path d="M0 0h24v24H0z" fill="none"></path>{" "}
             <path
               fill="none"
-              stroke="#fff"
+              stroke="rgba(145, 145, 145, 1)"
               strokeLinecap="round"
               strokeLinejoin="round"
               strokeWidth="1.5"

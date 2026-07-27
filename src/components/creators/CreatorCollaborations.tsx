@@ -213,7 +213,11 @@ export default function CreatorCollaborations() {
                 <img src={c.authorImg} alt="" />
                 
               </div>
-              <span className="cr-collab-quote-mark">&rdquo;</span>
+              <span className="cr-collab-quote-mark">
+                <svg xmlns="http://www.w3.org/2000/svg" width="120" height="90" viewBox="0 0 120 90" fill="none">
+                  <path d="M0 90V56.25C0 43.75 3.75 32.5 11.25 22.5C18.75 12.5 30 5 45 0L52.5 11.25C40 13.75 30.625 18.75 24.375 26.25C18.125 33.75 15 42.5 15 52.5H37.5V90H0ZM67.5 90V56.25C67.5 43.75 71.25 32.5 78.75 22.5C86.25 12.5 97.5 5 112.5 0L120 11.25C107.5 13.75 98.125 18.75 91.875 26.25C85.625 33.75 82.5 42.5 82.5 52.5H105V90H67.5Z" fill="#FFF3EB"/>
+                </svg>
+              </span>
             </div>
           </div>
         </div>
