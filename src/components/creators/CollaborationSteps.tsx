@@ -93,7 +93,9 @@ export default function CollaborationSteps() {
           <div className="cr-flow-panel">
             <div className="cr-flow-node">
               <div className="cr-flow-icon cr-flow-orange">
-                <i className="fa-solid fa-building-columns"></i>
+                <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32" fill="none">
+                  <path d="M4 28.2002H28M4 9.53353L16 4.2002L28 9.53353M5.33333 9.53353V28.2002M26.6667 9.53353V28.2002M10.6667 14.8669V17.5335M10.6667 20.2002V22.8669M16 14.8669V17.5335M16 20.2002V22.8669M21.3333 14.8669V17.5335M21.3333 20.2002V22.8669" stroke="#EDEFEB" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round"/>
+                </svg>
               </div>
               <h3
                 className="cr-flow-node-title"
@@ -125,7 +127,10 @@ export default function CollaborationSteps() {
 
             <div className="cr-flow-node">
               <div className="cr-flow-icon cr-flow-orange">
-                <i className="fa-solid fa-microphone"></i>
+                <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32" fill="none">
+                  <path d="M20 6.8667C20 4.65756 18.2091 2.8667 16 2.8667C13.7909 2.8667 12 4.65756 12 6.8667V14.8667C12 17.0758 13.7909 18.8667 16 18.8667C18.2091 18.8667 20 17.0758 20 14.8667V6.8667Z" stroke="white" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round"/>
+                  <path d="M6.66699 13.5337C6.66699 16.009 7.65032 18.383 9.40066 20.1334C11.151 21.8837 13.525 22.867 16.0003 22.867C18.4757 22.867 20.8496 21.8837 22.6 20.1334C24.3503 18.383 25.3337 16.009 25.3337 13.5337M16.0003 25.5337V29.5337M12.0003 29.5337H20.0003" stroke="white" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round"/>
+                </svg>
               </div>
               <h3
                 className="cr-flow-node-title"

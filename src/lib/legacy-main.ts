@@ -4,6 +4,140 @@
 "use client";
 import { t, translations } from "./translations";
 
+/* Animated stat counters (home hero "الشريط الإحصائي").
+   Exported so LegacyInit can replay it on every visit to the home page:
+   initMainScripts() is one-time-guarded, so a client-side navigation back to
+   `/` remounts the markup but would otherwise leave the numbers static. */
+export function runCounters() {
+  // جلب كل العناصر التي تحمل كلاس counter
+  const counters = document.querySelectorAll(".counter");
+
+  counters.forEach((element) => {
+    // ألغِ أي عدّاد ما زال يعمل على نفس العنصر (تنقّل سريع ذهاباً وإياباً)
+    if ((element as any).__counterTimer) {
+      clearInterval((element as any).__counterTimer);
+      (element as any).__counterTimer = null;
+    }
+
+    // نبحث عن العقدة النصية التي تحتوي على الرقم، حتى لا نمسح أي عنصر
+    // فرعي مثل span الخاص بكلمة "ألف"
+    const textNode = [...element.childNodes].find(
+      (node) => node.nodeType === Node.TEXT_NODE && /\d/.test(node.nodeValue)
+    );
+    if (!textNode) return;
+
+    // نحفظ القيمة الأصلية حتى لا تبدأ الإعادة من رقم نصف مُحرّك
+    if (!element.dataset.counterFrom) {
+      element.dataset.counterFrom = textNode.nodeValue;
+    }
+
+    // نفصل ما قبل الرقم (مثل "+") والرقم وما بعده لنحافظ على مكان كل جزء
+    const match = element.dataset.counterFrom.match(/(\D*)(\d+)(\D*)/);
+    if (!match) return;
+
+    const prefix = match[1];
+    const targetNumber = parseInt(match[2], 10);
+    const suffix = match[3];
+
+    let currentNumber = 0;
+    const duration = 2000;
+    const stepTime = Math.max(Math.floor(duration / targetNumber), 20);
+
+    (element as any).__counterTimer = setInterval(() => {
+      currentNumber += 1;
+      if (currentNumber >= targetNumber) {
+        currentNumber = targetNumber;
+        clearInterval((element as any).__counterTimer);
+        (element as any).__counterTimer = null;
+      }
+      textNode.nodeValue = prefix + currentNumber + suffix;
+    }, stepTime);
+  });
+}
+
+/* Re-render the reviews comments list. initMainScripts is one-time-guarded, so
+   on client-side navigation back to home its __ready() pass can't refill the
+   freshly-mounted #commentsList — LegacyInit replays this instead. */
+export function replayComments() {
+  if (!document.getElementById("commentsList")) return;
+  const render = (window as any).renderComments;
+  if (typeof render === "function") render();
+}
+
+/* Pin the top contact bar (nav-face) + navbar to the top while scrolling.
+   Exported so LegacyInit can re-run it on every visit: each page renders its
+   own <header> (SiteNav lives inside the hero), so a client-side navigation
+   destroys the wrapper this builds together with its scroll listener — and
+   initMainScripts() is one-time-guarded, so it can't rebuild them. */
+export function initHeaderPin() {
+  // drop the previous page's listeners — they point at a detached wrapper
+  if ((window as any).__headerPinCleanup) {
+    (window as any).__headerPinCleanup();
+    (window as any).__headerPinCleanup = null;
+  }
+
+  const navbar = document.querySelector("header .navbar");
+  if (!navbar) return;
+  const navFace = document.querySelector("header .nav-face");
+
+  // Wrap nav-face + navbar so they pin together as one bar while keeping
+  // their own centered layout (and the hero's negative-margin overlap).
+  // Reuse the wrapper if this header is already wrapped (double-init guard).
+  let bar = navbar.closest(".header-bar");
+  if (!bar) {
+    bar = document.createElement("div");
+    bar.className = "header-bar";
+    const firstNode = navFace || navbar;
+    firstNode.parentNode.insertBefore(bar, firstNode);
+    if (navFace) bar.appendChild(navFace);
+    bar.appendChild(navbar);
+  }
+
+  // Spacer preserves the bar's height in the flow once it goes fixed.
+  // Adopt the one this header may already carry: a re-init (client-side nav,
+  // fast refresh) used to build a fresh element and lose track of the old one,
+  // which then sat in the flow forever as a nav-height gap above the bar.
+  let spacer = bar.parentNode.querySelector(":scope > .header-bar-spacer");
+  if (!spacer) {
+    spacer = document.createElement("div");
+    spacer.className = "header-bar-spacer";
+  }
+  // an adopted spacer only belongs in the flow while the bar is actually
+  // pinned — otherwise it is dead height, and it would skew triggerPoint too
+  if (!bar.classList.contains("is-fixed") && spacer.parentNode) {
+    spacer.parentNode.removeChild(spacer);
+  }
+  let triggerPoint = bar.offsetTop;
+
+  function onScroll() {
+    const shouldFix = window.scrollY > triggerPoint;
+    if (shouldFix && !bar.classList.contains("is-fixed")) {
+      spacer.style.height = bar.offsetHeight + "px";
+      bar.parentNode.insertBefore(spacer, bar);
+      bar.classList.add("is-fixed");
+    } else if (!shouldFix && bar.classList.contains("is-fixed")) {
+      bar.classList.remove("is-fixed");
+      if (spacer.parentNode) spacer.parentNode.removeChild(spacer);
+    }
+  }
+
+  function onResize() {
+    if (!bar.classList.contains("is-fixed")) triggerPoint = bar.offsetTop;
+  }
+
+  window.addEventListener("scroll", onScroll, { passive: true });
+  window.addEventListener("resize", onResize);
+  (window as any).__headerPinCleanup = function () {
+    window.removeEventListener("scroll", onScroll);
+    window.removeEventListener("resize", onResize);
+    // hand the header back unpinned: the next init calls onScroll() and will
+    // re-pin it immediately if the page is still scrolled past the trigger
+    bar.classList.remove("is-fixed");
+    if (spacer.parentNode) spacer.parentNode.removeChild(spacer);
+  };
+  onScroll();
+}
+
 export function initMainScripts() {
   const __ready = (fn) => { try { fn(); } catch (e) { console.error(e); } };
   if ((window as any).__initMainScripts) return; (window as any).__initMainScripts = true;
@@ -27,40 +161,7 @@ const observerOptions = {
   threshold: 0.5,
 };
 
-__ready(() => {
-  // جلب كل العناصر التي تحمل كلاس counter
-  const counters = document.querySelectorAll(".counter");
-
-  counters.forEach((element) => {
-    // نبحث عن العقدة النصية التي تحتوي على الرقم، حتى لا نمسح أي عنصر
-    // فرعي مثل span الخاص بكلمة "ألف"
-    const textNode = [...element.childNodes].find(
-      (node) => node.nodeType === Node.TEXT_NODE && /\d/.test(node.nodeValue)
-    );
-    if (!textNode) return;
-
-    // نفصل ما قبل الرقم (مثل "+") والرقم وما بعده لنحافظ على مكان كل جزء
-    const match = textNode.nodeValue.match(/(\D*)(\d+)(\D*)/);
-    if (!match) return;
-
-    const prefix = match[1];
-    const targetNumber = parseInt(match[2], 10);
-    const suffix = match[3];
-
-    let currentNumber = 0;
-    const duration = 2000;
-    const stepTime = Math.max(Math.floor(duration / targetNumber), 20);
-
-    const timer = setInterval(() => {
-      currentNumber += 1;
-      if (currentNumber >= targetNumber) {
-        currentNumber = targetNumber;
-        clearInterval(timer);
-      }
-      textNode.nodeValue = prefix + currentNumber + suffix;
-    }, stepTime);
-  });
-});
+// العدّادات تُشغَّل من LegacyInit عند كل زيارة للصفحة الرئيسية — انظر runCounters أعلاه
 
 const observer = new IntersectionObserver((entries) => {
   entries.forEach((entry) => {
@@ -808,45 +909,10 @@ __ready(function () {
   selectStory(initial ? initial.dataset.story : "journey");
 });
 
-// Pin the top contact bar (nav-face) and the navbar to the top while scrolling
+// Pin the top contact bar (nav-face) and the navbar to the top while scrolling.
+// LegacyInit re-runs this on every page mount — see initHeaderPin above.
 __ready(function () {
-  // guard against double-init (some pages include script.js twice)
-  if (document.querySelector(".header-bar")) return;
-
-  const navFace = document.querySelector("header .nav-face");
-  const navbar = document.querySelector("header .navbar");
-  if (!navbar) return;
-
-  // Wrap nav-face + navbar so they pin together as one bar while keeping
-  // their own centered layout (and the hero's negative-margin overlap).
-  const bar = document.createElement("div");
-  bar.className = "header-bar";
-  const firstNode = navFace || navbar;
-  firstNode.parentNode.insertBefore(bar, firstNode);
-  if (navFace) bar.appendChild(navFace);
-  bar.appendChild(navbar);
-
-  // Spacer preserves the bar's height in the flow once it goes fixed
-  const spacer = document.createElement("div");
-  let triggerPoint = bar.offsetTop;
-
-  function onScroll() {
-    const shouldFix = window.scrollY > triggerPoint;
-    if (shouldFix && !bar.classList.contains("is-fixed")) {
-      spacer.style.height = bar.offsetHeight + "px";
-      bar.parentNode.insertBefore(spacer, bar);
-      bar.classList.add("is-fixed");
-    } else if (!shouldFix && bar.classList.contains("is-fixed")) {
-      bar.classList.remove("is-fixed");
-      if (spacer.parentNode) spacer.parentNode.removeChild(spacer);
-    }
-  }
-
-  window.addEventListener("scroll", onScroll, { passive: true });
-  window.addEventListener("resize", function () {
-    if (!bar.classList.contains("is-fixed")) triggerPoint = bar.offsetTop;
-  });
-  onScroll();
+  initHeaderPin();
 });
 
   // expose functions used by inline JSX handlers
@@ -865,5 +931,6 @@ __ready(function () {
   (window as any).addComment = typeof addComment !== 'undefined' ? addComment : (window as any).addComment;
   (window as any).scrollToTop = typeof scrollToTop !== 'undefined' ? scrollToTop : (window as any).scrollToTop;
   (window as any).skipReel = typeof skipReel !== 'undefined' ? skipReel : (window as any).skipReel;
+  (window as any).renderComments = typeof renderComments !== 'undefined' ? renderComments : (window as any).renderComments;
 
 }
