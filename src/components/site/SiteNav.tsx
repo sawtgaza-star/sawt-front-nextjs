@@ -8,6 +8,20 @@ import MobileSearchPanel from "./MobileSearchPanel";
 export default function SiteNav() {
   return (
     <>
+    <style jsx>{`
+        .search-input {
+          transition: all 0.3s ease;
+        }
+        .search-input:focus {
+          border-color: #4c5c37;
+          box-shadow: 0 0 0 0.2rem rgba(57, 88, 15, 0.2);
+          outline: none;
+        }
+
+        
+
+       
+      `}</style>
       <NavTopBar />
       <nav className="navbar navbar-expand-lg py-1">
         {" "}

@@ -1,9 +1,12 @@
 // @ts-nocheck
+
 /* eslint-disable */
+
 /* Mobile-only newsletter card shown above the dark footer (home only). */
+
 export default function FooterNewsletterMobile() {
   return (
-    <div className="footer-newsletter-mobile">
+    <div className="footer-newsletter-mobile " style={{width:"380px" ,paddingTop:"10px"}}>
       {" "}
       <h5 className="footer-nl-title" data-i18n="footer_stay_updated">
         ابقَ على اطلاع

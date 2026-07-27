@@ -10,15 +10,15 @@ export default function NavLinks() {
   const pathname = usePathname();
   return (
     <ul
-      className="navbar-nav mb-2 mb-lg-0 fw-bold"
+      className="navbar-nav mt-2 mb-lg-0 fw-bold"
       style={{ textAlign: "start" }}
     >
       {" "}
-      <li className="nav-item ms-lg-3">
+      <li className="nav-item ms-lg-3 ">
         {" "}
         <Link
           className={
-            "nav-link font-16" + (pathname === "/" ? " active" : "")
+            "nav-link font-14" + (pathname === "/" ? " active" : "")
           }
           href="/"
           data-i18n="nav_home"
@@ -30,7 +30,7 @@ export default function NavLinks() {
         {" "}
         <Link
           className={
-            "nav-link font-16" +
+            "nav-link font-14" +
             (pathname === "/about" ? " active" : "")
           }
           href="/about"
@@ -44,7 +44,7 @@ export default function NavLinks() {
         {" "}
         <a
           className={
-            "nav-link font-16" +
+            "nav-link font-14" +
             (pathname === "/content" ? " active" : "")
           }
           href="/content"
@@ -57,7 +57,7 @@ export default function NavLinks() {
         {" "}
         <a
           className={
-            "nav-link font-16" +
+            "nav-link font-14" +
             (pathname === "/team" ? " active" : "")
           }
           href="/team"
@@ -70,7 +70,7 @@ export default function NavLinks() {
         {" "}
         <a
           className={
-            "nav-link font-16" +
+            "nav-link font-14" +
             (pathname === "/creators" ? " active" : "")
           }
           href="/creators"
@@ -83,7 +83,7 @@ export default function NavLinks() {
       <li className="nav-item ms-lg-3">
         {" "}
         <a
-          className="nav-link nav-link-back font-16"
+          className="nav-link nav-link-back font-14"
           href="#"
           style={{ color: "rgba(76, 92, 55, 1) !important" }}
           data-i18n="nav_incubator"
@@ -94,7 +94,7 @@ export default function NavLinks() {
       <li className="nav-item ms-lg-3">
         {" "}
         <a
-          className="nav-link nav-link-back font-16 font-color-green"
+          className="nav-link nav-link-back font-14 font-color-green"
           href="#"
           style={{ color: "rgba(76, 92, 55, 1) !important" }}
           data-i18n="nav_media"

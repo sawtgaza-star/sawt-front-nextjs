@@ -32,6 +32,7 @@ export default function SiteFooter({
             <FooterLinksMobile />{" "}
             <FooterMainSections />{" "}
             <FooterQuickLinks />{" "}
+            <FooterNewsletterMobile/>
             <FooterNewsletterContact />{" "}
           </div>{" "}
         </div>{" "}

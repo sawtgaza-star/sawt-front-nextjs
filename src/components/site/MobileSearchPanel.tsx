@@ -38,6 +38,7 @@ export default function MobileSearchPanel() {
           placeholder="ابحث هنا..."
           data-i18n-placeholder="search_placeholder"
           aria-label="بحث"
+          
         />{" "}
         <button
           type="submit"

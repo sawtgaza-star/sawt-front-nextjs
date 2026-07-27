@@ -59,7 +59,7 @@ export default function FooterNewsletterContact() {
           </button>{" "}
         </div>{" "}
       </div>{" "}
-      <div className="contact-info-footer text-white">
+      <div className="contact-info-footer text-white" >
         {" "}
         <p className="mb-2 d-flex align-items-center justify-content-start font-16">
           {" "}
