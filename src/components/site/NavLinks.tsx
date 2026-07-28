@@ -79,6 +79,19 @@ export default function NavLinks() {
           صناع المحتوى
         </a>{" "}
       </li>{" "}
+      <li className="nav-item ms-lg-3">
+        {" "}
+        <a
+          className={
+            "nav-link font-16" +
+            (pathname === "/support" ? " active" : "")
+          }
+          href="/support"
+          data-i18n="nav_support"
+        >
+          ادعم صوت
+        </a>{" "}
+      </li>{" "}
       <div className="v-divider d-none d-lg-block mx-3"></div>{" "}
       <li className="nav-item ms-lg-3">
         {" "}

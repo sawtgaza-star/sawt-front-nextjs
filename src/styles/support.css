@@ -1,0 +1,2373 @@
+/* ============================================================
+   Support page (ادعم صوت) — /support
+   New page built from the design mockups. Every class is
+   namespaced `sp-` so it never clashes with style.css (loaded by
+   the (main) layout) or creators.css (whose .cr-section-head /
+   .cr-highlight heading pair this page reuses).
+   Palette: --dark-green #38422a, --sout-orange #e1723b, and the
+   page's own green #4C5C37 used by the mock's buttons.
+   ============================================================ */
+
+.sp-page {
+  background-color: #ffffff;
+  overflow: hidden;
+}
+
+/* Section headings on this page are black — including the brush-stroke word,
+   which the global .cr-highlight (creators.css) paints green. Same override
+   content.css uses for .ct-mw-title. */
+.sp-page .cr-section-title,
+.sp-page .cr-section-title .cr-highlight,
+.sp-banner-title .cr-highlight {
+  color: #1c1c1c;
+}
+
+/* Shared spacing for the page's sections */
+.sp-section {
+  padding: 80px 0;
+  
+}
+.sp-section-gray {
+  background-color: #EDEFEB;
+}
+
+/* ---------- 1. Donate ("كيف تريد ان تدعم؟") ---------- */
+.sp-donate-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 24px;
+  align-items: stretch;
+}
+.sp-donate-col-form {
+  flex: 1 1 55%;
+  min-width: 320px;
+  order: 1;
+}
+.sp-donate-col-side {
+  flex: 1 1 38%;
+  min-width: 300px;
+  order: 2;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+/* --- Donation form card --- */
+.sp-donate-card {
+  background: #ffffff;
+  border: 1px solid #B6B6B6;
+  border-radius: 16px;
+  overflow: hidden;
+  height: 100%;
+}
+
+/* Tabs */
+.sp-tabs {
+  display: flex;
+  border-bottom: 1px solid #ececec;
+}
+.sp-tab {
+  flex: 1 1 33.333%;
+  background: #ffffff;
+  border: 0;
+  border-bottom: 3px solid transparent;
+  padding: 18px 10px 14px;
+  cursor: pointer;
+  text-align: center;
+  transition:
+    background 0.2s ease,
+    border-color 0.2s ease;
+}
+.sp-tab:hover {
+  background: #fafaf8;
+}
+.sp-tab.active {
+  background: #f5f4ef;
+  border-bottom-color: #FF7420;
+}
+/* Wraps an inline SVG (icons.tsx) — font-size drives its 1em box, and the
+   colour flows into the SVG's fill="currentColor". */
+.sp-tab-icon {
+  display: block;
+  font-size: 25px;
+  line-height: 0;
+  color: #5A5A5A;
+  margin-bottom: 8px;
+}
+.sp-tab-icon svg {
+  display: inline-block;
+  vertical-align: middle;
+}
+.sp-tab.active .sp-tab-icon {
+  color: #FF7420;
+}
+.sp-tab-label {
+  display: block;
+  font-size: 24px;
+  font-weight: 700;
+  color: #1c1c1c;
+  margin-bottom: 4px;
+}
+.sp-tab-sub {
+  display: block;
+  font-size: 17px;
+  color: #8b8b8b;
+}
+.sp-tab.active .sp-tab-sub {
+  color: #FF7420;
+}
+
+/* Body */
+.sp-donate-body {
+  padding: 26px 24px 24px;
+}
+.sp-field-label {
+  font-size: 25px;
+  font-weight: 700;
+  color: #1c1c1c;
+  margin-bottom: 14px;
+  display: block;
+  text-align: start;
+}
+.sp-amounts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-bottom: 24px;
+}
+.sp-amount {
+  flex: 1 1 0;
+  min-width: 90px;
+  background: #ffffff;
+  border: 1px solid #5A5A5A;
+  border-radius: 24px;
+  padding: 12px 8px;
+  font-size: 20px;
+  font-weight: 700;
+  color: #5A5A5A;
+  cursor: pointer;
+  transition:
+    background 0.2s ease,
+    color 0.2s ease,
+    border-color 0.2s ease;
+}
+.sp-amount:hover {
+  border-color: #4c5c37;
+}
+.sp-amount.active {
+  background: #4c5c37;
+  border-color: #4c5c37;
+  color: #ffffff;
+}
+.sp-custom-wrap {
+  position: relative;
+  margin-bottom: 18px;
+}
+.sp-custom-input {
+  width: 100%;
+  border: 1px solid #DADADA;
+  border-radius: 8px;
+  /* Text starts at the RTL edge (right, 16px); the 46px gutter is on the
+     left, where the dollar glyph sits. Physical props on purpose — this page
+     is RTL-only and logical props resolved the wrong way here. */
+  padding: 14px 16px 14px 46px;
+  font-size: 16px;
+  color: #1c1c1c;
+  outline: none;
+  background: #ffffff;
+}
+.sp-custom-input::placeholder {
+  color: #919191;
+}
+.sp-custom-input:focus {
+  border-color: #4c5c37;
+}
+/* The SVG already draws its own ring, so no border here. */
+.sp-custom-icon {
+  position: absolute;
+  left: 14px; /* sits in the input's 46px left gutter */
+  top: 50%;
+  transform: translateY(-50%);
+  color: #919191;
+  font-size: 22px;
+  line-height: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.sp-renew {
+  position: relative; /* anchors the visually-hidden .sp-renew-input */
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 8px;
+  cursor: pointer;
+  margin-bottom: 20px;
+  font-size: 14px;
+  color: #4C5C37;
+  font-weight: 700;
+}
+/* Custom checkbox: the native input is hidden but still focusable, and
+   .sp-renew-box (with the IconCheckMark inside) is what's actually drawn. */
+.sp-renew-input {
+  position: absolute;
+  opacity: 0;
+  width: 20px;
+  height: 20px;
+  margin: 0;
+  cursor: pointer;
+}
+.sp-renew-box {
+  flex: 0 0 auto;
+  width: 20px;
+  height: 20px;
+  border-radius: 4px;
+  border: 1px solid #374C1C;
+  background: #EDEFEB;
+  color: #1E1E1E;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 0;
+}
+.sp-renew-box svg {
+  opacity: 0;
+  transition: opacity 0.15s ease;
+}
+.sp-renew-input:checked + .sp-renew-box svg {
+  opacity: 1;
+}
+.sp-renew-input:focus-visible + .sp-renew-box {
+  outline: 2px solid #374C1C;
+  outline-offset: 2px;
+}
+
+/* Green full-width action button — reused across the page */
+.sp-btn-green {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  background: #4c5c37;
+  color: #ffffff;
+  border: 0;
+  border-radius: 24px;
+  padding: 14px 28px;
+  font-size: 20px;
+  font-weight: 700;
+  cursor: pointer;
+  text-decoration: none;
+  transition: background 0.2s ease;
+}
+.sp-btn-green:hover {
+  background: #3d4b2c;
+  color: #ffffff;
+}
+.sp-btn-block {
+  width: 100%;
+}
+.sp-btn-pill {
+  border-radius: 999px;
+}
+
+/* --- "تبرعك يعني..." checklist --- */
+.sp-pledge {
+  background: #ffffff;
+  border: 1px solid #C8C8C8;
+  border-radius: 16px;
+  padding: 24px;
+}
+.sp-pledge-title {
+  font-size: 25px;
+  font-weight: 800;
+  color: #1c1c1c;
+  margin-bottom: 18px;
+   text-align: start;
+}
+.sp-pledge-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.sp-pledge-list li {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  font-size: 18px;
+  color: #4a4a4a;
+  padding: 9px 0;
+}
+.sp-pledge-list li:last-child {
+  border-bottom: 0;
+}
+.sp-pledge-check {
+  flex: 0 0 auto;
+  color: #E1723B;
+  font-size: 22px;
+  line-height: 0;
+  margin-top: 3px;
+  display: inline-flex;
+}
+
+/* --- Quote card --- */
+.sp-quote {
+  background: #EDEFEB;
+  border: 1px solid #707D5F;
+  border-radius: 16px;
+  padding: 22px;
+  position: relative;
+}
+.sp-quote-text {
+  font-size: 20px;
+  color: #484848;
+  line-height: 1.9;
+  margin-bottom: 16px;
+      text-align: start;
+}
+.sp-quote-foot {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.sp-quote-name {
+  font-size: 22px;
+  font-weight: 800;
+  color: #374C1C;
+  margin-bottom: 2px;
+}
+.sp-quote-place {
+  font-size: 18px;
+  color: #484848;
+      text-align: start;
+}
+.sp-quote-logo {
+  width: 58px;
+  height: 58px;
+border-radius: 100px;
+border: 1px solid #374C1C;
+background: #FFF;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+.sp-quote-logo img {
+  width: 30px;
+  height: auto;
+}
+
+/* ---------- 2. Banner ("ادعم المنصة التي توصل أصواتهم") ---------- */
+/* Outer frame: only the leaf/mic watermark shows, as a band around the panel */
+.sp-banner {
+  position: relative;
+  isolation: isolate;
+  border-radius: 24px;
+  padding: 24px;
+ background: rgba(237, 239, 235, 0.50);
+
+
+}
+/* Watermark sits UNDER the panel — same treatment as .cr-collabs-section
+   in creators.css. z-index keeps it behind .sp-banner-inner. */
+.sp-banner::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:url("/assets/images/pattern.png");
+  background-size: 700px;
+  border-radius: inherit;
+  opacity: 0.18;
+  pointer-events: none;
+  z-index: -1;
+}
+.sp-banner-inner {
+  /* Primary-oliveGreen-50 */
+  background: #edefeb;
+  border-radius: 20px;
+  padding: 30px 33px;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 30px;
+}
+.sp-banner-text {
+  flex: 1 1 46%;
+  min-width: 280px;
+}
+.sp-banner-eyebrow {
+  font-size: 22px;
+  color: #5A5A5A;
+  margin-bottom: 10px;
+      text-align: start;
+}
+.sp-banner-title {
+  font-size: 35px;
+  font-weight: 800;
+  color: #000;
+  line-height: 1.6;
+  margin-bottom: 22px;
+      text-align: start;
+}
+/* Two columns like the mock: سهولة الدفع / وصول فوري, then تبرع آمن on its own row */
+.sp-banner-features {
+  display: grid;
+  grid-template-columns: repeat(2, auto);
+  justify-content: start;
+  gap: 14px 26px;
+  margin-bottom: 26px;
+
+}
+.sp-banner-feature {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 20px;
+  color: #484848;
+  font-weight: 700;
+      text-align: start;
+}
+/* Wraps an inline SVG (icons.tsx) — font-size drives its 1em box and the
+   colour flows into the SVG's fill="currentColor". */
+.sp-feature-icon {
+  width: 55px;
+  height: 55px;
+  border-radius: 75px;
+  background: #DFE1DB;
+  color: #E1723B;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 26px;
+  line-height: 0;
+  flex: 0 0 auto;
+}
+.sp-banner .sp-btn-green {
+  font-size: 20px;
+  padding: 8px 32px;
+  border-radius: 24px;
+  color:#fff !important;
+}
+.sp-banner-media {
+  flex: 1 1 44%;
+  min-width: 280px;
+  position: relative;
+}
+.sp-banner-media > img {
+  width: 100%;
+  height: 370px;
+  object-fit: cover;
+  object-position: 45% center;
+  border-radius: 24px;
+  /* Primary-oliveGreen-300 */
+  border: 5px solid #879279;
+box-shadow: 0 6px 40px 0 rgba(0, 0, 0, 0.32);
+  display: block;
+}
+.sp-badge {
+  position: absolute;
+  padding: 10px 16px;
+  color: #ffffff;
+  text-align: center;
+  line-height: 1.4;
+  z-index: 2;
+}
+.sp-badge-num {
+  display: block;
+  font-size: 24px;
+  font-weight: 800;
+}
+.sp-badge-label {
+  display: block;
+  font-size: 16px;
+  color: rgba(255, 255, 255, 0.70);
+
+}
+/* Olive counter — hangs off the artwork's top outer corner, square where it
+   meets the photo. Radii stay physical (the page is RTL-only). */
+.sp-badge-green {
+  background: #4c5c37;
+  border-radius: 16px 16px 0 16px;
+  top: 10px;
+  inset-inline-end: -24px;
+}
+/* Orange counter — hangs off the artwork's bottom outer corner, square where
+   it meets the photo */
+.sp-badge-orange {
+  background: #ff7420;
+  border-radius: 0 20px 20px 20px;
+  bottom: -12px;
+  inset-inline-start: -10px;
+}
+
+/* ---------- 3. Live community ("مجتمع الدعم الحي") ---------- */
+.sp-stats-card {
+  background: #ffffff;
+  border-radius: 14px;
+  padding: 26px 30px;
+}
+.sp-stats-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  margin-bottom: 22px;
+}
+.sp-stat {
+  flex: 1 1 0;
+  min-width: 130px;
+  text-align: center;
+}
+.sp-stat-label {
+  font-size: 20px;
+  color: #919191;
+  margin-bottom: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+}
+/* Monthly goal hugs the row's start edge (= the progress bar's start), with the
+   target badge sitting immediately beside its stacked label + value. */
+.sp-stat-goal {
+  flex: 0 0 auto;
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.sp-stat-goal-text {
+  text-align: start;
+}
+.sp-stat-goal .sp-stat-label {
+  justify-content: flex-start;
+}
+.sp-stat-badge {
+  flex: 0 0 auto;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  border-radius:14px;
+  background: #FFF3EB;
+  color: #ff7420;
+  font-size: 24px;
+}
+.sp-stat-value {
+font-size: 36px;  
+  font-weight: 800;
+  color: #E1723B;
+}
+.sp-stat-value-dark {
+  color: #1c1c1c;
+  font-size: 36px;
+}
+.sp-stat-value-green {
+  color: #4c5c37;
+  font-size: 36px; 
+}
+.sp-progress {
+  height: 12px;
+  border-radius: 999px;
+  background: #ececec;
+  overflow: hidden;
+  margin-bottom: 12px;
+}
+.sp-progress-bar {
+  height: 100%;
+  border-radius: 999px;
+  background: #4c5c37;
+}
+.sp-progress-note {
+  font-size: 20px;
+  color: #7F7F7F;
+  text-align: start;
+  font-weight: 700;
+
+}
+.sp-progress-note b {
+  color: #E1723B;
+  font-weight: 700;
+
+}
+.sp-community-cta {
+  text-align: center;
+  margin-top: 26px;
+}
+.sp-community-cta .sp-btn-green,
+.sp-community-cta .sp-btn-green span {
+  color: #ffffff !important;
+}
+
+/* ---------- 4. Where donations go ("أين تذهب تبرعاتكم؟") ---------- */
+.sp-alloc-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: stretch;
+  gap: 26px;
+}
+/* Wrapper only: holds the coloured pill that peeks out above the white box. */
+.sp-alloc-card {
+  flex: 1 1 30%;
+  min-width: 270px;
+  position: relative;
+  padding-top: 14px;
+  display: flex;
+}
+.sp-alloc-bar {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 83%;
+  height: 42px;
+  border-radius: 130px;
+}
+.sp-alloc-box {
+  position: relative;
+  z-index: 1;
+  flex: 1 1 auto;
+  background: #ffffff;
+  border: 1px solid #ededed;
+  border-radius: 20px;
+  padding: 26px 24px 24px;
+  display: flex;
+  flex-direction: column;
+  text-align:start
+}
+
+.sp-alloc-summary-main {
+  text-align:start
+}
+.sp-alloc-head {
+  display: flex;
+  flex-direction: row-reverse;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 22px;
+}
+.sp-alloc-icon {
+  width: 60px;
+  height: 60px;
+  border-radius: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 30px;
+  flex: 0 0 auto;
+}
+.sp-alloc-pct {
+  font-size: 55px;
+  font-weight: 800;
+  line-height: 1;
+}
+.sp-alloc-title {
+  font-size: 28px;
+  font-weight: 800;
+  color: #1c1c1c;
+  margin-bottom: 12px;
+}
+.sp-alloc-desc {
+  font-size: 18px;
+  color: #6D6D6D;
+  line-height: 1.9;
+  margin-bottom: 16px;
+}
+.sp-alloc-list {
+  list-style: none;
+  margin: 0 0 18px;
+  padding: 0;
+}
+.sp-alloc-list li {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 18px;
+  color: #484848;
+  padding: 6px 0;
+}
+.sp-alloc-bullet {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  flex: 0 0 auto;
+}
+.sp-alloc-foot {
+  margin-top: auto;
+}
+.sp-alloc-track {
+  height: 10px;
+  border-radius: 999px;
+  overflow: hidden;
+  margin-bottom: 14px;
+}
+.sp-alloc-fill {
+  height: 100%;
+  border-radius: 999px;
+}
+.sp-alloc-foot-text {
+  font-size: 18px;
+  color: #484848;
+}
+/* Transparency summary strip: copy on the start side, 100% donut on the end. */
+.sp-alloc-summary {
+  display: flex;
+  align-items: center;
+  /* justify-content: space-between; */
+  gap: 30px;
+  margin-top: 30px;
+  padding: 30px 40px;
+  border-radius: 20px;
+  border: 1px solid #c8c8c8;
+  background: #edefeb;
+}
+
+.sp-alloc-summary-title {
+  font-size: 29px;
+font-weight: 900;
+  color: #374C1C;
+  margin-bottom: 10px;
+  
+}
+.sp-alloc-summary-sub {
+  font-size: 18px;
+  color: #6D6D6D;
+  line-height: 1.8;
+  margin-bottom: 18px;
+}
+.sp-alloc-summary-legend {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-start;
+  gap: 10px 26px;
+}
+.sp-alloc-summary-legend li {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+}
+.sp-alloc-summary-dot {
+  width: 16px;
+  height: 16px;
+  margin-top: 7px;
+  border-radius: 50%;
+  flex: 0 0 auto;
+}
+.sp-alloc-summary-name {
+  display: block;
+  font-size: 22px;
+  font-weight: 800;
+  color: #484848;
+}
+.sp-alloc-summary-share {
+  display: block;
+  font-size: 18px;
+  color: #484848;
+  margin-top: 4px;
+}
+/* The arcs are drawn by the SVG in the component. The label is centred on the
+   circle's centre (cx 96 / cy 106 of the 192×202 box → 52.5% down), not on the
+   box's, so it sits inside the ring rather than slightly high. */
+.sp-alloc-summary-ring {
+  position: relative;
+  width: 192px;
+  height: 202px;
+  flex: 0 0 auto;
+}
+.sp-alloc-summary-svg {
+  display: block;
+}
+.sp-alloc-summary-hole {
+  position: absolute;
+  top: 52.5%;
+  left: 0;
+  right: 0;
+  transform: translateY(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  line-height: 1.2;
+}
+.sp-alloc-summary-total {
+  font-size: 30px;
+  font-weight: 800;
+  color: #364127;
+}
+.sp-alloc-summary-caption {
+  font-size: 16px;
+  color: #99A1AF;
+}
+
+/* ---------- 5. Partners ("شركاؤنا في نشر الصوت") ---------- */
+/* The logo strip is the home page's .marquee (style.css). Only the offset from
+   the section heading is page-specific. */
+.sp-section .marquee {
+  margin-top: 40px;
+  overflow:visible;
+}
+
+/* Dark CTA band */
+.sp-dark-cta {
+  background: #364127;
+  border-radius: 20px;
+  padding: 30px 34px;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+}
+.sp-dark-cta-title {
+  font-size: 24px;
+  font-weight: 800;
+  color: #ffffff;
+  margin-bottom: 8px;
+  text-align:start
+}
+.sp-dark-cta-desc {
+  font-size: 16px;
+  color: #DFE1DB;
+  line-height: 1.9;
+  margin: 0;
+  text-align:start
+}
+.sp-btn-light {
+  background: #4c5c37;
+  border-radius: 24px;
+  color:#fff !important;
+  font-size: 20px;
+
+}
+
+/* ---------- 6. Incubator courses ("ساعد طلاب في الانضمام للحاضنة") ---------- */
+.sp-course-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 22px;
+}
+.sp-course-card {
+  flex: 1 1 30%;
+  min-width: 270px;
+  background: #ffffff;
+  border: 1px solid #C8C8C8;
+  border-radius: 20px;
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  text-align:start
+}
+
+.rs-card-text {
+  text-align:start
+}
+.sp-course-title {
+  font-size: 26px;
+  font-weight: 800;
+  color: #1c1c1c;
+  margin-bottom: 10px;
+}
+.sp-course-desc {
+  font-size: 17px;
+  color: #6D6D6D;
+  line-height: 1.9;
+  margin-bottom: 16px;
+}
+.sp-course-meta {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  font-size: 16px;
+  color: #7f7f7f;
+  margin-bottom: 20px;
+}
+.sp-course-meta span {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+.sp-course-meta svg {
+  flex-shrink: 0;
+}
+/* The CTA is an <a>, and style.css sets `a { color: black !important }` — so the
+   white has to be forced on the link AND on its data-i18n span. Same override
+   .sp-btn-light uses. */
+.sp-course-card .sp-btn-green,
+.sp-course-card .sp-btn-green span {
+  color: #ffffff !important;
+}
+.sp-course-card .sp-btn-green {
+  margin-top: auto;
+  font-size: 16px;
+  padding: 13px 16px;
+  text-align: center;
+}
+
+/* ---------- 7. Untold stories ("أصوات لم نقدر على توصيلها") ---------- */
+.sp-stories-viewport {
+  overflow: hidden;
+}
+.sp-stories-track {
+  display: flex;
+  gap: 20px;
+  transition: transform 0.45s ease;
+}
+.sp-story-slide {
+  flex: 0 0 calc((100% - 40px) / 3);
+}
+
+/* --- Story card: verbatim port of the home page's .rs-* rules (style.css),
+   including the slide-up hover story. This page loads creators.css +
+   support.css only, so the definitions have to live here. --- */
+.rs-card {
+  position: relative;
+  border-radius: 32px;
+  overflow: hidden;
+}
+.rs-card-bg {
+  display: block;
+  width: 100%;
+  height: 100%;
+  aspect-ratio: 3 / 3.5;
+  object-fit: cover;
+  object-position: center top;
+}
+.rs-card::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to top,
+    rgba(0, 0, 0, 0.82) 0%,
+    rgba(0, 0, 0, 0.35) 22%,
+    rgba(0, 0, 0, 0) 42%
+  );
+  pointer-events: none;
+}
+/* full-card dark veil revealed while hovering */
+.rs-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: rgba(18, 26, 14, 0.92);
+  opacity: 0;
+  transition: opacity 0.45s ease;
+  z-index: 1;
+  pointer-events: none;
+}
+.rs-card:hover::before {
+  opacity: 1;
+}
+.rs-card-info {
+  position: absolute;
+  inset-inline: 18px;
+  bottom: 18px;
+  z-index: 2;
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 12px;
+  color: #fff;
+}
+.rs-badge {
+  display: inline-block;
+  margin-bottom: 10px;
+  background: inherit;
+  color: #fff;
+  font-size: 14px;
+  font-weight: 600;
+  border: 1px solid white;
+  padding: 6px 30px;
+  border-radius: 20px;
+}
+.rs-badge:hover {
+  background: rgba(255, 255, 255, 0.32);
+  color: #fff;
+  cursor: pointer;
+}
+.rs-card-title {
+  font-size: 20px;
+  font-weight: 700;
+  margin: 0 0 4px;
+}
+/* short teaser collapses on hover */
+.rs-card-desc {
+  font-size: 13px;
+  margin: 0;
+  opacity: 0.9;
+  overflow: hidden;
+  max-height: 60px;
+  transition:
+    max-height 0.4s ease,
+    opacity 0.4s ease,
+    margin 0.4s ease;
+}
+.rs-card:hover .rs-card-desc {
+  max-height: 0;
+  opacity: 0;
+  margin: 0;
+}
+/* full story slides up from under */
+.rs-card-full {
+  font-size: 14px;
+  line-height: 1.9;
+  margin: 0;
+  max-height: 0;
+  opacity: 0;
+  overflow: hidden;
+  transition:
+    max-height 0.5s ease,
+    opacity 0.45s ease,
+    margin 0.45s ease;
+}
+.rs-card:hover .rs-card-full {
+  max-height: 360px;
+  opacity: 0.95;
+  margin-top: 8px;
+}
+.rs-arrow {
+  flex: 0 0 auto;
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  background: inherit;
+  border: 1px solid rgba(255, 255, 255, 1);
+  color: rgba(255, 255, 255, 1) !important;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+  transition: background 0.2s ease;
+}
+.rs-arrow i {
+  transform: rotate(40deg);
+}
+.rs-arrow:hover {
+  background: rgba(255, 255, 255, 0.32);
+  color: #fff;
+}
+
+/* --- Slider nav (prev sits at the inline start = right in RTL) --- */
+.sp-stories-wrap {
+  position: relative;
+}
+.sp-stories-nav {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 44px;
+  height: 44px;
+background:#fff;
+border-radius: 24px;
+border: 1px solid  #4C5C37;
+  color: #1e1e1e;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 3;
+}
+.sp-stories-nav:hover:not(:disabled) {
+  border-color: #1e1e1e;
+}
+.sp-stories-nav:disabled {
+  color: #919191;
+  cursor: default;
+
+border-radius: 24px;
+border: 1px solid #C8C8C8;
+background: #F2F2F2;
+
+}
+.sp-stories-prev {
+  inset-inline-start: -70px;
+}
+.sp-stories-next {
+  inset-inline-end: -70px;
+}
+/* the chevron always points away from the track */
+.sp-stories-next svg {
+  transform: scaleX(-1);
+}
+[dir="ltr"] .sp-stories-prev svg {
+  transform: scaleX(-1);
+}
+[dir="ltr"] .sp-stories-next svg {
+  transform: none;
+}
+
+/* Bottom strip — patterned frame + olive-50 panel, like .sp-banner */
+.sp-stories-cta {
+  position: relative;
+  isolation: isolate;
+  border-radius: 24px;
+  padding: 24px;
+  margin-top: 40px;
+background: rgba(237, 239, 235, 0.33);
+
+}
+/* Watermark sits UNDER the panel, so only the band around it shows */
+.sp-stories-cta::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: url("/assets/images/pattern.png");
+  background-size: 700px;
+  border-radius: inherit;
+  opacity: 0.18;
+  pointer-events: none;
+  z-index: -1;
+}
+.sp-stories-strip {
+  background: #EDEFEB;
+  border-radius: 20px;
+  padding: 26px 30px;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+}
+.sp-stories-strip-title {
+  font-size: 36px;
+  font-weight: 800;
+  color: #1c1c1c;
+  margin-bottom: 6px;
+  text-align:start
+}
+.sp-stories-strip-desc {
+  font-size: 24px;
+  color: #5A5A5A;
+  margin: 0;
+    text-align:start
+}
+.sp-stories-strip .sp-btn-green {
+  border-radius: 24px;
+  background: #4C5C37;
+  color: #fff !important;
+  font-size: 20px;
+  padding: 14px 44px;
+}
+.sp-stories-strip .sp-btn-green:hover {
+  background: #3d4b2c;
+}
+
+/* ---------- 8. FAQ ("الأسئلة المتكررة") ---------- */
+/* Olive-branch watermark in the bottom-left corner of the section */
+.sp-faq-section {
+  position: relative;
+}
+.sp-faq-leaf {
+    position: absolute;
+    bottom: 127px;
+    left: -33px;
+    width: 220px;
+    transform: rotate(196deg) scaleY(-1);
+    pointer-events: none;
+    z-index: 3;
+}
+.sp-faq-section > .container {
+  position: relative;
+  z-index: 1;
+}
+
+.sp-faq-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 30px;
+  align-items: flex-start;
+}
+.sp-faq-col {
+  flex: 1 1 56%;
+  min-width: 300px;
+  order: 2;
+  margin-top:40px !important;
+}
+
+
+
+.sp-faq-visual {
+  flex: 1 1 36%;
+  min-width: 260px;
+  order: 1;
+}
+
+.sp-faq-visual img {
+  width: 100%;
+  height: auto;
+  display: block;
+  border-radius: 16px;
+}
+.sp-faq-item {
+  background: #ffffff;
+  border: 1px solid #C8C8C8;
+  border-radius: 12px;
+  margin-bottom: 14px;
+  overflow: hidden;
+}
+.sp-faq-item.sp-faq-open {
+  background: #EDEFEB;
+  border-color: #4C5C37;
+}
+.sp-faq-q {
+  width: 100%;
+  background: transparent;
+  border: 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 18px 22px;
+  font-size: 20px;
+  font-weight: 700;
+  color: #1c1c1c;
+  cursor: pointer;
+  text-align: start;
+}
+.sp-faq-open .sp-faq-q {
+  color: #374C1C !important;
+  border-bottom: 1px solid #C8C8C8;
+}
+.sp-faq-chevron {
+  flex: 0 0 auto;
+  font-size: 13px;
+  color: #000;
+  transition: transform 0.2s ease;
+}
+.sp-faq-open .sp-faq-chevron {
+  transform: rotate(180deg);
+  color: #000;
+}
+.sp-faq-a {
+  display: flex;
+  align-items: stretch;
+  gap: 14px;
+  font-size: 16px;
+  color: #5A5A5A;
+  line-height: 2;
+  margin: 16px 22px 18px;
+  padding: 0;
+}
+.sp-faq-a-bar {
+  flex: 0 0 4px;
+  width: 4px;
+  align-self: stretch;
+  border-radius: 16px;
+  background: var(--Secondary-Orange-400, #E1723B);
+}
+.sp-faq-a-text {
+  margin: 0;
+  text-align:start
+}
+
+/* ---------- Responsive ---------- */
+@media (max-width: 991.98px) {
+  .sp-section {
+    padding: 55px 0;
+  }
+  .sp-banner-title {
+    font-size: 26px;
+  }
+  .sp-story-slide {
+    flex: 0 0 calc((100% - 20px) / 2);
+  }
+  .sp-faq-visual {
+    order: -1;
+    margin: 0 auto 10px;
+  }
+  .sp-alloc-summary {
+    flex-direction: column-reverse;
+    align-items: flex-start;
+    padding: 26px 22px;
+  }
+  .sp-alloc-summary-legend {
+    gap: 10px 18px;
+  }
+}
+@media (max-width: 767.98px) {
+  .sp-donate-body {
+    padding: 20px 16px;
+  }
+  .sp-tab-label {
+    font-size: 15px;
+  }
+  .sp-tab-sub {
+    font-size: 11px;
+  }
+  .sp-amount {
+    flex: 1 1 calc(50% - 12px);
+  }
+  .sp-dark-cta,
+  .sp-stories-strip {
+    padding: 20px;
+  }
+  .sp-banner {
+    padding: 10px;
+  }
+  .sp-banner-inner {
+    padding: 20px;
+  }
+  .sp-banner-title {
+    font-size: 22px;
+  }
+  .sp-banner-features {
+    grid-template-columns: 1fr;
+  }
+  /* no room to overhang the artwork once the panel padding shrinks */
+  .sp-badge-green {
+    inset-inline-end: 10px;
+  }
+  .sp-badge-orange {
+    bottom: 8px;
+    inset-inline-start: 10px;
+  }
+  .sp-story-slide {
+    flex: 0 0 100%;
+  }
+  /* no room to overhang the card once it spans the full container */
+  .sp-stories-prev {
+    inset-inline-start: 6px;
+  }
+  .sp-stories-next {
+    inset-inline-end: 6px;
+  }
+  .sp-faq-visual {
+    display: none;
+  }
+  .sp-faq-leaf {
+    display: none;
+  }
+  .sp-faq-q {
+    font-size: 15px;
+    padding: 16px;
+  }
+  .sp-section .marquee {
+    margin-top: 24px;
+  }
+}
+
+/* ============================================================
+   Payment methods — /support/methods ("اختر طريقة الدعم التي تناسبك")
+   Three cards, each with a coloured pill "tab" peeking out above it.
+   Accent per card: orange #FF7420 / olive #4C5C37 / gray #6D6D6D.
+   ============================================================ */
+.sp-methods-row {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: stretch;
+  gap: 24px;
+}
+
+/* Wrapper exists only to hold the tab behind the card — the padding-top is
+   the strip of colour that stays visible above the white panel. */
+.sp-method {
+  position: relative;
+  display: flex;
+  flex: 1 1 300px;
+  max-width: 453px;
+  padding-top: 18px;
+}
+.sp-method-tab {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: calc(100% - 60px);
+  height: 42px;
+  border-radius: 130px;
+  z-index: 0;
+}
+.sp-method-card {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  background: #ffffff;
+  border: 1px solid #6d6d6d;
+  border-radius: 20px;
+  padding: 24px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06);
+}
+
+/* --- card header: icon on the RTL start side, brand marks on the other --- */
+.sp-method-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 22px;
+}
+.sp-method-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  flex: 0 0 48px;
+  border-radius: 12px;
+  font-size: 26px;
+}
+.sp-method-brands {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+/* The brand SVGs ship with a white card behind them, so they need an outline
+   to stay visible on the white panel. */
+.sp-method-brands svg {
+  display: block;
+  width: 37px;
+  height: 27px;
+}
+
+.sp-method-title {
+  font-size: 28px;
+  font-weight: 800;
+  color: #1c1c1c;
+  margin-bottom: 12px;
+  text-align:start
+}
+.sp-method-desc {
+  font-size: 18px;
+  color: #6D6D6D;
+  line-height: 1.9;
+  margin-bottom: 24px;
+  /* pushes every card's CTA to the same baseline */
+  flex: 1 1 auto;
+    text-align:start
+}
+
+.sp-method-cta {
+  align-self: flex-start;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  border: 1px solid #4C5C37;
+  border-radius: 999px;
+  padding: 6px 18px;
+  font-size: 16px;
+  font-weight: 600;
+  color: #4C5C37 !important;
+  text-decoration: none;
+  transition: background 0.2s ease;
+}
+.sp-method-cta:hover {
+  background: #ebebeb;
+  color: #1c1c1c;
+}
+.sp-method-cta-arrow {
+  display: inline-flex;
+  align-items: center;
+  font-size: 18px;
+  color: #4c5c37;
+}
+
+
+
+[dir='ltr'] .sp-method-cta-arrow {
+  transform:rotate(180deg)
+}
+/* Desktop chevron by default; the thin one is swapped in under 768px. */
+.sp-method-cta-arrow--sm {
+  display: none;
+}
+
+/* --- accents --- */
+.sp-method--orange .sp-method-tab {
+  background: #ff7420;
+}
+.sp-method--orange .sp-method-card {
+  border-color: #ff7420;
+}
+.sp-method--orange .sp-method-icon {
+  color: #ff7420;
+  background: #fff1e8;
+}
+
+.sp-method--green .sp-method-tab {
+  background: #4c5c37;
+}
+.sp-method--green .sp-method-card {
+  border-color: #4c5c37;
+}
+.sp-method--green .sp-method-icon {
+  color: #364127;
+  background: #eef1ea;
+}
+
+.sp-method--gray .sp-method-tab {
+  background: #6d6d6d;
+}
+.sp-method--gray .sp-method-card {
+  border-color: #6d6d6d;
+}
+.sp-method--gray .sp-method-icon {
+  color: #484848;
+  background: #f0f0f0;
+}
+
+@media (max-width: 991.98px) {
+  .sp-method {
+    flex: 1 1 320px;
+  }
+}
+/* --- mobile mock (<768px): cards stack, brand marks and the CTA shrink, and
+   the CTA moves to the far (left) side of the card with the thin chevron. --- */
+@media (max-width: 767.98px) {
+  .sp-methods-row {
+    gap: 20px;
+  }
+  .sp-method {
+    flex: 1 1 100%;
+    max-width: 100%;
+  }
+  .sp-method-card {
+    padding: 20px;
+  }
+  .sp-method-head {
+    margin-bottom: 18px;
+  }
+  .sp-method-icon {
+    width: 44px;
+    height: 44px;
+    flex: 0 0 44px;
+    font-size: 24px;
+  }
+  .sp-method-brands svg {
+    width: 32px;
+    height: 23px;
+  }
+  .sp-method-title {
+    font-size: 22px;
+  }
+  .sp-method-desc {
+    font-size: 15px;
+    margin-bottom: 20px;
+  }
+  .sp-method-cta {
+    align-self: flex-end;
+    gap: 10px;
+    padding: 8px 22px;
+    background: #ffffff;
+    border-color: #d9d9d9;
+  }
+  .sp-method-cta:hover {
+    background: #f5f5f5;
+  }
+  .sp-method-cta-arrow--lg {
+    display: none;
+  }
+  .sp-method-cta-arrow--sm {
+    display: inline-flex;
+    font-size: 14px;
+    color: #1e1e1e;
+  }
+}
+
+/* ============================================================
+   Donation wizard — /support/checkout
+   Progress card + the screens it walks through (payment
+   platforms, bank details, donation proof) + the prev/next
+   footer. The mock keeps this column narrower than the page
+   container.
+   ============================================================ */
+.sp-wizard {
+  max-width: 1100px;
+  margin-inline: auto;
+}
+
+/* --- progress card: "الخطوة N من 4" + the step rail --- */
+.sp-steps-card {
+  position: relative;
+  margin-bottom: 48px;
+  padding: 24px 12px 24px;
+  background: #F2F2F2;
+  border: 1px solid #e7e7e7;
+  border-radius: 16px;
+}
+/* second surface sitting behind the card — the negative inset is the padding
+   that lets it show as a frame all the way around */
+.sp-steps-card::before {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  inset: -16px;
+  background: #DADADA;
+  border-radius: 16px;
+}
+.sp-steps-counter {
+  margin: 0 0 10px;
+  font-size: 13px;
+  font-weight: 600;
+  color: #6d6d6d;
+  text-align: start;
+}
+.sp-steps {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.sp-step {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.sp-step-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  flex: 0 0 44px;
+  border-radius: 32px;
+  background: #DADADA;
+  color: #919191;
+  font-size: 24px;
+}
+/* the mock draws "إثبات التبرع" with a lighter glyph than the other two */
+.sp-step-icon--muted {
+  color: #919191;
+}
+.sp-step-label {
+  font-size: 20px;
+  font-weight: 600;
+  color: #919191;
+  white-space: nowrap;
+}
+/* rule that joins a step to the next one — the last step has nothing to join */
+.sp-step-line {
+  width: 52px;
+  height: 2px;
+  background: #C8C8C8;
+}
+.sp-step:last-child .sp-step-line {
+  display: none;
+}
+
+.sp-step.is-active .sp-step-icon {
+  background: #fff3eb;
+  color: #e1723b;
+}
+.sp-step.is-active .sp-step-label {
+  color: #1c1c1c;
+  font-weight: 800;
+}
+
+/* a step already behind the current one: solid orange, and its rule is
+   filled in up to the next step */
+.sp-step.is-done .sp-step-icon {
+  background: #ff7420;
+  color: #ffffff;
+}
+.sp-step.is-done .sp-step-label {
+  color: #1c1c1c;
+  font-weight: 800;
+}
+.sp-step.is-done .sp-step-line {
+  background: #ff7420;
+}
+
+/* --- "اختر وسيلة الدفع" --- */
+.sp-pay-title {
+  font-size: 38px;
+  font-weight: 800;
+  color: #1c1c1c;
+  text-align: start;
+  margin-bottom: 54px;
+}
+
+.sp-pay-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: stretch;
+  gap: 20px;
+}
+
+/* Each option is a <label>, so the whole card is the radio's hit area. */
+.sp-pay-option {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex: 1 1 0;
+  min-width: 220px;
+  min-height: 92px;
+  padding: 16px 20px;
+  background: #ffffff;
+  border: 1px solid #C8C8C8;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.2s ease, border-color 0.2s ease;
+}
+.sp-pay-option.is-selected {
+  border-color: #4C5C37;
+  background: #EDEFEB;
+}
+
+/* the native input stays focusable but is covered by .sp-pay-dot */
+.sp-pay-input {
+  position: absolute;
+  opacity: 0;
+  width: 0;
+  height: 0;
+  margin: 0;
+}
+
+/* logo above the brand name, both hugging the card's start edge */
+.sp-pay-brand {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 8px;
+}
+.sp-pay-logo {
+  display: inline-flex;
+}
+/* The brand SVGs ship with a white card behind them, so they need an outline
+   to stay visible on the olive panel. */
+.sp-pay-logo svg {
+  display: block;
+  width: 37px;
+  height: 27px;
+  border-radius: 6px;
+  box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.06);
+}
+.sp-pay-label {
+  font-size: 28px;
+  font-weight: 800;
+  color: #1c1c1c;
+  white-space: nowrap;
+}
+
+.sp-pay-dot {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  flex: 0 0 20px;
+  border: 1.5px solid #1c1c1c;
+  border-radius: 50%;
+}
+.sp-pay-dot::after {
+  content: "";
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: #1c1c1c;
+  transform: scale(0);
+  transition: transform 0.15s ease;
+}
+.sp-pay-input:checked + .sp-pay-brand + .sp-pay-dot::after {
+  transform: scale(1);
+}
+.sp-pay-input:focus-visible + .sp-pay-brand + .sp-pay-dot {
+  outline: 2px solid #4c5c37;
+  outline-offset: 3px;
+}
+
+/* --- "ملاحظات مهمة" panel --- */
+.sp-notes {
+  margin-top: 32px;
+  padding: 24px 28px;
+  background: #FFF3EB;
+  border-radius: 24px;
+  /* the accent sits on the panel's start edge (= right in RTL) */
+  border-inline-start: 3px solid #ff7420;
+}
+.sp-notes-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 24px;
+  font-weight: 800;
+  color: #1c1c1c;
+  margin-bottom: 16px;
+}
+.sp-notes-icon {
+  display: inline-flex;
+  font-size: 20px;
+  color: #161616;
+}
+.sp-notes-list {
+  margin: 0 0 20px;
+  padding-inline-start: 22px;
+  list-style: decimal;
+  text-align: start;
+}
+.sp-notes-list li {
+  font-size: 16px;
+  line-height: 2;
+  color: #000;
+}
+.sp-notes-foot {
+  font-size: 24px;
+  font-weight: 800;
+  color: #1c1c1c;
+  text-align: start;
+  margin: 0;
+}
+
+/* --- screen 2: "بيانات التحويل" --- */
+.sp-transfer-list {
+  margin: 0;
+}
+.sp-transfer-row + .sp-transfer-row {
+  margin-top: 18px;
+}
+.sp-transfer-label {
+  margin-bottom: 8px;
+  font-size: 16px;
+  font-weight: 600;
+  color: #1E1E1E;
+  text-align: start;
+}
+/* value on the start edge, copy button on the end edge */
+.sp-transfer-field {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin: 0;
+  min-height: 44px;
+  padding: 8px 16px;
+  background: #EDEFEB;
+  border-radius: 8px;
+}
+.sp-transfer-value {
+font-size: 18px;
+  font-weight: 800;
+  color: #1c1c1c;
+  overflow-wrap: anywhere;
+}
+.sp-transfer-copy {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  flex: 0 0 28px;
+  padding: 0;
+  background: transparent;
+  border: 0;
+  border-radius: 6px;
+  color: #919191;
+  font-size: 20px;
+  cursor: pointer;
+  transition: color 0.2s ease, background 0.2s ease;
+}
+.sp-transfer-copy:hover {
+  background: #e6e6e6;
+  color: #1c1c1c;
+}
+/* held for two seconds after a successful copy */
+.sp-transfer-copy.is-copied {
+  color: #4c5c37;
+}
+
+.sp-transfer-note {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 16px 0 0;
+  font-size: 18px;
+  color: #919191;
+  text-align: start;
+}
+.sp-transfer-note-icon {
+  display: inline-flex;
+  flex: 0 0 auto;
+  font-size: 18px;
+}
+
+/* single-line variant of the orange panel (the reminder under the rows) */
+.sp-notes--slim {
+  margin-top: 24px;
+  padding: 18px 24px;
+  border-radius: 12px;
+}
+.sp-notes-line {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 0;
+  font-size: 22px;
+  font-weight: 800;
+  color: #1c1c1c;
+  text-align: start;
+}
+
+/* --- screen 3: "إثبات تبرعك" --- */
+.sp-proof-fields {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 20px 24px;
+  margin-bottom: 24px;
+}
+.sp-proof-field {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.sp-proof-label {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 700;
+  color: #000;
+  text-align: start;
+}
+.sp-proof-input,
+.sp-proof-select {
+  width: 100%;
+  min-height: 44px;
+  padding: 10px 16px;
+  background: #ffffff;
+  border: 1px solid #DADADA;
+  border-radius: 8px;
+  font-family: inherit;
+  font-size: 16px;
+  color: #1c1c1c;
+}
+.sp-proof-input::placeholder {
+  color: #919191;
+}
+.sp-proof-input:focus,
+.sp-proof-select:focus {
+  outline: none;
+  border-color: #4c5c37;
+}
+/* the mock draws its own chevron, so the native arrow is dropped */
+.sp-proof-select-wrap {
+  position: relative;
+}
+.sp-proof-select {
+  appearance: none;
+  -webkit-appearance: none;
+  padding-inline-end: 42px;
+}
+.sp-proof-select.is-empty {
+  color: #9a9a9a;
+}
+.sp-proof-select-arrow {
+  position: absolute;
+  inset-inline-end: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+  display: inline-flex;
+  font-size: 16px;
+  color: #919191;
+  pointer-events: none;
+}
+
+/* the receipt drop zone — a <label>, so the whole panel opens the picker */
+.sp-drop {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 200px;
+  padding: 40px 24px;
+  background: #FFF3EB;
+  border-radius: 24px;
+  text-align: center;
+  cursor: pointer;
+  transition: background 0.2s ease, box-shadow 0.2s ease;
+}
+.sp-drop.is-dragging {
+  background: #ffe7d5;
+  box-shadow: inset 0 0 0 2px #ff7420;
+}
+.sp-drop:focus-within {
+  box-shadow: inset 0 0 0 2px #ff7420;
+}
+/* kept in the DOM (and focusable) but out of sight */
+.sp-drop-input {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: 0;
+  opacity: 0;
+}
+.sp-drop-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 66px;
+  height: 66px;
+  margin-bottom: 6px;
+  background: #ff7420;
+  border-radius: 12px;
+  color: #fff3eb;
+  font-size: 30px;
+}
+.sp-drop-title {
+  font-size: 26px;
+  font-weight: 800;
+  color: #1c1c1c;
+}
+.sp-drop-browse {
+  font-size: 22px;
+  font-weight: 600;
+  color: #6D6D6D;
+}
+.sp-drop-link {
+  color: #4C5C37;
+  text-decoration: underline;
+}
+.sp-drop-hint {
+  font-size: 18px;
+  color: #6D6D6D;
+}
+.sp-drop-error {
+  margin: 12px 0 0;
+  font-size: 13px;
+  font-weight: 600;
+  color: #c0392b;
+  text-align: start;
+}
+/* the picked receipt, once one is chosen */
+.sp-drop-file {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: 16px;
+  padding: 12px 16px;
+  background: #ffffff;
+  border: 1px solid #dadada;
+  border-radius: 12px;
+}
+.sp-drop-file-name {
+  font-size: 14px;
+  font-weight: 700;
+  color: #1c1c1c;
+  overflow-wrap: anywhere;
+}
+.sp-drop-file-size {
+  font-size: 12px;
+  font-weight: 600;
+  color: #6d6d6d;
+}
+.sp-drop-remove {
+  padding: 0;
+  background: transparent;
+  border: 0;
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 600;
+  color: #c0392b;
+  cursor: pointer;
+}
+
+/* labels that only screen readers need (the copy buttons) */
+.sp-sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* --- step footer (rule + prev / next) --- */
+.sp-wizard-nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-top: 32px;
+  padding-top: 28px;
+  border-top: 1px solid #DADADA;
+}
+/* both sides render as an <a> when they leave the page and as a <button> when
+   they only move the wizard on, so the button chrome is reset here */
+.sp-wizard-back {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 0;
+  background: transparent;
+  border: 0;
+  font-family: inherit;
+  font-size: 16px;
+  color: #6D6D6D !important;
+  text-decoration: none;
+  cursor: pointer;
+  font-weight: 700;
+
+}
+.sp-wizard-back:hover {
+  color: #1c1c1c !important;
+}
+.sp-wizard-back-arrow,
+.sp-wizard-next-arrow {
+  display: inline-flex;
+  align-items: center;
+  font-size: 18px;
+}
+/* the chevron ships pointing to the inline end, so "back" flips it */
+.sp-wizard-back-arrow {
+  transform: rotate(180deg);
+  
+}
+[dir="ltr"] .sp-wizard-back-arrow {
+  transform: none;
+}
+[dir="ltr"] .sp-wizard-next-arrow {
+  transform: rotate(180deg);
+}
+
+.sp-wizard-next {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 28px;
+  background: #4c5c37;
+  border: 0;
+  border-radius: 999px;
+  font-family: inherit;
+  font-size: 16px;
+  font-weight: 600;
+  color: #ffffff !important;
+  text-decoration: none;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+.sp-wizard-next:hover {
+  background: #3d4a2c;
+}
+
+@media (max-width: 991.98px) {
+  .sp-steps {
+    gap: 8px;
+  }
+  .sp-step {
+    gap: 8px;
+  }
+  .sp-step-line {
+    width: 20px;
+  }
+  .sp-pay-option {
+    min-width: 200px;
+  }
+}
+
+/* --- mobile mock (<768px): the steps stack icon-over-label, and each payment
+   option becomes a full-width row with the logo on the start edge. --- */
+@media (max-width: 767.98px) {
+  .sp-steps-card {
+    margin-bottom: 32px;
+    padding: 12px 14px 16px;
+    border-radius: 14px;
+  }
+  .sp-steps-card::before {
+    inset: -10px;
+    border-radius: 24px;
+  }
+  .sp-steps-counter {
+    font-size: 11px;
+    margin-bottom: 8px;
+  }
+  .sp-steps {
+    flex-wrap: nowrap;
+    gap: 4px;
+  }
+  /* the label drops under the icon, and the joining rule stays on the icon's
+     row — a 2-column grid keeps both without absolute positioning */
+  .sp-step {
+    display: grid;
+    grid-template-columns: auto auto;
+    grid-template-areas:
+      "icon line"
+      "label label";
+    align-items: center;
+    justify-items: center;
+    gap: 6px 4px;
+  }
+  .sp-step:last-child {
+    grid-template-columns: auto;
+    grid-template-areas:
+      "icon"
+      "label";
+  }
+  .sp-step-icon {
+    grid-area: icon;
+    width: 32px;
+    height: 32px;
+    flex: 0 0 32px;
+    font-size: 17px;
+  }
+  .sp-step-label {
+    grid-area: label;
+    font-size: 10px;
+    font-weight: 600;
+    text-align: center;
+  }
+  .sp-step.is-active .sp-step-label {
+    font-weight: 800;
+  }
+  .sp-step-line {
+    grid-area: line;
+    width: 12px;
+  }
+
+  .sp-pay-title {
+    font-size: 20px;
+    margin-bottom: 16px;
+  }
+  .sp-pay-row {
+    gap: 12px;
+  }
+  .sp-pay-option {
+    flex: 1 1 100%;
+    min-width: 100%;
+    min-height: 64px;
+    padding: 12px 16px;
+    border-radius: 12px;
+  }
+  /* logo and name sit side by side once the card is full width */
+  .sp-pay-brand {
+    flex-direction: row;
+    align-items: center;
+    gap: 10px;
+  }
+  .sp-pay-label {
+    font-size: 15px;
+  }
+  .sp-pay-dot {
+    width: 18px;
+    height: 18px;
+    flex: 0 0 18px;
+  }
+  .sp-pay-dot::after {
+    width: 9px;
+    height: 9px;
+  }
+
+  .sp-notes {
+    margin-top: 24px;
+    padding: 18px 16px;
+    border-radius: 16px;
+  }
+  .sp-notes-title {
+    font-size: 15px;
+    margin-bottom: 12px;
+  }
+  .sp-notes-icon {
+    font-size: 16px;
+  }
+  .sp-notes-list li {
+    font-size: 12px;
+    line-height: 1.9;
+  }
+  .sp-notes-foot {
+    font-size: 13px;
+  }
+
+  .sp-wizard-nav {
+    margin-top: 24px;
+    padding-top: 20px;
+  }
+  .sp-wizard-back {
+    font-size: 13px;
+  }
+  .sp-wizard-next {
+    padding: 9px 18px;
+    font-size: 12px;
+  }
+  .sp-wizard-back-arrow,
+  .sp-wizard-next-arrow {
+    font-size: 14px;
+  }
+
+  /* --- the two step-2 screens on mobile --- */
+  .sp-transfer-row + .sp-transfer-row {
+    margin-top: 14px;
+  }
+  .sp-transfer-label {
+    font-size: 11px;
+    margin-bottom: 6px;
+  }
+  .sp-transfer-field {
+    min-height: 40px;
+    padding: 8px 12px;
+    border-radius: 6px;
+  }
+  .sp-transfer-value {
+    font-size: 13px;
+  }
+  .sp-transfer-copy {
+    width: 24px;
+    height: 24px;
+    flex: 0 0 24px;
+    font-size: 17px;
+  }
+  .sp-transfer-note {
+    font-size: 11px;
+  }
+  .sp-notes--slim {
+    padding: 14px 14px;
+  }
+  .sp-notes-line {
+    align-items: flex-start;
+    font-size: 13px;
+  }
+
+  .sp-proof-fields {
+    grid-template-columns: 1fr;
+    gap: 16px;
+    margin-bottom: 16px;
+  }
+  .sp-proof-label {
+    font-size: 11px;
+  }
+  .sp-proof-input,
+  .sp-proof-select {
+    min-height: 40px;
+    padding: 8px 12px;
+    font-size: 13px;
+  }
+  .sp-drop {
+    min-height: 0;
+    gap: 6px;
+    padding: 28px 16px;
+    border-radius: 12px;
+  }
+  .sp-drop-icon {
+    width: 38px;
+    height: 38px;
+    border-radius: 10px;
+    font-size: 21px;
+  }
+  .sp-drop-title {
+    font-size: 16px;
+  }
+  .sp-drop-browse {
+    font-size: 13px;
+  }
+  .sp-drop-hint {
+    font-size: 11px;
+  }
+  .sp-drop-file {
+    padding: 10px 12px;
+    border-radius: 10px;
+  }
+  .sp-drop-file-name {
+    font-size: 12px;
+  }
+}
