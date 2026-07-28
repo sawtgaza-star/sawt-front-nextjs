@@ -59,7 +59,7 @@ export default function SupportBanner() {
                 </div>
               </div>
 
-              <a href="#support-donate" className="sp-btn-green">
+              <a href="/support/methods" className="sp-btn-green">
                 <span data-i18n="support_donate_now">تبرع الآن</span>
               </a>
             </div>

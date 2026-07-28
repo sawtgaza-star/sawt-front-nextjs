@@ -149,7 +149,7 @@ export default function UntoldStories() {
                 تبرعك اليوم يضمن الصوت القادم لن يضيع
               </p>
             </div>
-            <a href="#support-donate" className="sp-btn-green">
+            <a href="/support/methods" className="sp-btn-green">
               <span data-i18n="support_untold_cta_btn">إدعم المنصة الآن</span>
             </a>
           </div>

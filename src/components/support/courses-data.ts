@@ -11,6 +11,9 @@ export type Course = {
   /* Full CTA sentence — one string (and one span) so it stays on a single line. */
   cta: string;
   ctaKey: string;
+  /* Sponsorship price in $ — matches the figure inside `cta`, and is what the
+     CTA hands to /support/methods. */
+  amount: number;
 };
 
 export const COURSES: Course[] = [
@@ -24,6 +27,7 @@ export const COURSES: Course[] = [
     seats: 6,
     cta: "تكفل دورة صحافة ميدانية لطالب واحد بـ 120$",
     ctaKey: "support_course_field_cta",
+    amount: 120,
   },
   {
     key: "podcast",
@@ -35,6 +39,7 @@ export const COURSES: Course[] = [
     seats: 6,
     cta: "تكفل دورة بودكاست وصوت لطالب واحد بـ 120$",
     ctaKey: "support_course_podcast_cta",
+    amount: 120,
   },
   {
     key: "video",
@@ -46,5 +51,6 @@ export const COURSES: Course[] = [
     seats: 6,
     cta: "تكفل دورة إنتاج مرئي لطالب واحد بـ 120$",
     ctaKey: "support_course_video_cta",
+    amount: 120,
   },
 ];

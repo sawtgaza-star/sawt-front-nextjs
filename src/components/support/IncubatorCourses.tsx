@@ -49,7 +49,10 @@ export default function IncubatorCourses() {
                   {c.seats} <span data-i18n="support_course_seats">مقاعد</span>
                 </span>
               </div>
-              <a href="#support-donate" className="sp-btn-green sp-btn-block">
+              <a
+                href={`/support/methods?amount=${c.amount}`}
+                className="sp-btn-green sp-btn-block"
+              >
                 <span data-i18n={c.ctaKey}>{c.cta}</span>
               </a>
             </article>

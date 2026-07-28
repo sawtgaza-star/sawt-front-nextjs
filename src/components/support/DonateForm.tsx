@@ -66,6 +66,11 @@ export default function DonateForm() {
         className="sp-donate-body"
         onSubmit={(e) => {
           e.preventDefault();
+          // Hand the chosen plan + amount to the payment-methods step. Full
+          // page load (not <Link>) — same CSS-group rule the rest of the site
+          // follows for cross-page links.
+          const params = new URLSearchParams({ plan, amount: total });
+          window.location.href = `/support/methods?${params.toString()}`;
         }}
       >
         <label className="sp-field-label" data-i18n="support_choose_amount">

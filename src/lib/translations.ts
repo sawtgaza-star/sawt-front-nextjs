@@ -597,6 +597,75 @@ export const translations: any = {
     support_hero_desc:
       "كل تبرع يتحوّل إلى قصة تُروى، وصوت يصل إلى العالم من قلب غزة",
 
+    // Payment methods page (/support/methods)
+    support_methods_breadcrumb: "طرق الدعم",
+    support_methods_hero_title: "ادعم صوت",
+    support_methods_hero_desc:
+      "اختر الطريقة الأنسب لك لإتمام تبرعك، وكل مساهمة تتحول إلى قصة تُروى من قلب غزة",
+    support_methods_title_pre: "اختر طريقة الدعم التي",
+    support_methods_title_hl: "تناسبك",
+    support_method_continue: "المتابعة",
+    support_method_gateway_title: "دفع إلكتروني",
+    support_method_gateway_desc:
+      "يتم التبرع باستخدام بوابة دفع آمنة وسهلة الاستخدام، بحيث يقدر المتبرع إتمام العملية بسرعة وبطريقة موثوقة.",
+    support_method_transfer_title: "تحويل مباشر",
+    support_method_transfer_desc:
+      "يتم التبرع من خلال بيانات حساب بنكي أو محفظة إلكترونية، ثم يقوم المتبرع بإرفاق إثبات التحويل ليتم توثيق التبرع.",
+    support_method_crypto_title: "عملات رقمية",
+    support_method_crypto_desc:
+      "يتم التبرع باستخدام عملات رقمية مدعومة، مع إمكانية إرسال إثبات العملية بعد التحويل لتأكيد المساهمة.",
+
+    // Donation wizard (/support/checkout)
+    checkout_step_counter_pre: "الخطوة",
+    checkout_step_counter_mid: "من",
+    checkout_step_platform: "اختيار المنصة",
+    checkout_step_proof: "إثبات التبرع",
+    checkout_step_team: "دعم الفريق",
+    checkout_step_contact: "وسيلة التواصل",
+    checkout_pay_title: "اختر وسيلة الدفع",
+    checkout_notes_title: "ملاحظات مهمة:",
+    checkout_note_platform_pre: "لقد اخترت منصة",
+    checkout_note_platform_post:
+      "للدفع، وهي وسيلة دفع إلكترونية موثوقة وآمنة لإيصال مساهمتك إلينا بسهولة وسرعة.",
+    checkout_note_no_extra_info:
+      "لا يلزم إدخال أي معلومات غير مطلوبة داخل المنصة سوى بيانات الدفع الأساسية.",
+    checkout_note_redirect:
+      "في الخطوة التالية سيتم تحويلك مباشرة إلى صفحة الدفع لإتمام العملية.",
+    checkout_notes_attach: "المرجو إرفاق هذه الفاتورة في المرفقات بالخطوة التالية.",
+    checkout_prev: "السابق",
+    checkout_go_to_platform: "الانتقال إلى المنصة والمتابعة",
+
+    // Wizard step 2 — bank details (بيانات التحويل)
+    checkout_transfer_title: "بيانات التحويل",
+    checkout_field_bank: "اسم البنك",
+    checkout_field_holder: "صاحب الحساب",
+    checkout_field_account: "رقم الحساب",
+    checkout_field_iban: "IBAN",
+    checkout_copy: "نسخ",
+    checkout_transfer_note: "سيتم تأكيد تبرعك خلال 1-3 أيام بعد استلام الإيصال",
+    checkout_transfer_banner:
+      "بعد اتمام التحويل ، يرجى الاحتفاظ بصورة الايصال أو رسالة التأكيد لارفاقها في الخطوة التالية",
+
+    // Wizard step 2 — donation proof (إثبات تبرعك)
+    checkout_proof_title: "إثبات تبرعك",
+    checkout_proof_amount: "مبلغ التبرع",
+    checkout_proof_currency: "نوع العملة المراد التبرع بيها",
+    checkout_proof_currency_placeholder: "اختر عملة التبرع",
+    checkout_currency_usd: "دولار أمريكي",
+    checkout_currency_eur: "يورو",
+    checkout_currency_ils: "شيكل",
+    checkout_currency_jod: "دينار أردني",
+    checkout_proof_drop_title: "اسحب و أفلت الصورة هنا",
+    checkout_proof_browse_pre: "أو",
+    checkout_proof_browse_link: "اضغط للتصفح",
+    checkout_proof_browse_post: "من جهازك",
+    checkout_proof_hint:
+      "الحد الأقصى لحجم الملف المسموح به هو 5 ميجابايت، وتشمل الصيغ المدعومة png, jpg, pdf",
+    checkout_proof_error_type:
+      "الصيغة غير مدعومة، الرجاء رفع ملف png أو jpg أو pdf.",
+    checkout_proof_error_size: "حجم الملف أكبر من 5 ميجابايت.",
+    checkout_proof_remove: "إزالة",
+
     // Donate box
     support_donate_title_pre: "كيف تريد ان",
     support_donate_title_hl: "تدعم؟",
@@ -1316,6 +1385,77 @@ export const translations: any = {
     support_hero_title: "Support the platform that carries their voices",
     support_hero_desc:
       "Every donation becomes a story told, and a voice that reaches the world from the heart of Gaza",
+
+    // Payment methods page (/support/methods)
+    support_methods_breadcrumb: "Support methods",
+    support_methods_hero_title: "Support Sawt",
+    support_methods_hero_desc:
+      "Pick the option that suits you best to complete your donation — every contribution becomes a story told from the heart of Gaza",
+    support_methods_title_pre: "Choose the support method that",
+    support_methods_title_hl: "suits you",
+    support_method_continue: "Continue",
+    support_method_gateway_title: "Online payment",
+    support_method_gateway_desc:
+      "Donate through a secure, easy-to-use payment gateway, so you can complete the transaction quickly and reliably.",
+    support_method_transfer_title: "Direct transfer",
+    support_method_transfer_desc:
+      "Donate using bank account or e-wallet details, then attach the transfer receipt so the donation can be verified.",
+    support_method_crypto_title: "Digital currencies",
+    support_method_crypto_desc:
+      "Donate using supported digital currencies, with the option to send proof of the transaction afterwards to confirm your contribution.",
+
+    // Donation wizard (/support/checkout)
+    checkout_step_counter_pre: "Step",
+    checkout_step_counter_mid: "of",
+    checkout_step_platform: "Choose platform",
+    checkout_step_proof: "Donation proof",
+    checkout_step_team: "Support the team",
+    checkout_step_contact: "Contact details",
+    checkout_pay_title: "Choose a payment method",
+    checkout_notes_title: "Important notes:",
+    checkout_note_platform_pre: "You picked",
+    checkout_note_platform_post:
+      "as your payment platform — a trusted, secure online payment method that gets your contribution to us quickly and easily.",
+    checkout_note_no_extra_info:
+      "No information beyond the basic payment details is required inside the platform.",
+    checkout_note_redirect:
+      "In the next step you will be taken straight to the payment page to complete the transaction.",
+    checkout_notes_attach:
+      "Please attach this invoice in the next step's attachments.",
+    checkout_prev: "Previous",
+    checkout_go_to_platform: "Go to the platform and continue",
+
+    // Wizard step 2 — bank details (بيانات التحويل)
+    checkout_transfer_title: "Transfer details",
+    checkout_field_bank: "Bank name",
+    checkout_field_holder: "Account holder",
+    checkout_field_account: "Account number",
+    checkout_field_iban: "IBAN",
+    checkout_copy: "Copy",
+    checkout_transfer_note:
+      "Your donation will be confirmed within 1-3 days of the receipt reaching us",
+    checkout_transfer_banner:
+      "Once the transfer is done, please keep a picture of the receipt or the confirmation message to attach in the next step",
+
+    // Wizard step 2 — donation proof (إثبات تبرعك)
+    checkout_proof_title: "Your donation proof",
+    checkout_proof_amount: "Donation amount",
+    checkout_proof_currency: "Currency you want to donate in",
+    checkout_proof_currency_placeholder: "Choose a currency",
+    checkout_currency_usd: "US dollar",
+    checkout_currency_eur: "Euro",
+    checkout_currency_ils: "Shekel",
+    checkout_currency_jod: "Jordanian dinar",
+    checkout_proof_drop_title: "Drag and drop the image here",
+    checkout_proof_browse_pre: "or",
+    checkout_proof_browse_link: "browse",
+    checkout_proof_browse_post: "from your device",
+    checkout_proof_hint:
+      "The maximum file size is 5MB, and the supported formats are png, jpg, pdf",
+    checkout_proof_error_type:
+      "Unsupported format — please upload a png, jpg or pdf file.",
+    checkout_proof_error_size: "The file is larger than 5MB.",
+    checkout_proof_remove: "Remove",
 
     // Donate box
     support_donate_title_pre: "How would you like",

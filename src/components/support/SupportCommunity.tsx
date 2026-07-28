@@ -92,7 +92,7 @@ export default function SupportCommunity() {
         </div>
 
         <div className="sp-community-cta">
-          <a href="#support-donate" className="sp-btn-green sp-btn-pill">
+          <a href="/support/methods" className="sp-btn-green sp-btn-pill">
             <span data-i18n="support_add_name_cta">
               أضف اسمك للقائمة — تبرع الآن
             </span>
