@@ -590,6 +590,138 @@ export const translations: any = {
       "من قلب غزة المحاصرة، حوّل صانع المحتوى كوب الشاي البسيط إلى رمزٍ للصمود وسط الحصار. التقطت منصة صوت حكايته وأوصلتها إلى العالم، لتتحوّل كاسة شاي إلى رسالة أملٍ وإصرار.",
     rs_card2_full:
       "في وسط دمار غزة، اختُطف صانع المحتوى سمير وأُصيبت يده بوحشية، واضطر إلى الهجرة إلى الأردن بحثاً عن الأمان. منصة صوت التقطت صورته ونقلت قصته للعالم، فصار صوته أعلى من القنابل وحمل رسالة الأمل لآلاف الفلسطينيين.",
+
+    // ===== Support page (ادعم صوت) =====
+    nav_support: "ادعم صوت",
+    support_hero_title: "ادعم المنصة التي توصل أصواتهم",
+    support_hero_desc:
+      "كل تبرع يتحوّل إلى قصة تُروى، وصوت يصل إلى العالم من قلب غزة",
+
+    // Donate box
+    support_donate_title_pre: "كيف تريد ان",
+    support_donate_title_hl: "تدعم؟",
+    support_donate_sub:
+      "قيمنا هي الأساس الذي نبني عليه صوت، وهي ما يقود طريقة عملنا وتطويرنا المستمر",
+    support_plan_once: "لمرة واحدة",
+    support_plan_once_sub: "تبرع فوري بدون التزام",
+    support_plan_monthly: "شهري",
+    support_plan_monthly_sub: "دعم مستمر كل شهر",
+    support_plan_yearly: "سنوي",
+    support_plan_yearly_sub: "الأكثر تأثيرا",
+    support_renew_monthly: "سيتم تجديدك شهريا للتجديد دعم صوت",
+    support_renew_yearly: "سيتم تجديدك سنويا للتجديد دعم صوت",
+    support_choose_amount: "اختر المبلغ",
+    support_custom_amount: "أو أدخل مبلغ",
+    support_custom_placeholder: "أدخل مبلغ خصيصا",
+    support_donate_with: "تبرع بـ",
+    support_pledge_title: "تبرعك يعني...",
+    support_pledge_1: "قصة إنسانية جديدة أروى للعالم",
+    support_pledge_2: "صحفي ميداني مدرب على الأرض",
+    support_pledge_3: "تقرير مفحوص بحق لمتابعين",
+    support_pledge_4: "أرشيف رقمي يحمي الذاكرة الجماعية",
+    support_quote_text:
+      "«كل تبرع يشجع فيه يعني قصة جديدة توصل للناس — قصة ما كانت تُسمع»",
+    support_quote_name: "فريق صوت",
+    support_quote_place: "غزة، فلسطين",
+
+    // Banner
+    support_banner_eyebrow: "قصص إنسانية من غزة",
+    support_banner_title_pre: "ادعم المنصة التي توصل",
+    support_banner_title_hl: "أصواتهم",
+    support_banner_feature_1: "وصول فوري للمستحقين",
+    support_banner_feature_2: "سهولة الدفع",
+    support_banner_feature_3: "تبرع آمن ومشفر",
+    support_donate_now: "تبرع الآن",
+    support_badge_donors: "متبرع هذا الشهر",
+    support_badge_stories: "قصة وثقت",
+
+    // Live support community
+    support_community_title_pre: "مجتمع الدعم",
+    support_community_title_hl: "الحي",
+    support_community_sub:
+      "قيمنا هي الأساس الذي نبني عليه صوت، وهي ما يقود طريقة عملنا وتطويرنا المستمر",
+    support_stat_goal: "هدف الشهر",
+    support_stat_raised: "تم جمعه",
+    support_stat_remaining: "متبقي",
+    support_stat_progress: "الإنجاز",
+    support_progress_note_pre: "نحتاج",
+    support_progress_note_post: "لإتمام هدف الشهر — ساهم الآن",
+    support_add_name_cta: "أضف اسمك للقائمة — تبرع الآن",
+
+    // Where donations go
+    support_alloc_title_pre: "أين تذهب",
+    support_alloc_title_hl: "تبرعاتكم؟",
+    support_alloc_sub: "كل دولار يُستثمر بمسؤولية — نُبلّغكم بكل تفصيلة لأن ثقتكم أمانة",
+    support_alloc_creators_title: "تمكين المبدعين",
+    support_alloc_media_title: "التوثيق والإعلام",
+    support_alloc_education_title: "الدعم النفسي والتعليمي",
+    support_alloc_desc:
+      "دعم المبدعين الشباب في غزة بالأدوات والتدريب ليُنتجوا محتوى يُغيّر الرواية ويصنع أثراً حقيقياً.",
+    support_alloc_item_1: "أدوات إنتاج احترافية",
+    support_alloc_item_2: "منح للمواهب الصاعدة",
+    support_alloc_item_3: "بيئة إبداعية آمنة ومحفّزة",
+    support_alloc_of_total: "من إجمالي التبرعات",
+    support_alloc_summary_title: "كل دولار له عنوان واضح",
+    support_alloc_summary_sub:
+      "نُصدر تقارير شهرية شاملة عن كيفية توزيع التبرعات — وبإمكانك طلب تقرير مفصّل في أي وقت.",
+    support_alloc_summary_share: "من تبرعاتكم",
+    support_alloc_summary_caption: "موزّع بشفافية",
+
+    // Partners + funding CTA
+    support_partners_title_pre: "شركاؤنا في نشر",
+    support_partners_title_hl: "الصوت",
+    support_partners_sub:
+      "شكرا للمؤسسات والشركات التي تؤمن بمهمتنا وتصدر صوت أهل غزة للعالم",
+    support_fund_title: "الحقيقة تحتاج من يمولها",
+    support_fund_desc:
+      "شراكات مؤسسية مع صوت — للجهات التي تريد أن يكون دورها في إيصال الحقيقة للعالم. انضم وأبق صوت غزة حيا",
+    support_contact_us: "تواصل معنا",
+
+    // Incubator courses
+    support_courses_title_pre: "ساعد طلاب في الانضمام",
+    support_courses_title_hl: "للحاضنة",
+    support_courses_sub:
+      "تكفل رسوم دورة بمبلغ بسيط يفتح باب المعرفة أمام شاب في غزة — تبرعك يصل مباشرة لتغطية تكاليف التدريب",
+    support_course_field_title: "صحافة ميدانية",
+    support_course_field_desc: "تدريب ميداني على التغطية الإخبارية في مناطق النزاع",
+    support_course_podcast_title: "بودكاست وصوت",
+    support_course_podcast_desc: "إنتاج محتوى صوتي احترافي يصل لملايين المستمعين",
+    support_course_video_title: "إنتاج مرئي",
+    support_course_video_desc: "إنتاج محتوى صوتي احترافي يصل لملايين المستمعين",
+    support_course_weeks: "أسابيع",
+    support_course_seats: "مقاعد",
+    support_course_field_cta: "تكفل دورة صحافة ميدانية لطالب واحد بـ 120$",
+    support_course_podcast_cta: "تكفل دورة بودكاست وصوت لطالب واحد بـ 120$",
+    support_course_video_cta: "تكفل دورة إنتاج مرئي لطالب واحد بـ 120$",
+
+    // Untold stories
+    support_untold_title_pre: "أصوات لم نقدر على",
+    support_untold_title_hl: "توصيلها",
+    support_untold_sub:
+      "هذه قصص حقيقية من غزة لم تصل للعالم ـ لأن الموارد نفدت قبل أن نكمل روايتها",
+    support_untold_cta_title: "دعمك يمنع القصة القادمة من الضياع",
+    support_untold_cta_desc: "تبرعك اليوم يضمن الصوت القادم لن يضيع",
+    support_untold_cta_btn: "إدعم المنصة الآن",
+    support_prev: "السابق",
+    support_next: "التالي",
+
+    // FAQ
+    support_faq_title: "الأسئلة المتكررة",
+    support_faq_q1: "كيف يمكنني التبرع؟",
+    support_faq_a1:
+      "اختر نوع الدعم (لمرة واحدة، شهري أو سنوي)، ثم حدد المبلغ أو أدخل مبلغا خاصا بك، واضغط زر التبرع لإتمام العملية.",
+    support_faq_q2: "هل التبرع آمن؟",
+    support_faq_a2:
+      "عملية التبرع بسيطة جدا — اختر المبلغ وطريقة الدفع (بطاقة ائتمانية، PayPal، أو تحويل بنكي) واضغط «تبرع الآن». لن تأخذ أكثر من دقيقتين، ويصلك تأكيد فوري على بريدك الإلكتروني.",
+    support_faq_q3: "هل يمكنني التبرع لمرة واحدة؟",
+    support_faq_a3:
+      "نعم، اختر تبويب «لمرة واحدة» وسيتم خصم المبلغ مرة واحدة فقط دون أي التزام أو تجديد تلقائي.",
+    support_faq_q4: "كيف يتم استخدام التبرعات؟",
+    support_faq_a4:
+      "توزع التبرعات على ثلاثة محاور: تمكين المبدعين 40%، التوثيق والإعلام 35%، والدعم النفسي والتعليمي 25% — وننشر تقريرا شهريا بالتفاصيل.",
+    support_faq_q5: "هل يمكنني إلغاء الاشتراك الشهري؟",
+    support_faq_a5:
+      "يمكنك إيقاف الدعم الشهري في أي وقت من صفحة حسابك أو بمراسلتنا على البريد الإلكتروني، ويسري الإلغاء فورا.",
   },
 
   en: {
@@ -1178,6 +1310,143 @@ export const translations: any = {
       "From the heart of besieged Gaza, a content creator turned a simple cup of tea into a symbol of resilience under siege. Sawt captured his story and carried it to the world, turning a cup of tea into a message of hope and determination.",
     rs_card2_full:
       "Amid the destruction of Gaza, content creator Samir was abducted and his hand brutally injured, forcing him to flee to Jordan in search of safety. Sawt captured his image and carried his story to the world, making his voice louder than the bombs and a message of hope for thousands of Palestinians.",
+
+    // ===== Support page =====
+    nav_support: "Support Sawt",
+    support_hero_title: "Support the platform that carries their voices",
+    support_hero_desc:
+      "Every donation becomes a story told, and a voice that reaches the world from the heart of Gaza",
+
+    // Donate box
+    support_donate_title_pre: "How would you like",
+    support_donate_title_hl: "to support?",
+    support_donate_sub:
+      "Our values are the foundation Sawt is built on — they drive how we work and how we keep improving",
+    support_plan_once: "One time",
+    support_plan_once_sub: "Instant donation, no commitment",
+    support_plan_monthly: "Monthly",
+    support_plan_monthly_sub: "Ongoing support every month",
+    support_plan_yearly: "Yearly",
+    support_plan_yearly_sub: "The most impactful",
+    support_renew_monthly: "Your support for Sawt will renew monthly",
+    support_renew_yearly: "Your support for Sawt will renew yearly",
+    support_choose_amount: "Choose an amount",
+    support_custom_amount: "Or enter an amount",
+    support_custom_placeholder: "Enter a custom amount",
+    support_donate_with: "Donate",
+    support_pledge_title: "Your donation means...",
+    support_pledge_1: "A new human story told to the world",
+    support_pledge_2: "A trained field journalist on the ground",
+    support_pledge_3: "A verified report for our followers",
+    support_pledge_4: "A digital archive protecting collective memory",
+    support_quote_text:
+      "“Every donation means a new story reaching people — a story that would never have been heard”",
+    support_quote_name: "The Sawt team",
+    support_quote_place: "Gaza, Palestine",
+
+    // Banner
+    support_banner_eyebrow: "Human stories from Gaza",
+    support_banner_title_pre: "Support the platform that carries",
+    support_banner_title_hl: "their voices",
+    support_banner_feature_1: "Reaches beneficiaries instantly",
+    support_banner_feature_2: "Easy payment",
+    support_banner_feature_3: "Secure, encrypted donation",
+    support_donate_now: "Donate now",
+    support_badge_donors: "donors this month",
+    support_badge_stories: "stories documented",
+
+    // Live support community
+    support_community_title_pre: "The living support",
+    support_community_title_hl: "community",
+    support_community_sub:
+      "Our values are the foundation Sawt is built on — they drive how we work and how we keep improving",
+    support_stat_goal: "Monthly goal",
+    support_stat_raised: "Raised",
+    support_stat_remaining: "Remaining",
+    support_stat_progress: "Progress",
+    support_progress_note_pre: "We need",
+    support_progress_note_post: "to reach this month's goal — contribute now",
+    support_add_name_cta: "Add your name to the list — donate now",
+
+    // Where donations go
+    support_alloc_title_pre: "Where do your",
+    support_alloc_title_hl: "donations go?",
+    support_alloc_sub:
+      "Every dollar is invested responsibly — we report every detail, because your trust is a trust",
+    support_alloc_creators_title: "Empowering creators",
+    support_alloc_media_title: "Documentation & media",
+    support_alloc_education_title: "Psychological & educational support",
+    support_alloc_desc:
+      "Supporting young creators in Gaza with tools and training so they can produce content that changes the narrative and makes real impact.",
+    support_alloc_item_1: "Professional production tools",
+    support_alloc_item_2: "Grants for rising talent",
+    support_alloc_item_3: "A safe, motivating creative space",
+    support_alloc_of_total: "of total donations",
+    support_alloc_summary_title: "Every dollar has a clear destination",
+    support_alloc_summary_sub:
+      "We publish comprehensive monthly reports on how donations are distributed — and you can request a detailed report at any time.",
+    support_alloc_summary_share: "of your donations",
+    support_alloc_summary_caption: "distributed transparently",
+
+    // Partners + funding CTA
+    support_partners_title_pre: "Our partners in spreading",
+    support_partners_title_hl: "the voice",
+    support_partners_sub:
+      "Thank you to the institutions and companies that believe in our mission and carry the voice of Gaza to the world",
+    support_fund_title: "The truth needs funding",
+    support_fund_desc:
+      "Institutional partnerships with Sawt — for organisations that want a role in carrying the truth to the world. Join us and keep Gaza's voice alive",
+    support_contact_us: "Contact us",
+
+    // Incubator courses
+    support_courses_title_pre: "Help students join",
+    support_courses_title_hl: "the incubator",
+    support_courses_sub:
+      "Sponsoring a course costs little and opens the door of knowledge for a young person in Gaza — your donation goes straight to training costs",
+    support_course_field_title: "Field journalism",
+    support_course_field_desc:
+      "Field training on news coverage in conflict zones",
+    support_course_podcast_title: "Podcast & audio",
+    support_course_podcast_desc:
+      "Producing professional audio content that reaches millions of listeners",
+    support_course_video_title: "Video production",
+    support_course_video_desc:
+      "Producing professional audio content that reaches millions of listeners",
+    support_course_weeks: "weeks",
+    support_course_seats: "seats",
+    support_course_field_cta: "Sponsor a field journalism seat for $120",
+    support_course_podcast_cta: "Sponsor a podcast & audio seat for $120",
+    support_course_video_cta: "Sponsor a video production seat for $120",
+
+    // Untold stories
+    support_untold_title_pre: "Voices we couldn't",
+    support_untold_title_hl: "carry",
+    support_untold_sub:
+      "These are real stories from Gaza that never reached the world — because the resources ran out before we could finish telling them",
+    support_untold_cta_title: "Your support keeps the next story from being lost",
+    support_untold_cta_desc:
+      "Donating today makes sure the next voice is not lost",
+    support_untold_cta_btn: "Support the platform now",
+    support_prev: "Previous",
+    support_next: "Next",
+
+    // FAQ
+    support_faq_title: "Frequently asked questions",
+    support_faq_q1: "How can I donate?",
+    support_faq_a1:
+      "Choose the type of support (one-time, monthly or yearly), then pick an amount or enter your own, and press the donate button to complete the process.",
+    support_faq_q2: "Is donating safe?",
+    support_faq_a2:
+      "Donating is very simple — choose the amount and payment method (credit card, PayPal, or bank transfer) and press “Donate now”. It takes no more than two minutes, and you get instant confirmation by email.",
+    support_faq_q3: "Can I donate just once?",
+    support_faq_a3:
+      "Yes — choose the “One time” tab and the amount is charged once only, with no commitment or automatic renewal.",
+    support_faq_q4: "How are donations used?",
+    support_faq_a4:
+      "Donations are split across three areas: empowering creators 40%, documentation & media 35%, and psychological & educational support 25% — and we publish a monthly report with the details.",
+    support_faq_q5: "Can I cancel the monthly subscription?",
+    support_faq_a5:
+      "You can stop monthly support at any time from your account page or by emailing us, and the cancellation takes effect immediately.",
   },
 };
 
