@@ -713,6 +713,7 @@ export const translations: any = {
     support_banner_feature_1: "وصول فوري للمستحقين",
     support_banner_feature_2: "سهولة الدفع",
     support_banner_feature_3: "تبرع آمن ومشفر",
+    support_banner_where: "أين تذهب تبرعاتي؟",
     support_donate_now: "تبرع الآن",
     support_badge_donors: "متبرع هذا الشهر",
     support_badge_stories: "قصة وثقت",
@@ -804,6 +805,8 @@ export const translations: any = {
     support_faq_q5: "هل يمكنني إلغاء الاشتراك الشهري؟",
     support_faq_a5:
       "يمكنك إيقاف الدعم الشهري في أي وقت من صفحة حسابك أو بمراسلتنا على البريد الإلكتروني، ويسري الإلغاء فورا.",
+    support_faq_more_title: "لديك سؤال آخر؟",
+    support_faq_more_desc: "فريقنا جاهز للإجابة — سنردّ عليك خلال ساعات",
 
     // Incubator page (/incubator) — nav
     inc_brand: "حاضنة صوت",
@@ -1746,6 +1749,7 @@ export const translations: any = {
     support_banner_feature_1: "Reaches beneficiaries instantly",
     support_banner_feature_2: "Easy payment",
     support_banner_feature_3: "Secure, encrypted donation",
+    support_banner_where: "Where do my donations go?",
     support_donate_now: "Donate now",
     support_badge_donors: "donors this month",
     support_badge_stories: "stories documented",
@@ -1842,6 +1846,8 @@ export const translations: any = {
     support_faq_q5: "Can I cancel the monthly subscription?",
     support_faq_a5:
       "You can stop monthly support at any time from your account page or by emailing us, and the cancellation takes effect immediately.",
+    support_faq_more_title: "Have another question?",
+    support_faq_more_desc: "Our team is ready to answer — we'll reply within hours",
 
     // Incubator page (/incubator) — nav
     inc_brand: "Sawt Incubator",

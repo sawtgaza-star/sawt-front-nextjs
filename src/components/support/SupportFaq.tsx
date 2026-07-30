@@ -1,6 +1,6 @@
 "use client";
 import { useState } from "react";
-import { IconChevronDownBold } from "@/components/ui/icons";
+import { IconChevronDownBold, IconHeartOutline } from "@/components/ui/icons";
 import { SUPPORT_FAQS } from "./support-faq-data";
 
 /* "الأسئلة المتكررة" — accordion beside the student artwork. Mirrors the
@@ -61,6 +61,23 @@ export default function SupportFaq() {
                 </div>
               );
             })}
+
+            {/* mobile mock only — "لديك سؤال آخر؟" contact card under the
+                accordion; CSS keeps it hidden on desktop */}
+            <div className="sp-faq-more">
+              <span className="sp-faq-more-icon" aria-hidden="true">
+                <IconHeartOutline />
+              </span>
+              <h3 className="sp-faq-more-title" data-i18n="support_faq_more_title">
+                لديك سؤال آخر؟
+              </h3>
+              <p className="sp-faq-more-desc" data-i18n="support_faq_more_desc">
+                فريقنا جاهز للإجابة — سنردّ عليك خلال ساعات
+              </p>
+              <a href="/#join" className="sp-btn-green">
+                <span data-i18n="support_contact_us">تواصل معنا</span>
+              </a>
+            </div>
           </div>
         </div>
       </div>

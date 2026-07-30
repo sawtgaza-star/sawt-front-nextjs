@@ -6,7 +6,7 @@ import { PLEDGE_ITEMS } from "./donate-data";
    checklist and the Sawt team quote. Static shell; only the form is client. */
 export default function DonateSection() {
   return (
-    <section className="sp-section">
+    <section className="sp-section sp-donate-section">
       <div className="container">
         <div className="cr-section-head">
           <h2 className="cr-section-title">
