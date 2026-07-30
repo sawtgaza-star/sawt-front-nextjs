@@ -804,6 +804,235 @@ export const translations: any = {
     support_faq_q5: "هل يمكنني إلغاء الاشتراك الشهري؟",
     support_faq_a5:
       "يمكنك إيقاف الدعم الشهري في أي وقت من صفحة حسابك أو بمراسلتنا على البريد الإلكتروني، ويسري الإلغاء فورا.",
+
+    // Incubator page (/incubator) — nav
+    inc_brand: "حاضنة صوت",
+    inc_nav_back: "العودة لمنصة صوت",
+    inc_nav_courses: "الكورسات",
+    inc_nav_workshops: "الورشات",
+    inc_nav_cta: "ادعم طلاب الحاضنة",
+
+    // Incubator — hero
+    inc_hero_title_pre: "حوّل قصتك",
+    inc_hero_title_mid: "إلى محتوى",
+    inc_hero_title_post: "يصنع أثرًا",
+    inc_hero_desc:
+      "انضم إلى بيئة تدريبية تجمع بين التعلم العملي، والإرشاد، والمشاريع الواقعية لتساعدك على صناعة محتوى يترك أثرًا.",
+    inc_hero_cta: "ابدأ رحلتك التعليمية",
+    inc_hero_badge_donors: "متبرع هذا الشهر",
+    inc_hero_badge_stories: "قصة وثّقت",
+    inc_stat_students: "طالب مسجّل",
+    inc_stat_trainers: "مدرب وخبير",
+    inc_stat_satisfaction: "معدل رضاء الطلاب",
+    inc_stat_graduates: "طالب متخرج",
+
+    // Incubator — لماذا حاضنة صوت؟
+    inc_why_title_pre: "لماذا حاضنة",
+    inc_why_title_hl: "صوت",
+    inc_why_desc:
+      "حاضنة صوت ليست مجرد منصة تدريبية، بل رحلة متكاملة تساعدك على تحويل أفكارك وقصصك إلى محتوى مؤثر. من خلال التدريب العملي، والإرشاد المستمر، والمشاريع الواقعية، نمنحك البيئة المناسبة لتطوير مهاراتك وصناعة أثر حقيقي.",
+    inc_why_practical_title: "تدريب عملي",
+    inc_why_practical_desc: "تعلم من خلال التطبيق والممارسة",
+    inc_why_mentorship_title: "إرشاد متخصص",
+    inc_why_mentorship_desc: "أنجز مشاريع حقيقية تبني معرض أعمالك",
+    inc_why_projects_title: "مشاريع واقعية",
+    inc_why_projects_desc: "توجيه مستمر من خبراء في المجال",
+    inc_why_reach_title: "إيصال صوتك",
+    inc_why_reach_desc: "فرصة لنشر أعمالك والوصول إلى جمهور أوسع",
+
+    // Incubator — دوراتنا الأكثر شهرة
+    inc_courses_title_pre: "دوراتنا الأكثر",
+    inc_courses_title_hl: "شهرة",
+    inc_courses_sub:
+      "دورات تدريبية شاملة، تعتمد على التطبيق والتنفيذ العملي، نبدأ معك من الصفر حتى تصل إلى الاحتراف لتؤهلك كل دورة لسوق العمل وتكون جاهزًا له.",
+    inc_course_soon: "قريبًا",
+    inc_course_tutor: "المدرب:",
+    inc_course_details_cta: "تفاصيل الكورس",
+    inc_course_waitlist_cta: "انضم لقائمة الانتظار",
+    inc_course_level_low: "منخفض",
+    inc_course_level_high: "مرتفع",
+    inc_course_cat_design: "التصميم",
+    inc_course_cat_marketing: "التسويق",
+    inc_course_graphic_title: "تصميم الجرافيك",
+    inc_course_graphic_duration: "15 ساعة",
+    inc_course_graphic_hours: "4 ساعات",
+    inc_course_data_title: "تحليل البيانات",
+    inc_course_data_duration: "25 ساعة",
+    inc_course_data_hours: "8 ساعات",
+    inc_course_data_desc:
+      "استراتيجيات فعالة لكتابة المحتوى الجذاب وزيادة التفاعل.استراتيجيات فعالة لكتابة المحتوى الجذاب وزيادة التفاعل.",
+    inc_course_data_tutor: "أحمد الرفاعي",
+    inc_course_marketing_title: "تسويق المحتوى الرقمي",
+    inc_course_marketing_desc:
+      "استراتيجيات فعالة لكتابة المحتوى الجذاب وزيادة التفاعل",
+
+    // Incubator — فريق خبراء متخصص
+    inc_experts_title_pre: "فريق خبراء",
+    inc_experts_title_hl: "متخصص",
+    inc_experts_sub: "أرقام حقيقية تعكس قوة مجتمعنا",
+    inc_expert_tareq_name: "طارق الجبالي",
+    inc_expert_tareq_badge: "7 سنوات",
+    inc_expert_tareq_desc:
+      "خبرة 7 سنوات في تطوير تطبيقات الهاتف المحمول. عمل على مشاريع مبتكرة في مجال التجارة الإلكترونية.",
+    inc_expert_sumaya_name: "سمية الخطيب",
+    inc_expert_sumaya_badge: "3 سنوات",
+    inc_expert_sumaya_desc:
+      "خبرة 3 سنوات في التسويق الرقمي وتحليل البيانات. ساهمت في زيادة نسبة المبيعات بنسبة 30%.",
+    inc_expert_yousef_name: "يوسف العتيبي",
+    inc_expert_yousef_badge: "10 سنوات",
+    inc_expert_yousef_desc:
+      "خبرة 10 سنوات في إدارة المشاريع وتطوير البرمجيات. قاد فريقًا في مشروع ضخم للذكاء الاصطناعي.",
+    inc_expert_laila_name: "ليلى العبدالله",
+    inc_expert_laila_badge: "5 سنوات",
+    inc_expert_laila_desc:
+      "خبرة 5 سنوات في تصميم الجرافيك وتطوير العلامات التجارية. عملت مع عدة شركات ناشئة.",
+    inc_expert_ahmad_name: "أحمد المنصور",
+    inc_expert_ahmad_badge: "+8 سنة",
+    inc_expert_ahmad_desc:
+      "خبرة +8 سنوات في إنتاج المحتوى الرقمي والإعلام الاجتماعي. أطلق أكثر من 200 قناة ناجحة.",
+
+    // Incubator — ساعد طلاب في الانضمام للحاضنة
+    inc_sponsor_title_pre: "ساعد طلاب في الانضمام",
+    inc_sponsor_title_hl: "للحاضنة",
+    inc_sponsor_sub:
+      "مبلغ بسيط يفتح باب المعرفة أمام شاب في غزة — تبرّعك يصل مباشرة لتغطية تكاليف التدريب",
+    inc_sponsor_weeks: "8 أسابيع",
+    inc_sponsor_seats: "6 مقاعد",
+    inc_sponsor_field_title: "صحافة ميدانية",
+    inc_sponsor_field_desc: "تدريب ميداني على التغطية الإخبارية في مناطق النزاع",
+    inc_sponsor_field_cta: "تكفّل دورة صحافة ميدانية لطالب واحد ب 120$",
+    inc_sponsor_podcast_title: "بودكاست وصوت",
+    inc_sponsor_podcast_desc: "إنتاج محتوى صوتي احترافي يصل لملايين المستمعين",
+    inc_sponsor_podcast_cta: "تكفّل دورة بودكاست وصوت لطالب واحد ب 120$",
+    inc_sponsor_writing_title: "كتابة إبداعية",
+    inc_sponsor_writing_desc: "إنتاج محتوى صوتي احترافي يصل لملايين المستمعين",
+    inc_sponsor_writing_cta: "تكفّل دورة كتابة إبداعية لطالب واحد ب 120$",
+    inc_sponsor_video_title: "إنتاج مرئي",
+    inc_sponsor_video_desc: "إنتاج محتوى صوتي احترافي يصل لملايين المستمعين",
+    inc_sponsor_video_cta: "تكفّل دورة إنتاج مرئي لطالب واحد ب 120$",
+    inc_sponsor_waiting_title: "طلاب ينتظرون داعماً",
+    inc_sponsor_waiting_more: "+ 28 طالباً آخرين",
+    inc_sponsor_student_reem: "ريم س.",
+    inc_sponsor_student_reem_meta: "إنتاج مرئي · خانيونس",
+    inc_sponsor_student_ahmad: "أحمد خ.",
+    inc_sponsor_student_ahmad_meta: "صحافة ميدانية · غزة",
+    inc_sponsor_student_yousef: "يوسف م.",
+    inc_sponsor_student_yousef_meta: "بودكاست وصوت · رفح",
+    inc_sponsor_impact_title: "أثر البرنامج",
+    inc_sponsor_impact_stories: "قصة وثقت",
+    inc_sponsor_impact_journalists: "صحفيون ميدانيون",
+    inc_sponsor_impact_graduates: "أتموا دوراتهم",
+
+    // Incubator — استكشف أحدث فعالياتنا
+    inc_events_title_pre: "استكشف أحدث",
+    inc_events_title_hl: "فعالياتنا",
+    inc_events_sub: "أرقام حقيقية تعكس قوة مجتمعنا",
+    inc_events_filter_all: "الكل",
+    inc_events_filter_economy: "الاقتصاد (13)",
+    inc_events_filter_war: "قصص الحرب (45)",
+    inc_events_filter_business: "المال والأعمال(13)",
+    inc_events_filter_news: "الاخبار (13)",
+    inc_events_month_july: "يوليو",
+    inc_event_innovation_date: "الثلاثاء 27/5/2026",
+    inc_event_innovation_time: "11.00 مساء",
+    inc_event_innovation_title:
+      "ابتكار الحلول الإبداعية في تصميم واجهات المستخدم، الدليل النهائي للابتكار",
+    inc_event_innovation_desc:
+      "اكتشف كيفية تحويل الأفكار إلى تصميمات فعالة. تعلم استراتيجيات جديدة لتعزيز الإبداع في عملك.",
+    inc_event_innovation_type: "وجاهي,ندوة",
+    inc_event_tools_date: "الاثنين 26/5/2026",
+    inc_event_tools_time: "10.00 مساء",
+    inc_event_tools_title:
+      "كيفية استخدام أدوات التصميم الحديثة لتحقيق نتائج مذهلة",
+    inc_event_tools_desc:
+      "استفد من أحدث التطورات في أدوات التصميم لتحسين سرعة وكفاءة العمل. تعرف على كيفية استخدام أدوات التعاونية......",
+    inc_event_tools_type: "أونلاين,ندوة",
+    inc_event_ux_date: "الأحد 25/5/2026",
+    inc_event_ux_time: "09.30 مساء",
+    inc_event_ux_title:
+      "الاستراتيجيات الفعالة لتحسين تجربة المستخدم، دالدليل الشامل لتحسين الأداء",
+    inc_event_ux_desc:
+      "تعلم كيفية استخدام البيانات لتحسين تصاميمك وجعلها أكثر جاذبية. اكتشف كيفية دمج التعليقات في تحسين الجودة.",
+    inc_event_ux_type: "وجاهي ,ورشة عمل",
+
+    // Incubator — الحاضنة بيتك الثاني ، البوم الحاضنة
+    inc_album_title_pre: "الحاضنة بيتك الثاني ،",
+    inc_album_title_hl: "البوم الحاضنة",
+    inc_album_sub:
+      "مبلغ بسيط يفتح باب المعرفة أمام شاب في غزة — تبرّعك يصل مباشرة لتغطية تكاليف التدريب",
+    inc_album_launch_chip: "يوم الإطلاق — الدفعة الثالثة",
+    inc_album_final_caption: "الدفعة تسجّل مشاريعها النهائية",
+    inc_album_workshop_title: "ورشة عمل — التسويق بالمحتوى",
+    inc_album_workshop_sub: "كل جلسة عملية لا محاضرات نظرية",
+    inc_album_mentor_chip: "جلسة مرشد 1:1",
+    inc_album_community_chip: "مجتمع صانعي المحتوى",
+
+    // Incubator — FAQ
+    inc_faq_title_pre: "الأسئلة التي",
+    inc_faq_title_hl: "تدور ببالك؟",
+    inc_faq_sub: "أرقام حقيقية تعكس قوة مجتمعنا",
+    inc_faq_q1: "هل يمكنني نشر أعمالي بعد التدريب؟",
+    inc_faq_a1:
+      "نعم، ستنهي البرنامج بمشاريع حقيقية جاهزة للنشر، وسنساعدك على عرضها عبر منصات صوت لتصل إلى جمهور أوسع.",
+    inc_faq_q2: "هل أحتاج خبرة مسبقة للتقديم؟",
+    inc_faq_a2:
+      "لا، البرنامج يبدأ معك من الأساسيات — كل ما نطلبه هو الالتزام والشغف بالتعلم.",
+    inc_faq_q3: "هل البرنامج نظري أم عملي؟",
+    inc_faq_a3:
+      "البرنامج عملي بشكل كامل، حيث سنقوم بتطبيق كل ما نتعلمه عبر مشاريع حقيقية.",
+    inc_faq_q4: "هل يمكنني نشر أعمالي بعد التدريب؟",
+    inc_faq_a4:
+      "بالتأكيد — أعمالك ملكك، ويمكنك نشرها على منصاتك الخاصة أو من خلال مجتمع الحاضنة متى شئت.",
+    inc_faq_q5: "هل أحصل على شهادة بعد الانتهاء؟",
+    inc_faq_a5:
+      "نعم، تحصل عند إتمام البرنامج على شهادة معتمدة من حاضنة صوت توثّق المهارات والمشاريع التي أنجزتها.",
+
+    // Incubator — graduates' employers
+    inc_grads_title_pre: "يعمل خريجونا لدى",
+    inc_grads_title_hl: "جهات موثوقة",
+    inc_grads_sub: "نفخر بتميز خريجينا وحصولهم على وظائف مرموقة في جهات عالمية",
+
+    // Incubator — join banner
+    inc_join_title: "ابدأ رحلتك مع حاضنة صوت",
+    inc_join_desc:
+      "حوّل فكرتك إلى محتوى مؤثر، وطوّر مهاراتك من خلال التدريب العملي والإرشاد المتخصص، واصنع مشروعًا يعكس صوتك ويصل إلى الآخرين.",
+    inc_join_btn: "انضم إلى الحاضنة",
+
+    // Incubator — graduates' testimonials
+    inc_testi_title_pre: "شهادات وتجارب",
+    inc_testi_title_hl: "خريجينا",
+    inc_testi_sub:
+      "اكتشف كيف غيّرت حاضنة صوت حياة المئات من الطلاب الذين بدأوا رحلتهم من الصفر وأصبحوا اليوم محترفين مطلوبين في سوق العمل.",
+    inc_testi_sara_quote:
+      "التوجيه الذي تلقيته من المرشدين كان له تأثير كبير على مسيرتي. نصائحهم القيمة ساعدتني في اتخاذ قرارات مدروسة في مشاريعي.",
+    inc_testi_sara_cta: "انضم إلينا",
+    inc_testi_sara_name: "سارة القحطاني",
+    inc_testi_sara_meta: "مخترعة — تقنية",
+    inc_testi_fahd_quote:
+      "التحديات التي واجهتها أثناء العمل في الحاضنة كانت محفزة لتطوير مهاراتي. التفاعل مع فرق متعددة التخصصات أضاف بعدًا جديدًا لرؤيتي .",
+    inc_testi_fahd_cta: "استكشف الفرص",
+    inc_testi_fahd_name: "فهد النعيمي",
+    inc_testi_fahd_meta: "محلل بيانات — تقنية",
+    inc_testi_reem_quote:
+      "بيئة الحاضنة الداعمة منحتني الثقة لعرض أعمالي أمام جمهور حقيقي. اليوم أدير مشروعي الخاص وأتعاون مع علامات تجارية أعتز بها.",
+    inc_testi_reem_cta: "ابدأ رحلتك",
+    inc_testi_reem_name: "ريم العتيبي",
+    inc_testi_reem_meta: "مصممة جرافيك — إبداع",
+    inc_testi_khaled_quote:
+      "ورش العمل التطبيقية علمتني كيف أحول الفكرة إلى محتوى حقيقي يصل للجمهور. خلال أشهر قليلة أطلقت قناتي الأولى بثقة كاملة.",
+    inc_testi_khaled_cta: "انضم إلينا",
+    inc_testi_khaled_name: "خالد الشمري",
+    inc_testi_khaled_meta: "صانع محتوى — إعلام",
+    inc_testi_noura_quote:
+      "الحاضنة لم تمنحني المهارات فقط، بل شبكة علاقات فتحت لي أبواباً لم أكن أتخيلها. اليوم أقود مشروعاً ناشئاً بفريق متكامل.",
+    inc_testi_noura_cta: "استكشف الفرص",
+    inc_testi_noura_name: "نورة السالم",
+    inc_testi_noura_meta: "رائدة أعمال — ريادة",
+    inc_testi_yousef_quote:
+      "المتابعة المستمرة من فريق الحاضنة جعلتني ألتزم بأهدافي حتى النهاية. تخرجت ومعي مشروع جاهز أضفته مباشرة إلى معرض أعمالي.",
+    inc_testi_yousef_cta: "ابدأ رحلتك",
+    inc_testi_yousef_name: "يوسف الحمد",
+    inc_testi_yousef_meta: "مطور ويب — تقنية",
   },
 
   en: {
@@ -1613,6 +1842,241 @@ export const translations: any = {
     support_faq_q5: "Can I cancel the monthly subscription?",
     support_faq_a5:
       "You can stop monthly support at any time from your account page or by emailing us, and the cancellation takes effect immediately.",
+
+    // Incubator page (/incubator) — nav
+    inc_brand: "Sawt Incubator",
+    inc_nav_back: "Back to Sawt platform",
+    inc_nav_courses: "Courses",
+    inc_nav_workshops: "Workshops",
+    inc_nav_cta: "Support incubator students",
+
+    // Incubator — hero
+    inc_hero_title_pre: "Turn your story",
+    inc_hero_title_mid: "into content",
+    inc_hero_title_post: "that makes an impact",
+    inc_hero_desc:
+      "Join a training environment that blends hands-on learning, mentorship and real projects to help you create content that leaves a mark.",
+    inc_hero_cta: "Start your learning journey",
+    inc_hero_badge_donors: "donors this month",
+    inc_hero_badge_stories: "stories documented",
+    inc_stat_students: "enrolled students",
+    inc_stat_trainers: "trainers & experts",
+    inc_stat_satisfaction: "student satisfaction",
+    inc_stat_graduates: "graduates",
+
+    // Incubator — Why Sawt Incubator?
+    inc_why_title_pre: "Why the Sawt",
+    inc_why_title_hl: "Incubator",
+    inc_why_desc:
+      "The Sawt Incubator is not just a training platform — it is a complete journey that helps you turn your ideas and stories into impactful content. Through hands-on training, continuous mentorship and real projects, we give you the right environment to grow your skills and make a genuine impact.",
+    inc_why_practical_title: "Hands-on training",
+    inc_why_practical_desc: "Learn by applying and practising",
+    inc_why_mentorship_title: "Specialised mentorship",
+    inc_why_mentorship_desc: "Deliver real projects that build your portfolio",
+    inc_why_projects_title: "Real projects",
+    inc_why_projects_desc: "Continuous guidance from experts in the field",
+    inc_why_reach_title: "Get your voice heard",
+    inc_why_reach_desc:
+      "A chance to publish your work and reach a wider audience",
+
+    // Incubator — Our most popular courses
+    inc_courses_title_pre: "Our most popular",
+    inc_courses_title_hl: "courses",
+    inc_courses_sub:
+      "Comprehensive training courses built on practice and real execution. We start with you from zero until you reach a professional level, so every course prepares you for the job market.",
+    inc_course_soon: "Soon",
+    inc_course_tutor: "Trainer:",
+    inc_course_details_cta: "Course details",
+    inc_course_waitlist_cta: "Join the waiting list",
+    inc_course_level_low: "Beginner",
+    inc_course_level_high: "Advanced",
+    inc_course_cat_design: "Design",
+    inc_course_cat_marketing: "Marketing",
+    inc_course_graphic_title: "Graphic design",
+    inc_course_graphic_duration: "15 hours",
+    inc_course_graphic_hours: "4 hours",
+    inc_course_data_title: "Data analysis",
+    inc_course_data_duration: "25 hours",
+    inc_course_data_hours: "8 hours",
+    inc_course_data_desc:
+      "Effective strategies for writing engaging content and boosting interaction. Effective strategies for writing engaging content and boosting interaction.",
+    inc_course_data_tutor: "Ahmed Al-Rifai",
+    inc_course_marketing_title: "Digital content marketing",
+    inc_course_marketing_desc:
+      "Effective strategies for writing engaging content and boosting interaction",
+
+    // Incubator — a specialized expert team
+    inc_experts_title_pre: "A team of specialized",
+    inc_experts_title_hl: "experts",
+    inc_experts_sub: "Real numbers that reflect the strength of our community",
+    inc_expert_tareq_name: "Tariq Al-Jabali",
+    inc_expert_tareq_badge: "7 years",
+    inc_expert_tareq_desc:
+      "7 years of experience in mobile app development. Worked on innovative projects in e-commerce.",
+    inc_expert_sumaya_name: "Sumaya Al-Khatib",
+    inc_expert_sumaya_badge: "3 years",
+    inc_expert_sumaya_desc:
+      "3 years of experience in digital marketing and data analysis. Helped raise sales by 30%.",
+    inc_expert_yousef_name: "Yousef Al-Otaibi",
+    inc_expert_yousef_badge: "10 years",
+    inc_expert_yousef_desc:
+      "10 years of experience in project management and software development. Led a team on a huge AI project.",
+    inc_expert_laila_name: "Laila Al-Abdullah",
+    inc_expert_laila_badge: "5 years",
+    inc_expert_laila_desc:
+      "5 years of experience in graphic design and brand development. Worked with several startups.",
+    inc_expert_ahmad_name: "Ahmed Al-Mansour",
+    inc_expert_ahmad_badge: "8+ years",
+    inc_expert_ahmad_desc:
+      "8+ years of experience in digital content production and social media. Launched more than 200 successful channels.",
+
+    // Incubator — Help students join the incubator
+    inc_sponsor_title_pre: "Help students join",
+    inc_sponsor_title_hl: "the incubator",
+    inc_sponsor_sub:
+      "A small amount opens the door of knowledge for a young person in Gaza — your donation goes straight to covering training costs",
+    inc_sponsor_weeks: "8 weeks",
+    inc_sponsor_seats: "6 seats",
+    inc_sponsor_field_title: "Field journalism",
+    inc_sponsor_field_desc:
+      "Field training in news coverage inside conflict zones",
+    inc_sponsor_field_cta: "Sponsor a field journalism course for one student — $120",
+    inc_sponsor_podcast_title: "Podcast & audio",
+    inc_sponsor_podcast_desc:
+      "Producing professional audio content that reaches millions of listeners",
+    inc_sponsor_podcast_cta: "Sponsor a podcast & audio course for one student — $120",
+    inc_sponsor_writing_title: "Creative writing",
+    inc_sponsor_writing_desc:
+      "Producing professional audio content that reaches millions of listeners",
+    inc_sponsor_writing_cta: "Sponsor a creative writing course for one student — $120",
+    inc_sponsor_video_title: "Video production",
+    inc_sponsor_video_desc:
+      "Producing professional audio content that reaches millions of listeners",
+    inc_sponsor_video_cta: "Sponsor a video production course for one student — $120",
+    inc_sponsor_waiting_title: "Students waiting for a sponsor",
+    inc_sponsor_waiting_more: "+ 28 more students",
+    inc_sponsor_student_reem: "Reem S.",
+    inc_sponsor_student_reem_meta: "Video production · Khan Younis",
+    inc_sponsor_student_ahmad: "Ahmad Kh.",
+    inc_sponsor_student_ahmad_meta: "Field journalism · Gaza",
+    inc_sponsor_student_yousef: "Yousef M.",
+    inc_sponsor_student_yousef_meta: "Podcast & audio · Rafah",
+    inc_sponsor_impact_title: "Programme impact",
+    inc_sponsor_impact_stories: "stories documented",
+    inc_sponsor_impact_journalists: "field journalists",
+    inc_sponsor_impact_graduates: "completed their courses",
+
+    // Incubator — استكشف أحدث فعالياتنا
+    inc_events_title_pre: "Explore our latest",
+    inc_events_title_hl: "events",
+    inc_events_sub: "Real numbers that reflect the strength of our community",
+    inc_events_filter_all: "All",
+    inc_events_filter_economy: "Economy (13)",
+    inc_events_filter_war: "War stories (45)",
+    inc_events_filter_business: "Finance & business (13)",
+    inc_events_filter_news: "News (13)",
+    inc_events_month_july: "July",
+    inc_event_innovation_date: "Tuesday 27/5/2026",
+    inc_event_innovation_time: "11.00 PM",
+    inc_event_innovation_title:
+      "Inventing creative solutions in UI design — the ultimate guide to innovation",
+    inc_event_innovation_desc:
+      "Discover how to turn ideas into effective designs. Learn new strategies to boost creativity in your work.",
+    inc_event_innovation_type: "In-person, seminar",
+    inc_event_tools_date: "Monday 26/5/2026",
+    inc_event_tools_time: "10.00 PM",
+    inc_event_tools_title:
+      "How to use modern design tools to achieve stunning results",
+    inc_event_tools_desc:
+      "Benefit from the latest advances in design tools to improve speed and efficiency. Learn how to use collaborative tools......",
+    inc_event_tools_type: "Online, seminar",
+    inc_event_ux_date: "Sunday 25/5/2026",
+    inc_event_ux_time: "09.30 PM",
+    inc_event_ux_title:
+      "Effective strategies for improving user experience — the complete guide to better performance",
+    inc_event_ux_desc:
+      "Learn how to use data to improve your designs and make them more attractive. Discover how to fold feedback into better quality.",
+    inc_event_ux_type: "In-person, workshop",
+
+    // Incubator — the incubator album
+    inc_album_title_pre: "The incubator is your second home,",
+    inc_album_title_hl: "the incubator album",
+    inc_album_sub:
+      "A small amount opens the door of knowledge for a young person in Gaza — your donation goes straight to covering training costs",
+    inc_album_launch_chip: "Launch day — third cohort",
+    inc_album_final_caption: "The cohort records their final projects",
+    inc_album_workshop_title: "Workshop — content marketing",
+    inc_album_workshop_sub: "Every session is hands-on, no theory lectures",
+    inc_album_mentor_chip: "1:1 mentor session",
+    inc_album_community_chip: "Content creators community",
+
+    // Incubator — FAQ
+    inc_faq_title_pre: "The questions on",
+    inc_faq_title_hl: "your mind?",
+    inc_faq_sub: "Real numbers that reflect the strength of our community",
+    inc_faq_q1: "Can I publish my work after the training?",
+    inc_faq_a1:
+      "Yes — you finish the program with real, publish-ready projects, and we help you showcase them across Sawt's platforms to reach a wider audience.",
+    inc_faq_q2: "Do I need prior experience to apply?",
+    inc_faq_a2:
+      "No, the program starts from the basics — all we ask for is commitment and a passion for learning.",
+    inc_faq_q3: "Is the program theoretical or practical?",
+    inc_faq_a3:
+      "The program is fully hands-on: we apply everything we learn through real projects.",
+    inc_faq_q4: "Can I publish my work after the training?",
+    inc_faq_a4:
+      "Absolutely — your work is yours, and you can publish it on your own platforms or through the incubator community anytime.",
+    inc_faq_q5: "Do I get a certificate upon completion?",
+    inc_faq_a5:
+      "Yes, on completing the program you receive a certificate accredited by the Sawt incubator documenting the skills and projects you delivered.",
+
+    // Incubator — graduates' employers
+    inc_grads_title_pre: "Our graduates work at",
+    inc_grads_title_hl: "trusted organizations",
+    inc_grads_sub:
+      "We take pride in our graduates' excellence and the prestigious positions they hold at global organizations",
+
+    // Incubator — join banner
+    inc_join_title: "Start your journey with the Sawt incubator",
+    inc_join_desc:
+      "Turn your idea into impactful content, develop your skills through hands-on training and specialized mentorship, and craft a project that reflects your voice and reaches others.",
+    inc_join_btn: "Join the incubator",
+
+    // Incubator — graduates' testimonials
+    inc_testi_title_pre: "Testimonials and stories of",
+    inc_testi_title_hl: "our graduates",
+    inc_testi_sub:
+      "Discover how the Sawt incubator changed the lives of hundreds of students who started their journey from scratch and are now sought-after professionals in the job market.",
+    inc_testi_sara_quote:
+      "The guidance I received from the mentors had a huge impact on my journey. Their valuable advice helped me make well-considered decisions in my projects.",
+    inc_testi_sara_cta: "Join us",
+    inc_testi_sara_name: "Sara Al-Qahtani",
+    inc_testi_sara_meta: "Inventor — Tech",
+    inc_testi_fahd_quote:
+      "The challenges I faced while working in the incubator pushed me to grow my skills. Collaborating with multidisciplinary teams added a whole new dimension to my vision.",
+    inc_testi_fahd_cta: "Explore opportunities",
+    inc_testi_fahd_name: "Fahd Al-Nuaimi",
+    inc_testi_fahd_meta: "Data analyst — Tech",
+    inc_testi_reem_quote:
+      "The incubator's supportive environment gave me the confidence to present my work to a real audience. Today I run my own project and collaborate with brands I'm proud of.",
+    inc_testi_reem_cta: "Start your journey",
+    inc_testi_reem_name: "Reem Al-Otaibi",
+    inc_testi_reem_meta: "Graphic designer — Creative",
+    inc_testi_khaled_quote:
+      "The hands-on workshops taught me how to turn an idea into real content that reaches an audience. Within a few months I launched my first channel with full confidence.",
+    inc_testi_khaled_cta: "Join us",
+    inc_testi_khaled_name: "Khaled Al-Shammari",
+    inc_testi_khaled_meta: "Content creator — Media",
+    inc_testi_noura_quote:
+      "The incubator gave me more than skills — a network that opened doors I never imagined. Today I lead a startup with a complete team.",
+    inc_testi_noura_cta: "Explore opportunities",
+    inc_testi_noura_name: "Noura Al-Salem",
+    inc_testi_noura_meta: "Entrepreneur — Startups",
+    inc_testi_yousef_quote:
+      "The incubator team's constant follow-up kept me committed to my goals until the very end. I graduated with a finished project that went straight into my portfolio.",
+    inc_testi_yousef_cta: "Start your journey",
+    inc_testi_yousef_name: "Yousef Al-Hamad",
+    inc_testi_yousef_meta: "Web developer — Tech",
   },
 };
 

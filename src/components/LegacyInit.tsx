@@ -50,6 +50,11 @@ export default function LegacyInit({ page }: { page: string }) {
         runCounters();
         replayComments();
       }
+      // The incubator stats strip reuses the exact same counter animation.
+      if (page === "incubator") {
+        const { runCounters } = await import("@/lib/legacy-main");
+        runCounters();
+      }
     })();
   }, [page]);
 
