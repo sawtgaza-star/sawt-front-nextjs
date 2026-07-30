@@ -46,7 +46,7 @@ function AllocationRing() {
    followed by the transparency summary strip with the 100% donut. */
 export default function WhereDonationsGo() {
   return (
-    <section className="sp-section">
+    <section className="sp-section" id="where-donations">
       <div className="container">
         <div className="cr-section-head">
           <h2 className="cr-section-title">

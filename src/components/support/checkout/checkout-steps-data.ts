@@ -1,6 +1,5 @@
 /* The four steps of the donation wizard that starts at /support/checkout.
-   Steps 1 (اختيار المنصة) through 3 (دعم الفريق) are reached by the wizard's
-   screens; step 4 is only shown in the progress bar so far.
+   All four are reached by the wizard's screens.
    `muted` reproduces the mock's lighter glyph on "إثبات التبرع"; the other
    inactive steps use the darker one. */
 
@@ -39,7 +38,11 @@ export const CHECKOUT_STEPS: CheckoutStep[] = [
    `current` is the step that gets the orange pill, `done` the ones already
    ticked off (solid orange circle + orange rule). */
 
-export type CheckoutScreenValue = "platform" | "transfer" | "proof";
+export type CheckoutScreenValue =
+  | "platform"
+  | "transfer"
+  | "proof"
+  | "contact";
 
 export interface CheckoutScreen {
   value: CheckoutScreenValue;
@@ -56,5 +59,11 @@ export const CHECKOUT_SCREENS: CheckoutScreen[] = [
     counter: 3,
     current: "team",
     done: ["platform", "proof"],
+  },
+  {
+    value: "contact",
+    counter: 4,
+    current: "contact",
+    done: ["platform", "proof", "team"],
   },
 ];

@@ -20,6 +20,7 @@
 .sp-page .cr-section-title .cr-highlight,
 .sp-banner-title .cr-highlight {
   color: #1c1c1c;
+  text-align:center
 }
 
 /* Shared spacing for the page's sections */
@@ -29,6 +30,73 @@
 }
 .sp-section-gray {
   background-color: #EDEFEB;
+}
+
+/* ---------- Donation confirmation toast ----------
+   Raised by the checkout wizard's "اتمام العملية" and shown once when it drops
+   the donor back on this page. Same orange panel as the wizard's notes, but
+   floating over the sticky nav (z-index 1030 in style.css). */
+.sp-toast {
+  position: fixed;
+  z-index: 1200;
+  top: 24px;
+  inset-inline: 16px;
+  margin-inline: auto;
+  max-width: 720px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 18px 24px;
+  background: #FFF3EB;
+  border: 1px solid #FFD9BE;
+  /* the accent sits on the panel's start edge (= right in RTL) */
+  border-inline-start: 3px solid #ff7420;
+  border-radius: 12px;
+  box-shadow: 0 12px 32px rgba(28, 28, 28, 0.14);
+  animation: sp-toast-in 0.25s ease-out;
+}
+@keyframes sp-toast-in {
+  from {
+    opacity: 0;
+    transform: translateY(-12px);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .sp-toast {
+    animation: none;
+  }
+}
+.sp-toast-icon {
+  display: inline-flex;
+  flex: 0 0 auto;
+  font-size: 20px;
+  color: #161616;
+}
+.sp-toast-text {
+  flex: 1 1 auto;
+  margin: 0;
+  font-size: 18px;
+  font-weight: 800;
+  color: #1c1c1c;
+  text-align: start;
+}
+.sp-toast-close {
+  flex: 0 0 auto;
+  width: 28px;
+  height: 28px;
+  padding: 0;
+  background: transparent;
+  border: 0;
+  border-radius: 50%;
+  font-size: 24px;
+  line-height: 1;
+  color: #6d6d6d;
+  cursor: pointer;
+  transition: background 0.2s ease, color 0.2s ease;
+}
+.sp-toast-close:hover {
+  background: #ffe0c9;
+  color: #1c1c1c;
 }
 
 /* ---------- 1. Donate ("كيف تريد ان تدعم؟") ---------- */
@@ -447,6 +515,25 @@ background: #FFF;
   border-radius: 24px;
   color:#fff !important;
 }
+/* The CTA wrapper only exists for the mobile mock — on desktop it's
+   transparent to layout and the outline button doesn't show at all. */
+.sp-banner-cta {
+  display: contents;
+}
+.sp-btn-where {
+  display: none;
+  align-items: center;
+  justify-content: center;
+  background: #ffffff;
+  border: 1px solid #d8d8d8;
+  border-radius: 14px;
+  padding: 12px 10px;
+  font-size: 16px;
+  font-weight: 700;
+  color: #000000 !important;
+  text-decoration: none;
+  text-align: center;
+}
 .sp-banner-media {
   flex: 1 1 44%;
   min-width: 280px;
@@ -460,7 +547,6 @@ background: #FFF;
   border-radius: 24px;
   /* Primary-oliveGreen-300 */
   border: 5px solid #879279;
-box-shadow: 0 6px 40px 0 rgba(0, 0, 0, 0.32);
   display: block;
 }
 .sp-badge {
@@ -908,6 +994,17 @@ font-weight: 900;
 /* ---------- 7. Untold stories ("أصوات لم نقدر على توصيلها") ---------- */
 .sp-stories-viewport {
   overflow: hidden;
+  /* pointer-drag slider: keep vertical page scroll on touch, no text/image
+     selection ghosts while swiping */
+  touch-action: pan-y;
+  user-select: none;
+  cursor: grab;
+}
+.sp-stories-viewport:active {
+  cursor: grabbing;
+}
+.sp-stories-track img {
+  -webkit-user-drag: none;
 }
 .sp-stories-track {
   display: flex;
@@ -1097,6 +1194,10 @@ background: #F2F2F2;
 [dir="ltr"] .sp-stories-next svg {
   transform: none;
 }
+/* Dot pager — mobile-mock only; the <768px block turns it on */
+.sp-stories-dots {
+  display: none;
+}
 
 /* Bottom strip — patterned frame + olive-50 panel, like .sp-banner */
 .sp-stories-cta {
@@ -1189,7 +1290,7 @@ background: rgba(237, 239, 235, 0.33);
 
 
 .sp-faq-visual {
-  flex: 1 1 36%;
+  flex: 1 1 28%;
   min-width: 260px;
   order: 1;
 }
@@ -1261,6 +1362,52 @@ background: rgba(237, 239, 235, 0.33);
   margin: 0;
   text-align:start
 }
+/* "لديك سؤال آخر؟" contact card — mobile-mock only; the <768px block turns
+   it on (same treatment as .sp-btn-where) */
+.sp-faq-more {
+  display: none;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  background: #EDEFEB;
+  border-radius: 24px;
+  padding: 28px 20px;
+  margin-top: 24px;
+}
+.sp-faq-more-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 64px;
+  height: 64px;
+  border-radius: 18px;
+  background: rgba(255, 116, 32, 0.12);
+  color: #FF7420;
+  font-size: 24px;
+  margin-bottom: 14px;
+}
+.sp-faq-more-title {
+  font-size: 18px;
+  font-weight: 800;
+  color: #1c1c1c;
+  margin-bottom: 6px;
+}
+.sp-faq-more-desc {
+  font-size: 14px;
+  color: #6D6D6D;
+  margin: 0 0 18px;
+}
+/* style.css forces `a { color: black !important }` — same override the other
+   green CTAs on this page use */
+.sp-faq-more .sp-btn-green,
+.sp-faq-more .sp-btn-green span {
+  color: #ffffff !important;
+}
+.sp-faq-more .sp-btn-green {
+  border-radius: 24px;
+  font-size: 15px;
+  padding: 12px 36px;
+}
 
 /* ---------- Responsive ---------- */
 @media (max-width: 991.98px) {
@@ -1287,8 +1434,28 @@ background: rgba(237, 239, 235, 0.33);
   }
 }
 @media (max-width: 767.98px) {
+  /* --- Donate section, per the mobile mock: start-aligned heading, the four
+     amount pills on ONE row, tighter type, and the quote footer centred with
+     the logo on the left --- */
+  .sp-donate-section .cr-section-head {
+    text-align: start;
+    margin-bottom: 24px;
+  }
+  .sp-donate-section .cr-section-sub {
+    margin: 0;
+    color: #484848;
+    font-size: 16px;
+text-align: center;
+  }
   .sp-donate-body {
     padding: 20px 16px;
+  }
+  .sp-tab {
+    padding: 14px 6px 12px;
+  }
+  .sp-tab-icon {
+    font-size: 20px;
+    margin-bottom: 6px;
   }
   .sp-tab-label {
     font-size: 15px;
@@ -1296,42 +1463,448 @@ background: rgba(237, 239, 235, 0.33);
   .sp-tab-sub {
     font-size: 11px;
   }
+  .sp-field-label {
+    font-size: 18px;
+    margin-bottom: 12px;
+  }
+  .sp-amounts {
+    flex-wrap: nowrap;
+    gap: 10px;
+    margin-bottom: 20px;
+  }
   .sp-amount {
-    flex: 1 1 calc(50% - 12px);
+    flex: 1 1 0;
+    min-width: 0;
+    padding: 8px 4px;
+    font-size: 15px;
+  }
+  .sp-donate-body .sp-btn-green {
+    border-radius: 10px;
+    font-size: 16px;
+    padding: 12px 20px;
+  }
+  .sp-pledge {
+    padding: 20px 18px;
+  }
+  .sp-pledge-title {
+    font-size: 18px;
+    margin-bottom: 12px;
+  }
+  .sp-pledge-list li {
+    font-size: 14px;
+    padding: 7px 0;
+  }
+  .sp-pledge-check {
+    font-size: 18px;
+    margin-top: 2px;
+  }
+  .sp-quote {
+    padding: 20px 18px;
+  }
+  .sp-quote-text {
+    font-size: 15px;
+  }
+  /* mock: the pair sits centred with the logo on the LEFT of the names */
+  .sp-quote-name {
+    font-size: 18px;
+  }
+  .sp-quote-place {
+    font-size: 15px;
+  }
+  .sp-quote-logo {
+    width: 58px;
+    height: 58px;
+  }
+  .sp-quote-logo img {
+    width: 26px;
   }
   .sp-dark-cta,
   .sp-stories-strip {
     padding: 20px;
   }
+  /* --- Banner: per the mobile mock it becomes the page's FIRST section
+     (right under the breadcrumb), drops the patterned frame + olive panel,
+     and stacks media-first --- */
+  .sp-page main {
+    display: flex;
+    flex-direction: column;
+  }
+  .sp-banner-section {
+    order: -1;
+    padding-bottom: 20px;
+    margin-top:30px;
+  }
   .sp-banner {
-    padding: 10px;
+    padding: 0;
+    background: transparent;
+    margin-top: 18px;
+  }
+  .sp-banner::before {
+    display: none;
   }
   .sp-banner-inner {
-    padding: 20px;
+    background: transparent;
+    padding: 0;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 26px;
+  }
+  .sp-banner-media {
+    order: -1;
+    min-width: 0;
+  }
+  .sp-banner-media > img {
+    height: 240px;
+    border-width: 3px;
+    border-radius: 20px;
+  }
+  /* badges overhang the artwork's corners again, like the mock */
+  .sp-badge-green {
+    top: -16px;
+    inset-inline-end: -6px;
+  }
+
+
+
+.sp-badge-num {
+  font-size:16px;
+}
+.sp-badge-label{
+  font-size:12px;
+}
+
+
+
+
+
+
+
+
+
+  
+  .sp-badge-orange {
+    bottom: -14px;
+    inset-inline-start: -6px;
+  }
+  .sp-banner-text {
+    min-width: 0;
+  }
+  .sp-banner-eyebrow {
+    font-size: 13px;
+    margin-bottom: 6px;
+    color:#5A5A5A;
   }
   .sp-banner-title {
+    font-size: 24px;
+    margin-bottom: 18px;
+  }
+  /* single column; the mock leads with تبرع آمن ومشفر (3rd in the DOM) */
+  /* mock: تبرع آمن + سهولة الدفع share the first row, وصول فوري wraps under */
+  .sp-banner-features {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px 18px;
+    margin-bottom: 24px;
+  }
+  .sp-banner-feature:nth-child(3) {
+    order: -1;
+  }
+  .sp-banner-feature {
+    font-size: 16px;
+    color:#484848;
+  }
+  .sp-feature-icon {
+    width: 40px;
+    height: 40px;
     font-size: 22px;
   }
-  .sp-banner-features {
-    grid-template-columns: 1fr;
+  /* two-button row: solid تبرع الآن on the start side, outline أين تذهب تبرعاتي؟ */
+  .sp-banner-cta {
+    display: flex;
+    gap: 12px;
   }
-  /* no room to overhang the artwork once the panel padding shrinks */
-  .sp-badge-green {
-    inset-inline-end: 10px;
+  .sp-banner-cta .sp-btn-green {
+    flex: 1.35 1 0;
+    font-size: 17px;
+    padding: 12px 10px;
+    border-radius: 24px;
   }
-  .sp-badge-orange {
-    bottom: 8px;
-    inset-inline-start: 10px;
+  .sp-btn-where {
+    display: flex;
+    flex: 1 1 0;
+     border-radius: 24px;
+border: 1px solid  #4C5C37;
+color:#4C5C37 !important;
+  }
+  /* --- Live community, per the mobile mock: the monthly goal gets its own
+     row, the three counters share the next one, the note centres under a
+     divider and the pill CTA spans the container --- */
+  .sp-stats-card {
+    padding: 20px 16px 16px;
+    border-radius: 18px;
+  }
+  .sp-stats-row {
+    gap: 18px 8px;
+    margin-bottom: 16px;
+  }
+  .sp-stat {
+    min-width: 0;
+  }
+  .sp-stat-goal {
+    flex: 1 1 100%;
+  }
+  .sp-stat-label {
+    font-size: 13px;
+    margin-bottom: 4px;
+  }
+  .sp-stat-value,
+  .sp-stat-value-green {
+    font-size: 20px;
+  }
+  .sp-stat-value-dark {
+    font-size: 20px;
+  }
+  .sp-progress-note {
+    font-size: 13px;
+    text-align: start;
+    border-top: 1px solid #ececec;
+    padding-top: 14px;
+    margin-bottom: 0;
+  }
+  .sp-community-cta .sp-btn-green {
+    width: 100%;
+    font-size: 15px;
+    padding: 13px 10px;
+  }
+  /* --- Where donations go, per the mobile mock: stacked cards at a tighter
+     scale, and the coloured band peeking above each card gets wider and
+     square-cornered --- */
+  .sp-alloc-row {
+    gap: 18px;
+  }
+  .sp-alloc-bar {
+    width: 90%;
+    border-radius: 20px;
+  }
+  .sp-alloc-box {
+    padding: 22px 18px 18px;
+  }
+  .sp-alloc-head {
+    margin-bottom: 16px;
+  }
+  .sp-alloc-icon {
+    width: 48px;
+    height: 48px;
+    font-size: 24px;
+  }
+  .sp-alloc-pct {
+    font-size: 40px;
+  }
+  .sp-alloc-title {
+    font-size: 18px;
+    margin-bottom: 10px;
+  }
+  .sp-alloc-desc {
+    font-size: 14px;
+    margin-bottom: 12px;
+  }
+  .sp-alloc-list {
+    margin-bottom: 14px;
+  }
+  .sp-alloc-list li {
+    font-size: 14px;
+    padding: 5px 0;
+  }
+  .sp-alloc-bullet {
+    width: 12px;
+    height: 12px;
+  }
+  .sp-alloc-track {
+    margin-bottom: 12px;
+  }
+  .sp-alloc-foot-text {
+    font-size: 14px;
+  }
+  /* --- Transparency strip, per the mobile mock: title + sub sit beside the
+     donut (copy on the RTL start side, ring on the end), and the legend
+     stacks full-width underneath. The main wrapper flattens into the grid. --- */
+  .sp-alloc-summary {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    align-items: center;
+    gap: 8px 18px;
+    padding: 24px 18px;
+  }
+  .sp-alloc-summary-main {
+    display: contents;
+  }
+  .sp-alloc-summary-ring {
+    grid-column: 1;
+    grid-row: 1 / 3;
+    width: 140px;
+    height: 147px;
+  }
+  .sp-alloc-summary-svg {
+    width: 100%;
+    height: 100%;
+  }
+  .sp-alloc-summary-title {
+    grid-column: 2;
+    align-self: end;
+    font-size: 20px;
+    margin-bottom: 0;
+  }
+  .sp-alloc-summary-sub {
+    grid-column: 2;
+    align-self: start;
+    font-size: 13px;
+    margin-bottom: 0;
+  }
+  /* mock lists the legend smallest-first (25 → 35 → 40) — data stays 40-first
+     for the cards and the desktop row */
+  .sp-alloc-summary-legend {
+    grid-column: 1 / -1;
+    flex-direction: column-reverse;
+    align-items: flex-start;
+    gap: 16px;
+    margin-top: 14px;
+  }
+  .sp-alloc-summary-total {
+    font-size: 24px;
+  }
+  .sp-alloc-summary-caption {
+    font-size: 12px;
+    color: #e1723b;
+  }
+  .sp-alloc-summary-dot {
+    width: 12px;
+    height: 12px;
+    margin-top: 5px;
+  }
+  .sp-alloc-summary-name {
+    font-size: 16px;
+  }
+  .sp-alloc-summary-share {
+    font-size: 13px;
+    margin-top: 2px;
+  }
+  /* --- Partners' dark funding band, per the mobile mock: stacked copy and a
+     full-width squarer تواصل معنا button --- */
+  .sp-dark-cta {
+    border-radius: 24px;
+    gap: 18px;
+  }
+  .sp-dark-cta-title {
+    font-size: 20px;
+  }
+  .sp-dark-cta-desc {
+    font-size: 14px;
+  }
+  .sp-dark-cta .sp-btn-light {
+    width: 100%;
+    font-size: 15px;
+    padding: 12px 10px;
+    border-radius: 24px;
+  }
+  /* --- Incubator courses, per the mobile mock: stacked cards at a tighter
+     scale with the full-width pill CTA --- */
+  .sp-course-row {
+    gap: 16px;
+  }
+  .sp-course-card {
+    padding: 20px 18px;
+  }
+  .sp-course-title {
+    font-size: 20px;
+    margin-bottom: 8px;
+  }
+  .sp-course-desc {
+    font-size: 14px;
+    margin-bottom: 12px;
+  }
+  .sp-course-meta {
+    font-size: 14px;
+    gap: 16px;
+    margin-bottom: 16px;
+  }
+  .sp-course-meta svg {
+    width: 20px;
+    height: 20px;
+  }
+  .sp-course-card .sp-btn-green {
+    font-size: 14px;
+    padding: 12px 10px;
   }
   .sp-story-slide {
     flex: 0 0 100%;
   }
-  /* no room to overhang the card once it spans the full container */
-  .sp-stories-prev {
-    inset-inline-start: 6px;
+  /* mock: the mobile card is shorter than the desktop 3/3.5 portrait */
+  .sp-story-slide .rs-card-bg {
+    aspect-ratio: 3 / 3.15;
   }
+  /* --- Untold stories, per the mobile mock: the chevrons go away in favour
+     of the white-pill dot pager, and the CTA strip flattens to a single
+     olive panel with the button on the inline end --- */
+  .sp-stories-prev,
   .sp-stories-next {
-    inset-inline-end: 6px;
+    display: none;
+  }
+  .sp-stories-dots {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    width: max-content;
+    margin: 18px auto 0;
+    padding: 8px 14px;
+    background: #ffffff;
+    border: 1px solid #4C5C37;
+    border-radius: 999px;
+  }
+  .sp-stories-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    border: 0;
+    padding: 0;
+    background: #c8c8c8;
+    cursor: pointer;
+  }
+  .sp-stories-dot.active {
+    width: 16px;
+    height: 16px;
+    background: #4c5c37;
+  }
+  .sp-stories-cta {
+    padding: 0;
+    background: transparent;
+    margin-top: 24px;
+  }
+  .sp-stories-cta::before {
+    display: none;
+  }
+  .sp-stories-strip {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 14px;
+    padding: 24px 20px;
+    border-radius: 24px;
+  }
+  .sp-stories-strip-title {
+    font-size: 18px;
+    margin-bottom: 4px;
+  }
+  .sp-stories-strip-desc {
+    font-size: 14px;
+  }
+  .sp-stories-strip .sp-btn-green {
+    align-self: flex-end;
+    font-size: 14px;
+    padding: 11px 22px;
+    border-radius: 24px;
+  }
+  .cr-section-head {
+    margin-bottom: 10px;
   }
   .sp-faq-visual {
     display: none;
@@ -1340,8 +1913,15 @@ background: rgba(237, 239, 235, 0.33);
     display: none;
   }
   .sp-faq-q {
-    font-size: 15px;
+    font-size: 16px;
     padding: 16px;
+  }
+  .sp-faq-a {
+    margin: 14px 16px 16px;
+    font-size: 14px;
+  }
+  .sp-faq-more {
+    display: flex;
   }
   .sp-section .marquee {
     margin-top: 24px;
@@ -1390,7 +1970,6 @@ background: rgba(237, 239, 235, 0.33);
   border: 1px solid #6d6d6d;
   border-radius: 20px;
   padding: 24px;
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06);
 }
 
 /* --- card header: icon on the RTL start side, brand marks on the other --- */
@@ -1548,8 +2127,16 @@ background: rgba(237, 239, 235, 0.33);
     font-size: 15px;
     margin-bottom: 20px;
   }
+
+  .cr-breadcrumb {
+    font-size: 15px;
+  }
+header .navbar .container {
+  border-bottom:1px solid #DADADA;
+}
+
   .sp-method-cta {
-    align-self: flex-end;
+    align-self: flex-start;
     gap: 10px;
     padding: 8px 22px;
     background: #ffffff;
@@ -2084,6 +2671,64 @@ font-size: 18px;
   border: 0;
 }
 
+/* --- screen 4: "التواصل" --- */
+.sp-contact-field {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+/* the envelope sits inside the frame, so the border lives on the wrapper and
+   the input itself is chrome-less */
+.sp-contact-input-wrap {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 44px;
+  padding: 10px 16px;
+  background: #ffffff;
+  border: 1px solid #DADADA;
+  border-radius: 8px;
+}
+.sp-contact-input-wrap:focus-within {
+  border-color: #4c5c37;
+}
+.sp-contact-input-icon {
+  display: inline-flex;
+  flex: 0 0 auto;
+  font-size: 19px;
+  color: #919191;
+}
+.sp-contact-input {
+  flex: 1 1 auto;
+  min-width: 0;
+  padding: 0;
+  background: transparent;
+  border: 0;
+  font-family: inherit;
+  font-size: 16px;
+  color: #1c1c1c;
+}
+.sp-contact-input:focus {
+  outline: none;
+}
+.sp-contact-input::placeholder {
+  color: #919191;
+}
+/* the field is required — same red the receipt drop zone uses */
+.sp-contact-input-wrap.is-invalid {
+  border-color: #c0392b;
+}
+.sp-contact-error {
+  margin: 0;
+  font-size: 13px;
+  font-weight: 600;
+  color: #c0392b;
+  text-align: start;
+}
+.sp-contact-note {
+  margin-top: 40px;
+}
+
 /* --- step footer (rule + prev / next) --- */
 .sp-wizard-nav {
   display: flex;
@@ -2136,7 +2781,7 @@ font-size: 18px;
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  padding: 12px 28px;
+  padding: 10px 12px;
   background: #4c5c37;
   border: 0;
   border-radius: 999px;
@@ -2167,69 +2812,69 @@ font-size: 18px;
   }
 }
 
-/* --- mobile mock (<768px): the steps stack icon-over-label, and each payment
-   option becomes a full-width row with the logo on the start edge. --- */
+/* --- mobile mock (<768px): the rail keeps one row and names only the step the
+   donor is on, and each payment option becomes a full-width row with the logo
+   on the start edge. --- */
 @media (max-width: 767.98px) {
   .sp-steps-card {
     margin-bottom: 32px;
     padding: 12px 14px 16px;
     border-radius: 14px;
   }
+  /* the frame around the card is the page's pale green here, and much thinner
+     than the desktop one */
   .sp-steps-card::before {
-    inset: -10px;
-    border-radius: 24px;
+    inset: -5px;
+    background: #EDEFEB;
+    border-radius: 18px;
   }
   .sp-steps-counter {
     font-size: 11px;
     margin-bottom: 8px;
+    color: #4C5C37;
   }
   .sp-steps {
     flex-wrap: nowrap;
-    gap: 4px;
+    justify-content: flex-start;
+    gap: 0;
   }
-  /* the label drops under the icon, and the joining rule stays on the icon's
-     row — a 2-column grid keeps both without absolute positioning */
+  /* every step but the last carries a rule, so they take the slack and the
+     rail ends flush with both edges of the card */
   .sp-step {
-    display: grid;
-    grid-template-columns: auto auto;
-    grid-template-areas:
-      "icon line"
-      "label label";
-    align-items: center;
-    justify-items: center;
-    gap: 6px 4px;
+    flex: 1 1 auto;
+    gap: 6px;
   }
   .sp-step:last-child {
-    grid-template-columns: auto;
-    grid-template-areas:
-      "icon"
-      "label";
+    flex: 0 0 auto;
   }
   .sp-step-icon {
-    grid-area: icon;
     width: 32px;
     height: 32px;
     flex: 0 0 32px;
     font-size: 17px;
   }
+  /* only the current step is named — the rest are bare circles joined by the
+     rules, which stretch to fill whatever the label leaves over */
   .sp-step-label {
-    grid-area: label;
-    font-size: 10px;
-    font-weight: 600;
-    text-align: center;
+    display: none;
+    font-size: 14px;
   }
   .sp-step.is-active .sp-step-label {
+    display: inline;
     font-weight: 800;
   }
   .sp-step-line {
-    grid-area: line;
-    width: 12px;
+    flex: 1 1 6px;
+    width: auto;
+    min-width: 6px;
   }
 
   .sp-pay-title {
-    font-size: 20px;
-    margin-bottom: 16px;
+    font-size: 24px;
+            margin: 40px 0px;
+            text-align: center;
   }
+
   .sp-pay-row {
     gap: 12px;
   }
@@ -2247,7 +2892,7 @@ font-size: 18px;
     gap: 10px;
   }
   .sp-pay-label {
-    font-size: 15px;
+    font-size: 18px;
   }
   .sp-pay-dot {
     width: 18px;
@@ -2265,14 +2910,14 @@ font-size: 18px;
     border-radius: 16px;
   }
   .sp-notes-title {
-    font-size: 15px;
+    font-size: 16px;
     margin-bottom: 12px;
   }
   .sp-notes-icon {
     font-size: 16px;
   }
   .sp-notes-list li {
-    font-size: 12px;
+    font-size: 14px;
     line-height: 1.9;
   }
   .sp-notes-foot {
@@ -2300,7 +2945,7 @@ font-size: 18px;
     margin-top: 14px;
   }
   .sp-transfer-label {
-    font-size: 11px;
+    font-size: 16px;
     margin-bottom: 6px;
   }
   .sp-transfer-field {
@@ -2309,7 +2954,7 @@ font-size: 18px;
     border-radius: 6px;
   }
   .sp-transfer-value {
-    font-size: 13px;
+    font-size: 18px;
   }
   .sp-transfer-copy {
     width: 24px;
@@ -2318,14 +2963,14 @@ font-size: 18px;
     font-size: 17px;
   }
   .sp-transfer-note {
-    font-size: 11px;
+    font-size: 14px;
   }
   .sp-notes--slim {
     padding: 14px 14px;
   }
   .sp-notes-line {
     align-items: flex-start;
-    font-size: 13px;
+    font-size: 15px;
   }
 
   .sp-proof-fields {
@@ -2334,13 +2979,13 @@ font-size: 18px;
     margin-bottom: 16px;
   }
   .sp-proof-label {
-    font-size: 11px;
+    font-size: 16px;
   }
   .sp-proof-input,
   .sp-proof-select {
     min-height: 40px;
     padding: 8px 12px;
-    font-size: 13px;
+    font-size: 15px;
   }
   .sp-drop {
     min-height: 0;
@@ -2349,19 +2994,19 @@ font-size: 18px;
     border-radius: 12px;
   }
   .sp-drop-icon {
-    width: 38px;
-    height: 38px;
+    width: 58px;
+    height: 58px;
     border-radius: 10px;
-    font-size: 21px;
+    font-size: 30px;
   }
   .sp-drop-title {
-    font-size: 16px;
+    font-size: 18px;
   }
   .sp-drop-browse {
-    font-size: 13px;
+    font-size: 14px;
   }
   .sp-drop-hint {
-    font-size: 11px;
+    font-size: 13px;
   }
   .sp-drop-file {
     padding: 10px 12px;
@@ -2369,5 +3014,34 @@ font-size: 18px;
   }
   .sp-drop-file-name {
     font-size: 12px;
+  }
+
+  .sp-contact-input-wrap {
+    min-height: 40px;
+    padding: 8px 12px;
+    gap: 8px;
+  }
+  .sp-contact-input-icon {
+    font-size: 18px;
+  }
+  .sp-contact-input {
+    font-size: 15px;
+  }
+  .sp-contact-note {
+    margin-top: 24px;
+  }
+  .sp-contact-error {
+    font-size: 11px;
+  }
+
+  .sp-toast {
+    top: 12px;
+    inset-inline: 12px;
+    gap: 8px;
+    padding: 14px;
+    align-items: flex-start;
+  }
+  .sp-toast-text {
+    font-size: 13px;
   }
 }

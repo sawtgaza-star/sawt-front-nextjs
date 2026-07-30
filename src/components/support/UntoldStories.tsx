@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { UNTOLD_STORIES } from "./untold-stories-data";
 
 const GAP = 20; // must match .sp-stories-track gap in support.css
@@ -38,6 +38,10 @@ function Chevron() {
 export default function UntoldStories() {
   const [index, setIndex] = useState(0);
   const [perView, setPerView] = useState(3);
+  // px offset of an in-progress pointer drag (null = not dragging)
+  const [dragDelta, setDragDelta] = useState<number | null>(null);
+  const dragStartX = useRef(0);
+  const viewportRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const onResize = () => setPerView(perViewFor(window.innerWidth));
@@ -49,6 +53,34 @@ export default function UntoldStories() {
   const maxIndex = Math.max(0, UNTOLD_STORIES.length - perView);
   // Clamp when the breakpoint shrinks the number of reachable slides.
   const safeIndex = Math.min(index, maxIndex);
+
+  /* Mouse/touch swiping: the track follows the pointer live, and on release a
+     drag past the threshold turns into one slide. In RTL the track advances
+     with a POSITIVE translateX (the next card waits on the left), so dragging
+     right = next; [dir="ltr"] mirrors that. */
+  const onPointerDown = (e: React.PointerEvent) => {
+    if (e.button !== 0 && e.pointerType === "mouse") return;
+    dragStartX.current = e.clientX;
+    setDragDelta(0);
+    e.currentTarget.setPointerCapture(e.pointerId);
+  };
+  const onPointerMove = (e: React.PointerEvent) => {
+    if (dragDelta === null) return;
+    setDragDelta(e.clientX - dragStartX.current);
+  };
+  const endDrag = () => {
+    if (dragDelta === null) return;
+    const width = viewportRef.current?.offsetWidth ?? 0;
+    const threshold = Math.min(60, width / 4);
+    const rtl = document.documentElement.dir !== "ltr";
+    const towardNext = rtl ? dragDelta : -dragDelta;
+    if (towardNext > threshold) {
+      setIndex(Math.min(maxIndex, safeIndex + 1));
+    } else if (towardNext < -threshold) {
+      setIndex(Math.max(0, safeIndex - 1));
+    }
+    setDragDelta(null);
+  };
 
   return (
     <section className="sp-section" style={{ paddingTop: 0 }}>
@@ -78,11 +110,20 @@ export default function UntoldStories() {
             <Chevron />
           </button>
 
-          <div className="sp-stories-viewport">
+          <div
+            className="sp-stories-viewport"
+            ref={viewportRef}
+            onPointerDown={onPointerDown}
+            onPointerMove={onPointerMove}
+            onPointerUp={endDrag}
+            onPointerCancel={endDrag}
+            onDragStart={(e) => e.preventDefault()}
+          >
             <div
               className="sp-stories-track"
               style={{
-                transform: `translateX(calc(${safeIndex} * (100% + ${GAP}px) / ${perView}))`,
+                transform: `translateX(calc(${safeIndex} * (100% + ${GAP}px) / ${perView} + ${dragDelta ?? 0}px))`,
+                transition: dragDelta !== null ? "none" : undefined,
               }}
             >
               {UNTOLD_STORIES.map((s) => (
@@ -129,6 +170,20 @@ export default function UntoldStories() {
           >
             <Chevron />
           </button>
+        </div>
+
+        {/* mobile mock: the side chevrons give way to this dot pager — CSS
+            hides it on desktop and hides the chevrons under 768px */}
+        <div className="sp-stories-dots">
+          {Array.from({ length: maxIndex + 1 }, (_, i) => (
+            <button
+              key={i}
+              type="button"
+              className={"sp-stories-dot" + (i === safeIndex ? " active" : "")}
+              aria-label={`الشريحة ${i + 1}`}
+              onClick={() => setIndex(i)}
+            ></button>
+          ))}
         </div>
 
         {/* .sp-stories-cta is the patterned frame; .sp-stories-strip is the

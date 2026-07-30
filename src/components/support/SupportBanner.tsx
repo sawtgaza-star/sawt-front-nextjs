@@ -8,7 +8,7 @@ import {
    and the two floating counters from the mock. */
 export default function SupportBanner() {
   return (
-    <section className="sp-section" style={{ paddingTop: 0 }}>
+    <section className="sp-section sp-banner-section" style={{ paddingTop: 0 }}>
       <div className="container">
         {/* .sp-banner is the patterned frame; .sp-banner-inner is the olive-50
             panel that sits on top of it */}
@@ -59,9 +59,18 @@ export default function SupportBanner() {
                 </div>
               </div>
 
-              <a href="/support/methods" className="sp-btn-green">
-                <span data-i18n="support_donate_now">تبرع الآن</span>
-              </a>
+              {/* wrapper is display:contents on desktop; becomes the two-button
+                  row of the mobile mock, where the outline button appears */}
+              <div className="sp-banner-cta">
+                <a href="/support/methods" className="sp-btn-green">
+                  <span data-i18n="support_donate_now">تبرع الآن</span>
+                </a>
+                <a href="#where-donations" className="sp-btn-where">
+                  <span data-i18n="support_banner_where">
+                    أين تذهب تبرعاتي؟
+                  </span>
+                </a>
+              </div>
             </div>
 
             <div className="sp-banner-media">
