@@ -633,7 +633,8 @@ export const translations: any = {
       "في الخطوة التالية سيتم تحويلك مباشرة إلى صفحة الدفع لإتمام العملية.",
     checkout_notes_attach: "المرجو إرفاق هذه الفاتورة في المرفقات بالخطوة التالية.",
     checkout_prev: "السابق",
-    checkout_go_to_platform: "الانتقال إلى المنصة والمتابعة",
+    checkout_next: "التالي",
+    checkout_finish: "اتمام العملية",
 
     // Wizard step 2 — bank details (بيانات التحويل)
     checkout_transfer_title: "بيانات التحويل",
@@ -665,6 +666,18 @@ export const translations: any = {
       "الصيغة غير مدعومة، الرجاء رفع ملف png أو jpg أو pdf.",
     checkout_proof_error_size: "حجم الملف أكبر من 5 ميجابايت.",
     checkout_proof_remove: "إزالة",
+    checkout_contact_title: "التواصل",
+    checkout_contact_email: "البريد الالكتروني",
+    checkout_contact_email_required:
+      "الرجاء إدخال البريد الالكتروني للتواصل معك.",
+    checkout_contact_email_invalid: "الرجاء إدخال بريد الكتروني صحيح.",
+    checkout_contact_note:
+      "شكرا لك، تم استلام بيانات التبرع بنجاح. سنقوم بالتواصل معك بعد تأكيد وصول الحوالة.",
+
+    // Donation confirmation toast (shown on /support after the wizard)
+    support_donation_toast:
+      "شكرا لك، تم استلام بيانات التبرع بنجاح. سنقوم بالتواصل معك قريبًا لتأكيد التبرع.",
+    support_donation_toast_close: "إغلاق",
 
     // Donate box
     support_donate_title_pre: "كيف تريد ان",
@@ -1423,7 +1436,8 @@ export const translations: any = {
     checkout_notes_attach:
       "Please attach this invoice in the next step's attachments.",
     checkout_prev: "Previous",
-    checkout_go_to_platform: "Go to the platform and continue",
+    checkout_next: "Next",
+    checkout_finish: "Complete the process",
 
     // Wizard step 2 — bank details (بيانات التحويل)
     checkout_transfer_title: "Transfer details",
@@ -1456,6 +1470,18 @@ export const translations: any = {
       "Unsupported format — please upload a png, jpg or pdf file.",
     checkout_proof_error_size: "The file is larger than 5MB.",
     checkout_proof_remove: "Remove",
+    checkout_contact_title: "Contact",
+    checkout_contact_email: "Email address",
+    checkout_contact_email_required:
+      "Please enter the email address we can reach you on.",
+    checkout_contact_email_invalid: "Please enter a valid email address.",
+    checkout_contact_note:
+      "Thank you — your donation details were received. We will contact you once the transfer is confirmed.",
+
+    // Donation confirmation toast (shown on /support after the wizard)
+    support_donation_toast:
+      "Thank you — your donation details were received. We will contact you shortly to confirm the donation.",
+    support_donation_toast_close: "Close",
 
     // Donate box
     support_donate_title_pre: "How would you like",

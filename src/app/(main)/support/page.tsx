@@ -1,6 +1,7 @@
 import "@/styles/creators.css";
 import "@/styles/support.css";
 import LegacyInit from "@/components/LegacyInit";
+import DonationToast from "@/components/support/DonationToast";
 import SupportHero from "@/components/support/SupportHero";
 import DonateSection from "@/components/support/DonateSection";
 import SupportBanner from "@/components/support/SupportBanner";
@@ -19,6 +20,8 @@ export default function Page() {
   return (
     <div className="sp-page">
       <LegacyInit page="support" />
+      {/* only renders when the checkout wizard just sent the donor back here */}
+      <DonationToast />
       <SupportHero />
       <main>
         {/* anchor target for every "تبرع الآن" button further down the page */}

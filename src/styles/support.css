@@ -31,6 +31,73 @@
   background-color: #EDEFEB;
 }
 
+/* ---------- Donation confirmation toast ----------
+   Raised by the checkout wizard's "اتمام العملية" and shown once when it drops
+   the donor back on this page. Same orange panel as the wizard's notes, but
+   floating over the sticky nav (z-index 1030 in style.css). */
+.sp-toast {
+  position: fixed;
+  z-index: 1200;
+  top: 24px;
+  inset-inline: 16px;
+  margin-inline: auto;
+  max-width: 720px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 18px 24px;
+  background: #FFF3EB;
+  border: 1px solid #FFD9BE;
+  /* the accent sits on the panel's start edge (= right in RTL) */
+  border-inline-start: 3px solid #ff7420;
+  border-radius: 12px;
+  box-shadow: 0 12px 32px rgba(28, 28, 28, 0.14);
+  animation: sp-toast-in 0.25s ease-out;
+}
+@keyframes sp-toast-in {
+  from {
+    opacity: 0;
+    transform: translateY(-12px);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .sp-toast {
+    animation: none;
+  }
+}
+.sp-toast-icon {
+  display: inline-flex;
+  flex: 0 0 auto;
+  font-size: 20px;
+  color: #161616;
+}
+.sp-toast-text {
+  flex: 1 1 auto;
+  margin: 0;
+  font-size: 18px;
+  font-weight: 800;
+  color: #1c1c1c;
+  text-align: start;
+}
+.sp-toast-close {
+  flex: 0 0 auto;
+  width: 28px;
+  height: 28px;
+  padding: 0;
+  background: transparent;
+  border: 0;
+  border-radius: 50%;
+  font-size: 24px;
+  line-height: 1;
+  color: #6d6d6d;
+  cursor: pointer;
+  transition: background 0.2s ease, color 0.2s ease;
+}
+.sp-toast-close:hover {
+  background: #ffe0c9;
+  color: #1c1c1c;
+}
+
 /* ---------- 1. Donate ("كيف تريد ان تدعم؟") ---------- */
 .sp-donate-row {
   display: flex;
@@ -1390,7 +1457,6 @@ background: rgba(237, 239, 235, 0.33);
   border: 1px solid #6d6d6d;
   border-radius: 20px;
   padding: 24px;
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06);
 }
 
 /* --- card header: icon on the RTL start side, brand marks on the other --- */
@@ -1548,8 +1614,16 @@ background: rgba(237, 239, 235, 0.33);
     font-size: 15px;
     margin-bottom: 20px;
   }
+
+  .cr-breadcrumb {
+    font-size: 15px;
+  }
+header .navbar .container {
+  border-bottom:1px solid #DADADA;
+}
+
   .sp-method-cta {
-    align-self: flex-end;
+    align-self: flex-start;
     gap: 10px;
     padding: 8px 22px;
     background: #ffffff;
@@ -2084,6 +2158,64 @@ font-size: 18px;
   border: 0;
 }
 
+/* --- screen 4: "التواصل" --- */
+.sp-contact-field {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+/* the envelope sits inside the frame, so the border lives on the wrapper and
+   the input itself is chrome-less */
+.sp-contact-input-wrap {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 44px;
+  padding: 10px 16px;
+  background: #ffffff;
+  border: 1px solid #DADADA;
+  border-radius: 8px;
+}
+.sp-contact-input-wrap:focus-within {
+  border-color: #4c5c37;
+}
+.sp-contact-input-icon {
+  display: inline-flex;
+  flex: 0 0 auto;
+  font-size: 19px;
+  color: #919191;
+}
+.sp-contact-input {
+  flex: 1 1 auto;
+  min-width: 0;
+  padding: 0;
+  background: transparent;
+  border: 0;
+  font-family: inherit;
+  font-size: 16px;
+  color: #1c1c1c;
+}
+.sp-contact-input:focus {
+  outline: none;
+}
+.sp-contact-input::placeholder {
+  color: #919191;
+}
+/* the field is required — same red the receipt drop zone uses */
+.sp-contact-input-wrap.is-invalid {
+  border-color: #c0392b;
+}
+.sp-contact-error {
+  margin: 0;
+  font-size: 13px;
+  font-weight: 600;
+  color: #c0392b;
+  text-align: start;
+}
+.sp-contact-note {
+  margin-top: 40px;
+}
+
 /* --- step footer (rule + prev / next) --- */
 .sp-wizard-nav {
   display: flex;
@@ -2136,7 +2268,7 @@ font-size: 18px;
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  padding: 12px 28px;
+  padding: 10px 12px;
   background: #4c5c37;
   border: 0;
   border-radius: 999px;
@@ -2167,69 +2299,69 @@ font-size: 18px;
   }
 }
 
-/* --- mobile mock (<768px): the steps stack icon-over-label, and each payment
-   option becomes a full-width row with the logo on the start edge. --- */
+/* --- mobile mock (<768px): the rail keeps one row and names only the step the
+   donor is on, and each payment option becomes a full-width row with the logo
+   on the start edge. --- */
 @media (max-width: 767.98px) {
   .sp-steps-card {
     margin-bottom: 32px;
     padding: 12px 14px 16px;
     border-radius: 14px;
   }
+  /* the frame around the card is the page's pale green here, and much thinner
+     than the desktop one */
   .sp-steps-card::before {
-    inset: -10px;
-    border-radius: 24px;
+    inset: -5px;
+    background: #EDEFEB;
+    border-radius: 18px;
   }
   .sp-steps-counter {
     font-size: 11px;
     margin-bottom: 8px;
+    color: #4C5C37;
   }
   .sp-steps {
     flex-wrap: nowrap;
-    gap: 4px;
+    justify-content: flex-start;
+    gap: 0;
   }
-  /* the label drops under the icon, and the joining rule stays on the icon's
-     row — a 2-column grid keeps both without absolute positioning */
+  /* every step but the last carries a rule, so they take the slack and the
+     rail ends flush with both edges of the card */
   .sp-step {
-    display: grid;
-    grid-template-columns: auto auto;
-    grid-template-areas:
-      "icon line"
-      "label label";
-    align-items: center;
-    justify-items: center;
-    gap: 6px 4px;
+    flex: 1 1 auto;
+    gap: 6px;
   }
   .sp-step:last-child {
-    grid-template-columns: auto;
-    grid-template-areas:
-      "icon"
-      "label";
+    flex: 0 0 auto;
   }
   .sp-step-icon {
-    grid-area: icon;
     width: 32px;
     height: 32px;
     flex: 0 0 32px;
     font-size: 17px;
   }
+  /* only the current step is named — the rest are bare circles joined by the
+     rules, which stretch to fill whatever the label leaves over */
   .sp-step-label {
-    grid-area: label;
-    font-size: 10px;
-    font-weight: 600;
-    text-align: center;
+    display: none;
+    font-size: 14px;
   }
   .sp-step.is-active .sp-step-label {
+    display: inline;
     font-weight: 800;
   }
   .sp-step-line {
-    grid-area: line;
-    width: 12px;
+    flex: 1 1 6px;
+    width: auto;
+    min-width: 6px;
   }
 
   .sp-pay-title {
-    font-size: 20px;
-    margin-bottom: 16px;
+    font-size: 24px;
+            margin: 40px 0px;
+            text-align: center;
   }
+
   .sp-pay-row {
     gap: 12px;
   }
@@ -2247,7 +2379,7 @@ font-size: 18px;
     gap: 10px;
   }
   .sp-pay-label {
-    font-size: 15px;
+    font-size: 18px;
   }
   .sp-pay-dot {
     width: 18px;
@@ -2265,14 +2397,14 @@ font-size: 18px;
     border-radius: 16px;
   }
   .sp-notes-title {
-    font-size: 15px;
+    font-size: 16px;
     margin-bottom: 12px;
   }
   .sp-notes-icon {
     font-size: 16px;
   }
   .sp-notes-list li {
-    font-size: 12px;
+    font-size: 14px;
     line-height: 1.9;
   }
   .sp-notes-foot {
@@ -2300,7 +2432,7 @@ font-size: 18px;
     margin-top: 14px;
   }
   .sp-transfer-label {
-    font-size: 11px;
+    font-size: 16px;
     margin-bottom: 6px;
   }
   .sp-transfer-field {
@@ -2309,7 +2441,7 @@ font-size: 18px;
     border-radius: 6px;
   }
   .sp-transfer-value {
-    font-size: 13px;
+    font-size: 18px;
   }
   .sp-transfer-copy {
     width: 24px;
@@ -2318,14 +2450,14 @@ font-size: 18px;
     font-size: 17px;
   }
   .sp-transfer-note {
-    font-size: 11px;
+    font-size: 14px;
   }
   .sp-notes--slim {
     padding: 14px 14px;
   }
   .sp-notes-line {
     align-items: flex-start;
-    font-size: 13px;
+    font-size: 15px;
   }
 
   .sp-proof-fields {
@@ -2334,13 +2466,13 @@ font-size: 18px;
     margin-bottom: 16px;
   }
   .sp-proof-label {
-    font-size: 11px;
+    font-size: 16px;
   }
   .sp-proof-input,
   .sp-proof-select {
     min-height: 40px;
     padding: 8px 12px;
-    font-size: 13px;
+    font-size: 15px;
   }
   .sp-drop {
     min-height: 0;
@@ -2349,19 +2481,19 @@ font-size: 18px;
     border-radius: 12px;
   }
   .sp-drop-icon {
-    width: 38px;
-    height: 38px;
+    width: 58px;
+    height: 58px;
     border-radius: 10px;
-    font-size: 21px;
+    font-size: 30px;
   }
   .sp-drop-title {
-    font-size: 16px;
+    font-size: 18px;
   }
   .sp-drop-browse {
-    font-size: 13px;
+    font-size: 14px;
   }
   .sp-drop-hint {
-    font-size: 11px;
+    font-size: 13px;
   }
   .sp-drop-file {
     padding: 10px 12px;
@@ -2369,5 +2501,34 @@ font-size: 18px;
   }
   .sp-drop-file-name {
     font-size: 12px;
+  }
+
+  .sp-contact-input-wrap {
+    min-height: 40px;
+    padding: 8px 12px;
+    gap: 8px;
+  }
+  .sp-contact-input-icon {
+    font-size: 18px;
+  }
+  .sp-contact-input {
+    font-size: 15px;
+  }
+  .sp-contact-note {
+    margin-top: 24px;
+  }
+  .sp-contact-error {
+    font-size: 11px;
+  }
+
+  .sp-toast {
+    top: 12px;
+    inset-inline: 12px;
+    gap: 8px;
+    padding: 14px;
+    align-items: flex-start;
+  }
+  .sp-toast-text {
+    font-size: 13px;
   }
 }
