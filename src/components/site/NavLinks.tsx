@@ -96,8 +96,11 @@ export default function NavLinks() {
       <li className="nav-item ms-lg-3">
         {" "}
         <a
-          className="nav-link nav-link-back font-16"
-          href="#"
+          className={
+            "nav-link nav-link-back font-16" +
+            (pathname === "/incubator" ? " active" : "")
+          }
+          href="/incubator"
           style={{ color: "rgba(76, 92, 55, 1) !important" }}
           data-i18n="nav_incubator"
         >
