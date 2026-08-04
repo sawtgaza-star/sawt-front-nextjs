@@ -538,6 +538,8 @@ border: 1px solid  #DADADA;
 }
 
 .inc-course-card {
+  /* anchors the .inc-course-link full-card overlay */
+  position: relative;
   display: flex;
   flex-direction: column;
   min-height: 342px;
@@ -545,6 +547,13 @@ border: 1px solid  #DADADA;
   border-radius: 16px;
   border: 1px solid  #DADADA;
   overflow: hidden;
+}
+
+/* the whole card links to its course page; the CTA is raised above it */
+.inc-course-link {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
 }
 /* the mock's middle card: outlined, no photo */
 .inc-course-card.is-featured {
@@ -677,6 +686,9 @@ border: 1px solid  #DADADA;
 }
 
 .inc-course-cta {
+  /* stays clickable above the full-card overlay link */
+  position: relative;
+  z-index: 2;
   display: flex;
   align-items: center;
   justify-content: center;

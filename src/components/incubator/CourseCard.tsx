@@ -21,6 +21,14 @@ export default function CourseCard({ course }: { course: PopularCourse }) {
     <article
       className={`inc-course-card${course.featured ? " is-featured" : ""}`}
     >
+      {/* full-card overlay link to the course detail page; the CTA sits above
+          it (z-index) so it stays independently clickable */}
+      <a
+        className="inc-course-link"
+        href={course.href}
+        aria-label={course.title}
+      ></a>
+
       {course.image && (
         <div className="inc-course-media">
           <img src={course.image} alt="" />

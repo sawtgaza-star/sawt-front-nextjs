@@ -14,6 +14,8 @@ export type CourseMeta = {
 
 export type PopularCourse = {
   key: string;
+  /* course detail page — the whole card is a link (overlay), /courses/[key] */
+  href: string;
   /* photo card vs the bordered, image-less featured card */
   featured?: boolean;
   image?: string;
@@ -35,6 +37,7 @@ export type PopularCourse = {
 export const POPULAR_COURSES: PopularCourse[] = [
   {
     key: "graphic-design",
+    href: "/courses/graphic-design",
     image: "/assets/images/Rectangle 596.png",
     category: "التصميم",
     categoryKey: "inc_course_cat_design",
@@ -49,6 +52,7 @@ export const POPULAR_COURSES: PopularCourse[] = [
   },
   {
     key: "data-analysis",
+    href: "/courses/data-analysis",
     featured: true,
     title: "تحليل البيانات",
     titleKey: "inc_course_data_title",
@@ -68,11 +72,12 @@ export const POPULAR_COURSES: PopularCourse[] = [
     cta: {
       label: "تفاصيل الكورس",
       labelKey: "inc_course_details_cta",
-      href: "#",
+      href: "/courses/data-analysis",
     },
   },
   {
     key: "digital-marketing",
+    href: "/courses/digital-marketing",
     image: "/assets/images/Rectangle 596.png",
     category: "التسويق",
     categoryKey: "inc_course_cat_marketing",
