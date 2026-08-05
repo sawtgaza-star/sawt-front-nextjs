@@ -38,10 +38,10 @@ export default function AboutIntro() {
               <div className="member-card about-sec-leaf" dir="rtl">
                 {" "}
                 <img
-                  src="/assets/images/صوت 1.png"
+                  src="/assets/images/شعار صوت اخضر.svg"
                   alt=""
                   width="100"
-                  height="70"
+                  height="100"
                 />{" "}
               </div>{" "}
             </div>{" "}

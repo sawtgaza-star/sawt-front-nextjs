@@ -1,6 +1,6 @@
 // @ts-nocheck
 /* eslint-disable */
-/* Desktop "روابط سريعة" column. */
+/* Desktop "اقسام صوت" column. */
 export default function FooterQuickLinks() {
   return (
     <div
@@ -10,45 +10,31 @@ export default function FooterQuickLinks() {
       {" "}
       <h5
         className="fw-bold mb-4 text-white"
-        data-i18n="footer_quick_links"
+        data-i18n="footer_sawt_sections"
       >
-        روابط سريعة
+        اقسام صوت
       </h5>{" "}
       <ul className="list-unstyled p-0 footer-links">
         {" "}
         <li className="mb-4">
           {" "}
-          <a href="#" className="text-white text-decoration-none small">
+          <a href="/" className="text-white text-decoration-none small">
             {" "}
-            <span data-i18n="footer_backstage">الكواليس</span>
+            <span data-i18n="footer_sawt_platform">منصة صوت</span>
+          </a>{" "}
+        </li>{" "}
+        <li className="mb-4">
+          {" "}
+          <a href="/incubator" className="text-white text-decoration-none small">
+            {" "}
+            <span data-i18n="nav_incubator">حاضنة صوت</span>
           </a>{" "}
         </li>{" "}
         <li className="mb-4">
           {" "}
           <a href="#" className="text-white text-decoration-none small">
             {" "}
-            <span data-i18n="footer_media_kit">MEDIA KIT</span>
-          </a>{" "}
-        </li>{" "}
-        <li className="mb-4">
-          {" "}
-          <a href="#" className="text-white text-decoration-none small">
-            {" "}
-            <span data-i18n="footer_impact_stories">Impact Stories</span>
-          </a>{" "}
-        </li>{" "}
-        <li className="mb-4">
-          {" "}
-          <a href="#" className="text-white text-decoration-none small">
-            {" "}
-            <span data-i18n="footer_blog">المدونة</span>
-          </a>{" "}
-        </li>{" "}
-        <li className="mb-4">
-          {" "}
-          <a href="#" className="text-white text-decoration-none small">
-            {" "}
-            <span data-i18n="footer_faq">الأسئلة الشائعة</span>
+            <span data-i18n="nav_media">صوت ميديا</span>
           </a>{" "}
         </li>{" "}
       </ul>{" "}

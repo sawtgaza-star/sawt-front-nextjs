@@ -1,0 +1,197 @@
+/* Site-wide entrance + scroll-reveal animations.
+   Every rule is gated on html.sawt-anim, which is only added by an inline
+   script in the root layout when JS runs AND the user has no reduced-motion
+   preference — so content is never hidden without JS and never animated for
+   reduced-motion users. The media query below is a second guard for users
+   who enable reduced motion after the page has loaded. */
+
+@media (prefers-reduced-motion: no-preference) {
+  /* Opacity-only: a transform on <body> would re-anchor position:fixed
+     descendants (.theme-toggle-and-up, .header-bar.is-fixed) to the body
+     for the duration of the animation, making them jump on load. */
+  html.sawt-anim body.sawt-page-in {
+    animation: sawt-page-in 0.6s cubic-bezier(0.22, 1, 0.36, 1) both;
+  }
+
+  html.sawt-anim [data-sawt-reveal] {
+    opacity: 0;
+    transform: translateY(24px);
+    transition:
+      opacity 0.6s cubic-bezier(0.22, 1, 0.36, 1) var(--sawt-delay, 0ms),
+      transform 0.6s cubic-bezier(0.22, 1, 0.36, 1) var(--sawt-delay, 0ms);
+  }
+
+  html.sawt-anim [data-sawt-reveal].sawt-in {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes sawt-page-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* ------------------------------------------------------------------ */
+/* Micro-interactions. The standalone translate/scale properties are   */
+/* used on legacy elements on purpose: they compose with the existing  */
+/* transform values (branch rotations, caption centering) instead of   */
+/* overriding them.                                                    */
+/* ------------------------------------------------------------------ */
+
+@media (prefers-reduced-motion: no-preference) {
+  /* Buttons: press-down on click, visible keyboard focus.
+     .btn-control-custom keeps its own legacy hover transform. */
+  html.sawt-anim .btn:not(.btn-control-custom) {
+    transition:
+      translate 0.25s cubic-bezier(0.33, 1, 0.68, 1),
+      scale 0.25s cubic-bezier(0.33, 1, 0.68, 1),
+      box-shadow 0.25s cubic-bezier(0.33, 1, 0.68, 1),
+      background-color 0.25s ease,
+      color 0.25s ease,
+      border-color 0.25s ease;
+  }
+  html.sawt-anim .btn:not(.btn-control-custom):active {
+    translate: 0 0;
+    scale: 0.98;
+    transition-duration: 0.1s;
+  }
+  html.sawt-anim .btn:focus-visible {
+    outline: 2px solid rgba(76, 92, 55, 0.45);
+    outline-offset: 2px;
+  }
+
+  /* Pinned header slides in a touch softer than the legacy navSlideDown. */
+  html.sawt-anim .header-bar.is-fixed {
+    animation: sawt-nav-in 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  /* Decorative olive branches drift very slowly (composes with each
+     branch's legacy rotate/mirror transform). */
+  html.sawt-anim .olive-branch {
+    animation: sawt-branch-drift 12s ease-in-out infinite alternate;
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    html.sawt-anim .btn:not(.btn-control-custom):hover {
+      translate: 0 -1px;
+    }
+
+    /* Arrow icons nudge in the reading direction inside hovered
+       buttons / read-more links. */
+    html.sawt-anim .btn .arrow,
+    html.sawt-anim .readmore .arrow {
+      transition: translate 0.25s cubic-bezier(0.33, 1, 0.68, 1);
+    }
+    html.sawt-anim .btn:hover .arrow,
+    html.sawt-anim .readmore:hover .arrow {
+      translate: -3px 0;
+    }
+    html[dir="ltr"].sawt-anim .btn:hover .arrow,
+    html[dir="ltr"].sawt-anim .readmore:hover .arrow {
+      translate: 3px 0;
+    }
+
+    /* Cards: gentle lift + soft shadow. .news-card keeps its legacy
+       -2px lift; .platform-card keeps its legacy hover shadow. */
+    html.sawt-anim .platform-card,
+    html.sawt-anim .team-member-card,
+    html.sawt-anim .cr-stat-card,
+    html.sawt-anim .cr-company-card,
+    html.sawt-anim .sp-course-card,
+    html.sawt-anim .crs-trainer-card,
+    html.sawt-anim .crs-goal-card,
+    html.sawt-anim .crs-outcome-card,
+    html.sawt-anim .crs-req-card,
+    html.sawt-anim .comments-card,
+    html.sawt-anim .inc-event-card,
+    html.sawt-anim .inc-expert-card,
+    html.sawt-anim .inc-testi-card {
+      transition:
+        translate 0.3s cubic-bezier(0.33, 1, 0.68, 1),
+        box-shadow 0.3s cubic-bezier(0.33, 1, 0.68, 1);
+    }
+    html.sawt-anim .platform-card:hover,
+    html.sawt-anim .team-member-card:hover,
+    html.sawt-anim .cr-stat-card:hover,
+    html.sawt-anim .cr-company-card:hover,
+    html.sawt-anim .sp-course-card:hover,
+    html.sawt-anim .crs-trainer-card:hover,
+    html.sawt-anim .crs-goal-card:hover,
+    html.sawt-anim .crs-outcome-card:hover,
+    html.sawt-anim .crs-req-card:hover,
+    html.sawt-anim .comments-card:hover,
+    html.sawt-anim .inc-event-card:hover,
+    html.sawt-anim .inc-expert-card:hover,
+    html.sawt-anim .inc-testi-card:hover {
+      translate: 0 -6px;
+    }
+    html.sawt-anim .team-member-card:hover,
+    html.sawt-anim .cr-stat-card:hover,
+    html.sawt-anim .cr-company-card:hover,
+    html.sawt-anim .sp-course-card:hover,
+    html.sawt-anim .crs-trainer-card:hover,
+    html.sawt-anim .crs-goal-card:hover,
+    html.sawt-anim .crs-outcome-card:hover,
+    html.sawt-anim .crs-req-card:hover,
+    html.sawt-anim .comments-card:hover,
+    html.sawt-anim .inc-event-card:hover,
+    html.sawt-anim .inc-expert-card:hover,
+    html.sawt-anim .inc-testi-card:hover {
+      box-shadow: 0 14px 30px rgba(20, 26, 14, 0.1);
+    }
+
+    /* Card images zoom slightly; the clip only exists for cards that
+       actually have a top image. */
+    html.sawt-anim .card:has(> .card-img-top) {
+      overflow: hidden;
+    }
+    html.sawt-anim .card .card-img-top {
+      transition: scale 0.5s cubic-bezier(0.33, 1, 0.68, 1);
+    }
+    html.sawt-anim .card:hover .card-img-top {
+      scale: 1.045;
+    }
+
+    /* Icons */
+    html.sawt-anim .feature-item .icon-box {
+      transition:
+        translate 0.3s ease,
+        scale 0.3s ease;
+    }
+    html.sawt-anim .feature-item:hover .icon-box {
+      translate: 0 -2px;
+      scale: 1.05;
+    }
+    html.sawt-anim .cr-stat-card .cr-stat-icon {
+      transition: scale 0.3s ease;
+    }
+    html.sawt-anim .cr-stat-card:hover .cr-stat-icon {
+      scale: 1.08;
+    }
+  }
+}
+
+@keyframes sawt-nav-in {
+  from {
+    transform: translateY(-100%);
+    opacity: 0.4;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+@keyframes sawt-branch-drift {
+  from {
+    translate: 0 0;
+  }
+  to {
+    translate: 0 -12px;
+  }
+}

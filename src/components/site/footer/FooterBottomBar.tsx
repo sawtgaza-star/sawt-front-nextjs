@@ -5,8 +5,8 @@ export default function FooterBottomBar() {
   return (
     <>
       <hr
-        className="text-white opacity-25"
-        style={{ width: "95%", margin: "20px auto" }}
+        className="opacity-25"
+        style={{ width: "95%", margin: "20px auto", color: "#B6B6B6" }}
       />{" "}
       <div className="mb-2" style={{ width: "95%", margin: "0 auto" }}>
         {" "}
@@ -41,8 +41,7 @@ export default function FooterBottomBar() {
                 © جميع الحقوق محفوظة. 2026
               </span>{" "}
               <span
-                className="text-white"
-                style={{ backgroundColor: "#e1723b" }}
+                className="text-white footer-brand-highlight"
                 data-i18n="footer_rights_brand"
               >
                 SAWTGAZA

@@ -25,7 +25,8 @@ export async function initOwlSliders() {
       "<span class='arrow'>›</span>",
     ],
     responsive: {
-      0: { items: 1 },
+      // الجوال: بطاقة كاملة + نصف البطاقة التالية (autoWidth + عرض البطاقة بالـ CSS)
+      0: { items: 1, nav: false, loop: false, autoWidth: true, margin: 12 },
       600: { items: 2 },
       1000: { items: 3 },
     },
@@ -42,8 +43,8 @@ export async function initOwlSliders() {
       "<span class='arrow'>›</span>",
     ],
     responsive: {
-      // الجوال: بطاقة في المنتصف مع ظهور طرف البطاقتين المجاورتين، والتنقّل بالنقاط
-      0: { items: 1, center: true, stagePadding: 58, margin: 12, nav: false, dots: true },
+      // الجوال: بطاقة في المنتصف مع ظهور طرف البطاقتين المجاورتين، بدون نقاط تنقّل
+      0: { items: 1, center: true, stagePadding: 58, margin: 12, nav: false, dots: false },
       600: { items: 2 },
       1100: { items: 3 },
       1300: { items: 4 },
@@ -75,16 +76,26 @@ export async function initOwlSliders() {
       "<i class='fas fa-chevron-left'></i>",
     ],
     responsive: {
-      0: { items: 1 },
+      // الجوال: بطاقة في المنتصف مع نصف بطاقة على كل جانب (ضبابية)
+      0: { items: 1, center: true, stagePadding: 70, margin: 10, nav: false },
+      400: { items: 1, center: true, stagePadding: 95, margin: 10, nav: false },
       600: { items: 2 },
       1000: { items: 4 },
     },
     onTranslated: highlightMiddle,
     onInitialized: highlightMiddle,
+    onRefreshed: highlightMiddle,
   });
 
   function highlightMiddle() {
     $(".team-carousel .owl-item").removeClass("center-highlight");
+    // في وضع ‎center‎ (الجوال) يضيف Owl صنف ‎.center‎ للبطاقة الوسطى، بينما
+    // ‎.active‎ يشمل الجارتين الظاهرتين ضمن ‎stagePadding‎ — فنعتمد ‎.center‎ وحدها
+    var centered = $(".team-carousel .owl-item.center");
+    if (centered.length) {
+      centered.addClass("center-highlight");
+      return;
+    }
     var activeItems = $(".team-carousel .owl-item.active");
     if (activeItems.length === 4) {
       $(activeItems[1]).addClass("center-highlight");

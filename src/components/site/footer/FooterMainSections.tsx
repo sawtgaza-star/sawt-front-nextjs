@@ -23,7 +23,7 @@ export default function FooterMainSections() {
             <li className="mb-4">
               {" "}
               <a
-                href="#"
+                href="/"
                 className="text-white text-decoration-none small"
               >
                 {" "}
@@ -33,7 +33,7 @@ export default function FooterMainSections() {
             <li className="mb-4">
               {" "}
               <a
-                href="#"
+                href="/about"
                 className="text-white text-decoration-none small"
               >
                 {" "}
@@ -59,7 +59,7 @@ export default function FooterMainSections() {
             <li className="mb-4">
               {" "}
               <a
-                href="#"
+                href="/creators"
                 className="text-white text-decoration-none small"
               >
                 {" "}
@@ -69,21 +69,11 @@ export default function FooterMainSections() {
             <li className="mb-4">
               {" "}
               <a
-                href="#"
+                href="/content"
                 className="text-white text-decoration-none small"
               >
                 {" "}
-                <span data-i18n="nav_incubator">حاضنة صوت</span>
-              </a>{" "}
-            </li>{" "}
-            <li className="mb-4">
-              {" "}
-              <a
-                href="#"
-                className="text-white text-decoration-none small"
-              >
-                {" "}
-                <span data-i18n="nav_media">صوت ميديا</span>
+                <span data-i18n="nav_content">محتوانا</span>
               </a>{" "}
             </li>{" "}
           </ul>{" "}

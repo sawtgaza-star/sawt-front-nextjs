@@ -60,19 +60,15 @@ export default function SiteNav() {
             <svg
               className="navbar-toggler-svg d-lg-none"
               xmlns="http://www.w3.org/2000/svg"
-              width="1em"
-              height="1em"
+              width="24"
+              height="24"
               viewBox="0 0 24 24"
+              fill="none"
             >
               {" "}
-              <path d="M0 0h24v24H0z" fill="none"></path>{" "}
               <path
-                fill="none"
-                stroke="currentColor"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth="1.5"
-                d="M10 5h10M4 12h16M4 19h10"
+                d="M14 18C14.5523 18 15 18.4477 15 19C15 19.5523 14.5523 20 14 20H4C3.44772 20 3 19.5523 3 19C3 18.4477 3.44772 18 4 18H14ZM20 11C20.5523 11 21 11.4477 21 12C21 12.5523 20.5523 13 20 13H4C3.44772 13 3 12.5523 3 12C3 11.4477 3.44772 11 4 11H20ZM20 4C20.5523 4 21 4.44772 21 5C21 5.55228 20.5523 6 20 6H10C9.44772 6 9 5.55228 9 5C9 4.44772 9.44772 4 10 4H20Z"
+                fill="#484848"
               ></path>{" "}
             </svg>{" "}
           </button>{" "}
