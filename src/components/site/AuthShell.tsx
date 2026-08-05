@@ -2,13 +2,18 @@
 "use client";
 /* eslint-disable */
 
-/* Shared auth layout: promo side (identical on all 5 auth pages) + form column shell. */
+import { IconGlobe } from "@/components/ui/icons";
+
+/* Shared auth layout: promo side (identical on all 5 auth pages) + form column shell.
+   mobileTopBar (login/register): logo right + language globe/En left instead of the centered logo. */
 export default function AuthShell({
   children,
   topContent,
+  mobileTopBar,
 }: {
   children: React.ReactNode;
   topContent?: React.ReactNode;
+  mobileTopBar?: boolean;
 }) {
   return (
     <div className="container-fluid p-0 full-screen-container">
@@ -18,11 +23,19 @@ export default function AuthShell({
         <div className="col-md-6 left-form-section col-12">
           {topContent}
           <div className="form-wrapper postion-relative">
-            <img src="/assets/images/leaf_cutout.png" className="olive-branch branch-left-top-content-section" alt="Olive Branch" />
-            <img src="/assets/images/leaf_cutout.png" className="olive-branch branch-right-bottom-content-section" alt="Olive Branch" />
-            <div className="text-center mobile-logo d-md-none">
-              <img src="/assets/images/صوت 1.png" alt="Sawt Logo" />
-            </div>
+            {mobileTopBar ? (
+              <div className="auth-mobile-topbar d-md-none">
+                <img src="/assets/images/صوت 1.png" alt="Sawt Logo" />
+                <button type="button" className="language-btn auth-lang-btn" aria-label="تغيير اللغة">
+                  <IconGlobe />
+                  <span data-i18n="auth_lang_label">En</span>
+                </button>
+              </div>
+            ) : (
+              <div className="text-center mobile-logo d-md-none">
+                <img src="/assets/images/صوت 1.png" alt="Sawt Logo" />
+              </div>
+            )}
             {children}
           </div>
         </div>

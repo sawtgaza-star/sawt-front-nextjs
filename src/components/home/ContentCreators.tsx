@@ -47,7 +47,7 @@ export default function ContentCreators() {
               <CreatorCard key={i} cardClass={card.cardClass} />
             ))}
           </div>{" "}
-          <div className="text-center" style={{ marginTop: "50px " }}>
+          <div className="text-center creators-viewall" style={{ marginTop: "50px " }}>
             {" "}
             <a href="/creators" className="px-4 py-2 fw-bold show-more-news">
               {" "}

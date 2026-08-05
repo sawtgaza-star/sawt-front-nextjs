@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "swiper/css/bundle";
+import "@/styles/animations.css";
+import PageAnimations from "@/components/PageAnimations";
 
 export const metadata: Metadata = {
   title: "Sawt",
@@ -26,7 +28,18 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           href="https://cdn.jsdelivr.net/npm/flag-icons@7.2.3/css/flag-icons.min.css"
         />
       </head>
-      <body dir="rtl" suppressHydrationWarning>{children}</body>
+      <body dir="rtl" suppressHydrationWarning>
+        {/* Starts the page-entrance animation before first paint; skipped for
+            reduced-motion users (see styles/animations.css). */}
+        <script
+          dangerouslySetInnerHTML={{
+            __html:
+              'try{if(!matchMedia("(prefers-reduced-motion: reduce)").matches){document.documentElement.classList.add("sawt-anim");document.body.classList.add("sawt-page-in")}}catch(e){}',
+          }}
+        />
+        <PageAnimations />
+        {children}
+      </body>
     </html>
   );
 }

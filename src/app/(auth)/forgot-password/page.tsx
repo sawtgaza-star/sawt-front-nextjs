@@ -12,10 +12,10 @@ export default function Page() {
     <>
       <LegacyInit page="forgot-password" />
       <AuthShell topContent={<><button type="button" className="back-arrow d-md-none" onClick={() => { history.back(); }} aria-label="رجوع"> <i className="fas fa-arrow-right"></i> </button></>}>
-   <div className="text-center"> <h1 className="title mb-3">نسيت كلمة المرور؟</h1> <p className="subtitle">
+   <div className="text-center"> <h1 className="title mb-3" data-i18n="forgot_title">نسيت كلمة المرور؟</h1> <p className="subtitle" data-i18n="forgot_subtitle">
                 أدخل بريدك الإلكتروني المسجل وسنرسل لك رابطاً آمناً لإعادة تعيين
                 كلمة المرور الخاصة بك
-              </p> </div> <form> {/*  حقل البريد الإلكتروني مع الأيقونة بداخلها  */} <IconInput icon={<IconMail />} type="email" placeholder="البريد الإلكتروني" required className="mb-3" /> <Button type="submit">إرسال</Button> </form> 
+              </p> </div> <form> {/*  حقل البريد الإلكتروني مع الأيقونة بداخلها  */} <IconInput icon={<IconMail />} type="email" placeholder="البريد الإلكتروني" data-i18n-placeholder="auth_email_placeholder" required className="mb-3" /> <Button type="submit" data-i18n="auth_send">إرسال</Button> </form>
       </AuthShell>
     </>
   );
