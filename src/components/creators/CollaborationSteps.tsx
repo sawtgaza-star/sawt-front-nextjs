@@ -59,7 +59,9 @@ function FlowArrow({ dir }: { dir: "left" | "right" }) {
 
   const children = dir === "left" ? [...dotEls, arrow] : [arrow, ...dotEls];
 
-  return <div className="cr-flow-arrow">{children}</div>;
+  /* the dir modifier lets the mobile CSS turn the row into a downward column
+     (dots small → large) with the arrow head rotated to point down */
+  return <div className={`cr-flow-arrow cr-flow-arrow-${dir}`}>{children}</div>;
 }
 
 export default function CollaborationSteps() {

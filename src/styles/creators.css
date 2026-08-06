@@ -18,13 +18,13 @@
 }
 
 .cr-section-head-qs {
-margin-bottom: 100px !important;
-margin-top:100px !important;
+margin-bottom: 70px !important;
+margin-top:20px !important;
 }
 
 
 .cr-section-title {
-  font-size: 42px;
+  font-size: 40px;
   font-weight: 800;
   color: #1c1c1c;
   margin-bottom: 14px;
@@ -34,13 +34,13 @@ margin-top:100px !important;
   background-size: 100% 30%;
   background-repeat: no-repeat;
   background-position: center bottom;
-  color: #4C5C37;
+  color: #000;
 }
 .cr-title-orange {
   color: #4C5C37;
 }
 .cr-section-sub {
-  font-size: 24px;
+  font-size: 22px;
   color: #484848;
   max-width: 1120px;
   margin: 0 auto;
@@ -129,7 +129,7 @@ margin-top:100px !important;
   font-weight: 700;
 }
 .cr-hero-title {
-  font-size: 30px;
+  font-size: 28px;
   font-weight: 800;
   margin-bottom: 18px;
 }
@@ -372,7 +372,7 @@ margin-top:100px !important;
 }
 
 .cr-stat-num {
-  font-size: 36px;
+  font-size: 32px;
   font-weight: 800;
   color: #1c1c1c;
   margin-bottom: 4px;
@@ -483,7 +483,7 @@ margin-top:100px !important;
   margin-bottom: 16px;
 }
 .cr-company-name {
-  font-size: 20px;
+  font-size: 18px;
   font-weight: 700;
   color: #2b2b2b;
   padding-bottom:8px;
@@ -507,7 +507,7 @@ margin-top:100px !important;
 
 /* ---------- Collaboration flow ---------- */
 .cr-collab-section {
-  padding: 40px 0 50px;
+  padding: 10px 0 20px;
   position: relative;
 }
 /* Outer watermarked frame (leaf + mic pattern) with a nested inner panel */
@@ -559,13 +559,13 @@ background: rgba(237, 239, 235, 0.50);
   background: var(--sout-orange);
 }
 .cr-flow-node-title {
-  font-size: 24px;
+  font-size: 22px;
   font-weight: 800;
   color: #1c1c1c;
   margin-bottom: 6px;
 }
 .cr-flow-node-sub {
-  font-size: 18px;
+  font-size: 16px;
   color: #8a8a8a;
   margin: 0;
 }
@@ -600,7 +600,7 @@ background: rgba(237, 239, 235, 0.50);
   display: inline-block;
   border: 1px solid #E1723B;
   color: #E1723B ;
-  font-size: 18px;
+  font-size: 16px;
   font-weight: 500;
   border-radius: 20px;
   padding: 6px 16px;
@@ -682,7 +682,7 @@ background: rgba(237, 239, 235, 0.50);
 
 
 .cr-steps-divider span {
-  font-size: 24px;
+  font-size: 22px;
   font-weight: 500;
   color: #1c1c1c;
 }
@@ -705,10 +705,11 @@ background: rgba(237, 239, 235, 0.50);
   border: 1px solid #4C5C37;
   border-radius: 12px;
   padding: 20px 46px 20px 5px;
-  font-size: 13px;
+  font-size: 14px;
   font-weight: 500;
   color: #4a4a4a;
   line-height: 1.8;
+  font-weight: 700;
 }
 /* Step title is a mobile-only element (see the mobile mock); the desktop
    step cards keep their number + single description line unchanged. */
@@ -840,7 +841,7 @@ background: rgba(237, 239, 235, 0.50);
   border: none;
   text-align: right;
   padding: 18px 20px;
-  font-size: 20px;
+  font-size: 18px;
   font-weight: 700;
   color: #1c1c1c;
   display: flex;
@@ -863,7 +864,7 @@ background: rgba(237, 239, 235, 0.50);
   position: relative;
   padding: 16px 20px 18px;
   margin: 0 14px;
-  font-size: 16px;
+  font-size: 14px;
   color: #6d6d6d;
   line-height: 2;
   text-align: start;
@@ -932,7 +933,7 @@ background: rgba(237, 239, 235, 0.50);
 @media (max-width: 767.98px) {
   .cr-section-title,
   .cr-hero-title {
-    font-size: 24px;
+    font-size: 20px;
   }
   .cr-grid-section {
     padding:0;
@@ -964,8 +965,9 @@ background: rgba(237, 239, 235, 0.50);
     width: auto;
     left: auto;
     transform: none;
-    margin: 0 calc(55% - 50vw) 14px;
-    
+    /* on the container grid like every other mobile section (was a partial
+       bleed past the container edge) */
+    margin: 0 0 14px;
   }
   .cr-collab-cta a {
     border-radius: 24px;
@@ -974,21 +976,22 @@ background: rgba(237, 239, 235, 0.50);
     display: none;
   }
   .cr-faq-q {
-    font-size: 16px;
+    font-size: 14px;
     padding: 16px;
   }
   .cr-faq-a {
-    font-size: 14px;
+    font-size: 12px;
     padding: 14px 16px 16px;
   }
 
 
   .cr-section-sub,
   .cr-hero-desc , .cr-stat-num , .cr-stat-label {
-    font-size: 16px;
+    font-size: 14px;
   }
   .cr-hero {
-    padding: 45px 15px 60px;
+    /* .cr-hero IS the .container — 10px keeps it on the navbar-card grid */
+    padding: 45px 10px 60px;
   }
   /* Mobile: drop the photo hero on the creators LIST page — keep only the
      breadcrumb on a plain white header (matches the mobile mock). The detail
@@ -1030,52 +1033,78 @@ background: rgba(237, 239, 235, 0.50);
   .cr-stats-grid {
     grid-template-columns: repeat(2, 1fr);
   }
-  /* CollaborationSteps — mobile mock: drop the horizontal flow diagram +
-     divider, stack the steps as centred cards inside a light panel (number
-     circle → bold title → description), and let the CTA span the full width. */
-  .cr-flow-outer,
-  .cr-steps-divider {
+  /* CollaborationSteps — mobile mock: the flow diagram becomes one vertical
+     column (brands → صوت ميديا → creators) inside the panel, the "خطوات
+     التعاون" divider + step cards are dropped, and the CTA spans the full
+     width. */
+  .cr-steps-divider,
+  .cr-steps-grid {
     display: none;
   }
-  .cr-steps-grid {
-    grid-template-columns: 1fr;
+  .cr-flow-outer {
+    padding: 12px;
+  }
+  .cr-flow-panel {
+    flex-direction: column;
+    justify-content: flex-start;
     gap: 0;
-    background: #EDEFEB;
-    border: 1px solid #DFE1DB;
-    border-radius: 20px;
-    padding: 10px 18px 18px;
-    margin-top: 6px;
   }
-  .cr-step-card {
-    background: transparent;
-    border: none;
-    border-radius: 0;
-    text-align: center;
-    padding: 10px 6px;
+  .cr-flow-node {
+    min-width: 0;
   }
-  .cr-step-num {
-    position: static;
-    transform: none;
-    width: 52px;
-    height: 52px;
-    font-size: 20px;
-    margin: 0 auto 16px;
-  }
-  .cr-step-title {
-    display: block;
-    font-size: 16px;
-    font-weight: 800;
-    color: #1c1c1c;
+  .cr-flow-icon {
+    width: 56px;
+    height: 56px;
     margin-bottom: 12px;
   }
-  .cr-step-text {
-    display: block;
-    font-size: 13px;
-    font-weight: 500;
-    color: #5A5A5A;
-    line-height: 1.9;
+  .cr-flow-icon svg {
+    width: 28px;
+    height: 28px;
   }
-
+  .cr-flow-node-title {
+    font-size: 14px;
+  }
+  .cr-flow-node-sub {
+    font-size: 12px;
+  }
+  .cr-flow-center {
+    min-width: 0;
+  }
+  .cr-flow-center-circle {
+    width: 112px;
+    height: 112px;
+    margin-bottom: 12px;
+  }
+  .cr-flow-center-circle img {
+    width: 46px;
+    height: 46px;
+  }
+  .cr-flow-center-circle span {
+    font-size: 14px;
+  }
+  .cr-flow-badge {
+    font-size: 12px;
+    padding: 5px 14px;
+  }
+  /* dots run top → bottom, growing towards the arrow head that points at the
+     next node: `dir="left"` is already in that order, `dir="right"` (arrow
+     first in the DOM) is flipped with column-reverse */
+  .cr-flow-arrow {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    min-height: 86px;
+    padding: 14px 0;
+  }
+  .cr-flow-arrow-right {
+    flex-direction: column-reverse;
+  }
+  .cr-flow-arrow-left .cr-flow-head {
+    transform: rotate(-90deg);
+  }
+  .cr-flow-arrow-right .cr-flow-head {
+    transform: rotate(90deg);
+  }
   [dir = 'ltr'] .cr-collab-cta a svg{
     transform: rotate(145deg) !important
   }
@@ -1166,7 +1195,7 @@ background: var(--White, #FFF);
 .cr-profile-social::after {
   content: "";
   position: absolute;
-  top: 25px;
+  top: 20px;
   left: 100%;
   width: 0;
   height: 0;
@@ -1266,7 +1295,7 @@ background: var(--White, #FFF);
   background: #fff;
   border: 1px solid #4C5C37;
   color: #4c5c37;
-  border-radius: 20px;
+  border-radius: 24px;
   padding: 6px 14px;
   font-size: 14px;
   font-weight: 700;
@@ -1327,6 +1356,13 @@ background: var(--White, #FFF);
   margin: 30px 0px;
   order: 1;
 }
+/* "رؤية المزيد" belongs to the mobile mock only */
+.cr-content-more {
+  display: none;
+  font-weight: 600;
+  color: #4c5c37 !important;
+  text-decoration: none;
+}
 
 
 .cr-content-tabs {
@@ -1338,13 +1374,14 @@ background: var(--White, #FFF);
   padding: 0;
   margin: 0;
   order: 2;
+ 
 }
 .cr-content-tab {
   background: #F5F5F5;
   border: 1px solid #F5F5F5;
   border-radius: 8px;
-  padding: 7px 18px;
-  font-size: 17px;
+  padding: 12px 12px;
+  font-size: 16px;
   font-weight: 500;
   color: #7A7A7A;
   cursor: pointer;
@@ -1431,7 +1468,7 @@ background: var(--White, #FFF);
   color: #fff;
   font-size: 12px;
   font-weight: 600;
-  border-radius: 8px;
+  border-radius: 50px;
   padding: 2px 8px;
   z-index: 2;
 }
@@ -1584,6 +1621,23 @@ background: var(--White, #FFF);
   border-radius:20px !important;
 }
 
+/* ---------- Reel viewer layer ---------- */
+/* Mirror of the same block in content.css: the creators pages don't load
+   content.css, so the layer the shared ReelViewer portals into needs its
+   rules here too — it sits above the navbar (1030) and the hero header
+   (1000) and carries the swipe offset useReelSwipe writes. */
+.ct-reel-layer {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+}
+.ct-reel-layer .cr-reel {
+  transform: translate3d(0, var(--ct-swipe, 0px), 0);
+}
+.ct-reel-layer[data-swipe-anim="1"] .cr-reel {
+  transition: transform 0.26s cubic-bezier(0.22, 0.61, 0.36, 1);
+}
+
 /* ---------- Reel viewer modal (opened from a card's play button) ---------- */
 .cr-reel-overlay {
   position: fixed;
@@ -1615,21 +1669,32 @@ background: var(--White, #FFF);
   height: 100%;
   object-fit: cover;
   display: block;
+  /* the frame is the play/pause surface (see ReelModal's onSurfaceClick) */
+  cursor: pointer;
 }
 /* controls (close, mute, centre play/skip, name+caption+scrubber) reveal on
    hover; the action rail stays visible */
 .cr-reel-close,
-.cr-reel-mute,
-.cr-reel-center,
-.cr-reel-info {
+.cr-reel-mute {
   opacity: 0;
   transition: opacity 0.2s ease;
 }
 .cr-reel:hover .cr-reel-close,
-.cr-reel:hover .cr-reel-mute,
-.cr-reel:hover .cr-reel-center,
-.cr-reel:hover .cr-reel-info {
+.cr-reel:hover .cr-reel-mute {
   opacity: 1;
+}
+/* the centre controls and the info bar are up by default and fade out once the
+   video has been playing for a couple of seconds (ReelModal's `is-idle`); any
+   tap or pointer move over the reel brings them straight back */
+.cr-reel-center,
+.cr-reel-info {
+  opacity: 1;
+  transition: opacity 0.25s ease;
+}
+.cr-reel.is-idle .cr-reel-center,
+.cr-reel.is-idle .cr-reel-info {
+  opacity: 0;
+  pointer-events: none;
 }
 .cr-reel-close,
 .cr-reel-mute {
@@ -1640,18 +1705,26 @@ background: var(--White, #FFF);
   height: 38px;
   border-radius: 50%;
   border: none;
-  background: rgba(0, 0, 0, 0.45);
+  /* no disc behind the glyph — the icon sits straight on the frame */
+  background: transparent;
   color: #fff;
   font-size: 16px;
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  transition: background 0.2s ease;
 }
-.cr-reel-close:hover,
-.cr-reel-mute:hover {
-  background: rgba(0, 0, 0, 0.7);
+/* the opacity of these two is owned by the reveal-on-hover rule above, so the
+   hover affordance is a nudge in scale instead */
+.cr-reel-close svg,
+.cr-reel-mute svg {
+  display: block;
+  filter: drop-shadow(0 1px 6px rgba(0, 0, 0, 0.55));
+  transition: transform 0.2s ease;
+}
+.cr-reel-close:hover svg,
+.cr-reel-mute:hover svg {
+  transform: scale(1.12);
 }
 .cr-reel-close { left: 14px; }
 .cr-reel-mute { right: 14px; }
@@ -1727,23 +1800,17 @@ background: var(--White, #FFF);
 .cr-reel-ctrl:hover {
   background: var(--sout-orange);
 }
-/* circular "skip 10s" icon with the number nested inside the arrow */
+/* circular "skip 10s" icon — the number is part of the glyph itself */
 .cr-reel-skip {
   position: relative;
   display: flex;
   align-items: center;
   justify-content: center;
 }
-.cr-reel-skip i {
-  font-size: 24px;
-}
-.cr-reel-skip b {
-  position: absolute;
-  top: 54%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  font-size: 9px;
-  font-weight: 700;
+.cr-reel-skip svg {
+  width: 24px;
+  height: 24px;
+  display: block;
 }
 .cr-reel-play {
   width: 66px;
@@ -1769,7 +1836,7 @@ background: var(--White, #FFF);
   position: absolute;
   left: 14px;
   bottom: 150px;
-  z-index: 3;
+  z-index: 30000;
   display: flex;
   flex-direction: column;
   gap: 18px;
@@ -1787,6 +1854,14 @@ background: var(--White, #FFF);
   cursor: pointer;
   text-shadow: 0 1px 6px rgba(0, 0, 0, 0.5);
 }
+/* the rail uses inline SVGs, so the button's text-shadow can't lift them off a
+   bright frame — a matching drop-shadow does it instead */
+.cr-reel-action svg {
+  width: 24px;
+  height: 24px;
+  display: block;
+  filter: drop-shadow(0 1px 6px rgba(0, 0, 0, 0.5));
+}
 .cr-reel-action span {
   font-size: 13px;
 }
@@ -1800,7 +1875,9 @@ background: var(--White, #FFF);
   z-index: 3;
   padding: 40px 16px 14px;
   color: #fff;
-  background: linear-gradient(to top, rgba(0, 0, 0, 0.72), rgba(0, 0, 0, 0));
+  background: linear-gradient(180deg, rgba(17, 17, 17, 0.00) 0%, #1E1E1E 61.87%);
+
+
   text-align: right;
 }
 .cr-reel-user {
@@ -1811,15 +1888,51 @@ background: var(--White, #FFF);
   margin-bottom: 8px;
 }
 .cr-reel-user img {
-  width: 34px;
-  height: 34px;
+  width: 40px;
+  height: 40px;
   border-radius: 50%;
   object-fit: cover;
   border: 2px solid rgba(255, 255, 255, 0.8);
 }
 .cr-reel-user span {
-  font-size: 17px;
+  font-size: 18px;
   font-weight: 700;
+}
+/* outlined "follow" pill, after the creator's name — the glyph inherits the
+   button's `color`, so the followed state only has to flip these three */
+.cr-reel-follow {
+  flex: 0 0 auto;
+  width: 34px;
+  height: 34px;
+  padding: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 24px;
+  border: 1px solid var(--White, #fff);
+  background: transparent;
+  color: #fff;
+  cursor: pointer;
+  transition:
+    background 0.2s ease,
+    border-color 0.2s ease,
+    color 0.2s ease;
+}
+.cr-reel-follow:hover {
+  background: rgba(255, 255, 255, 0.16);
+}
+/* following: filled with the brand orange */
+.cr-reel-follow.is-following {
+  background: var(--sout-orange);
+  border-color: var(--sout-orange);
+  color: #fff;
+}
+.cr-reel-follow.is-following:hover {
+  background: #e5651c;
+  border-color: #e5651c;
+}
+.cr-reel-follow svg {
+  display: block;
 }
 .cr-reel-caption {
   font-size: 16px;
@@ -1884,6 +1997,333 @@ background: var(--White, #FFF);
   
 }
 
+/* ---------- Reel rail states (like · save · open sheet) ---------- */
+/* every rail glyph paints with currentColor, so the active/saved state is just
+   a colour flip on the button */
+.cr-reel-action.is-saved,
+.cr-reel-action.is-active {
+  color: var(--sout-orange);
+}
+/* a small pop the moment the heart turns red */
+.cr-reel-action.is-liked svg {
+  animation: cr-reel-pop 0.28s ease;
+}
+@keyframes cr-reel-pop {
+  0% { transform: scale(1); }
+  45% { transform: scale(1.32); }
+  100% { transform: scale(1); }
+}
+
+/* ---------- Reel sheets (comments / share) ---------- */
+/* both slide up over the bottom of the reel; the video keeps playing above */
+.cr-reel-panel {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 6;
+  display: flex;
+  flex-direction: column;
+  max-height: 100%;
+  color: #fff;
+  background: rgba(20, 20, 20, 0.96);
+  backdrop-filter: blur(6px);
+  border-radius: 18px 18px 0 0;
+  box-shadow: 0 -10px 30px rgba(0, 0, 0, 0.45);
+  animation: cr-reel-sheet-up 0.22s ease;
+  text-align: right;
+  /* the sheet owns the vertical gesture (drag down to dismiss, see
+     useSheetDismiss) — only the comment list below opts back into panning */
+  touch-action: none;
+}
+/* the drag affordance, and the area that starts the gesture along with the
+   head around it */
+.cr-reel-panel-grip {
+  display: block;
+  width: 42px;
+  height: 4px;
+  margin: 8px auto 0;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.3);
+  cursor: grab;
+}
+.cr-reel-panel-head {
+  cursor: grab;
+}
+.cr-reel-panel-head:active {
+  cursor: grabbing;
+}
+@keyframes cr-reel-sheet-up {
+  from { transform: translateY(100%); }
+  to { transform: translateY(0); }
+}
+/* the comments sheet takes the bottom two thirds, the share sheet only what
+   its rows need */
+.cr-reel-comments { height: 66%; }
+
+.cr-reel-panel-head {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 10px 14px 12px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+}
+.cr-reel-panel-title {
+  font-size: 15px;
+  font-weight: 700;
+}
+.cr-reel-panel-close {
+  width: 28px;
+  height: 28px;
+  padding: 0;
+  border: none;
+  background: transparent;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+.cr-reel-panel-close svg {
+  width: 12px;
+  height: 12px;
+  display: block;
+}
+
+/* the sheet owns the bottom of the reel, so the chrome under it steps aside */
+.cr-reel.has-panel .cr-reel-center,
+.cr-reel.has-panel .cr-reel-info {
+  opacity: 0;
+  pointer-events: none;
+}
+/* an open sheet owns the reel — the rail steps out with the rest of the chrome
+   instead of stacking on top of it */
+.cr-reel.has-panel .cr-reel-actions {
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* --- comment list --- */
+.cr-reel-comment-list {
+  flex: 1 1 auto;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  /* the content page sets `touch-action: none` on the reel for the swipe
+     gesture — the list has to opt back in or it cannot be scrolled on a phone */
+  touch-action: pan-y;
+  list-style: none;
+  margin: 0;
+  padding: 12px 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+.cr-reel-comment-list::-webkit-scrollbar { width: 4px; }
+.cr-reel-comment-list::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.25);
+  border-radius: 999px;
+}
+.cr-reel-comments-empty {
+  flex: 1 1 auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0;
+  padding: 24px;
+  font-size: 13px;
+  color: #a5a5a5;
+  text-align: center;
+}
+.cr-reel-comment {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+}
+.cr-reel-comment-avatar {
+  flex: 0 0 auto;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  object-fit: cover;
+  background: #333;
+}
+.cr-reel-comment-body {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+.cr-reel-comment-meta {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 2px;
+}
+.cr-reel-comment-user {
+  font-size: 13px;
+  font-weight: 700;
+}
+.cr-reel-comment-time {
+  font-size: 11px;
+  color: #9a9a9a;
+}
+.cr-reel-comment-text {
+  margin: 0;
+  font-size: 13.5px;
+  line-height: 1.6;
+  color: #e8e8e8;
+  overflow-wrap: anywhere;
+}
+.cr-reel-comment-like {
+  flex: 0 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  padding: 0;
+  border: none;
+  background: transparent;
+  color: #bdbdbd;
+  font-size: 13px;
+  cursor: pointer;
+  transition: color 0.2s ease;
+}
+.cr-reel-comment-like span { font-size: 11px; }
+.cr-reel-comment-like:hover { color: #fff; }
+.cr-reel-comment-like.is-liked { color: #e72121; }
+
+/* --- write a comment --- */
+.cr-reel-comment-form {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 12px;
+  border-top: 1px solid rgba(255, 255, 255, 0.12);
+}
+.cr-reel-comment-form input {
+  flex: 1 1 auto;
+  min-width: 0;
+  height: 38px;
+  padding: 0 14px;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  background: rgba(255, 255, 255, 0.08);
+  color: #fff;
+  font-size: 13px;
+  outline: none;
+}
+.cr-reel-comment-form input::placeholder { color: #9a9a9a; }
+.cr-reel-comment-form input:focus {
+  border-color: var(--sout-orange);
+}
+.cr-reel-comment-form button {
+  flex: 0 0 auto;
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  border: none;
+  background: var(--sout-orange);
+  color: #fff;
+  font-size: 14px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: opacity 0.2s ease, transform 0.15s ease;
+}
+.cr-reel-comment-form button:hover:not(:disabled) { transform: scale(1.06); }
+.cr-reel-comment-form button:disabled {
+  opacity: 0.45;
+  cursor: default;
+}
+/* the plane points along the reading direction */
+html[dir="rtl"] .cr-reel-comment-form button i { transform: scaleX(-1); }
+
+/* --- share sheet --- */
+.cr-reel-share-targets {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 10px;
+  padding: 16px 14px 6px;
+}
+.cr-reel-share-target {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  padding: 0;
+  border: none;
+  background: transparent;
+  color: #e8e8e8;
+  text-decoration: none;
+  cursor: pointer;
+}
+.cr-reel-share-target:hover { color: #fff; }
+.cr-reel-share-icon {
+  width: 46px;
+  height: 46px;
+  border-radius: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 19px;
+  color: #fff;
+  background: rgba(255, 255, 255, 0.14);
+  transition: transform 0.15s ease;
+}
+.cr-reel-share-target:hover .cr-reel-share-icon { transform: scale(1.07); }
+.cr-reel-share-target.is-whatsapp .cr-reel-share-icon { background: #25d366; }
+.cr-reel-share-target.is-facebook .cr-reel-share-icon { background: #1877f2; }
+.cr-reel-share-target.is-x .cr-reel-share-icon { background: #fff; }
+.cr-reel-share-target.is-telegram .cr-reel-share-icon { background: #29a9eb; }
+.cr-reel-share-label {
+  font-size: 11px;
+  text-align: center;
+  color: #fff;
+}
+.cr-reel-share-copy {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 14px 16px;
+}
+.cr-reel-share-copy input {
+  flex: 1 1 auto;
+  min-width: 0;
+  height: 38px;
+  padding: 0 12px;
+  border-radius: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  background: rgba(255, 255, 255, 0.08);
+  color: #cfcfcf;
+  font-size: 12px;
+  direction: ltr;
+  text-align: left;
+  outline: none;
+}
+.cr-reel-share-copy button {
+  flex: 0 0 auto;
+  height: 38px;
+  padding: 0 14px;
+  border-radius: 10px;
+  border: none;
+  background: var(--sout-orange);
+  color: #fff;
+  font-size: 12px;
+  font-weight: 700;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+  white-space: nowrap;
+}
+.cr-reel-share-copy button:hover { background: #e5651c; }
+
+/* short screens: the sheet would swallow the whole reel */
+@media (max-height: 620px) {
+  .cr-reel-comments { height: 78%; }
+}
+
 /* ---------- Collaborations (ابرز التعاونات) ---------- */
 .cr-collabs-section {
   /* Figma: radial gradient fill at 80% layer opacity — rgba(255,248,240,1) → rgba(255,248,240,0) */
@@ -1892,8 +2332,8 @@ background: var(--White, #FFF);
     rgba(255, 248, 240, 0.8) 59.47%,
     rgba(255, 248, 240, 0) 100%
   );
-  margin: 75px 0;
-  padding: 60px 0;
+  margin: 25px 0;
+  padding: 20px 0;
   position: relative;
   overflow: hidden;
 }
@@ -2067,10 +2507,10 @@ display:none;
 }
 .cr-collab-quote-text {
   background: #EDEFEB;
-  border-radius: 13px;
+  border-radius: 16px;
   padding: 16px 16px;
   font-size: 14px;
-  color: #484848pu;
+  color: #484848;
   line-height: 1.9;
   margin-bottom: 34px;
 }
@@ -2134,16 +2574,338 @@ display:none;
   }
 }
 @media (max-width: 767.98px) {
+  /* CreatorCollaborations — mobile mock: one stacked column where the reel
+     sits directly under the company you tapped. The list is display:contents
+     so its items become siblings of the reel, and each one's slot comes from
+     the --m-order the component writes (intro 0 … quote last). */
+  /* plain white on a phone — no cream radial fill, no leaf/mic watermark */
+  .cr-collabs-section {
+    background: none;
+    padding: 0px 0 30px;
+    margin: 0;
+  }
+  .cr-collab-quote-author-text{
+        align-items: flex-start;
+  }
+  .cr-collabs-section::before {
+    display: none;
+  }
   .cr-collabs-grid {
-    grid-template-columns: 1fr;
+    display: flex;
+    flex-direction: column;
+    /* the desktop grid's align-items:start would shrink every row to its text
+       width — on a phone each one spans the section */
+    align-items: stretch;
+    gap: 10px;
+  }
+  .cr-collabs-intro {
+    order: 0;
+    align-self: stretch;
+    margin-bottom: 4px;
+  }
+  .cr-collabs-title {
+    font-size: 22px;
+    margin-bottom: 10px;
+  }
+  .cr-collabs-desc {
+    font-size: 14px;
+    font-weight: 600;
+    line-height: 1.8;
+  }
+  .cr-collabs-list {
+    display: contents;
+  }
+  .cr-collabs-list li {
+    order: var(--m-order, 1);
+  }
+  .cr-collab-item {
+    gap: 12px;
+    padding: 10px 12px;
+  }
+  .cr-collab-item-dot {
+    width: 40px;
+    height: 40px;
+    border-radius: 12px;
+  }
+  .cr-collab-item-name {
+    font-size: 14px;
+  }
+  .cr-collab-item-sub {
+    font-size: 12px;
+  }
+  /* the reel fills the container width, as in the mock */
+  .cr-collabs-media {
+    order: var(--m-order, 50);
+    width: 100%;
+    margin: 2px 0 6px;
+  }
+  /* Show the whole reel from the start: .review-reels is a 470px-tall
+     scroll box and .reel-item is 470px too, so the frame gets cropped and the
+     caption ends up below the fold. On a phone both grow to their content and
+     the box stops scrolling — .reel-item keeps the rounded corners. */
+  .cr-collabs-reel {
+    max-width: none;
+    width: 100%;
+    height: auto;
+    overflow: visible;
+  }
+  .cr-collabs-reel .reel-item {
+    height: auto;
+  }
+  .cr-collabs-reel .reel-media video {
+    height: auto;
+    object-fit: contain;
+  }
+  /* While playing, the caption follows the finger the way it follows the
+     cursor on desktop: up while the reel is pressed, dropping away again the
+     moment the finger lifts. :hover is sticky on a touch screen (it survives
+     the release), so it is neutralised here and :active drives it instead. */
+  .cr-collabs-reel .reel-item.playing:hover .reel-caption {
+    max-height: 0;
+    padding-top: 0;
+    padding-bottom: 0;
+    opacity: 0;
+  }
+  .cr-collabs-reel .reel-item.playing:active .reel-caption {
+    max-height: 120px;
+    padding-top: 12px;
+    padding-bottom: 16px;
+    opacity: 1;
+  }
+  .cr-collabs-quote {
+    order: 99;
+    margin-top: 14px;
+  }
+  /* the testimonial sits straight on the page here — no white card around it */
+  .cr-collab-quote-card {
+    min-height: 0;
+    background: transparent;
+    border: none;
+    border-radius: 0;
+    padding: 0 0 10px;
+  }
+  .cr-collab-quote-company {
+    font-size: 16px;
+  }
+  .cr-collab-quote-text {
+    font-size: 13px;
+    margin-bottom: 24px;
+  }
+  .cr-collab-quote-mark {
+    bottom: 13px;
+    left: 6px;
+  }
+  .cr-collab-quote-mark svg {
+    width: 46px;
+  }
+
+  /* CreatorProfileHero — mobile mock: plain white header (no photo hero, no
+     dark overlay) with dark breadcrumb/title/description, then the profile
+     card inline underneath instead of overlapping the hero. */
+  .cr-detail-header {
+    background: #fff !important;
+  }
+  .cr-detail-header::before {
+    display: none;
+  }
+  .cr-detail-hero {
+    padding: 22px 15px 20px;
+    color: #1c1c1c;
+  }
+  .cr-detail-header .cr-breadcrumb {
+    font-size: 15px;
+    margin-bottom: 16px;
+  }
+  /* the active crumb (.Cr) keeps its orange */
+  .cr-detail-header .cr-breadcrumb a:not(.Cr),
+  .cr-detail-header .cr-breadcrumb-sep {
+    color: #555 !important;
+    opacity: 1;
+  }
+  .cr-detail-header .cr-hero-title {
+    font-size: 22px;
+    color: #1c1c1c;
+    margin-bottom: 10px;
+  }
+  .cr-detail-header .cr-hero-desc {
+    font-size: 14px;
+    color: #1E1E1E;
+    line-height: 1.9;
   }
   .cr-profile-card {
-    padding: 60px 18px 24px;
+    margin: 0 auto;
+    padding: 26px 16px 20px;
+  }
+  /* no overlap left to clear */
+  .cr-content-detail-section {
+    padding-top: 40px;
+  }
+  /* bubble sits right beside the avatar (mobile only — desktop keeps the
+     panel outside the card). The card centres the 140px avatar, so its left
+     edge is at (50% + 70px) from the card's right; +6px more puts the 16px
+     tail tip on the circle instead of the bubble body. */
+  .cr-profile-social {
+    position: absolute;
+    top: 26px;
+    left: auto;
+    right: calc(50% + 76px);
+    margin: 0;
+    display: block;
+    padding: 8px 10px 10px;
+    border-radius: 12px;
+    box-shadow: none;
+    z-index: 2;
+  }
+  .cr-profile-social::after {
+    display: block;
+    top: 14px;
+    border-top-width: 11px;
+    border-bottom-width: 11px;
+    border-left-width: 16px;
+  }
+  .cr-profile-social-label {
+    font-size: 10px;
+    font-weight: 600;
+    margin-bottom: 8px;
+  }
+  .cr-profile-social-icons {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 6px;
+  }
+  .cr-profile-social-icons a {
+    width: 30px;
+    height: 30px;
+    font-size: 14px;
+  }
+  .cr-profile-name-row {
+    flex-direction: column;
+    gap: 14px;
+    margin-bottom: 16px;
   }
   .cr-profile-name {
-    font-size: 24px;
+    font-size: 22px;
+  }
+  .cr-profile-follow {
+    padding: 9px 24px;
+  }
+  .cr-profile-role {
+    font-size: 14px;
+    margin-bottom: 18px;
+  }
+  /* mock reads +2m / +500 / 102 left → right, so lay the boxes out LTR and
+     put each box's own content back to RTL */
+  .cr-profile-stats {
+    direction: ltr;
+    gap: 10px;
+  }
+  .cr-profile-stat {
+    direction: rtl;
+    align-items: center;
+    border-radius: 8px;
+    padding: 12px 6px;
+  }
+  .cr-profile-stat-num {
+    font-size: 16px;
+  }
+  .cr-profile-stat-label {
+    font-size: 12px;
+  }
+  /* ---- "المحتوى" (mobile mock): heading row + a 2-up grid of reels ---- */
+  .cr-content-head {
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 16px;
   }
   .cr-content-title {
-    font-size: 28px;
+    font-size: 22px;
+    margin: 0;
+    order: 0;
+  }
+  .cr-content-more {
+    display: inline-block;
+    order: 1;
+    font-size: 14px;
+  }
+  /* the pills become one sideways-scrolling row under the heading */
+  .cr-content-tabs {
+    order: 2;
+    flex-basis: 100%;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    overscroll-behavior-x: contain;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    gap: 8px;
+    padding-bottom: 8px;
+    padding-top: 20px;
+  }
+  .cr-content-tabs::-webkit-scrollbar {
+    display: none;
+  }
+
+  .cr-content-tabs li {
+    flex: 0 0 auto;
+  }
+  .cr-content-tab {
+    white-space: nowrap;
+    font-size: 14px;
+    font-weight: 400;
+    padding: 7px 12px;
+  }
+  /* the full-bleed slider turns into the mock's two-column grid */
+  .cr-content-slider {
+    width: auto;
+    margin-inline: 0;
+  }
+  .cr-content-slider::before,
+  .cr-content-slider::after,
+  .cr-content-nav {
+    display: none;
+  }
+  .cr-content-track {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+    overflow: visible;
+    margin: 0;
+  }
+  .cr-content-card {
+    width: 100%;
+    height: auto;
+    aspect-ratio: 9 / 16;
+    border-radius: 18px;
+  }
+  /* no hover on a phone — the play button and the duration pill stay on,
+     the pill moving to the corner the mock puts it in */
+  .cr-content-play {
+    opacity: 1;
+    width: 48px;
+    height: 48px;
+    font-size: 18px;
+  }
+  .cr-content-time {
+    left: auto;
+    right: 10px;
+    background: rgba(0, 0, 0, 0.45);
+  }
+
+  /* ---- Reel viewer on mobile (mirrors the block in content.css) ---- */
+  /* a phone has no hover, so the close/mute buttons are permanently on */
+  .ct-reel-layer .cr-reel-close,
+  .ct-reel-layer .cr-reel-mute {
+    opacity: 1;
+  }
+  /* the vertical swipe replaces the prev/next arrows */
+  .ct-reel-layer .cr-reel-nav {
+    display: none;
+  }
+  /* the reel owns the vertical gesture — the browser must not pan/zoom it */
+  .ct-reel-layer .cr-reel {
+    touch-action: none;
+    will-change: transform;
   }
 }

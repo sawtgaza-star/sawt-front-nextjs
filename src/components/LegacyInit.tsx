@@ -1,16 +1,36 @@
 "use client";
 /* Boots the ported legacy scripts on the client, per page — mirrors the
    original <script> tags each HTML page used to load. */
-import { useEffect } from "react";
+import { useEffect, useLayoutEffect } from "react";
+import { usePathname } from "next/navigation";
+import { initTranslate } from "@/lib/translations";
+
+// LegacyInit renders null, but it is still server-rendered — useLayoutEffect
+// would warn there, so fall back to useEffect on the server.
+const useIsomorphicLayoutEffect =
+  typeof window !== "undefined" ? useLayoutEffect : useEffect;
 
 export default function LegacyInit({ page }: { page: string }) {
+  const pathname = usePathname();
+
+  // Translate first, synchronously on hydration and BEFORE the browser paints:
+  // the dictionary is a static import so it is already in the page chunk.
+  // Waiting for the dynamic bootstrap/legacy chunks below made English visitors
+  // read the Arabic fallback text for a few hundred ms on every navigation, and
+  // a plain useEffect still let React paint one Arabic frame on client-side
+  // (<Link>) navigation before the swap.
+  // Keyed on the pathname, not on `page`: /team → /team/[id] is a <Link>
+  // navigation between two pages that both pass page="team", so a `page`
+  // dependency would leave the new markup in Arabic.
+  useIsomorphicLayoutEffect(() => {
+    initTranslate();
+  }, [pathname, page]);
+
   useEffect(() => {
     (async () => {
       // Bootstrap JS (dropdowns, collapse, hero carousel via data-bs-ride)
       // @ts-ignore
       await import("bootstrap/dist/js/bootstrap.bundle.min.js");
-
-      const { initTranslate } = await import("@/lib/translations");
 
       if (["home", "about", "creators", "team", "content", "support", "courses"].includes(page)) {
         const { initMainScripts, initHeaderPin } = await import("@/lib/legacy-main");

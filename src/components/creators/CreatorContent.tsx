@@ -4,7 +4,9 @@
 import { useEffect, useRef, useState } from "react";
 import { CATEGORIES, CARDS } from "./creator-content/data";
 import ContentCard from "./creator-content/ContentCard";
-import ReelModal from "./creator-content/ReelModal";
+/* same full-screen viewer the محتوانا page uses: portalled above the navbar
+   and carrying the Reels-style swipe gesture */
+import ReelViewer from "@/components/content/ReelViewer";
 
 /* "المحتوى" — category filter pills + a horizontal slider of vertical
    reel-poster cards, with circular prev/next nav arrows. Self-contained
@@ -79,6 +81,10 @@ export default function CreatorContent() {
               المحتوى
             </span>
           </h2>
+          {/* mobile mock only — sits opposite the title (hidden on desktop) */}
+          <a className="cr-content-more" href="#" data-i18n="content_view_more">
+            رؤية المزيد
+          </a>
         </div>
 
         <div className="cr-content-slider">
@@ -110,11 +116,12 @@ export default function CreatorContent() {
       </div>
 
       {openIndex !== null && (
-        <ReelModal
-          cards={CARDS}
+        <ReelViewer
+          reels={CARDS}
           index={openIndex}
           onNavigate={setOpenIndex}
           onClose={() => setOpenIndex(null)}
+          scope="creator"
         />
       )}
     </section>

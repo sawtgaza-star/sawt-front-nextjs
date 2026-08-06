@@ -18,9 +18,17 @@ export default function AuthShell({
   return (
     <div className="container-fluid p-0 full-screen-container">
       <div className="row g-0 w-100 h-100">
-<div className="col-md-6 right-design-section d-none d-md-block"> <div className="promo-container"> <img src="/assets/images/Promo image.png" alt="احنا صوتكم" className="promo-img main-circle" /> <img src="/assets/images/Promo image (1).png" alt="شعار صوت" className="promo-img logo-circle" /> <img src="/assets/images/Experience banner.png" alt="10 سنوات خبرة" className="promo-img badge-cloud" /> <div className="bottom-text-wrapper count"> <h2 className="promo-title">
+<div className="col-md-6 right-design-section d-none d-md-block"> <div className="promo-container"> <img src="/assets/images/swat.png" alt="احنا صوتكم" className="promo-img promo-swat" /> <div className="bottom-text-wrapper count"> <h2 className="promo-title" data-i18n-html="auth_promo_title_html">
                 صوت من لا <span className="sawt-lh">صوت له</span> </h2> </div> </div> </div>
         <div className="col-md-6 left-form-section col-12">
+          <button
+            type="button"
+            className="language-btn auth-lang-btn auth-lang-btn-desktop d-none d-md-flex"
+            aria-label="تغيير اللغة"
+          >
+            <IconGlobe />
+            <span data-i18n="auth_lang_label">En</span>
+          </button>
           {topContent}
           <div className="form-wrapper postion-relative">
             {mobileTopBar ? (
