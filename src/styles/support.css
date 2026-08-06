@@ -171,14 +171,14 @@
 }
 .sp-tab-label {
   display: block;
-  font-size: 24px;
+  font-size: 28px;
   font-weight: 700;
   color: #1c1c1c;
   margin-bottom: 4px;
 }
 .sp-tab-sub {
   display: block;
-  font-size: 17px;
+  font-size: 18px;
   color: #8b8b8b;
 }
 .sp-tab.active .sp-tab-sub {
@@ -190,7 +190,7 @@
   padding: 26px 24px 24px;
 }
 .sp-field-label {
-  font-size: 25px;
+  font-size: 24px;
   font-weight: 700;
   color: #1c1c1c;
   margin-bottom: 14px;
@@ -271,7 +271,7 @@
   gap: 8px;
   cursor: pointer;
   margin-bottom: 20px;
-  font-size: 14px;
+  font-size: 18px;
   color: #4C5C37;
   font-weight: 700;
 }
@@ -346,7 +346,7 @@
   padding: 24px;
 }
 .sp-pledge-title {
-  font-size: 25px;
+  font-size: 28px;
   font-weight: 800;
   color: #1c1c1c;
   margin-bottom: 18px;
@@ -386,7 +386,7 @@
   position: relative;
 }
 .sp-quote-text {
-  font-size: 20px;
+  font-size: 18px;
   color: #484848;
   line-height: 1.9;
   margin-bottom: 16px;
@@ -489,7 +489,7 @@ background: #FFF;
   display: flex;
   align-items: center;
   gap: 10px;
-  font-size: 20px;
+  font-size: 18px;
   color: #484848;
   font-weight: 700;
       text-align: start;
@@ -559,12 +559,12 @@ background: #FFF;
 }
 .sp-badge-num {
   display: block;
-  font-size: 24px;
+  font-size: 22px;
   font-weight: 800;
 }
 .sp-badge-label {
   display: block;
-  font-size: 16px;
+  font-size: 14px;
   color: rgba(255, 255, 255, 0.70);
 
 }
@@ -603,7 +603,7 @@ background: #FFF;
   text-align: center;
 }
 .sp-stat-label {
-  font-size: 20px;
+  font-size: 18px;
   color: #919191;
   margin-bottom: 6px;
   display: flex;
@@ -639,17 +639,17 @@ background: #FFF;
   font-size: 24px;
 }
 .sp-stat-value {
-font-size: 36px;  
+font-size: 32px;  
   font-weight: 800;
   color: #E1723B;
 }
 .sp-stat-value-dark {
   color: #1c1c1c;
-  font-size: 36px;
+  font-size: 32px;
 }
 .sp-stat-value-green {
   color: #4c5c37;
-  font-size: 36px; 
+  font-size: 32px; 
 }
 .sp-progress {
   height: 12px;
@@ -664,7 +664,7 @@ font-size: 36px;
   background: #4c5c37;
 }
 .sp-progress-note {
-  font-size: 20px;
+  font-size: 18px;
   color: #7F7F7F;
   text-align: start;
   font-weight: 700;
@@ -743,7 +743,7 @@ font-size: 36px;
   flex: 0 0 auto;
 }
 .sp-alloc-pct {
-  font-size: 55px;
+  font-size: 45px;
   font-weight: 800;
   line-height: 1;
 }
@@ -809,7 +809,7 @@ font-size: 36px;
 }
 
 .sp-alloc-summary-title {
-  font-size: 29px;
+  font-size: 28px;
 font-weight: 900;
   color: #374C1C;
   margin-bottom: 10px;
@@ -850,7 +850,7 @@ font-weight: 900;
 }
 .sp-alloc-summary-share {
   display: block;
-  font-size: 18px;
+  font-size: 16px;
   color: #484848;
   margin-top: 4px;
 }
@@ -950,13 +950,13 @@ font-weight: 900;
   text-align:start
 }
 .sp-course-title {
-  font-size: 26px;
+  font-size: 28px;
   font-weight: 800;
   color: #1c1c1c;
   margin-bottom: 10px;
 }
 .sp-course-desc {
-  font-size: 17px;
+  font-size: 18px;
   color: #6D6D6D;
   line-height: 1.9;
   margin-bottom: 16px;
@@ -965,7 +965,7 @@ font-weight: 900;
   display: flex;
   align-items: center;
   gap: 20px;
-  font-size: 16px;
+  font-size: 14px;
   color: #7f7f7f;
   margin-bottom: 20px;
 }
@@ -1232,7 +1232,7 @@ background: rgba(237, 239, 235, 0.33);
   gap: 18px;
 }
 .sp-stories-strip-title {
-  font-size: 36px;
+  font-size: 32px;
   font-weight: 800;
   color: #1c1c1c;
   margin-bottom: 6px;
@@ -1321,7 +1321,7 @@ background: rgba(237, 239, 235, 0.33);
   justify-content: space-between;
   gap: 12px;
   padding: 18px 22px;
-  font-size: 20px;
+  font-size: 18px;
   font-weight: 700;
   color: #1c1c1c;
   cursor: pointer;
@@ -1345,7 +1345,7 @@ background: rgba(237, 239, 235, 0.33);
   display: flex;
   align-items: stretch;
   gap: 14px;
-  font-size: 16px;
+  font-size: 14px;
   color: #5A5A5A;
   line-height: 2;
   margin: 16px 22px 18px;
@@ -1405,14 +1405,14 @@ background: rgba(237, 239, 235, 0.33);
 }
 .sp-faq-more .sp-btn-green {
   border-radius: 24px;
-  font-size: 15px;
+  font-size: 14px;
   padding: 12px 36px;
 }
 
 /* ---------- Responsive ---------- */
 @media (max-width: 991.98px) {
   .sp-section {
-    padding: 55px 0;
+    padding: 25px 0;
   }
   .sp-banner-title {
     font-size: 26px;
@@ -1444,7 +1444,7 @@ background: rgba(237, 239, 235, 0.33);
   .sp-donate-section .cr-section-sub {
     margin: 0;
     color: #484848;
-    font-size: 16px;
+    font-size: 14px;
 text-align: center;
   }
   .sp-donate-body {
@@ -1458,13 +1458,13 @@ text-align: center;
     margin-bottom: 6px;
   }
   .sp-tab-label {
-    font-size: 15px;
+    font-size: 16px;
   }
   .sp-tab-sub {
-    font-size: 11px;
+    font-size: 12px;
   }
   .sp-field-label {
-    font-size: 18px;
+    font-size: 16px;
     margin-bottom: 12px;
   }
   .sp-amounts {
@@ -1476,22 +1476,26 @@ text-align: center;
     flex: 1 1 0;
     min-width: 0;
     padding: 8px 4px;
-    font-size: 15px;
+    font-size: 14px;
+  }
+  .sp-renew {
+    font-size: 14px;
+    gap: 6px;
   }
   .sp-donate-body .sp-btn-green {
-    border-radius: 10px;
-    font-size: 16px;
+    border-radius: 24px;
+    font-size: 14px;
     padding: 12px 20px;
   }
   .sp-pledge {
     padding: 20px 18px;
   }
   .sp-pledge-title {
-    font-size: 18px;
+    font-size: 16px;
     margin-bottom: 12px;
   }
   .sp-pledge-list li {
-    font-size: 14px;
+    font-size: 12px;
     padding: 7px 0;
   }
   .sp-pledge-check {
@@ -1502,14 +1506,14 @@ text-align: center;
     padding: 20px 18px;
   }
   .sp-quote-text {
-    font-size: 15px;
+    font-size: 14px;
   }
   /* mock: the pair sits centred with the logo on the LEFT of the names */
   .sp-quote-name {
-    font-size: 18px;
+    font-size: 16px;
   }
   .sp-quote-place {
-    font-size: 15px;
+    font-size: 14px;
   }
   .sp-quote-logo {
     width: 58px;
@@ -1567,10 +1571,10 @@ text-align: center;
 
 
 .sp-badge-num {
-  font-size:16px;
+  font-size:14px;
 }
 .sp-badge-label{
-  font-size:12px;
+  font-size:11px;
 }
 
 
@@ -1590,12 +1594,12 @@ text-align: center;
     min-width: 0;
   }
   .sp-banner-eyebrow {
-    font-size: 13px;
+    font-size: 11px;
     margin-bottom: 6px;
     color:#5A5A5A;
   }
   .sp-banner-title {
-    font-size: 24px;
+    font-size: 22px;
     margin-bottom: 18px;
   }
   /* single column; the mock leads with تبرع آمن ومشفر (3rd in the DOM) */
@@ -1610,7 +1614,7 @@ text-align: center;
     order: -1;
   }
   .sp-banner-feature {
-    font-size: 16px;
+    font-size: 14px;
     color:#484848;
   }
   .sp-feature-icon {
@@ -1625,7 +1629,7 @@ text-align: center;
   }
   .sp-banner-cta .sp-btn-green {
     flex: 1.35 1 0;
-    font-size: 17px;
+    font-size: 14px;
     padding: 12px 10px;
     border-radius: 24px;
   }
@@ -1635,6 +1639,7 @@ text-align: center;
      border-radius: 24px;
 border: 1px solid  #4C5C37;
 color:#4C5C37 !important;
+ font-size: 14px;
   }
   /* --- Live community, per the mobile mock: the monthly goal gets its own
      row, the three counters share the next one, the note centres under a
@@ -1654,18 +1659,18 @@ color:#4C5C37 !important;
     flex: 1 1 100%;
   }
   .sp-stat-label {
-    font-size: 13px;
+    font-size: 11px;
     margin-bottom: 4px;
   }
   .sp-stat-value,
   .sp-stat-value-green {
-    font-size: 20px;
+    font-size: 16px;
   }
   .sp-stat-value-dark {
-    font-size: 20px;
+    font-size: 16px;
   }
   .sp-progress-note {
-    font-size: 13px;
+    font-size: 11px;
     text-align: start;
     border-top: 1px solid #ececec;
     padding-top: 14px;
@@ -1673,7 +1678,7 @@ color:#4C5C37 !important;
   }
   .sp-community-cta .sp-btn-green {
     width: 100%;
-    font-size: 15px;
+    font-size: 14px;
     padding: 13px 10px;
   }
   /* --- Where donations go, per the mobile mock: stacked cards at a tighter
@@ -1701,18 +1706,18 @@ color:#4C5C37 !important;
     font-size: 40px;
   }
   .sp-alloc-title {
-    font-size: 18px;
+    font-size: 16px;
     margin-bottom: 10px;
   }
   .sp-alloc-desc {
-    font-size: 14px;
+    font-size: 12px;
     margin-bottom: 12px;
   }
   .sp-alloc-list {
     margin-bottom: 14px;
   }
   .sp-alloc-list li {
-    font-size: 14px;
+    font-size: 12px;
     padding: 5px 0;
   }
   .sp-alloc-bullet {
@@ -1723,7 +1728,7 @@ color:#4C5C37 !important;
     margin-bottom: 12px;
   }
   .sp-alloc-foot-text {
-    font-size: 14px;
+    font-size: 12px;
   }
   /* --- Transparency strip, per the mobile mock: title + sub sit beside the
      donut (copy on the RTL start side, ring on the end), and the legend
@@ -1751,13 +1756,13 @@ color:#4C5C37 !important;
   .sp-alloc-summary-title {
     grid-column: 2;
     align-self: end;
-    font-size: 20px;
+    font-size: 16px;
     margin-bottom: 0;
   }
   .sp-alloc-summary-sub {
     grid-column: 2;
     align-self: start;
-    font-size: 13px;
+    font-size: 11px;
     margin-bottom: 0;
   }
   /* mock lists the legend smallest-first (25 → 35 → 40) — data stays 40-first
@@ -1782,10 +1787,10 @@ color:#4C5C37 !important;
     margin-top: 5px;
   }
   .sp-alloc-summary-name {
-    font-size: 16px;
+    font-size: 14px;
   }
   .sp-alloc-summary-share {
-    font-size: 13px;
+    font-size: 12px;
     margin-top: 2px;
   }
   /* --- Partners' dark funding band, per the mobile mock: stacked copy and a
@@ -1815,7 +1820,7 @@ color:#4C5C37 !important;
     padding: 20px 18px;
   }
   .sp-course-title {
-    font-size: 20px;
+    font-size: 18px;
     margin-bottom: 8px;
   }
   .sp-course-desc {
@@ -1891,7 +1896,7 @@ color:#4C5C37 !important;
     border-radius: 24px;
   }
   .sp-stories-strip-title {
-    font-size: 18px;
+    font-size: 16px;
     margin-bottom: 4px;
   }
   .sp-stories-strip-desc {
@@ -1913,19 +1918,17 @@ color:#4C5C37 !important;
     display: none;
   }
   .sp-faq-q {
-    font-size: 16px;
+    font-size: 14px;
     padding: 16px;
   }
   .sp-faq-a {
     margin: 14px 16px 16px;
-    font-size: 14px;
+    font-size: 12px;
   }
   .sp-faq-more {
     display: flex;
   }
-  .sp-section .marquee {
-    margin-top: 24px;
-  }
+
 }
 
 /* ============================================================

@@ -24,7 +24,7 @@ export default function ContentCreators() {
             {" "}
             <h1
               className="creators-title"
-              style={{ fontSize: "42px", fontWeight: "bolder" }}
+              style={{ fontSize: "40px", fontWeight: "bolder" }}
             >
               {" "}
               <span data-i18n="creators_title_main">صُناع المحتوى</span>{" "}

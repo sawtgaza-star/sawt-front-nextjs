@@ -38,7 +38,7 @@ const FAQS: Faq[] = [
 ];
 
 export default function CreatorsFaq() {
-  // payment question (index 1) is expanded by default; the featured bar (index 0) starts collapsed
+  // payment question (index 1) is expanded by default
   const [open, setOpen] = useState<number>(1);
 
   const renderItem = (f: Faq, i: number) => {
@@ -75,11 +75,6 @@ export default function CreatorsFaq() {
       />
       
       <div className="container">
-        {/* First question — full-width featured bar above the section title.
-           Kept inside the container (full-bleed via CSS) so the mobile layout
-           can reorder the title above it with flex `order`. */}
-        <div className="cr-faq-featured">{renderItem(FAQS[0], 0)}</div>
-
         <div className="cr-section-head cr-section-head-qs">
           {/* Mobile mock uses a single stroked heading; the desktop title
              (3 spans) is hidden on mobile via CSS. */}
@@ -104,7 +99,7 @@ export default function CreatorsFaq() {
 
         <div className="cr-faq-row">
           <div className="cr-faq-col">
-            {FAQS.slice(1).map((f, idx) => renderItem(f, idx + 1))}
+            {FAQS.map((f, idx) => renderItem(f, idx))}
           </div>
 
           <div className="cr-faq-visual">

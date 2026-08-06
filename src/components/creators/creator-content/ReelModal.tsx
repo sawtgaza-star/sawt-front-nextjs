@@ -2,12 +2,34 @@
 // @ts-nocheck
 /* eslint-disable */
 import { useEffect, useState } from "react";
-import { SKIP, REEL_META } from "./data";
-import { fmtTime } from "./video-utils";
+import { SKIP } from "./data";
 import { useReelVideo } from "./useReelVideo";
+import ReelActions from "./ReelActions";
+import ReelComments from "./ReelComments";
+import ReelShare from "./ReelShare";
+import ReelInfo from "./ReelInfo";
+import {
+  IconRewind10,
+  IconForward10,
+  IconClose,
+  IconVolumeOff,
+  IconVolumeOn,
+} from "./reel-icons";
 
-/* Full-screen reel viewer opened when a card's play button is pressed. */
-export default function ReelModal({ cards, index, onNavigate, onClose }) {
+/* how long the centre controls and the info bar stay up before the playing
+   video gets the screen to itself — any tap/move brings them back */
+const IDLE_MS = 2000;
+
+/* Full-screen reel viewer opened when a card's play button is pressed.
+   `scope` namespaces the reel's social state (likes / saves / comments) —
+   every list numbers its reels from 0, so the store keys on `scope:id`. */
+export default function ReelModal({
+  cards,
+  index,
+  onNavigate,
+  onClose,
+  scope = "reel",
+}) {
   const {
     videoRef,
     progressRef,
@@ -23,9 +45,43 @@ export default function ReelModal({ cards, index, onNavigate, onClose }) {
   } = useReelVideo();
   const [playing, setPlaying] = useState(true);
   const [muted, setMuted] = useState(false);
-  const [liked, setLiked] = useState(true);
+  const [idle, setIdle] = useState(false);
+  // "comments" | "share" | null — the sheet drawn over the bottom of the reel
+  const [panel, setPanel] = useState(null);
+  // bumped by every interaction, purely to restart the idle countdown below
+  const [wakeTick, setWakeTick] = useState(0);
+
+  const wake = () => {
+    setIdle(false);
+    setWakeTick((t) => t + 1);
+  };
+  // a mouse only has to wake the chrome once it is actually hidden — otherwise
+  // every mousemove would re-render the viewer
+  const onReelPointerMove = () => {
+    if (idle) wake();
+  };
+  // the cursor leaving the reel hides them at once instead of letting the
+  // countdown run out (mouse only — a lifted finger must not count)
+  const onReelMouseLeave = () => {
+    if (playing && !panel) setIdle(true);
+  };
+
+  // the controls fade out IDLE_MS after playback starts and stay up whenever
+  // the video is paused or a sheet is open
+  useEffect(() => {
+    if (!playing || panel) {
+      setIdle(false);
+      return;
+    }
+    const t = window.setTimeout(() => setIdle(true), IDLE_MS);
+    return () => window.clearTimeout(t);
+  }, [playing, panel, wakeTick, index]);
+
+  // a sheet belongs to the reel it was opened on
+  useEffect(() => setPanel(null), [index]);
 
   const card = cards[index];
+  const reelKey = `${scope}:${card.id ?? index}`;
   const hasPrev = index > 0;
   const hasNext = index < cards.length - 1;
 
@@ -37,7 +93,8 @@ export default function ReelModal({ cards, index, onNavigate, onClose }) {
   // close on Escape, arrow keys navigate, lock page scroll while open
   useEffect(() => {
     const onKey = (e) => {
-      if (e.key === "Escape") onClose();
+      // Escape closes the open sheet first, the viewer only once none is up
+      if (e.key === "Escape") panel ? setPanel(null) : onClose();
       else if (e.key === "ArrowRight") go(-1); // RTL: right = previous
       else if (e.key === "ArrowLeft") go(1);
     };
@@ -66,6 +123,12 @@ export default function ReelModal({ cards, index, onNavigate, onClose }) {
     if (!v) return;
     if (v.paused) v.play();
     else v.pause();
+  };
+  /* tapping the video: with a sheet up the tap only dismisses it, otherwise it
+     plays/pauses like the centre button */
+  const onSurfaceClick = () => {
+    if (panel) setPanel(null);
+    else togglePlay();
   };
   const toggleMute = () => {
     const v = videoRef.current;
@@ -103,13 +166,28 @@ export default function ReelModal({ cards, index, onNavigate, onClose }) {
         <i className="fa-solid fa-angle-left"></i>
       </button>
 
-      <div className="cr-reel" onClick={(e) => e.stopPropagation()}>
+      <div
+        className={
+          "cr-reel" +
+          (idle ? " is-idle" : "") +
+          (panel ? ` has-panel has-panel-${panel}` : "")
+        }
+        onClick={(e) => e.stopPropagation()}
+        onPointerDown={wake}
+        onPointerMove={onReelPointerMove}
+        onMouseLeave={onReelMouseLeave}
+      >
+        {/* the frame itself is the play/pause surface, the way every reels
+            player behaves — the centre button is only the visible affordance.
+            A tap that ends a swipe is swallowed by useReelSwipe's click guard,
+            and an open sheet consumes its own clicks. */}
         <video
           ref={videoRef}
           src={card.video}
           loop
           playsInline
           preload="auto"
+          onClick={onSurfaceClick}
           onTimeUpdate={handleTimeUpdate}
           onLoadedMetadata={handleLoadedMetadata}
           onDurationChange={(e) => {
@@ -125,7 +203,7 @@ export default function ReelModal({ cards, index, onNavigate, onClose }) {
           onClick={onClose}
           aria-label="close"
         >
-          <i className="fa-solid fa-xmark"></i>
+          <IconClose />
         </button>
         <button
           type="button"
@@ -133,7 +211,7 @@ export default function ReelModal({ cards, index, onNavigate, onClose }) {
           onClick={toggleMute}
           aria-label={muted ? "unmute" : "mute"}
         >
-          <i className={muted ? "fa-solid fa-volume-xmark" : "fa-solid fa-volume-high"}></i>
+          {muted ? <IconVolumeOff /> : <IconVolumeOn />}
         </button>
 
         {/* centered rewind · play/pause · forward */}
@@ -145,8 +223,7 @@ export default function ReelModal({ cards, index, onNavigate, onClose }) {
             aria-label="forward 10 seconds"
           >
             <span className="cr-reel-skip">
-              <i className="fa-solid fa-rotate-right"></i>
-              <b>{SKIP}</b>
+              <IconForward10 />
             </span>
           </button>
           <button
@@ -164,61 +241,30 @@ export default function ReelModal({ cards, index, onNavigate, onClose }) {
             aria-label="rewind 10 seconds"
           >
             <span className="cr-reel-skip">
-              <i className="fa-solid fa-rotate-left"></i>
-              <b>{SKIP}</b>
+              <IconRewind10 />
             </span>
           </button>
         </div>
 
-        {/* action rail */}
-        <div className="cr-reel-actions">
-          <button
-            type="button"
-            className="cr-reel-action"
-            onClick={() => setLiked((l) => !l)}
-            aria-label="like"
-          >
-            <i
-              className={liked ? "fa-solid fa-heart" : "fa-regular fa-heart"}
-              style={liked ? { color: "#e74c3c" } : undefined}
-            ></i>
-            <span>{REEL_META.likes}</span>
-          </button>
-          <button type="button" className="cr-reel-action" aria-label="comments">
-            <i className="fa-regular fa-comment"></i>
-            <span>{REEL_META.comments}</span>
-          </button>
-          <button type="button" className="cr-reel-action" aria-label="save">
-            <i className="fa-regular fa-bookmark"></i>
-          </button>
-          <button type="button" className="cr-reel-action" aria-label="share">
-            <i className="fa-solid fa-share"></i>
-          </button>
-        </div>
+        {/* action rail — like / comments / save / share */}
+        <ReelActions reelKey={reelKey} panel={panel} onPanel={setPanel} />
 
         {/* bottom info + scrub bar */}
-        <div className="cr-reel-info">
-          <div className="cr-reel-user">
-            <img src={REEL_META.avatar} alt={REEL_META.user} />
-            <span>{REEL_META.user}</span>
-          </div>
-          <p className="cr-reel-caption">{REEL_META.caption}</p>
-          <div className="cr-reel-progress-row">
-            <span>{fmtTime(current)}</span>
-            <div
-              className="cr-reel-progress"
-              ref={progressRef}
-              onPointerDown={onProgressPointerDown}
-              role="slider"
-              aria-label="seek"
-            >
-              <div className="cr-reel-progress-fill" style={{ width: pct + "%" }} />
-              <div className="cr-reel-progress-thumb" style={{ left: pct + "%" }} />
-            </div>
-            <span>{duration > 0 ? fmtTime(duration) : "--:--"}</span>
-          </div>
-          <span className="cr-reel-posted">{REEL_META.posted}</span>
-        </div>
+        <ReelInfo
+          current={current}
+          duration={duration}
+          pct={pct}
+          progressRef={progressRef}
+          onProgressPointerDown={onProgressPointerDown}
+        />
+
+        {/* the sheet the rail opens, over the info bar */}
+        {panel === "comments" && (
+          <ReelComments reelKey={reelKey} onClose={() => setPanel(null)} />
+        )}
+        {panel === "share" && (
+          <ReelShare reelId={card.id ?? index} onClose={() => setPanel(null)} />
+        )}
       </div>
     </div>
   );

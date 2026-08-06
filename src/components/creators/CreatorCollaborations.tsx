@@ -61,9 +61,13 @@ export default function CreatorCollaborations() {
           </div>
 
           {/* Company list */}
+          {/* --m-order drives the MOBILE stacking only (the list is
+              display:contents there): every item up to the selected one keeps
+              its place, the reel takes the slot right after it, and the rest
+              of the companies follow. Desktop ignores the variable. */}
           <ul className="cr-collabs-list">
             {COMPANIES.map((company, i) => (
-              <li key={company.key}>
+              <li key={company.key} style={{ "--m-order": i <= active ? i + 1 : i + 2 }}>
                 <button
                   type="button"
                   className={"cr-collab-item" + (i === active ? " active" : "")}
@@ -94,7 +98,7 @@ export default function CreatorCollaborations() {
           </ul>
 
           {/* Central reel card — reuses the home-page Reels markup + styling */}
-          <div className="cr-collabs-media">
+          <div className="cr-collabs-media" style={{ "--m-order": active + 2 }}>
             <div className="review-reels cr-collabs-reel" ref={reelRef}>
               <div className="reel-item" data-index="0">
                 <div className="reel-media">

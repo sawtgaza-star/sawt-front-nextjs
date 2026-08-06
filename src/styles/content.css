@@ -111,27 +111,39 @@ filter: drop-shadow(4px 4px 10px #FF7420) drop-shadow(0 4px 10px #000);
   padding: 0;
   margin: 0;
 }
+/* design token for the pill label — the variable is defined by next/font in
+   app/layout.tsx, which self-hosts Rubik (arabic + latin subsets) */
+
 .ct-sort {
   display: flex;
   align-items: center;
   gap: 12px;
 }
 .ct-sort-label {
-  font-size: 15px;
+  font-size: 16px;
   font-weight: 700;
   color: #5A5A5A;
   white-space: nowrap;
 }
 .ct-sort-select {
-  background: #F2F2F2;
+  /* native arrow replaced by the chevron asset, pinned to the left edge */
+  appearance: none;
+  -webkit-appearance: none;
+  background: #F2F2F2 url("/assets/images/chevron-down.svg") left 12px center /
+    24px 24px no-repeat;
   border: 1px solid #F2F2F2;
   border-radius: 8px;
-  padding: 8px 16px;
-  font-size: 15px;
+  padding: 9px 44px 8px 44px;
+  font-size: 14px;
   font-weight: 500;
   color: #7a7a7a;
   cursor: pointer;
   min-width: 210px;
+  text-align: center;
+  text-align-last: center;
+}
+.ct-sort-select option {
+  text-align: center;
 }
 .ct-sort-select:focus {
   outline: none;
@@ -166,6 +178,13 @@ filter: drop-shadow(4px 4px 10px #FF7420) drop-shadow(0 4px 10px #000);
   inset: 0;
   z-index: 9999;
 }
+/* the swipe offset written by useReelSwipe; 0 whenever no drag is in flight */
+.ct-reel-layer .cr-reel {
+  transform: translate3d(0, var(--ct-swipe, 0px), 0);
+}
+.ct-reel-layer[data-swipe-anim="1"] .cr-reel {
+  transition: transform 0.26s cubic-bezier(0.22, 0.61, 0.36, 1);
+}
 
 /* ---------- "الأكثر مشاهدة" rows ---------- */
 .ct-mw-section {
@@ -179,7 +198,7 @@ filter: drop-shadow(4px 4px 10px #FF7420) drop-shadow(0 4px 10px #000);
   margin-bottom: 6px;
 }
 .ct-mw-title {
-  font-size: 42px;
+  font-size: 40px;
   font-weight: 800;
   color: #1c1c1c;
   margin: 0;
@@ -189,16 +208,25 @@ filter: drop-shadow(4px 4px 10px #FF7420) drop-shadow(0 4px 10px #000);
   color: #1c1c1c;
 }
 .ct-mw-more {
-  font-size: 18px;
+  font-size: 20px;
   font-weight: 600;
   color: #4c5c37 !important;
   text-decoration: none;
+  /* the hover pill is sized in from the start and pulled back out again by the
+     matching negative margin, so hovering never nudges the heading row */
+  padding: 8px 16px;
+  margin: -8px -16px;
+  border-radius: 12px;
+  background-color: transparent;
+  transition:
+    color 0.2s ease,
+    background-color 0.2s ease,
+    box-shadow 0.2s ease;
 }
 .ct-mw-more:hover {
   color: #000 !important;
-  padding:8px 16px;
-  border-radius:12px;
   background-color: rgba(251, 247, 247, 0.75) !important;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
 }
 .ct-mw-slider {
   position: relative;
@@ -286,10 +314,13 @@ filter: drop-shadow(4px 4px 10px #FF7420) drop-shadow(0 4px 10px #000);
     height: 240px;
   }
   .ct-mw-track {
-    padding-inline-start: 16px;
+    /* first card starts on the container grid; the row still runs off-screen */
+    padding-inline-start: 10px;
   }
 }
 @media (max-width: 767.98px) {
+
+  
   /* creators.css whitens its hero and hides the title/desc on mobile — that is
      the creators LIST mock, not this page: keep the dark hero of the mockup */
   .ct-header.cr-header:not(.cr-detail-header) {
@@ -297,58 +328,151 @@ filter: drop-shadow(4px 4px 10px #FF7420) drop-shadow(0 4px 10px #000);
     background-size: cover !important;
     background-position: center !important;
   }
+  /* both heroes ARE .container elements — 10px keeps them on the same grid as
+     the navbar card (see the .container block in legacy/style.css) */
+  .ct-hero {
+    padding-inline: 10px;
+  }
   .ct-header.cr-header:not(.cr-detail-header) .cr-hero {
-    padding: 28px 15px 0;
+    padding: 28px 10px 0;
   }
   .ct-header.cr-header:not(.cr-detail-header) .cr-breadcrumb {
     margin-bottom: 18px;
+    font-size: 15px;
   }
   .ct-header.cr-header:not(.cr-detail-header) .cr-hero-title,
   .ct-header.cr-header:not(.cr-detail-header) .cr-hero-desc {
     display: block;
+  
   }
   .ct-header.cr-header:not(.cr-detail-header) .cr-breadcrumb a,
   .ct-header.cr-header:not(.cr-detail-header) .cr-breadcrumb-sep {
     color: #fff !important;
   }
 
-  .ct-hero-desc {
-    font-size: 15px;
+  .cr-section-title, .cr-hero-title {
+    font-size: 22px;
   }
-  .ct-hero-slide {
-    height: 265px;
+
+  .ct-hero-desc {
+    font-size: 14px;
+    margin-bottom: 30px;
+  }
+  /* phones show ONE tall poster (see slidesPerView in HeroReelsSlider): it keeps
+     the reel's portrait shape and its neighbours only peek in at the edges.
+     swiper.css's own `.swiper-slide { height: 100% }` is loaded after this file
+     and has the same specificity, so the height has to be qualified to win */
+  .ct-hero-swiper .ct-hero-slide {
+    /* ~1.6× the poster's width, the ratio of the mock, clamped so the hero stays
+       sane on the widest phones */
+    height: clamp(310px, 98vw, 420px);
+  }
+  /* the 9-across row needs the 1.1 scale to reach both screen edges — the single
+     poster must stay exactly the width Swiper gives it */
+  .ct-hero-thumb {
+    transform: scale(1);
+    border-radius: 12px;
+  }
+  .ct-hero-slide:not(.swiper-slide-active) .ct-hero-thumb {
+    filter: blur(2px);
+  }
+  /* the focused poster carries the orange ring of the mock */
+  .ct-hero-slide.swiper-slide-active .ct-hero-thumb {
+    border: 3px solid #fe712b;
+    filter: drop-shadow(0 4px 14px rgba(255, 116, 32, 0.55))
+      drop-shadow(0 4px 10px rgba(0, 0, 0, 0.6));
   }
   .ct-grid {
     grid-template-columns: repeat(2, 1fr);
     gap: 12px;
   }
-  /* stack the pills over the sort control, each on its own full-width row */
+  /* the bar itself is ONE slider on mobile: the category pills and the sort
+     control sit side by side on a single row and scroll together */
   .ct-filter-bar {
-    flex-direction: column;
-    align-items: stretch;
-    gap: 14px;
-  }
-  .ct-tabs {
-    /* pills scroll sideways instead of wrapping into three rows */
     flex-wrap: nowrap;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 8px;
     overflow-x: auto;
+    overscroll-behavior-x: contain;
+    -webkit-overflow-scrolling: touch;
     scrollbar-width: none;
     padding-bottom: 4px;
   }
-  .ct-tabs::-webkit-scrollbar {
+  .ct-filter-bar::-webkit-scrollbar {
     display: none;
+  }
+  .ct-tabs {
+    /* the pills no longer scroll on their own — they are part of the bar's row */
+    flex: 0 0 auto;
+    flex-wrap: nowrap;
+    gap: 16px;
   }
   .ct-tabs .cr-content-tab {
+  font-family: var(--fontFamily-text, Rubik), "cairo", sans-serif;
+}
+  .ct-tabs .cr-content-tab {
     white-space: nowrap;
+    /* small enough that the four category pills of the mock sit side by side on
+       a phone screen; the sort control then slides in after them */
+    font-size: 14px;
+    line-height: 17px;
+    font-weight: 400;
+    padding: 7px clamp(8px, 2.4vw, 12px);
+  }
+  .ct-tabs .cr-content-tab.active {
+    font-weight: 500;
+  }
+  .ct-sort {
+    flex: 0 0 auto;
+    gap: 8px;
+  }
+  .ct-sort-label {
+    font-size: 13px;
   }
   .ct-sort-select {
+    /* it rides the row instead of stretching across it */
+    flex: 0 0 auto;
     min-width: 0;
-    flex: 1 1 auto;
+    width: auto;
+    font-size: 13px;
+    padding: 7px 30px;
+    background-position: left 8px center;
+    background-size: 18px 18px;
+  }
+  /* the reels in this row are the size of a card in the grid above: two per
+     container width (100vw − 2×10px container padding) with the grid's 12px gap */
+  .ct-mw-track .cr-content-card {
+    flex: 0 0 calc((100vw - 32px) / 2);
   }
   .ct-mw-title {
-    font-size: 24px;
+    font-size: 22px;
   }
+  .ct-mw-more {
+    font-size: 14px;
+  }
+
   .ct-mw-nav {
     display: none;
+  }
+}
+
+/* ---------- Reel viewer on mobile (Reels-style) ---------- */
+@media (max-width: 767.98px) {
+  /* a phone has no hover, so the close/mute buttons the desktop viewer reveals
+     on :hover would never appear — they are permanently on instead. (The
+     centre controls and the info bar are driven by the idle timer, not hover.) */
+  .ct-reel-layer .cr-reel-close,
+  .ct-reel-layer .cr-reel-mute {
+    opacity: 1;
+  }
+  /* the vertical swipe replaces the prev/next arrows */
+  .ct-reel-layer .cr-reel-nav {
+    display: none;
+  }
+  /* the reel owns the vertical gesture — the browser must not pan/zoom it */
+  .ct-reel-layer .cr-reel {
+    touch-action: none;
+    will-change: transform;
   }
 }

@@ -62,10 +62,14 @@ export default function HeroReelsSlider() {
         watchSlidesProgress
         /* the focused poster is centred, so the count has to be ODD for both
            edges to end on a whole card; 9 across = the focused one plus the
-           four fanned positions on each side */
-        slidesPerView={3}
+           four fanned positions on each side.
+           On phones the mock shows ONE big poster instead: 1.6 across leaves the
+           focused one ~61% of the screen and its neighbours as slivers at the
+           two edges */
+        slidesPerView={1.6}
         spaceBetween={12}
         breakpoints={{
+          576: { slidesPerView: 2.2, spaceBetween: 12 },
           768: { slidesPerView: 5, spaceBetween: 12 },
           992: { slidesPerView: 9, spaceBetween: 12 },
         }}

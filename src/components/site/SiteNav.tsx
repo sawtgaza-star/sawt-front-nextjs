@@ -1,5 +1,6 @@
 // @ts-nocheck
 /* eslint-disable */
+import { IconGlobe } from "@/components/ui/icons";
 import NavTopBar from "./NavTopBar";
 import NavLinks from "./NavLinks";
 import MobileSearchPanel from "./MobileSearchPanel";
@@ -125,34 +126,14 @@ export default function SiteNav() {
             </div>{" "}
             <div className="searchDiv d-flex align-items-center gap-2">
               {" "}
-              <button className="btn rounded-nav nav-bttn">
+              <button
+                type="button"
+                className="language-btn nav-lang-btn"
+                aria-label="تغيير اللغة"
+              >
                 {" "}
-                <i className="ri-moon-line"></i>{" "}
-              </button>{" "}
-              <button className="btn rounded-nav language-btn nav-bttn">
-                {" "}
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="2em"
-                  height="3em"
-                  viewBox="0 0 24 24"
-                >
-                  {" "}
-                  <path d="M0 0h24v24H0z" fill="none"></path>{" "}
-                  <g fill="none" stroke="currentColor" strokeWidth="1.5">
-                    {" "}
-                    <circle cx="12" cy="12" r="10"></circle>{" "}
-                    <path
-                      strokeLinejoin="round"
-                      d="M8 12c0 6 4 10 4 10s4-4 4-10s-4-10-4-10s-4 4-4 10Z"
-                    ></path>{" "}
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      d="M21 15H3m18-6H3"
-                    ></path>{" "}
-                  </g>{" "}
-                </svg>{" "}
+                <IconGlobe />{" "}
+                <span data-i18n="auth_lang_label">En</span>{" "}
               </button>{" "}
             </div>{" "}
           </div>{" "}
