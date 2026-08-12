@@ -185,6 +185,11 @@ filter: drop-shadow(4px 4px 10px #FF7420) drop-shadow(0 4px 10px #000);
 .ct-reel-layer[data-swipe-anim="1"] .cr-reel {
   transition: transform 0.26s cubic-bezier(0.22, 0.61, 0.36, 1);
 }
+/* the neighbouring reels ReelViewer stacks around the current one — they only
+   belong to the full-bleed mobile layout at the bottom of this file */
+.ct-reel-peek {
+  display: none;
+}
 
 /* ---------- "الأكثر مشاهدة" rows ---------- */
 .ct-mw-section {
@@ -470,9 +475,50 @@ filter: drop-shadow(4px 4px 10px #FF7420) drop-shadow(0 4px 10px #000);
   .ct-reel-layer .cr-reel-nav {
     display: none;
   }
-  /* the reel owns the vertical gesture — the browser must not pan/zoom it */
+  /* full-bleed, the way Reels/TikTok play: the reel IS the screen, so two
+     consecutive videos sit flush one under the other with nothing showing in
+     between. The reel also owns the vertical gesture — the browser must not
+     pan/zoom it. */
+  .ct-reel-layer .cr-reel-overlay {
+    padding: 0;
+  }
   .ct-reel-layer .cr-reel {
+    width: 100%;
+    height: 100%;
+    max-height: none;
+    aspect-ratio: auto;
+    border-radius: 0;
+    box-shadow: none;
     touch-action: none;
     will-change: transform;
+  }
+  /* the previous / next reel, parked exactly one screen away and riding the
+     same swipe offset, above the overlay's backdrop (2100) which does not move */
+  .ct-reel-peek {
+    display: block;
+    position: absolute;
+    left: 0;
+    right: 0;
+    height: 100%;
+    z-index: 2101;
+    background: #000;
+    overflow: hidden;
+    pointer-events: none;
+    transform: translate3d(0, var(--ct-swipe, 0px), 0);
+  }
+  .ct-reel-peek-prev {
+    top: -100%;
+  }
+  .ct-reel-peek-next {
+    top: 100%;
+  }
+  .ct-reel-peek video {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  .ct-reel-layer[data-swipe-anim="1"] .ct-reel-peek {
+    transition: transform 0.26s cubic-bezier(0.22, 0.61, 0.36, 1);
   }
 }
