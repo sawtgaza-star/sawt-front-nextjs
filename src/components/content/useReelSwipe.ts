@@ -1,5 +1,6 @@
 "use client";
 import { useCallback, useEffect, useRef } from "react";
+import { flushSync } from "react-dom";
 import type { PointerEvent as ReactPointerEvent, MouseEvent as ReactMouseEvent } from "react";
 
 const LOCK_SLOP = 8; // px of movement before the gesture commits to an axis
@@ -71,14 +72,42 @@ export function useReelSwipe({ index, count, onNavigate }: Options) {
     after(SLIDE_MS, () => setAnim(false));
   }, [after, setAnim, setOffset]);
 
-  /* slide the current reel out, swap the index, slide the next one in */
+  /* is the neighbour the swipe is heading for actually on screen? it is only
+     rendered as a stacked pane on the mobile (full-bleed) layout — the centred
+     card layouts hide it */
+  const hasStackedNeighbour = useCallback((dir: 1 | -1) => {
+    const el = layerRef.current?.querySelector<HTMLElement>(
+      dir === 1 ? ".ct-reel-peek-next" : ".ct-reel-peek-prev",
+    );
+    return !!el && getComputedStyle(el).display !== "none";
+  }, []);
+
+  /* slide the current reel out and swap the index under the neighbour that
+     took its place */
   const slideTo = useCallback(
     (target: number, dir: 1 | -1) => {
       sliding.current = true;
-      const travel = window.innerHeight;
+      // one full reel is exactly where the stacked neighbour sits (mobile); on
+      // a wider screen the reel is a centred card, so a whole viewport is what
+      // it takes to push it off
+      const travel = Math.max(reelHeight(), window.innerHeight);
+      // with the stack up, the pane sliding into the centre IS the arrival —
+      // the index swap has to land silently underneath it. Ride the incoming
+      // reel in from the far side only where there is no pane to hand over to,
+      // otherwise the gesture reads as two steps: neighbour in, then reel in.
+      const handoff = hasStackedNeighbour(dir);
       setAnim(true);
       setOffset(dir === 1 ? -travel : travel);
       after(SLIDE_MS, () => {
+        if (handoff) {
+          // committed synchronously so the swap and the offset reset land in
+          // the same frame — the outgoing reel must never paint back at centre
+          flushSync(() => onNavigate(target));
+          setAnim(false);
+          setOffset(0);
+          sliding.current = false;
+          return;
+        }
         onNavigate(target);
         // drop the incoming reel on the opposite side with no transition…
         setAnim(false);
@@ -96,7 +125,7 @@ export function useReelSwipe({ index, count, onNavigate }: Options) {
         );
       });
     },
-    [after, onNavigate, setAnim, setOffset],
+    [after, hasStackedNeighbour, onNavigate, reelHeight, setAnim, setOffset],
   );
 
   const onPointerDown = useCallback((e: ReactPointerEvent<HTMLDivElement>) => {
