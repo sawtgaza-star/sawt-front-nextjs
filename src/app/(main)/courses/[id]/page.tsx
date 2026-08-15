@@ -19,6 +19,11 @@ import { COURSES } from "@/components/courses/course-data";
    unknown ids 404. Layout: olive hero on top, then a [content | aside] grid —
    the aside is pulled up with a negative margin so the registration card
    floats over the hero, exactly as in the mock. */
+/* `output: 'export'` needs every dynamic segment pre-listed. */
+export function generateStaticParams() {
+  return Object.keys(COURSES).map((id) => ({ id }));
+}
+
 export default async function Page({
   params,
 }: {
