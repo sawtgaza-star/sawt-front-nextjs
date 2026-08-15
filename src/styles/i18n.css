@@ -1,0 +1,22 @@
+/* Pre-hydration language mask.
+   The server always renders the Arabic fallbacks (the saved language lives in
+   localStorage, so SSR can't know it). initTranslate() only runs after the page
+   chunk loads and React hydrates — until then an English visitor used to read
+   the Arabic text on every full page load.
+
+   The inline script in the root layout adds .i18n-pending to <html> before the
+   first paint whenever the saved language isn't Arabic; initTranslate() removes
+   it right after the strings are swapped (with a timeout fallback in the script
+   itself, so the text can never stay hidden if JS fails).
+
+   visibility (not display/opacity) so the Arabic text keeps reserving its box —
+   nothing jumps when the English text lands. */
+.i18n-pending [data-i18n],
+.i18n-pending [data-i18n-html] {
+  visibility: hidden !important;
+}
+
+/* Inputs must stay visible — only their Arabic placeholder is masked. */
+.i18n-pending [data-i18n-placeholder]::placeholder {
+  color: transparent !important;
+}

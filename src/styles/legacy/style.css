@@ -138,6 +138,79 @@ a {
   border-bottom: 1px solid rgba(218, 218, 218, 1) !important;
 }
 
+/* Site-wide container width, standardized on the navbar dimensions:
+   overrides Bootstrap's 1140px/1320px caps for every .container. */
+@media (min-width: 1200px) {
+  .container {
+    max-width: 1200px;
+  }
+}
+@media (min-width: 1400px) {
+  .container {
+    max-width: 1400px;
+  }
+}
+
+/* Mobile: same idea, standardized on the navbar card. The card is inset 10px
+   per side (header .navbar .container → width: calc(100% - 20px), in the
+   767.98px block further down), so every .container uses that same 10px gutter
+   instead of Bootstrap's 12px — section content starts and ends exactly on the
+   card's left/right edges. Per-section gutter overrides (20px / 16px / 0) were
+   removed for this; keep new mobile work on this grid.
+   The header's own container is excluded: its 12px is what positions the logo
+   and the burger inside the card. */
+@media (max-width: 767.98px) {
+  .container {
+    max-width: 100%;
+    padding-left: 10px;
+    padding-right: 10px;
+  }
+  header .navbar .container {
+    padding-left: 12px;
+    padding-right: 12px;
+  }
+}
+
+/* Homepage: wider gap between each section title and its subtitle (desktop).
+   !important beats inline marginTop (creators) and Bootstrap mt-* utilities. */
+@media (min-width: 992px) {
+  .sout-section .text-center > p,
+  .platform-sections .header-content > p,
+  .latest-news .news-subtitle,
+  .team-section .describ-p,
+  .partners-section .partners-description,
+  .content-section .creators-subtitle,
+  .rs-intro .rs-desc,
+  .reviews-intro .reviews-desc {
+    margin-top: 25px !important;
+  }
+}
+
+/* Homepage: unified section header sizes — title 40px, description 22px.
+   Scoped to ≥768px so the existing mobile overrides keep their own sizes. */
+@media (min-width: 768px) {
+  .sout-section .text-center > h1,
+  .latest-news .who-us,
+  .platform-sections .platform-title,
+  .team-section .title {
+    font-size: 40px;
+  }
+
+  /* the highlighted word here was 3px larger than the rest of the title */
+  .platform-sections .platform-title .who-us {
+    font-size: 43px;
+  }
+
+  .sout-section .text-center > p,
+  .latest-news .news-subtitle,
+  .content-section .creators-subtitle,
+  .platform-sections .header-content > p,
+  .partners-section .partners-description,
+  .team-section .describ-p {
+    font-size: 22px;
+  }
+}
+
 .nav-link {
   color: rgba(127, 127, 127, 1) !important;
   font-weight: 600 !important;
@@ -154,6 +227,27 @@ a {
   background-color: rgba(0, 0, 0, 0.03);
   padding: 2px 10px;
   border-radius: 50%;
+}
+
+/* Navbar language toggle: globe + current-language label (same look as .auth-lang-btn) */
+.nav-lang-btn {
+  direction: ltr;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: none;
+  border: none;
+  padding: 0;
+  font-size: 16px;
+  font-weight: 600;
+  color: #1e1e1e;
+  cursor: pointer;
+}
+
+.nav-lang-btn svg {
+  display: block;
+  width: 20px;
+  height: 20px;
 }
 
 .nav-link-back {
@@ -173,6 +267,7 @@ a {
   border-radius: 20px;
   color: rgba(76, 92, 55, 1) !important;
   transition: all 0.2s ease-in-out;
+  
 }
 .show-more-news:hover {
   background-color: rgb(50, 59, 38);
@@ -320,6 +415,24 @@ a {
   position: relative;
 }
 
+/* Stats bar matches the navbar/container width on desktop
+   (.front-face's max-width: 95% would otherwise win over .container) */
+@media (min-width: 992px) {
+  .stats-bar > .container.front-face {
+    max-width: 960px;
+  }
+}
+@media (min-width: 1200px) {
+  .stats-bar > .container.front-face {
+    max-width: 1200px;
+  }
+}
+@media (min-width: 1400px) {
+  .stats-bar > .container.front-face {
+    max-width: 1400px;
+  }
+}
+
 .stats-bar h3 {
   font-weight: bold;
   font-size: 1.8rem;
@@ -338,8 +451,17 @@ a {
   margin-top: -160px;
 }
 
+/* Pill-outlined dot pager (same design as the incubator testimonials pager) */
 #heroCarousel .carousel-indicators {
   bottom: 100px;
+  width: fit-content;
+  margin-left: auto;
+  margin-right: auto;
+  align-items: center;
+  gap: 10px;
+  border: 1px solid rgba(115, 140, 82, 0.7);
+  border-radius: 40px;
+  padding: 4px 12px;
 }
 
 .main-header-wrapper {
@@ -358,20 +480,21 @@ a {
   width: 12px;
   height: 12px;
   border-radius: 50%;
-  background-color: rgba(200, 200, 200, 1) !important;
+  background-color: #ffffff !important;
   border: none;
-  margin: 0 7px;
+  margin: 0;
   opacity: 0.9;
   transition: all 0.3s ease;
+  display: block;
 }
 
 #heroCarousel .carousel-indicators .active {
-  width: 16px;
-  height: 16px;
+  width: 18px;
+  height: 18px;
   opacity: 1;
   background-color: rgba(76, 92, 55, 1) !important;
-  border: 4px solid rgba(76, 92, 55, 0.1) !important;
-  box-shadow: 0 0 0 1px rgba(76, 92, 55, 1);
+  border: none !important;
+  box-shadow: none;
 }
 
 .overlay {
@@ -730,13 +853,14 @@ svg {
 
 .join-us-title {
   color: #fff;
+  font-size: 38px;
   font-weight: 700;
   margin-bottom: 14px;
 }
 
 .join-us-desc {
-  color: rgba(255, 255, 255, 1);
-  font-size: 18px;
+  color: #FFF;
+  font-size: 20px;
   line-height: 1.8;
   margin-bottom: 22px;
 }
@@ -1007,6 +1131,20 @@ svg {
   display: block !important;
 }
 
+/* nav:false في الجوال — يجب أن يتغلب على display:block !important أعلاه */
+.creators-carousel .owl-nav.disabled {
+  display: none !important;
+}
+
+/* الجوال: عرض البطاقة مع autoWidth بحيث تظهر بطاقة ونصف.
+   الكاروسيل يبدأ الآن من حافة ‎.container‎ الموحّدة (10px = عرض شريط التنقل)
+   بدل الوصول إلى حافة الشاشة — انظر كتلة توحيد ‎.container‎ في أعلى الملف. */
+@media (max-width: 599.98px) {
+  .creators-carousel .item {
+    width: 70vw;
+  }
+}
+
 .creators-carousel {
   position: relative;
 }
@@ -1174,6 +1312,18 @@ svg {
   display: none;
 }
 
+/* Pull the "View All" button up over the empty space left below the cards
+   (the card fills only 80% of its container). It must be positioned with a
+   z-index, otherwise the relatively-positioned carousel paints over it.
+   Desktop only — the mobile cards have their own smaller container. */
+@media (min-width: 769px) {
+  .content-section .creators-viewall {
+    margin-top: -20px !important;
+    position: relative;
+    z-index: 2;
+  }
+}
+
 .creators-carousel2 .owl-prev {
   background-color: white !important;
   border: 1px solid rgba(76, 92, 55, 1) !important;
@@ -1303,7 +1453,7 @@ svg {
   color: rgba(255, 255, 255, 1) !important;
   border-radius: 20px;
   margin: 12px;
-  font-size: 11px;
+  font-size: 12px;
 }
 
 .quote-box {
@@ -1361,6 +1511,12 @@ svg {
   border-radius: 50%;
   text-decoration: none;
   font-size: 20px;
+}
+/* لطخة الفرشاة البرتقالية خلف اسم SAWTGAZA في سطر الحقوق */
+.footer-brand-highlight {
+  display: inline-block;
+  background: url("/assets/images/Vectorred.svg") center / 100% 100% no-repeat;
+  padding: 2px 8px;
 }
 .contact-info {
   display: flex;
@@ -2200,8 +2356,15 @@ svg {
   border-top: 1px solid rgba(218, 218, 218, 1);
   padding-top: 10px;
 
-  /* شادو فوق */
+  /* Shadow */
   box-shadow: 0 -4px 10px rgba(0, 0, 0, 0.08);
+
+  /* Bottom border radius */
+  border-bottom-left-radius: 16px;
+  border-bottom-right-radius: 16px;
+
+  /* أو باختصار */
+  /* border-radius: 0 0 16px 16px; */
 }
 
 .comment-input-row textarea {
@@ -2227,7 +2390,7 @@ svg {
   outline: none;
   flex: 1;
   font-size: 13px;
-  font-weight: 600;
+  /* font-weight: 600; */
   background: transparent;
   color: #555;
   text-align: right;
@@ -2376,7 +2539,7 @@ svg {
 .review-reels .reel-actions {
   position: absolute;
   top: 12px;
-  inset-inline-start: 12px;
+  inset-inline-end: 12px;
   display: flex;
   gap: 8px;
   z-index: 3;
@@ -2442,9 +2605,9 @@ svg {
 
 /* Dark footer caption under the video */
 .review-reels .reel-caption {
-  background: #1b1b1b;
+  background: #1E1E1E;
   padding: 12px 16px 16px;
-  text-align: end;
+  text-align: start;
   flex-shrink: 0;
   max-height: 120px;
   overflow: hidden;
@@ -2489,9 +2652,12 @@ svg {
 /* Comments panel */
 .reviews-comments {
   background: #fff !important;
-  border-radius: 18px;
+ border-radius: 16px;
   box-shadow: 0 14px 32px rgba(0, 0, 0, 0.08);
+          border: 1px solid #DADADA !important;
 }
+
+
 
 .reviews-comments-head {
   display: flex;
@@ -2516,15 +2682,19 @@ svg {
   margin-top: 8px;
 }
 
+.reviews-comments .comment-input-row textarea::placeholder {
+  color: #919191;
+}
+
 .reviews-comments .comment-input-row textarea {
   flex: 1;
   background-color: #fff;
   padding: 14px 18px;
-  border-radius: 14px;
-  border: 1px solid #ececec;
+  border-radius: 8px;
+  border: 1px solid #DADADA;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
   font-size: 13px;
-  color: #6e6e6e;
+  color: #000;
   resize: none;
   min-height: 50px;
   line-height: 1.5;
@@ -2752,8 +2922,48 @@ svg {
   }
 }
 
+/* Match the reels card height to the comments card (side-by-side layout only).
+   The reels column is stretched to the row height and the card is taken out of
+   flow so the videos' intrinsic height can't drive the row height. */
+/* Tighten the news section's vertical rhythm: overrides the markup's
+   Bootstrap py-5 (3rem !important) at every width. */
+.latest-news {
+  padding-top: 2rem !important;
+  padding-bottom: 2rem !important;
+}
+
+/* The slider must paint above the neighboring sections' overlapping
+   decorations (hero caption z5, stats bar z6) — Owl's own stylesheet only
+   gives .owl-carousel z-index 1. Kept below the navbar (1030). */
+.latest-news .owl-carousel {
+  position: relative;
+  z-index: 10;
+}
+
+@media (min-width: 769px) {
+  .reviews-inner .col-lg-3.col-md-6 {
+    align-self: stretch;
+    position: relative;
+  }
+
+  .review-reels.reels-container {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 100%;
+  }
+  .review-reels .reel-item {
+    height: 100%;
+  }
+}
+
 /* Keep the reviews reels consistent on mobile (override legacy reels rules) */
 @media (max-width: 768px) {
+  .name-tag , .job-tag , .hover-title , .hover-desc {
+    font-size:14px !important;
+  }
   .contact-info-nav {
     display: flex !important  ;
   }
@@ -2835,7 +3045,7 @@ svg {
   /* content-section cards need an explicit size on mobile, otherwise the
      absolutely-positioned photo leaves the card with 0 height and it vanishes */
   .content-section .main-container {
-    height: 350px !important;
+    height: 300px !important;
     width: 240px !important;
     margin: 0 auto;
   }
@@ -3586,12 +3796,12 @@ svg {
 }
 
 /* --- أغصان الزيتون الأربعة --- */
-.olive-branch {
+/* .olive-branch {
   position: absolute;
   width: 220px;
   z-index: 2;
   pointer-events: none;
-}
+} */
 
 /* اليسار - غصن سفلي */
 .branch-left-bottom {
@@ -3599,6 +3809,25 @@ svg {
   left: 1px;
   transform: rotate(180deg) scaleY(-1);
 }
+
+.branch-left-bottom-home-section {
+  bottom: 4%;
+  left: -173px;
+  transform: scaleX(-1) rotate(343deg);
+}
+
+.branch-right-top-home-section {
+  top: -24%;
+  right: -184px;
+  transform: scaleX(-1) rotate(163deg);
+}
+
+.about-the-platform-card-inner {
+  border-radius: 20px;
+  background-color: #edefeb !important;
+  padding: 10px !important;
+}
+
 .branch-left-bottom-about {
   top: -18%;
   left: 1px;
@@ -3611,7 +3840,6 @@ svg {
   left: -35px;
   transform: rotate(205deg) scaleY(-1);
 }
-
 
 .team-section .branch-left-top {
   top: 75% !important;
@@ -3728,16 +3956,21 @@ svg {
 }
 
 .btn-view-profile {
-  display: inline-block;
+  display: flex;
+  gap:8px;
+  justify-content: center;
+  align-items:center;
   color: rgba(76, 92, 55, 1) !important;
   padding: 6px 18px;
-  border-radius: 20px;
+  border-radius: 24px;
   border: 1px solid rgba(76, 92, 55, 1) !important;
   text-decoration: none;
   font-size: 0.95rem;
   font-weight: 500;
   transition: 0.2s ease-in-out !important;
   font-weight: 600;
+  width: 72%;
+  margin:0 auto;
 }
 
 .btn-view-profile:hover {
@@ -3844,6 +4077,7 @@ svg {
   padding: 10px;
   width: 100%;
   font-size: 14px;
+    font-weight: 400 !important;
 }
 .newsletter-input-wrapper i {
   margin-right: 10px;
@@ -4076,6 +4310,7 @@ svg {
   .newsletter-input-wrapper {
     margin: 0 auto !important;
     width: 100% !important;
+            border: 1px solid #DADADA;
   }
   .swiper-outer-container {
     padding-right: 20px;
@@ -4898,22 +5133,23 @@ svg {
 }
 
 .about-hero-title {
-  font-size: 30px;
+  font-size: 28px;
   font-weight: 800;
   margin-bottom: 18px;
 }
 
 .about-hero-desc {
-  max-width: 760px;
+  max-width: 1060px;
   margin: 0 auto;
-  font-size: 17px;
+  font-size: 22px;
   line-height: 2;
-  color: rgba(218, 218, 218, 1);
+  color: #DADADA;
 }
 
 @media (max-width: 768px) {
   .about-hero {
-    padding: 40px 15px 60px;
+    /* .about-hero IS the .container — 10px keeps it on the navbar-card grid */
+    padding: 40px 10px 60px;
     z-index: -1;
   }
   .about-hero-title {
@@ -4968,7 +5204,7 @@ svg {
 
   /* About section (من نحن) */
   .about-sec-content {
-    padding: 0 20px;
+    padding: 0 20px !important;
   }
   .about-sec-title {
     font-size: 24px !important;
@@ -4977,7 +5213,7 @@ svg {
     margin-top: 0px !important;
   }
   .about-sec-desc {
-    font-size: 16px !important;
+    font-size: 13px !important;
     line-height: 1.9;
     text-align: center;
     text-align: start;
@@ -5064,6 +5300,7 @@ svg {
     line-height: 1.4;
     margin-bottom: 16px;
     padding: 0px 10px;
+    text-align:center;
   }
   .about-the-platform-desc {
     font-size: 16px !important;
@@ -5124,7 +5361,7 @@ svg {
     flex: 0 0 100% !important;
     width: 100% !important;
     text-align: start !important;
-    font-size: 14px !important;
+    font-size: 13px !important;
     line-height: 1.8 !important;
     font-weight: 500 !important;
   }
@@ -5160,7 +5397,8 @@ svg {
   min-height: 210px !important;
   border-radius: 150px 0px 150px 0px;
   border: 5px solid rgba(135, 146, 121, 1);
-  box-shadow: rgba(0, 0, 0, 0.32) 5px 5px 5px;
+ box-shadow: 0 6px 40px 0 rgba(0, 0, 0, 0.32);
+
   object-fit: cover;
 }
 
@@ -5168,7 +5406,7 @@ svg {
   width: 180px;
   height: 180px;
   background: #ffffff;
-  border: 4px solid rgba(135, 146, 121, 1);
+  border: 4px solid #879279;
   border-radius: 150px 0px 150px 0px;
   position: absolute;
   top: 55%;
@@ -5190,7 +5428,7 @@ svg {
   position: relative;
   display: inline-block;
 
-  font-size: 42px;
+  font-size: 40px;
   font-weight: 800;
   color: rgba(30, 30, 30, 1);
   margin-bottom: 26px;
@@ -5205,7 +5443,7 @@ svg {
 }
 
 .about-sec-desc {
-  color: rgba(72, 72, 72, 1);
+  color: #484848;
   font-size: 20px;
   line-height: 1.7;
   /* font-weight: 600; */
@@ -5226,6 +5464,7 @@ svg {
   background-position: center;
   background-repeat: no-repeat;
   border-radius: 16px;
+
   padding: 20px;
   max-width: 1320px;
   margin: 0 auto;
@@ -5302,7 +5541,7 @@ svg {
 }
 
 .about-the-platform-desc {
-  color: rgba(72, 72, 72, 1);
+  color: #484848;
   font-size: 20px;
   line-height: 1.7;
   /* font-weight: 600; */
@@ -5335,7 +5574,7 @@ svg {
 
 .core-values-title {
   color: #000000;
-  font-size: 42px;
+  font-size: 40px;
   font-weight: 900;
   margin-bottom: 18px;
 }
@@ -5380,7 +5619,7 @@ svg {
 }
 
 .value-card-icon {
-  background: url("/assets/images/stroke_gray_top.png");
+  background: url("/assets/images/Vector.svg");
   background-position: center;
   background-repeat: no-repeat;
   background-size: contain;
@@ -5396,13 +5635,13 @@ svg {
 
 .value-card-title {
   color: #000000;
-  font-size: 20px;
+  font-size: 18px;
   font-weight: 800;
   margin-bottom: 12px;
 }
 
 .value-card-desc {
-  color: rgba(82, 82, 82, 1);
+  color: #7A7A7A;
   font-size: 15px;
   font-weight: 500;
   line-height: 1.9;
@@ -5445,7 +5684,7 @@ svg {
 }
 
 .sawt-story-title {
-  font-size: 42px;
+  font-size: 40px;
   font-weight: 900;
   margin-bottom: 18px;
 }
@@ -5464,7 +5703,7 @@ svg {
 
 .sawt-story-subtitle {
   color: rgba(72, 72, 72, 1);
-  font-size: 24px;
+  font-size: 22px;
   width: 100%;
   line-height: 1.9;
   margin-bottom: 0;
@@ -5501,14 +5740,14 @@ svg {
 }
 
 .sawt-story-card-title {
-  font-size: 22px;
+  font-size: 25px;
   font-weight: 800;
   margin-bottom: 14px;
 }
 
 .sawt-story-card-desc {
-  color: rgba(90, 90, 90, 1);
-  font-size: 15px;
+  color: #5A5A5A;
+  font-size: 14px;
   font-weight: 600;
   line-height: 1.6;
   margin-bottom: 0;
@@ -5967,6 +6206,7 @@ svg {
 }
 
 .search-input {
+  width: 280px;
   padding-right: 35px !important;
 }
 .form-control {
@@ -6055,11 +6295,11 @@ svg {
   }
 
   .about-the-platform-card {
-    padding: 24px 18px;
+    padding: 0px 12px;
   }
 
   .about-the-platform-content {
-    padding: 10px 8px;
+    padding: 10px 0px;
   }
 
   .about-the-platform-question {
@@ -6250,7 +6490,7 @@ svg {
     background-repeat: no-repeat;
     background-size: cover;
     padding: 40px 0;
-    margin: 16px;
+    
   }
 
   .about-the-platform-title {
@@ -6300,7 +6540,7 @@ svg {
 
 /* ===================== Real Stories (قصص من الواقع) ===================== */
 .real-stories-section {
-  background-color: rgba(237, 239, 235, 1);
+  background-color: #EDEFEB;
 }
 
 /* --- Intro / text + comment column --- */
@@ -6327,7 +6567,7 @@ svg {
 
 .rs-desc {
   color: rgba(72, 72, 72, 1);
-  font-size: 17px;
+  font-size: 22px;
   line-height: 1.9;
   margin-bottom: 22px;
 }
@@ -6336,7 +6576,7 @@ svg {
   display: flex;
   align-items: center;
   gap: 12px;
-  font-size: 15px;
+  font-size: 16px;
   margin-bottom: 18px;
 }
 
@@ -6371,15 +6611,15 @@ svg {
 .rs-input {
   flex: 1;
   background: #fff;
-  border: 1px solid rgba(0, 0, 0, 0.06);
-  border-radius: 16px;
+  border: 1px solid #dadada;
+  border-radius: 8px;
   padding: 16px 18px;
   font-size: 15px;
   color: #333;
   outline: none;
   resize: none;
   min-height: 120px;
-  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.04);
+  box-shadow: none;
   transition:
     border-color 0.2s ease,
     box-shadow 0.2s ease;
@@ -6390,8 +6630,8 @@ svg {
 }
 
 .rs-input:focus {
-  border-color: rgba(76, 92, 55, 0.6);
-  box-shadow: 0 0 0 3px rgba(76, 92, 55, 0.12);
+  border-color: #dadada;
+  box-shadow: none;
 }
 
 .rs-send {
@@ -6422,7 +6662,6 @@ svg {
   position: relative;
   border-radius: 32px;
   overflow: hidden;
-  box-shadow: 0 14px 35px rgba(0, 0, 0, 0.12);
 }
 
 .rs-card-bg {
@@ -6519,29 +6758,38 @@ svg {
 
 /* --- Carousel dots --- */
 .real-stories-carousel .owl-dots {
-  text-align: center;
-  margin-top: 26px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  width: fit-content;
+  margin: 26px auto 0;
+  padding: 5px 12px;
+  border: 1px solid rgba(76, 92, 55, 1);
+  border-radius: 999px;
 }
 
 .real-stories-carousel .owl-dots .owl-dot {
   outline: none;
+  display: flex;
+  align-items: center;
 }
 
 .real-stories-carousel .owl-dots .owl-dot span {
-  width: 8px;
-  height: 8px;
-  margin: 0 6px;
-  background: rgba(180, 184, 175, 1);
+  width: 9px;
+  height: 9px;
+  margin: 0;
+  background: rgba(199, 201, 204, 1);
   border-radius: 50%;
   display: inline-block;
   transition: all 0.2s ease;
 }
 
 .real-stories-carousel .owl-dots .owl-dot.active span {
+  width: 13px;
+  height: 13px;
   background: rgba(76, 92, 55, 1);
-  box-shadow:
-    0 0 0 3px rgba(237, 239, 235, 1),
-    0 0 0 5px rgba(76, 92, 55, 1);
+  box-shadow: none;
 }
 
 @media (max-width: 991px) {
@@ -6628,6 +6876,7 @@ svg {
   border-radius: 50%;
   color: #4c5c37;
   background: inherit;
+  text-decoration: none;
 }
 
 .hover-arrow:hover {
@@ -6733,6 +6982,32 @@ svg {
   left: auto;
 }
 
+/* Align the hero arrows with the navbar/container edges */
+@media (min-width: 992px) {
+  #heroCarousel .carousel-control-prev.hero-arrow {
+    left: calc((100% - 960px) / 2);
+  }
+  #heroCarousel .carousel-control-next.hero-arrow {
+    right: calc((100% - 960px) / 2);
+  }
+}
+@media (min-width: 1200px) {
+  #heroCarousel .carousel-control-prev.hero-arrow {
+    left: calc((100% - 1200px) / 2);
+  }
+  #heroCarousel .carousel-control-next.hero-arrow {
+    right: calc((100% - 1200px) / 2);
+  }
+}
+@media (min-width: 1400px) {
+  #heroCarousel .carousel-control-prev.hero-arrow {
+    left: calc((100% - 1400px) / 2);
+  }
+  #heroCarousel .carousel-control-next.hero-arrow {
+    right: calc((100% - 1400px) / 2);
+  }
+}
+
 .hero-arrow-icon {
   width: 48px;
   height: 48px;
@@ -6791,26 +7066,49 @@ svg {
 }
 
 @media (max-width: 767.98px) {
+  /* Hide the desktop-Chrome scrollbar (drawn on the LEFT because the page is
+     RTL) at phone widths — real phones use overlay scrollbars anyway.
+     Scrolling itself still works (wheel / touch / keyboard). */
+  html {
+    scrollbar-width: none;
+  }
+  html::-webkit-scrollbar {
+    width: 0;
+    display: none;
+  }
+
   /* ---------- Header — node 4169:20952 (390x72) ---------- */
   header .navbar .container {
     position: relative;
     min-height: 72px;
-    border-radius: 0;
+    margin-top: 12px;
+    width: calc(100% - 20px);
+    border-radius: 8px;
+    border: 1px solid #dadada;
+    background: #fff !important;
   }
-  .mobile-nav-search {
-    display: inline-flex !important;
-    align-items: center;
-    justify-content: center;
-    order: 2;
-    background: transparent;
-    border: none;
-    box-shadow: none;
-  }
-  header .navbar .navbar-brand {
+  /* Float the navbar card over the hero instead of pushing it down.
+     legacy-main wraps the navbar in .header-bar at runtime; before that
+     wrapper exists the .navbar rule keeps the same overlay. */
+  .main-header-wrapper .header-bar,
+  .main-header-wrapper > .navbar {
     position: absolute;
-    left: 50%;
-    top: 50%;
-    transform: translate(-50%, -50%);
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 1030;
+  }
+  /* the bar takes no flow height anymore, so the pin spacer is dead height */
+  .main-header-wrapper .header-bar-spacer {
+    display: none !important;
+  }
+  header .navbar .mobile-nav-search {
+    display: none !important;
+  }
+  /* logo on the right, burger on the left (RTL + space-between) */
+  header .navbar .navbar-brand {
+    position: static;
+    transform: none;
     margin: 0 !important;
   }
   header .navbar .navbar-brand img {
@@ -6828,8 +7126,8 @@ svg {
     box-shadow: none;
   }
   .navbar-toggler-svg {
-    width: 1em;
-    height: 1em;
+    width: 24px;
+    height: 24px;
   }
 
   /* ---------- Hero — node 4169:20892 (390x378) ---------- */
@@ -6850,7 +7148,9 @@ svg {
   }
   .carousel-caption-custom {
     top: 50%;
-    padding: 0 20px;
+    /* no gutter of its own — the .container inside it holds the 10px that
+       lines the hero copy up with the navbar card */
+    padding: 0;
   }
   /* trust row: 5 stars + text, kept inline */
   .carousel-caption-custom .d-md-flex {
@@ -6909,7 +7209,7 @@ svg {
   }
   /* dots indicator */
   #heroCarousel .carousel-indicators {
-    bottom: 8px !important;
+    bottom: 35px !important;
   }
   #heroCarousel .carousel-indicators [data-bs-target] {
     width: 8px;
@@ -6921,7 +7221,7 @@ svg {
     height: 10px;
   }
 
-  /* ---------- Stats card — node 4169:20913 (350 wide) ---------- */
+  /* ---------- Stats card — node 4169:20913 ---------- */
   .stats-bar {
     margin-top: 0;
     padding: 0;
@@ -6929,7 +7229,9 @@ svg {
   .stats-bar .box-element.front-face {
     width: auto;
     max-width: none;
-    margin: -80px 20px 0;
+    /* 10px per side = the navbar card's width (the design's 350px card was
+       20px, which read as a narrower card than the header above it) */
+    margin: -35px 10px 0;
     border-radius: 16px !important;
     padding: 24px 16px !important;
     box-shadow: 0 5px 14.5px rgba(0, 0, 0, 0.05);
@@ -7130,7 +7432,7 @@ svg {
 @media (max-width: 767.98px) {
   .content-section .creators-title {
     font-size: 24px !important;
-    margin-top: 0;
+    margin-top: 0 !important;
   }
 
   .content-section .creators-subtitle {
@@ -7154,65 +7456,33 @@ svg {
     padding-right: 0 !important;
   }
 
-  /* على الجوال التنقّل بالنقاط والسحب بدل الأسهم */
-  .creators-carousel2 .owl-nav {
+  /* على الجوال التنقّل بالسحب فقط — بدون أسهم وبدون نقاط */
+  .creators-carousel2 .owl-nav,
+  .creators-carousel2 .owl-dots {
     display: none !important;
   }
 
-  /* النقاط داخل إطار بيضاوي — ‎fit-content‎ ليحيط الإطار بالنقاط فقط */
-  .creators-carousel2 .owl-dots {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 10px;
-    width: fit-content;
-    margin: 16px auto 0;
-    padding: 5px 12px;
-    border: 1px solid rgba(76, 92, 55, 1);
-    border-radius: 999px;
-  }
-
-  .creators-carousel2 .owl-dots .owl-dot {
-    display: flex;
-    align-items: center;
-  }
-
-  .creators-carousel2 .owl-dots .owl-dot span {
-    display: block;
-    width: 9px;
-    height: 9px;
-    margin: 0;
-    background: rgba(199, 201, 204, 1);
-    border-radius: 50%;
-    transition: all 0.2s ease;
-  }
-
-  .creators-carousel2 .owl-dots .owl-dot.active span {
-    width: 13px;
-    height: 13px;
-    background: rgba(76, 92, 55, 1);
-  }
-
   .content-section {
-    padding: 0;
+    padding: 0 !important;
   }
 
   .content-section .the-card {
     height: 90% !important;
   }
 
-  .creators-carousel2 .owl-dots {
-    border: 1px solid rgba(76, 92, 55, 1);
-    border-radius: 12px;
+  /* تقريب زر «عرض الكل» من البطاقات — لا بد من محدد بنفس قوة قاعدة
+     ‎.container > .text-center‎ أعلاه (margin: 24px !important) ليتغلب عليها،
+     والقيمة سالبة لتعويض الفراغ أسفل البطاقات (ارتفاعها 90% من الحاوية) */
+  .content-section .container > .creators-viewall {
+    margin-top: -15px !important;
+    position: relative;
+    z-index: 2;
   }
 }
 
 /* ===== قسم "أقسام المنصة" — نسخة الجوال (index.html) ===== */
 @media (max-width: 767.98px) {
-  .platform-sections .container {
-    padding-left: 20px;
-    padding-right: 20px;
-  }
+  /* gutter comes from the standardized .container (10px = navbar card) */
 
   .platform-sections .header-content .platform-title,
   .platform-title .who-us {
@@ -7271,9 +7541,7 @@ svg {
 
 /* ===== قسم "قصص من الواقع" — نسخة الجوال (index.html) ===== */
 @media (max-width: 767.98px) {
-  .real-stories-section .container {
-    padding-inline: 20px;
-  }
+  /* gutter comes from the standardized .container (10px = navbar card) */
 
   .real-stories-section .row {
     flex-direction: column;
@@ -7402,8 +7670,27 @@ svg {
     height: auto;
   }
 
+  /* على الجوال التنقّل بالسحب فقط — بدون أسهم
+     (تتغلّب على ‎display: block !important‎ في استعلام ‎max-width: 576px‎) */
+  .team-carousel .owl-nav {
+    display: none !important;
+  }
+
+  /* الكاروسيل والعنوان والوصف يتبعون حشوة ‎.container‎ الموحّدة
+     (10px = عرض شريط التنقل) بدل الامتداد إلى حافة الشاشة */
+
+  /* البطاقة الوسطى تملأ عرض العنصر الذي يحدّده ‎stagePadding‎ في Owl */
   .mic-container {
-    width: 225px;
+    width: 100%;
+    max-width: 200px;
+  }
+
+  /* نِسَب فتحة الصورة مأخوذة من الضبط السابق (صورة 115px داخل مايك 225px،
+     وإطار المايك 310×587) حتى تبقى محاذاتها صحيحة مع أي عرض للبطاقة */
+  .member-photo-box {
+    width: 51.11%;
+    height: 26.99%;
+    top: 8.92%;
   }
 
   .member-name-tag {
@@ -7411,7 +7698,21 @@ svg {
   }
 
   .btn-view-profile {
-    font-size: 14px;
+    font-size: 12px;
+  }
+
+  /* في المحاكاة يظهر زر البطاقتين الجانبيتين أيضاً (ضبابياً مع البطاقة) */
+  .team-carousel .btn-profile-wrapper {
+    opacity: 1;
+  }
+
+  /* قيمة الضبابية من التصميم (Figma) لنسخة الجوال */
+  .team-carousel .owl-item {
+    filter: blur(1.7211681604385376px);
+  }
+
+  .team-carousel .owl-item.center-highlight {
+    filter: blur(0);
   }
 
   .join-us-section {
@@ -7495,17 +7796,25 @@ svg {
     font-size: 16px !important;
   }
 
+
+
+  .newsletter-input-wrapper input::placeholder{
+    color: #919191 !important;
+  }
+
   .newsletter-input-wrapper input {
     font-size: 13px !important;
-    color: red !important;
+    color: #000 !important;
   }
+
 
   .tab {
     font-size: 13px !important;
   }
   th .reviews-intro {
     text-align: center;
-    padding: 0 12px;
+    /* horizontal gutter comes from the standardized .container */
+    padding: 0;
   }
 
   .reviews-title {
@@ -7547,11 +7856,17 @@ svg {
   /* بطاقة النشرة البريدية العلوية بخلفية فاتحة #EDEFEB */
   .footer-newsletter-mobile {
     display: block;
-    background: #edefeb;
-    border-radius: 16px;
-    margin: 0 20px 16px;
+    background: #EDEFEB;
+    border-radius: 20px;
+    /* 10px per side — same grid as .footer-custom-bg and the navbar card */
+    margin: 0 10px 16px;
     padding: 24px 22px;
     text-align: start;
+  }
+  /* on the about page the card follows the join-us banner directly, which ends
+     flush — give it room so the two cards don't touch */
+  .join-us-section + .footer-newsletter-mobile {
+    margin-top: 24px;
   }
   .footer-nl-title {
     color: #1e1e1e;
@@ -7561,7 +7876,7 @@ svg {
     text-align: start;
   }
   .footer-nl-sub {
-    color: #6d6d6d;
+    color: #1E1E1E;
     font-size: 13px;
     margin: 0 0 16px;
     text-align: start;
@@ -7587,7 +7902,7 @@ svg {
   /* البطاقة الداكنة #364127 مع حواف دائرية */
   .footer-custom-bg {
     background-color: #364127;
-    margin: 0 20px;
+    margin: 0 10px;
     border-radius: 20px;
   }
 
@@ -7614,7 +7929,7 @@ svg {
     flex: 2;
   }
   .footer-links-mobile-title {
-    text-align: center;
+    text-align: start;
     color: #fff;
     font-size: 16px;
     font-weight: 700;
@@ -7631,7 +7946,7 @@ svg {
   .footer-links-mobile-single {
     margin: 0;
     padding: 0;
-    text-align: center;
+    text-align: start;
   }
   .footer-links-mobile-single li {
     margin-bottom: 22px !important;
@@ -7643,7 +7958,7 @@ svg {
     grid-template-columns: repeat(2, 1fr);
     column-gap: 8px;
     row-gap: 0;
-    text-align: center;
+    text-align: start;
   }
   .footer-links-mobile-two ul {
     margin: 0;
@@ -8066,7 +8381,9 @@ svg {
   transform: rotate(180deg);
 }
 
-.join-country-flag {
+/* Scoped by .join-country-box so it outranks flag-icons' `.fi` rules
+   (position/width/background-size), which load after this file. */
+.join-country-box .join-country-flag {
   position: absolute;
   right: 12px;
   width: 22px;
@@ -8076,6 +8393,10 @@ svg {
   background-position: center;
   box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.08);
   pointer-events: none;
+}
+
+.join-country-box .join-country-code {
+  white-space: nowrap;
 }
 
 /* Custom country dropdown menu */
@@ -8169,7 +8490,7 @@ svg {
   font-weight: 600;
 }
 
-.join-country-option-flag {
+.join-country-option .join-country-option-flag {
   flex: 0 0 auto;
   width: 22px;
   height: 16px;

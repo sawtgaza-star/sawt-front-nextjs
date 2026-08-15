@@ -1,0 +1,862 @@
+/* ============================================================
+   Course detail page (صانع المحتوى الرقمي) — /courses/[id]
+   Every class is namespaced `crs-` so it never clashes with
+   style.css (loaded by the (main) layout) or the other page CSS.
+   Palette from the mock: hero olive #364127 (--Primary-oliveGreen-700),
+   CTA olive #4C5C37, orange #FF7420 / #E1723B, countdown red #FF0004
+   on #FFF1F2, ink #1C1C1C, muted #6D6D6D.
+   ============================================================ */
+
+.crs-page {
+  background-color: #ffffff;
+}
+
+/* ============================================================
+   Hero — solid olive band with the faint shared pattern.png
+   scatter; hosts SiteNav, the centered breadcrumb and the
+   badge/title/description copy.
+   ============================================================ */
+.crs-hero {
+  position: relative;
+  background: #364127;
+  /* top padding absorbs .nav-face's 10px top margin, which otherwise
+     collapses through the injected .header-bar and shows up as a white
+     strip above the hero — the olive must start at the page's top edge */
+  padding-top: 14px;
+  padding-bottom: 72px;
+}
+.crs-hero::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: url("/assets/images/pattern.png") top center / 540px auto repeat;
+  opacity: 0.03;
+  pointer-events: none;
+}
+.crs-hero > * {
+  position: relative;
+  z-index: 1;
+}
+/* Keep the navbar — and the .header-bar wrapper the sticky script injects —
+   above the hero copy and the floating card (same trick as .cr-header). */
+.crs-hero > .navbar,
+.crs-hero > .header-bar:not(.is-fixed) {
+  position: relative;
+  z-index: 30;
+}
+.crs-breadcrumb {
+  text-align: center;
+  color: #fff;
+  font-size: 20px;
+  font-weight: 500;
+  margin: 40px 0 24px;
+}
+.crs-hero-copy {
+  text-align:start;
+}
+.crs-breadcrumb a {
+  color: #fff !important;
+  text-decoration: none;
+  opacity: 0.9;
+}
+.crs-breadcrumb-sep {
+  font-size: 12px;
+  margin: 0 8px;
+  opacity: 0.85;
+}
+.crs-breadcrumb-active {
+  color: #ff7420;
+  font-weight: 700;
+}
+
+/* copy sits in the same 1fr/360px grid as the body, so it stays clear of the
+   column the registration card floats over */
+/* mirrors .crs-layout's columns so the hero copy never runs under the
+   floating registration card */
+.crs-hero-grid {
+  display: grid;
+  grid-template-columns: 1fr 500px;
+  gap: 32px;
+}
+.crs-badge {
+  display: inline-block;
+  font-size: 18px;
+ border-radius: 16px;
+background:  #EDEFEB;
+  padding: 5px 18px;
+  margin-bottom: 16px;
+  color:#4C5C37
+}
+.crs-hero-title {
+  color: #FFF;
+  font-size: 36px;
+  font-weight: 800;
+  margin-bottom: 12px;
+}
+.crs-hero-desc {
+  color: #F2F2F2;
+  font-size: 24px;
+  line-height: 2;
+  margin: 0;
+}
+
+/* ============================================================
+   Body — [content | aside] grid. The aside is pulled up so the
+   registration card overlaps the olive hero.
+   ============================================================ */
+.crs-body {
+  position: relative;
+  padding: 40px 0 80px;
+  /* clip horizontally so the edge-hugging leaf can't cause a sideways
+     scrollbar; vertical stays visible for the aside pulled over the hero */
+  overflow-x: clip;
+}
+.crs-layout {
+  display: grid;
+  grid-template-columns: 1fr 500px;
+  gap: 40px;
+  align-items: start;
+}
+.crs-aside {
+  position: relative;
+  z-index: 2;
+  margin-top: -320px;
+}
+.crs-content {
+  position: relative;
+}
+/* pale olive branch at the goals section's top-right corner, clipped by the
+   page edge beside the heading (physical right, like the other pages'
+   branches, so it stays put in the RTL layout) — the SVG lives in
+   CourseGoals, replacing the old rotated leaf_cutout.png */
+.crs-goals-section {
+  position: relative;
+}
+.crs-goals-leaf {
+  position: absolute;
+  top: -70px;
+  right: -110px;
+  pointer-events: none;
+  z-index: -1;
+}
+/* second branch hugging the page's far-left edge, vertically centered on the
+   modules accordion — the SVG lives in CourseModules (replacing the old
+   rotated leaf_cutout.png) and its paths run into negative x, so it needs no
+   overhang: the calc walks from the content column back to the viewport's
+   left edge (same trick as .crs-reqs-leaf; the column's left edge sits
+   ≈ 50vw - 120px from the page's left at the 1320px container). */
+.crs-modules-section {
+  position: relative;
+}
+.crs-modules-leaf {
+  position: absolute;
+  top: 50%;
+  left: calc(130px - 51vw);
+  transform: translateY(-50%);
+  pointer-events: none;
+  z-index: -1;
+}
+
+/* ---------- Registration card ---------- */
+.crs-reg {
+  position: relative;
+}
+/* the orange rounded tab peeking out behind the card's top edge */
+.crs-reg::before {
+  content: "";
+  position: absolute;
+  top: -22px;
+  right: 36px;
+  left: 36px;
+  height: 60px;
+  border-radius: 130px;
+  background: #ff7420;
+}
+.crs-reg-card {
+  position: relative;
+border-radius: 24px;
+border: 1px solid #DADADA;
+background: #FFF;
+  padding: 24px 22px;
+}
+.crs-reg-kicker {
+  text-align: center;
+  color: #666;
+  font-size: 18px;
+  margin-bottom: 4px;
+}
+.crs-reg-title {
+  text-align: center;
+  color: #1E1E1E;
+  font-size: 24px;
+  font-weight: 800;
+  margin-bottom: 20px;
+}
+
+/* countdown — DOM order seconds→days, so seconds land rightmost in RTL */
+.crs-countdown {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 24px;
+}
+.crs-countdown-cell {
+  display: flex;
+  align-items: center;
+  flex: 1;
+  min-width: 0;
+}
+.crs-countdown-sep {
+  color: #666;
+  font-weight: 700;
+  margin: 0 6px;
+}
+.crs-countdown-box {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  flex: 1;
+  min-width: 0;
+  padding: 10px 4px;
+  border-radius: 10px;
+  background: #fff1f2;
+}
+.crs-countdown-box b {
+  color: #FF0004;
+  font-size: 24px;
+  font-weight: 800;
+  line-height: 1;
+}
+.crs-countdown-box span {
+  color: #666;
+  font-size: 16px;
+}
+
+.crs-reg-meta {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 22px;
+}
+.crs-reg-meta li {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 9px 0;
+  color: #1E1E1E;
+    font-size: 22px;
+}
+
+.crs-reg-meta li b {
+  font-weight: 800;
+
+}
+
+
+
+.crs-btn-green {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+  background: #4c5c37;
+  color: #ffffff !important;
+  font-size: 18px;
+  font-weight: 600;
+  border-radius: 24px;
+  padding: 11px 18px;
+  text-decoration: none;
+  transition: background 0.2s ease;
+}
+[dir='ltr'] .crs-btn-green i {
+    transform: rotate(180deg);
+}
+
+.crs-btn-green:hover {
+  background: #3d4a2c;
+  color: #ffffff;
+}
+
+/* ---------- Share card ---------- */
+.crs-share {
+  margin-top: 24px;
+  border-radius: 16px;
+  border: 0.8px solid #FF7420;
+  background: rgba(255, 236, 224, 0.70);
+  padding: 22px;
+  text-align:start;
+}
+.crs-share-title {
+  color: #1c1c1c;
+  font-size: 30px;
+  font-weight: 800;
+  margin-bottom: 10px;
+}
+.crs-share-desc {
+  color: #666;
+  font-size: 20px;
+  margin-bottom: 16px;
+}
+.crs-share-actions {
+  display: flex;
+  gap: 12px;
+}
+/* every brand icon sits on the same white translucent chip (per the mock) */
+.crs-share-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 52px;
+  height: 52px;
+  border-radius: 24px;
+  border: 0;
+  padding: 0;
+  background: rgba(255, 255, 255, 0.8);
+  text-decoration: none;
+  cursor: pointer;
+  transition: transform 0.15s ease;
+}
+.crs-share-btn:hover {
+  transform: translateY(-2px);
+}
+.crs-share-copy svg {
+  width: 32px;
+  height: 32px;
+}
+.crs-share-facebook {
+  color: #1877f2 !important;
+  font-size: 32px;
+}
+.crs-share-telegram svg {
+  width: 32px;
+  height: 32px;
+}
+.crs-share-whatsapp {
+  color: #25d366 !important;
+  font-size: 32px;
+}
+/* the white "in" glyph gets its blue roundel from the svg's own box */
+.crs-share-linkedin svg {
+  box-sizing: content-box;
+  width: 20px;
+  height: 20px;
+  padding: 5px;
+  background: #0a66c2;
+  border-radius: 50%;
+}
+
+/* ============================================================
+   Content sections — shared head (orange bar + title)
+   ============================================================ */
+.crs-section {
+  padding-top:30px;
+  margin-bottom: 30px;
+}
+.crs-sec-head {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 28px;
+}
+.crs-sec-bar {
+  width: 5px;
+  height: 30px;
+  border-radius: 3px;
+  background: #ff7420;
+}
+.crs-sec-title {
+  color: #1c1c1c;
+  font-size: 30px;
+  font-weight: 800;
+  margin: 0;
+}
+
+/* ---------- Program goals ---------- */
+.crs-goals-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+}
+.crs-goal-card {
+  border-radius: 16px;
+  border: 1px solid #dedede;
+  background: #ffffff;
+  padding: 18px;
+  text-align:start;
+}
+/* icon on a soft paint-dab chip, at the card's top-left (inline-end in RTL) */
+.crs-goal-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 52px;
+  height: 36px;
+  margin-inline-end: auto;
+  margin-bottom: 10px;
+  background: url("/assets/images/Vector.svg") center / contain no-repeat;
+}
+.crs-goal-title {
+  color: #1c1c1c;
+  font-size: 18px;
+  font-weight: 800;
+  margin-bottom: 8px;
+}
+.crs-goal-desc {
+  color: #7A7A7A;
+  font-size: 16px;
+  line-height: 1.8;
+  margin: 0;
+}
+
+/* ---------- Program modules accordion ---------- */
+.crs-modules {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.crs-module-open {
+  background: rgba(255, 255, 255, 0.8);
+  border-radius: 20px;
+  border: 1px solid #DADADA;
+}
+/* open state: the head fuses with the card — one outer border, flat bottom */
+.crs-module-open .crs-module-head {
+  border: 0;
+  border-radius: 19px 19px 0 0;
+}
+.crs-module-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  width: 100%;
+  background: #EDEFEB;
+
+
+  border-radius: 20px;
+border: 1px solid  #DADADA;
+  padding: 13px 18px;
+  text-align: start;
+  cursor: pointer;
+}
+.crs-module-title {
+  color: #1E1E1E;
+  font-size: 20px;
+  font-weight: 700;
+}
+.crs-module-chevron {
+  display: inline-flex;
+  transition: transform 0.2s ease;
+}
+.crs-module-open .crs-module-chevron {
+  transform: rotate(180deg);
+}
+.crs-module-lessons {
+  list-style: none;
+  padding: 0 18px 6px;
+  margin: 0;
+}
+.crs-lesson {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 4px;
+  border-top: 1px solid #EDEFEB;
+  color: #484848;
+  font-size: 18px;
+}
+.crs-lesson-icon {
+  display: inline-flex;
+  flex-shrink: 0;
+}
+.crs-lesson-icon svg {
+  width: 24px;
+  height: 24px;
+}
+.crs-lesson-duration {
+  margin-inline-start: auto;
+  color: #7a7a7a;
+  font-size: 16px;
+  white-space: nowrap;
+}
+
+/* ---------- Program outcomes (قبل/بعد البرنامج card pair) ---------- */
+.crs-outcomes-section {
+  position: relative;
+}
+/* pale branch poking out of the section's top-right corner, clipped by the
+   page edge (the body's overflow-x: clip) on narrow windows */
+.crs-outcomes-leaf {
+    position: absolute;
+    top: 8px;
+    right: -113px;
+    pointer-events: none;
+    z-index: -1;
+}
+/* no align-items: start — both cards stretch to the row height so the
+   قبل/بعد pair always reads as one uniform size */
+.crs-outcomes-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+  margin-top: 75px;
+}
+/* the colored rounded tab peeking out behind each card's top edge — same
+   trick as the registration card's orange tab */
+.crs-outcome {
+  position: relative;
+}
+.crs-outcome::before {
+  content: "";
+  position: absolute;
+  top: -22px;
+  right: 36px;
+  left: 36px;
+  height: 60px;
+  border-radius: 130px;
+}
+.crs-outcome-gray::before {
+  background: #6D6D6D;
+}
+.crs-outcome-olive::before {
+  background: #4C5C37;
+}
+.crs-outcome-card {
+  position: relative;
+  height: 100%;
+  border-radius: 20px;
+  background: #FFF;
+  padding: 24px 22px;
+  text-align: start;
+}
+.crs-outcome-gray .crs-outcome-card {
+  border: 1px solid #6D6D6D;
+}
+.crs-outcome-olive .crs-outcome-card {
+  border: 1px solid #4C5C37;
+}
+/* icon on a soft rounded chip, centered at the card's top */
+.crs-outcome-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 56px;
+  height: 56px;
+  border-radius: 16px;
+      margin-bottom: 20px;
+
+}
+.crs-outcome-gray .crs-outcome-icon {
+  background: #F2F2F2;
+}
+.crs-outcome-olive .crs-outcome-icon {
+  background: #EDEFEB;
+}
+.crs-outcome-title {
+  color: #1c1c1c;
+  font-size: 28px;
+  font-weight: 800;
+  margin-bottom: 20px;
+}
+.crs-outcome-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.crs-outcome-list li {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: #6D6D6D;
+  font-size: 20px;
+}
+.crs-outcome-dot {
+  width: 8px;
+  height: 8px;
+  flex-shrink: 0;
+  border-radius: 50%;
+  background: currentColor;
+}
+
+/* ---------- "ماذا ستحصل عند انضمامك" perk chips ---------- */
+/* two columns; every chip stretches to fill its cell so the pills all share
+   the same width (and same height per row) no matter how long the copy is */
+.crs-perks-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px 24px;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+.crs-perk {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  border-radius: 18px;
+  background: #EDEFEB;
+  padding: 10px 16px;
+  color: #484848;
+  font-size: 20px;
+  text-align: start;
+}
+.crs-perk-icon {
+  display: inline-flex;
+  flex-shrink: 0;
+}
+
+/* ---------- "شروط التسجيل" requirement cards ---------- */
+.crs-reqs-section {
+  position: relative;
+}
+/* pale branch at the page's far-left edge, vertically centered on the row.
+   The section lives in the content column (right side in RTL), so a plain
+   negative `left` would only reach the aside — the calc walks back to the
+   viewport's left edge instead: the column's left edge sits ≈ 50vw - 120px
+   from the page's left at the 1320px container, so this lands the leaf just
+   past the edge, clipped by the body's overflow-x: clip. */
+.crs-reqs-leaf {
+  position: absolute;
+  top: 50%;
+  left: calc(80px - 48vw);
+  transform: translateY(-50%);
+  pointer-events: none;
+  z-index: -1;
+}
+.crs-reqs-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 16px;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+.crs-req-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  border-radius: 16px;
+  border: 1px solid #4C5C37;
+  background: #fff;
+  padding: 18px 12px;
+  text-align: center;
+}
+/* white glyph on an olive roundel */
+.crs-req-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 55px;
+  height: 55px;
+  border-radius: 150px;
+  background: #4C5C37;
+  flex-shrink: 0;
+}
+.crs-req-text {
+  color: #5A5A5A;
+  font-size: 15px;
+  line-height: 1.7;
+  margin: 0;
+}
+
+/* ---------- "آلية اختيار المشاركين" selection steps ---------- */
+.crs-sel-section {
+  position: relative;
+  /* the aside column is empty this far down the page, so the section borrows
+     part of it — wide enough that each step's description holds one line,
+     without stretching all the way to the container's far edge */
+  margin-inline-end: -75px;
+}
+/* pale branch hugging the page's right edge beside the section head, clipped
+   by the body's overflow-x: clip (physical right, like the other branches) */
+.crs-sel-leaf {
+position: absolute;
+    top: -45px;
+    right: -115px;
+    pointer-events: none;
+    z-index: -1;
+}
+/* two columns, row by row — the RTL right column reads steps 1/3/5 and the
+   left column 2/4, exactly as in the mock */
+.crs-sel-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+  list-style: none;
+  padding: 0;
+  margin-top: 40px;
+}
+.crs-sel-step {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  text-align: start;
+}
+/* orange glyph on an olive-50 roundel */
+.crs-sel-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  border-radius: 75px;
+  background: #EDEFEB;
+  flex-shrink: 0;
+}
+.crs-sel-title {
+  color: #1E1E1E;
+  font-size: 20px;
+  font-weight: 700;
+  margin-bottom: 4px;
+}
+.crs-sel-desc {
+  color: #6D6D6D;
+  font-size: 18px;
+  margin: 0;
+}
+
+/* ---------- "المدرب" trainer card ---------- */
+/* like the selection section above it, borrow part of the empty aside column
+   so the card breathes and the bio wraps less */
+.crs-trainer-section {
+  margin-inline-end: -75px;
+}
+.crs-trainer-card {
+  display: flex;
+  align-items: flex-start;
+  gap: 20px;
+  border-radius: 20px;
+  background: #EDEFEB;
+  padding: 24px;
+  text-align: start;
+}
+.crs-trainer-photo {
+  width: 134px;
+  height: 134px;
+  object-fit: cover;
+  border-radius: 20px;
+  flex-shrink: 0;
+}
+.crs-trainer-name {
+  color: #1A1A1A;
+  font-size: 24px;
+  font-weight: 900;
+  line-height: 160%;
+  margin-bottom: 0;
+}
+.crs-trainer-role {
+  color: #4C5C37;
+  font-size: 18px;
+  line-height: 160%;
+  letter-spacing: 0.36px;
+  margin-bottom: 8px;
+}
+.crs-trainer-bio {
+  color: #484848;
+  font-size: 19px;
+  line-height: 160%;
+  margin-bottom: 12px;
+}
+.crs-trainer-follow {
+  color: #1E1E1E;
+  font-size: 18px;
+  font-weight: 800;
+  line-height: 160%;
+  margin-bottom: 10px;
+}
+.crs-trainer-socials {
+  display: flex;
+  gap: 12px;
+}
+/* olive glyph on a 40px bordered square chip */
+.crs-trainer-social {
+  display: flex;
+  width: 40px;
+  height: 40px;
+  justify-content: center;
+  align-items: center;
+  aspect-ratio: 1 / 1;
+  border-radius: 8px;
+  border: 1px solid #4C5C37;
+  text-decoration: none;
+}
+
+/* ============================================================
+   Responsive — stack to one column; card first, then sections
+   ============================================================ */
+@media (max-width: 991.98px) {
+  .crs-hero-grid,
+  .crs-layout {
+    grid-template-columns: 1fr;
+  }
+  .crs-aside {
+    order: -1;
+    margin-top: 0;
+  }
+  .crs-reg {
+    margin-top: 14px; /* room for the orange tab */
+  }
+  .crs-hero {
+    padding-bottom: 28px;
+  }
+  .crs-hero-title {
+    font-size: 26px;
+  }
+  .crs-hero-desc {
+    font-size: 16px;
+  }
+  .crs-goals-grid {
+    grid-template-columns: 1fr;
+  }
+  .crs-sec-title {
+    font-size: 22px;
+  }
+  /* stacked cards need headroom for each tab; the branch would collide
+     with the cards at this width */
+  .crs-outcomes-grid {
+    grid-template-columns: 1fr;
+    gap: 40px;
+  }
+  .crs-outcomes-leaf {
+    display: none;
+  }
+  .crs-perks-grid {
+    grid-template-columns: 1fr;
+  }
+  .crs-perk {
+    font-size: 16px;
+  }
+  .crs-reqs-grid {
+    grid-template-columns: 1fr;
+  }
+  .crs-reqs-leaf {
+    display: none;
+  }
+  .crs-sel-section,
+  .crs-trainer-section {
+    margin-inline-end: 0; /* single-column layout — no empty aside to borrow */
+  }
+  .crs-sel-grid {
+    grid-template-columns: 1fr;
+  }
+  .crs-sel-leaf,
+  .crs-goals-leaf,
+  .crs-modules-leaf {
+    display: none;
+  }
+}
+@media (min-width: 576px) and (max-width: 991.98px) {
+  .crs-goals-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .crs-reqs-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}

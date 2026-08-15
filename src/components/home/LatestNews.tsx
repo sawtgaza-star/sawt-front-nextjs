@@ -56,6 +56,14 @@ export default function LatestNews() {
             <NewsCard key={item.titleKey + item.img} item={item} />
           ))}
         </div>
+        <div className="text-center" style={{ marginTop: "50px " }}>
+          {" "}
+          <a href="#" className="px-4 py-2 fw-bold show-more-news">
+            {" "}
+            <span data-i18n="view_all_news">عرض جميع الأخبار</span>{" "}
+            <i className="fa-solid fa-angle-left me-2 arrow"></i>{" "}
+          </a>{" "}
+        </div>
       </div>
     </section>
   );

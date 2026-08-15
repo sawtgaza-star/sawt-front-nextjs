@@ -1,0 +1,524 @@
+/* ============================================================
+   محتوانا page (/content)
+   Built from the design mockups. Classes are namespaced `ct-` so they
+   never clash with style.css or creators.css — creators.css is loaded
+   alongside for the shared hero (cr-header / cr-hero / cr-breadcrumb),
+   the reel card (cr-content-card) and the pill (cr-content-tab).
+   ============================================================ */
+
+.ct-page {
+  background-color: #ffffff;
+  overflow: hidden;
+}
+
+/* ---------- Hero ---------- */
+/* the backdrop already carries the mock's decorations (the light curve, the
+   sound wave and the faint camera / phone glyphs) */
+.ct-header {
+  background-image: url("/assets/images/Hero background container.png") !important;
+  background-size: cover !important;
+  background-position: center !important;
+  background-repeat: no-repeat !important;
+  padding-bottom: 10px;
+}
+/* creators.css dims its collage hero with a black scrim — this backdrop is
+   already dark, so let it show through as in the mock */
+.ct-header::before {
+  background: none;
+}
+
+.ct-hero {
+  padding: 55px 15px 10px;
+}
+.ct-hero-desc {
+  font-size: 16px;
+  line-height: 1.9;
+  color: #DADADA;
+  max-width: 900px;
+}
+
+/* ---------- Hero poster fan ---------- */
+.ct-hero-slider {
+  padding-bottom: 55px;
+}
+/* the perspective the posters recede into; it has to sit on the viewport and
+   be carried through the wrapper Swiper translates, or the slides' rotateY
+   would flatten out */
+.ct-hero-swiper {
+  width: 100%;
+  padding: 24px 0 10px;
+  overflow: hidden;
+  perspective: 1300px;
+}
+.ct-hero-swiper .swiper-wrapper {
+  transform-style: preserve-3d;
+}
+/* Swiper sets each slide's width from slidesPerView — only the height is ours */
+.ct-hero-slide {
+  height: 262px;
+  transform-style: preserve-3d;
+  /* the fan transform is a fixed value per position, so it changes in one jump
+     when a poster moves to the next position — ease it to match the autoplay */
+  transition: transform 0.4s ease;
+}
+/* the poster itself — the ring, the focus scale and the blur all live here so
+   the fan rotation written on the slide itself is left untouched */
+.ct-hero-thumb {
+  width: 100%;
+  height: 100%;
+  border-radius: 14px;
+  overflow: hidden;
+  /* the fan pushes the outer posters back in z, so they render ~11% smaller
+     than their slot; the scale wins that back and lets the row reach both
+     screen edges without dropping to a half-card at the ends */
+  transform: scale(1.1);
+  transition: transform 0.4s ease, filter 0.4s ease, box-shadow 0.4s ease;
+}
+.ct-hero-thumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+/* out of focus: smaller and softly blurred, as in the mock */
+.ct-hero-slide:not(.swiper-slide-active) .ct-hero-thumb {
+  filter: blur(1.5px);
+}
+/* in focus: scaled up out of the row with the orange ring */
+.ct-hero-slide.swiper-slide-active .ct-hero-thumb {
+stroke-width: 5px;
+stroke: #FE712B;
+filter: drop-shadow(4px 4px 10px #FF7420) drop-shadow(0 4px 10px #000);
+}
+
+/* ---------- Filter + sort bar ---------- */
+.ct-grid-section {
+  padding: 46px 0 30px;
+}
+.ct-filter-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 18px;
+  margin-bottom: 26px;
+}
+.ct-tabs {
+  list-style: none;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  padding: 0;
+  margin: 0;
+}
+/* design token for the pill label — the variable is defined by next/font in
+   app/layout.tsx, which self-hosts Rubik (arabic + latin subsets) */
+
+.ct-sort {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.ct-sort-label {
+  font-size: 16px;
+  font-weight: 700;
+  color: #5A5A5A;
+  white-space: nowrap;
+}
+.ct-sort-select {
+  /* native arrow replaced by the chevron asset, pinned to the left edge */
+  appearance: none;
+  -webkit-appearance: none;
+  background: #F2F2F2 url("/assets/images/chevron-down.svg") left 12px center /
+    24px 24px no-repeat;
+  border: 1px solid #F2F2F2;
+  border-radius: 8px;
+  padding: 9px 44px 8px 44px;
+  font-size: 14px;
+  font-weight: 500;
+  color: #7a7a7a;
+  cursor: pointer;
+  min-width: 210px;
+  text-align: center;
+  text-align-last: center;
+}
+.ct-sort-select option {
+  text-align: center;
+}
+.ct-sort-select:focus {
+  outline: none;
+  border-color: #cfd4c4;
+}
+
+/* ---------- Reel grid ---------- */
+.ct-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 16px;
+}
+/* the shared card is fixed-size for the creator slider — in the grid it
+   stretches to the column and keeps the 9:16 reel ratio */
+.ct-grid .cr-content-card {
+  width: 100%;
+  height: auto;
+  aspect-ratio: 9 / 16;
+  border-radius: 18px;
+}
+/* mock badge is a dark translucent pill, not the green one */
+.ct-page .cr-content-time {
+  background: rgba(0, 0, 0, 0.45);
+}
+
+/* ---------- Reel viewer layer ---------- */
+/* the viewer is portalled to <body> into this layer, above the navbar
+   (z-index 1030) and the hero header (1000), so the playing video is never
+   covered by anything */
+.ct-reel-layer {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+}
+/* the swipe offset written by useReelSwipe; 0 whenever no drag is in flight */
+.ct-reel-layer .cr-reel {
+  transform: translate3d(0, var(--ct-swipe, 0px), 0);
+}
+.ct-reel-layer[data-swipe-anim="1"] .cr-reel {
+  transition: transform 0.26s cubic-bezier(0.22, 0.61, 0.36, 1);
+}
+/* the neighbouring reels ReelViewer stacks around the current one — they only
+   belong to the full-bleed mobile layout at the bottom of this file */
+.ct-reel-peek {
+  display: none;
+}
+
+/* ---------- "الأكثر مشاهدة" rows ---------- */
+.ct-mw-section {
+  padding: 30px 0 20px;
+}
+.ct-mw-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  margin-bottom: 6px;
+}
+.ct-mw-title {
+  font-size: 40px;
+  font-weight: 800;
+  color: #1c1c1c;
+  margin: 0;
+}
+/* Here the brush-stroke word stays black instead of the global green .cr-highlight */
+.ct-mw-title .cr-highlight {
+  color: #1c1c1c;
+}
+.ct-mw-more {
+  font-size: 20px;
+  font-weight: 600;
+  color: #4c5c37 !important;
+  text-decoration: none;
+  /* the hover pill is sized in from the start and pulled back out again by the
+     matching negative margin, so hovering never nudges the heading row */
+  padding: 8px 16px;
+  margin: -8px -16px;
+  border-radius: 12px;
+  background-color: transparent;
+  transition:
+    color 0.2s ease,
+    background-color 0.2s ease,
+    box-shadow 0.2s ease;
+}
+.ct-mw-more:hover {
+  color: #000 !important;
+  background-color: rgba(251, 247, 247, 0.75) !important;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
+}
+.ct-mw-slider {
+  position: relative;
+  /* full-bleed: the row starts at the container edge and runs off-screen */
+  width: 100vw;
+  margin-inline: calc(50% - 50vw);
+}
+.ct-mw-track {
+  display: flex;
+  gap: 18px;
+  overflow-x: auto;
+  scroll-behavior: smooth;
+  padding: 26px 0 30px;
+  padding-inline-start: max(calc((100vw - 1320px) / 2 + 12px), 12px);
+  scrollbar-width: none;
+  /* press-and-drag scrolling (see MostWatchedSection) */
+  cursor: grab;
+  user-select: none;
+}
+.ct-mw-track:active {
+  cursor: grabbing;
+}
+.ct-mw-track::-webkit-scrollbar {
+  display: none;
+}
+.ct-mw-track .cr-content-card {
+  flex: 0 0 clamp(160px, 18vw, 265px);
+  width: auto;
+  height: auto;
+  aspect-ratio: 9 / 16;
+  border-radius: 18px;
+}
+.ct-mw-nav {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 3;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: none;
+  background: rgba(255, 255, 255, 0.75);
+  color: #3a3a3a;
+  font-size: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  backdrop-filter: blur(4px);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.15);
+  transition: background 0.2s ease, color 0.2s ease;
+}
+.ct-mw-nav:hover:not(:disabled) {
+  background: #4c5c37;
+  color: #fff;
+}
+.ct-mw-nav:disabled {
+  opacity: 0.35;
+  cursor: default;
+  box-shadow: none;
+}
+.ct-mw-prev {
+  right: 24px;
+  display:none
+}
+.ct-mw-next {
+  left: 24px;
+  display:none
+}
+
+/* ---------- Responsive ---------- */
+@media (max-width: 1199.98px) {
+  .ct-grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+  .ct-mw-track {
+    padding-inline-start: max(calc((100vw - 1140px) / 2 + 12px), 12px);
+  }
+}
+@media (max-width: 991.98px) {
+  .ct-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+  .ct-hero-slide {
+    height: 240px;
+  }
+  .ct-mw-track {
+    /* first card starts on the container grid; the row still runs off-screen */
+    padding-inline-start: 10px;
+  }
+}
+@media (max-width: 767.98px) {
+
+  
+  /* creators.css whitens its hero and hides the title/desc on mobile — that is
+     the creators LIST mock, not this page: keep the dark hero of the mockup */
+  .ct-header.cr-header:not(.cr-detail-header) {
+    background-image: url("/assets/images/Hero background container.png") !important;
+    background-size: cover !important;
+    background-position: center !important;
+  }
+  /* both heroes ARE .container elements — 10px keeps them on the same grid as
+     the navbar card (see the .container block in legacy/style.css) */
+  .ct-hero {
+    padding-inline: 10px;
+  }
+  .ct-header.cr-header:not(.cr-detail-header) .cr-hero {
+    padding: 28px 10px 0;
+  }
+  .ct-header.cr-header:not(.cr-detail-header) .cr-breadcrumb {
+    margin-bottom: 18px;
+    font-size: 15px;
+  }
+  .ct-header.cr-header:not(.cr-detail-header) .cr-hero-title,
+  .ct-header.cr-header:not(.cr-detail-header) .cr-hero-desc {
+    display: block;
+  
+  }
+  .ct-header.cr-header:not(.cr-detail-header) .cr-breadcrumb a,
+  .ct-header.cr-header:not(.cr-detail-header) .cr-breadcrumb-sep {
+    color: #fff !important;
+  }
+
+  .cr-section-title, .cr-hero-title {
+    font-size: 22px;
+  }
+
+  .ct-hero-desc {
+    font-size: 14px;
+    margin-bottom: 30px;
+  }
+  /* phones show ONE tall poster (see slidesPerView in HeroReelsSlider): it keeps
+     the reel's portrait shape and its neighbours only peek in at the edges.
+     swiper.css's own `.swiper-slide { height: 100% }` is loaded after this file
+     and has the same specificity, so the height has to be qualified to win */
+  .ct-hero-swiper .ct-hero-slide {
+    /* ~1.6× the poster's width, the ratio of the mock, clamped so the hero stays
+       sane on the widest phones */
+    height: clamp(310px, 98vw, 420px);
+  }
+  /* the 9-across row needs the 1.1 scale to reach both screen edges — the single
+     poster must stay exactly the width Swiper gives it */
+  .ct-hero-thumb {
+    transform: scale(1);
+    border-radius: 12px;
+  }
+  .ct-hero-slide:not(.swiper-slide-active) .ct-hero-thumb {
+    filter: blur(2px);
+  }
+  /* the focused poster carries the orange ring of the mock */
+  .ct-hero-slide.swiper-slide-active .ct-hero-thumb {
+    border: 3px solid #fe712b;
+    filter: drop-shadow(0 4px 14px rgba(255, 116, 32, 0.55))
+      drop-shadow(0 4px 10px rgba(0, 0, 0, 0.6));
+  }
+  .ct-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+  }
+  /* the bar itself is ONE slider on mobile: the category pills and the sort
+     control sit side by side on a single row and scroll together */
+  .ct-filter-bar {
+    flex-wrap: nowrap;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 8px;
+    overflow-x: auto;
+    overscroll-behavior-x: contain;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    padding-bottom: 4px;
+  }
+  .ct-filter-bar::-webkit-scrollbar {
+    display: none;
+  }
+  .ct-tabs {
+    /* the pills no longer scroll on their own — they are part of the bar's row */
+    flex: 0 0 auto;
+    flex-wrap: nowrap;
+    gap: 16px;
+  }
+  .ct-tabs .cr-content-tab {
+  font-family: var(--fontFamily-text, Rubik), "cairo", sans-serif;
+}
+  .ct-tabs .cr-content-tab {
+    white-space: nowrap;
+    /* small enough that the four category pills of the mock sit side by side on
+       a phone screen; the sort control then slides in after them */
+    font-size: 14px;
+    line-height: 17px;
+    font-weight: 400;
+    padding: 7px clamp(8px, 2.4vw, 12px);
+  }
+  .ct-tabs .cr-content-tab.active {
+    font-weight: 500;
+  }
+  .ct-sort {
+    flex: 0 0 auto;
+    gap: 8px;
+  }
+  .ct-sort-label {
+    font-size: 13px;
+  }
+  .ct-sort-select {
+    /* it rides the row instead of stretching across it */
+    flex: 0 0 auto;
+    min-width: 0;
+    width: auto;
+    font-size: 13px;
+    padding: 7px 30px;
+    background-position: left 8px center;
+    background-size: 18px 18px;
+  }
+  /* the reels in this row are the size of a card in the grid above: two per
+     container width (100vw − 2×10px container padding) with the grid's 12px gap */
+  .ct-mw-track .cr-content-card {
+    flex: 0 0 calc((100vw - 32px) / 2);
+  }
+  .ct-mw-title {
+    font-size: 22px;
+  }
+  .ct-mw-more {
+    font-size: 14px;
+  }
+
+  .ct-mw-nav {
+    display: none;
+  }
+}
+
+/* ---------- Reel viewer on mobile (Reels-style) ---------- */
+@media (max-width: 767.98px) {
+  /* a phone has no hover, so the close/mute buttons the desktop viewer reveals
+     on :hover would never appear — they are permanently on instead. (The
+     centre controls and the info bar are driven by the idle timer, not hover.) */
+  .ct-reel-layer .cr-reel-close,
+  .ct-reel-layer .cr-reel-mute {
+    opacity: 1;
+  }
+  /* the vertical swipe replaces the prev/next arrows */
+  .ct-reel-layer .cr-reel-nav {
+    display: none;
+  }
+  /* full-bleed, the way Reels/TikTok play: the reel IS the screen, so two
+     consecutive videos sit flush one under the other with nothing showing in
+     between. The reel also owns the vertical gesture — the browser must not
+     pan/zoom it. */
+  .ct-reel-layer .cr-reel-overlay {
+    padding: 0;
+  }
+  .ct-reel-layer .cr-reel {
+    width: 100%;
+    height: 100%;
+    max-height: none;
+    aspect-ratio: auto;
+    border-radius: 0;
+    box-shadow: none;
+    touch-action: none;
+    will-change: transform;
+  }
+  /* the previous / next reel, parked exactly one screen away and riding the
+     same swipe offset, above the overlay's backdrop (2100) which does not move */
+  .ct-reel-peek {
+    display: block;
+    position: absolute;
+    left: 0;
+    right: 0;
+    height: 100%;
+    z-index: 2101;
+    background: #000;
+    overflow: hidden;
+    pointer-events: none;
+    transform: translate3d(0, var(--ct-swipe, 0px), 0);
+  }
+  .ct-reel-peek-prev {
+    top: -100%;
+  }
+  .ct-reel-peek-next {
+    top: 100%;
+  }
+  .ct-reel-peek video {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  .ct-reel-layer[data-swipe-anim="1"] .ct-reel-peek {
+    transition: transform 0.26s cubic-bezier(0.22, 0.61, 0.36, 1);
+  }
+}

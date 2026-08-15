@@ -12,7 +12,7 @@ import RealStories from "@/components/home/RealStories";
 import TeamSection from "@/components/home/TeamSection";
 import JoinUs from "@/components/home/JoinUs";
 import Reviews from "@/components/home/Reviews";
-import SiteFooter from "@/components/site/SiteFooter";
+import FooterNewsletterMobile from "@/components/site/footer/FooterNewsletterMobile";
 import JoinModal from "@/components/site/JoinModal";
 
 export default function Page() {
@@ -21,7 +21,7 @@ export default function Page() {
       <LegacyInit page="home" />
       <HeroHeader />
       <main className="my-5">
-                <SoutSection />
+       <SoutSection />
         <LatestNews />
         <ContentCreators />
         <PlatformSections />
@@ -31,7 +31,7 @@ export default function Page() {
         <JoinUs />
         <Reviews />
       </main>
-      <SiteFooter mobileNewsletter />
+      <FooterNewsletterMobile />
       <JoinModal />
     </>
   );

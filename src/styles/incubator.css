@@ -1,0 +1,1970 @@
+/* ============================================================
+   Sawt Incubator (حاضنة صوت) — /incubator
+   Built from the design mockups. Every class is namespaced `inc-`
+   so it never clashes with style.css (loaded by the (main) layout),
+   creators.css or support.css.
+   Palette: olive green #4C5C37, orange #E1723B / #FF7420,
+   ink #1C1C1C, muted #6D6D6D.
+   ============================================================ */
+
+.inc-page {
+  background-color: #ffffff;
+}
+
+/* ============================================================
+   Hero — gradient + leaf pattern backdrop, hosts the page's own
+   navbar, the headline/collage split and the stats strip.
+   ============================================================ */
+.inc-hero {
+  position: relative;
+  background: linear-gradient(
+    180deg,
+    rgba(76, 92, 55, 0.5) 0%,
+    rgba(209, 213, 204, 0.5) 35.87%,
+    rgba(236, 237, 234, 0.5) 59.85%
+  );
+  /* no bottom padding — the stats strip's negative margin makes the gradient
+     end at the card's midline so it straddles the hero edge */
+  padding-bottom: 0;
+}
+/* faint leaf/microphone scatter (the site's shared pattern.png) — its own layer
+   so it can be dialled down to the mock's barely-there opacity */
+.inc-hero::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: url("/assets/images/pattern.png") top center / 540px auto repeat;
+  opacity: 0.22;
+  /* the shared asset is yellow-green; the mock's scatter reads gray-beige */
+  filter: saturate(0.45);
+  pointer-events: none;
+}
+.inc-hero > * {
+  position: relative;
+  z-index: 1;
+}
+
+/* ---------- Page navbar (white floating card) ---------- */
+.inc-nav-wrap {
+  padding-top: 24px;
+}
+.inc-nav {
+  background: #ffffff;
+  border:1px solid #DADADA;
+  border-radius: 16px;
+  box-shadow: 0 8px 24px rgba(28, 28, 28, 0.06);
+  padding: 0 22px;
+}
+
+/* top utility row: back-to-platform link + social links */
+.inc-nav-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 12px 0;
+  border-bottom: 1px solid #ececec;
+}
+.inc-nav-back {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  color: #4c5c37 !important;
+  text-decoration: none;
+  /* pill hover — padding is cancelled by negative margins so the resting
+     layout doesn't move */
+  padding: 8px 14px;
+  margin: -8px -14px;
+  border-radius: 999px;
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+.inc-nav-back i {
+  font-size: 12px;
+  color: #7f7f7f;
+  transition: color 0.2s ease;
+}
+.inc-nav-back:hover {
+  background: #f2f2f2;
+  color: #1c1c1c;
+}
+.inc-nav-back:hover i {
+  color: #1c1c1c;
+}
+.inc-nav-social {
+  display: inline-flex;
+  align-items: center;
+  gap: 14px;
+}
+.inc-nav-social-label {
+  font-size: 14px;
+  font-weight: 700;
+  color: #7f7f7f;
+}
+.inc-nav-social a {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  line-height: 1;
+  color: #4c5c37 !important;
+  text-decoration: none;
+  /* circle hover — the 36px hit area is swallowed by negative margins so the
+     icons keep their original spacing and row height */
+  width: 36px;
+  height: 36px;
+  margin: -9px;
+  border-radius: 50%;
+  transition: background-color 0.2s ease;
+}
+.inc-nav-social a:hover {
+  background: #f2f2f2;
+}
+
+/* main row: brand + links + support CTA */
+.inc-nav-main {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  padding: 14px 0;
+}
+.inc-nav-brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 18px;
+  font-weight: 800;
+  color: #4c5c37 !important;
+  text-decoration: none;
+  flex: 0 0 auto;
+}
+.inc-nav-brand img {
+  height: 38px;
+  width: auto;
+}
+/* Bootstrap's .collapse:not(.show){display:none} keeps the menu hidden on
+   mobile; this higher-specificity rule re-shows it from lg up (what
+   .navbar-expand-lg would do, without pulling in the whole .navbar cascade). */
+.inc-nav-menu {
+  display: flex;
+  align-items: center;
+  flex: 1 1 auto;
+}
+@media (min-width: 992px) {
+  .inc-nav-menu.collapse:not(.show) {
+    display: flex;
+  }
+}
+.inc-nav-links {
+  display: flex;
+  align-items: center;
+  gap: 34px;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  margin-inline-start: 40px;
+}
+.inc-nav-links a {
+  font-size: 18px;
+  /* font-weight: 600; */
+  color: #7F7F7F !important;
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+/* !important needed to beat the base rule's !important color */
+.inc-nav-links a:hover,
+.inc-nav-links a.is-active {
+  color: #1c1c1c !important;
+}
+.inc-nav-divider {
+  width: 1px;
+  height: 28px;
+  background: #DADADA;
+  margin-inline-start: 34px;
+}
+.inc-nav-cta {
+  margin-inline-start: auto;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 12px 26px;
+  border-radius: 999px;
+  background: #4c5c37;
+  color: #ffffff !important;
+  font-size: 18px;
+  font-weight: 700;
+  text-decoration: none;
+  white-space: nowrap;
+}
+.inc-nav-cta:hover {
+  background: #38422a;
+  color: #ffffff;
+}
+.inc-nav-toggler {
+  display: none;
+  margin-inline-start: auto;
+  border: 0;
+  background: transparent;
+  color: #4c5c37;
+  font-size: 22px;
+  line-height: 1;
+  padding: 4px 6px;
+}
+
+/* ---------- Hero body ---------- */
+.inc-hero-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  align-items: center;
+  gap: 110px;
+  padding: 40px 0 42px;
+}
+.inc-hero-title {
+  font-size: 50px;
+  font-weight: 800;
+  line-height: 1.5;
+  color: #1E1E1E;
+  margin: 0 0 22px;
+}
+.inc-hero-title-green {
+  color: #4c5c37;
+}
+.inc-hero-title-orange {
+  color: #e1723b;
+}
+.inc-hero-desc {
+  font-size: 18px;
+  line-height: 2;
+  color: #3A4F33;
+  max-width: 540px;
+  margin: 0 0 30px;
+}
+
+/* shared green pill button for the page */
+.inc-btn-green {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 28px;
+  border-radius: 24px;
+  background: #4c5c37;
+  color: #ffffff !important;
+  font-size: 18px;
+  font-weight: 700;
+  text-decoration: none;
+  border: 0;
+}
+.inc-btn-green:hover {
+  background: #38422a;
+  color: #ffffff;
+}
+.inc-btn-green i {
+  font-size: 13px;
+}
+
+/* collage + the two floating counters */
+.inc-hero-media {
+  position: relative;
+}
+.inc-hero-img {
+  display: block;
+  width: 90%;
+  aspect-ratio: 1.9;
+  border-radius: 24px;
+  border: 5px solid #879279;
+  object-fit: cover;
+  box-shadow: 0 6px 40px 0 rgba(0, 0, 0, 0.32);
+
+
+}
+.inc-hero-badge {
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 12px 18px;
+  border-radius: 12px;
+  color: #ffffff;
+  text-align: center;
+  box-shadow: 0 10px 24px rgba(28, 28, 28, 0.12);
+}
+.inc-hero-badge b {
+  font-size: 22px;
+  font-weight: 800;
+  line-height: 1.2;
+  /* keep "1,247" / "340+" in their designed order inside the RTL page */
+  direction: ltr;
+}
+.inc-hero-badge span {
+  font-size: 14px;
+  font-weight: 500;
+  opacity: 0.9;
+  color:rgba(255, 255, 255, 0.70)
+}
+.inc-hero-badge-green {
+  background: #4c5c37;
+  top: 6px;
+  inset-inline-end: 30px;
+  border-radius: 16px 16px 0 16px;
+
+}
+.inc-hero-badge-orange {
+  background: #ff7420;
+  bottom: -18px;
+  inset-inline-start: -6px;
+  border-radius: 0 20px 20px 20px;
+
+}
+
+/* ---------- Stats strip ---------- */
+.inc-stats {
+  background: #ffffff;
+  border-radius: 20px;
+box-shadow: 0 5px 29px 0 rgba(0, 0, 0, 0.05);
+border: 1px solid  #DADADA;
+
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  padding: 30px 20px;
+  /* translateY(50%) drops the card by exactly half its own height, so its
+     midline always sits on the hero's bottom edge — top half on the gradient,
+     bottom half sticking out over the white section below. The negative
+     margin-top (≈ half the card) keeps the resting gap above it as designed. */
+  transform: translateY(50%);
+  margin-top: -100px;
+}
+.inc-stat {
+  text-align: center;
+}
+.inc-stat-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 96px;
+  height: 46px;
+  margin-bottom: 10px;
+  /* torn brush-stroke backdrop (vector version supplied with the mock) */
+  background: url("/assets/images/Vector.svg") center/100% auto no-repeat;
+}
+.inc-stat-icon svg {
+  width: 44px;
+  height: 44px;
+}
+.inc-stat-value {
+  font-size: 36px;
+  font-weight: 800;
+  color: #1c1c1c;
+  margin: 0 0 4px;
+  /* "+200" must keep the sign on the left, as designed */
+  direction: ltr;
+}
+.inc-stat-label {
+  font-size: 22px;
+  color: #484848;
+  margin: 0;
+}
+
+/* ============================================================
+   Shared section heading — black ink with the peach brush stroke
+   under the highlighted word (same asset creators.css uses, but
+   this page keeps the word black instead of tinting it green).
+   ============================================================ */
+.inc-section-head {
+  text-align: center;
+  margin-bottom: 40px;
+}
+.inc-section-title {
+  font-size: 40px;
+  font-weight: 800;
+  color: #1c1c1c;
+  margin: 0 0 14px;
+}
+.inc-highlight {
+  background-image: url("/assets/images/stroke_peach_top_transparent.png");
+  background-size: 100% 30%;
+  background-repeat: no-repeat;
+  background-position: center bottom;
+  color: inherit;
+}
+.inc-section-sub {
+  font-size: 22px;
+  color: #484848;
+  /* wide enough that the courses sub-heading stays on one line, as designed */
+  max-width: 1500px;
+  margin: 0 auto;
+  line-height: 1.9;
+}
+
+/* ============================================================
+   "لماذا حاضنة صوت؟"
+   ============================================================ */
+.inc-why {
+  /* extra top padding clears the stats card's ~100px overhang from the hero */
+  padding: 270px 0 90px;
+  background: #ffffff;
+}
+/* photo first (= start / right in RTL), copy second — as in the mock */
+.inc-why-grid {
+  display: grid;
+  grid-template-columns: 0.63fr 1fr;
+  align-items: center;
+  gap: 52px;
+}
+.inc-why-text {
+  margin-inline-start:50px;
+}
+.inc-why-title {
+  text-align: start;
+  font-size: 40px;
+  margin-bottom: 18px;
+}
+.inc-why-desc {
+  font-size: 22px;
+  line-height: 2;
+  color: #484848;
+  margin: 0 0 34px;
+
+}
+
+.inc-why-features {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 26px 14px;
+}
+.inc-why-feature {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+}
+.inc-why-feature-icon {
+  flex: 0 0 auto;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 55px;
+  height: 55px;
+  border-radius: 50%;
+  background: #eff0ec;
+  color: #e1723b;
+  font-size: 28px;
+}
+.inc-why-feature-body {
+  min-width: 0;
+}
+.inc-why-feature-title {
+  font-size: 22px;
+  font-weight: 800;
+  color: #484848;
+  margin: 2px 0 4px;
+}
+.inc-why-feature-desc {
+  font-size: 16px;
+  line-height: 1.7;
+  color: #6D6D6D;
+  margin: 0;
+}
+
+/* photo + the two offset rounded blocks + dotted grid */
+.inc-why-media {
+  position: relative;
+  isolation: isolate;
+}
+.inc-why-img {
+  position: relative;
+  z-index: 2;
+  display: block;
+  width: 100%;
+  height: auto;
+}
+.inc-why-shape-green,
+.inc-why-shape-peach {
+  position: absolute;
+  z-index: 1;
+  /* the mock's shapes: only the top-left and bottom-right corners are round */
+  border-radius: 99.823px 0;
+}
+.inc-why-shape-green {
+  width: 86%;
+  height: 78%;
+  top: -17px;
+  inset-inline-end: -30px;
+  background: rgba(76, 92, 55, 0.2);
+}
+.inc-why-shape-peach {
+  width: 80%;
+  height: 80%;
+  bottom: -32px;
+  inset-inline-start: -16px;
+  background: #fff3eb;
+}
+/* dotted grid tucked behind the photo's bottom outer corner — orange, with the
+   mock's three green dots leading the first row */
+.inc-why-dots {
+  position: absolute;
+  z-index: 1;
+  bottom: -42px;
+  inset-inline-end: -48px;
+  width: 112px;
+  height: 98px;
+  background-image: radial-gradient(#e1723b 3.1px, transparent 3.3px);
+  background-size: 14px 14px;
+  background-position: 0 14px;
+}
+.inc-why-dots::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  inset-inline-end: 14px;
+  width: 42px;
+  height: 14px;
+  background-image: radial-gradient(#4c5c37 3.1px, transparent 3.3px);
+  background-size: 14px 14px;
+}
+
+/* ============================================================
+   "دوراتنا الأكثر شهرة" — three-up course cards
+   ============================================================ */
+.inc-courses {
+  padding: 30px 0 45px;
+  background: #EDEFEB;
+}
+.inc-course-row {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 28px;
+  align-items: stretch;
+}
+
+.inc-course-card {
+  /* anchors the .inc-course-link full-card overlay */
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  min-height: 342px;
+  background: #ffffff;
+  border-radius: 16px;
+  border: 1px solid  #DADADA;
+  overflow: hidden;
+}
+
+/* the whole card links to its course page; the CTA is raised above it */
+.inc-course-link {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+}
+/* the mock's middle card: outlined, no photo */
+.inc-course-card.is-featured {
+  border: 1px solid #4c5c37;
+}
+
+/* ---------- photo + its two flags ---------- */
+.inc-course-media {
+  position: relative;
+  /* soaks up the height the body doesn't need, so all three cards line up */
+  flex: 1 1 auto;
+  min-height: 150px;
+}
+/* taken out of flow so the photo never contributes its intrinsic height — the
+   media box is sized purely by what the body leaves over, which is what gives
+   the three cards their equal height and their different crops */
+.inc-course-media img {
+  position: absolute;
+  inset: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.inc-course-cat,
+.inc-course-soon {
+  position: absolute;
+  top: 11px;
+  display: inline-flex;
+  align-items: center;
+  font-size: 14px;
+  font-weight: 700;
+  line-height: 1;
+  padding: 6px 12px;
+}
+/* category sits on the photo's end edge, "قريبًا" on the start edge */
+.inc-course-cat {
+  inset-inline-end: 10px;
+  background: #ffffff;
+  color: #1c1c1c;
+  border-radius: 16px;
+}
+.inc-course-soon {
+  inset-inline-start: 14px;
+  background: #139607;
+  color: #ffffff;
+  border-radius: 16px;
+}
+
+/* ---------- body ---------- */
+.inc-course-body {
+  flex: 0 0 auto;
+  padding: 18px 20px 20px;
+  text-align: start;
+}
+.inc-course-card.is-featured .inc-course-body {
+  /* the featured card is all body, so it fills the card */
+  flex: 1 1 auto;
+  display: flex;
+  flex-direction: column;
+}
+
+.inc-course-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 14px;
+}
+.inc-course-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 10px;
+  border-radius: 16px;
+  background: #EDEFEB;
+  color: #6D6D6D;
+  font-size: 14px;
+  line-height: 1.5;
+}
+.inc-course-chip svg {
+  font-size: 14px;
+  flex: 0 0 auto;
+}
+
+.inc-course-title {
+  font-size: 20px;
+  font-weight: 800;
+  color: #1c1c1c;
+  margin: 0;
+}
+.inc-course-rating {
+  display: flex;
+  gap: 1px;
+  font-size: 18px;
+  line-height: 1;
+  margin-top: 12px;
+}
+.inc-course-desc {
+  font-size: 18px;
+  line-height: 1.8;
+  color: #6D6D6D;
+  margin: 12px 0 0;
+}
+
+.inc-course-tutor {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 14px;
+  font-size: 13px;
+  color: #1c1c1c;
+}
+.inc-course-tutor-label {
+  font-size: 12px;
+  color: #919191;
+}
+.inc-course-tutor-avatar {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  object-fit: cover;
+  flex: 0 0 auto;
+}
+
+.inc-course-tutor b {
+  color:#7F7F7F;
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.inc-course-cta {
+  /* stays clickable above the full-card overlay link */
+  position: relative;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  /* pushed to the card's bottom edge on the featured card */
+  margin-top: auto;
+  padding: 12px 20px;
+  border-radius: 999px;
+  background: #4c5c37;
+  color: #ffffff !important;
+  font-size: 18px;
+  font-weight: 700;
+  text-decoration: none;
+}
+.inc-course-card:not(.is-featured) .inc-course-cta {
+  margin-top: 18px;
+}
+.inc-course-cta:hover {
+  background: #38422a;
+  color: #ffffff;
+}
+.inc-course-cta i {
+  font-size: 13px;
+}
+
+/* ============================================================
+   "ساعد طلاب في الانضمام للحاضنة" — sponsorship tracks + sidebar
+   ============================================================ */
+.inc-sponsor {
+  position: relative;
+  padding: 90px 0 100px;
+  background: #ffffff;
+  overflow: hidden;
+}
+/* pale olive branch in the section's top-right corner (physical right, like the
+   other pages' branches, so it stays put in the RTL layout) */
+.inc-sponsor-leaf {
+  position: absolute;
+  top: -28px;
+  right: -56px;
+  width: 210px;
+  transform: rotate(230deg);
+  pointer-events: none;
+  z-index: 0;
+}
+.inc-sponsor > .container {
+  position: relative;
+  z-index: 1;
+}
+
+/* tracks on the start side (= right in RTL), sidebar on the end side */
+.inc-sponsor-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 300px;
+  gap: 28px;
+  align-items: start;
+}
+.inc-sponsor-tracks {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 26px;
+}
+
+/* ---------- one sponsorship track card ---------- */
+.inc-sponsor-card {
+  display: flex;
+  flex-direction: column;
+  padding: 22px 24px 20px;
+  border-radius: 20px;
+  border: 1px solid #C8C8C8;
+  background: #ffffff;
+  text-align: start;
+}
+.inc-sponsor-card-title {
+  font-size: 26px;
+  font-weight: 800;
+  color: #202717;
+  margin: 0 0 10px;
+}
+.inc-sponsor-card-desc {
+  font-size: 18px;
+  line-height: 1.8;
+  color: #6D6D6D;
+  margin: 0 0 12px;
+}
+/* [calendar] 8 أسابيع  ·  6 مقاعد — one shared icon, as designed */
+.inc-sponsor-meta {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  margin-bottom: 18px;
+  font-size: 14px;
+  color: #7F7F7F;
+}
+.inc-sponsor-meta-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+.inc-sponsor-meta svg {
+  font-size: 19px;
+  flex: 0 0 auto;
+}
+.inc-sponsor-cta {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  /* pinned to the card's bottom so all four buttons line up per row */
+  margin-top: auto;
+  padding: 14px 18px;
+  border-radius: 24px;
+  background: #4c5c37;
+  color: #ffffff !important;
+  font-size: 18px;
+  font-weight: 700;
+  text-align: center;
+  text-decoration: none;
+}
+.inc-sponsor-cta:hover {
+  background: #38422a;
+  color: #ffffff;
+}
+
+/* ---------- sidebar ---------- */
+.inc-sponsor-side {
+  display: flex;
+  flex-direction: column;
+  gap: 26px;
+}
+.inc-sponsor-side-title {
+  font-size: 16px;
+  font-weight: 800;
+  color: #1E2939;
+  text-align: start;
+  margin: 0 0 14px;
+}
+
+/* "طلاب ينتظرون داعماً" */
+.inc-sponsor-waiting {
+  padding: 16px;
+  border-radius: 20px;
+  border: 0.8px solid #c3c8c3;
+  background: #EDEFEB;
+}
+
+.inc-sponsor-students {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.inc-sponsor-student {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 9px 12px;
+  border-radius: 16px;
+  border: 1px solid #F3F4F6;
+  background: #ffffff;
+}
+.inc-sponsor-avatar {
+  flex: 0 0 auto;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: #DEDEDE;
+  color: #636262;
+  font-size: 13px;
+  font-weight: 700;
+}
+.inc-sponsor-avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.inc-sponsor-student-body {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  text-align: start;
+}
+.inc-sponsor-student-name {
+  font-size: 14px;
+  font-weight: 800;
+  color: #1c1c1c;
+}
+.inc-sponsor-student-meta {
+  font-size: 12px;
+  color: #99A1AF;
+}
+.inc-sponsor-more {
+  margin: 12px 0 0;
+  text-align: start;
+  font-size: 12px;
+  color: #919191;
+}
+
+
+/* "أثر البرنامج" */
+.inc-sponsor-impact {
+  padding: 18px 20px;
+  border-radius: 20px;
+  background: #E1723B;
+}
+.inc-sponsor-impact-title {
+  color: #FFF;
+font-size: 16px;
+font-weight: 900;
+line-height: 24px; /* 150% */
+}
+.inc-sponsor-impact-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+/* value on the start side, label on the end side */
+.inc-sponsor-impact-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+.inc-sponsor-impact-value {
+  font-size: 20px;
+  font-weight: 800;
+  color: #F1ECE4;
+  /* keeps "340+" in its designed order inside the RTL page */
+  direction: ltr;
+}
+.inc-sponsor-impact-label {
+  font-size: 12px;
+  color: #F2F2F2;
+  
+}
+
+/* ============================================================
+   "استكشف أحدث فعالياتنا" — filter chips + three-up event cards
+   ============================================================ */
+.inc-events {
+  padding: 30px 0 45px;
+  background: #edefeb;
+}
+
+/* category chips — start-aligned (= right in RTL); only "الكل" is active */
+.inc-events-filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-bottom: 40px;
+}
+.inc-events-filter {
+  display: inline-flex;
+  align-items: center;
+  padding: 12px 22px;
+  border-radius: 8px;
+  border:none;
+  background: #ffffff;
+  color: #7A7A7A;
+  font-size: 16px;
+  line-height: 1.5;
+  cursor: pointer;
+}
+.inc-events-filter.is-active {
+  border-color: #4C5C37;
+  background: #4C5C37;
+  color: #ffffff;
+}
+
+.inc-event-row {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 28px;
+  align-items: stretch;
+}
+
+/* ---------- one event card ---------- */
+.inc-event-card {
+  display: flex;
+  flex-direction: column;
+  border-radius: 16px;
+  border: 1px solid #DADADA;
+  background: #ffffff;
+  overflow: hidden;
+}
+
+/* photo + the orange date badge straddling its bottom edge */
+.inc-event-media {
+  position: relative;
+}
+.inc-event-media img {
+  display: block;
+  width: 100%;
+  aspect-ratio: 1.9;
+  object-fit: cover;
+}
+/* badge sits on the photo's physical left in the mock = inline-end in RTL */
+.inc-event-badge {
+  position: absolute;
+  bottom: -42px;
+  inset-inline-end: 36px;
+  z-index: 1;
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  width: 84px;
+  height: 84px;
+  border-radius: 100px;
+  border: 1px solid #ffffff;
+  background: #E1723B;
+  color: #ffffff;
+  text-align: center;
+}
+.inc-event-badge b {
+  font-size: 14px;
+  font-weight: 800;
+  line-height: 1.2;
+}
+.inc-event-badge span {
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 1.2;
+}
+
+/* ---------- body ---------- */
+.inc-event-body {
+  flex: 1 1 auto;
+  display: flex;
+  flex-direction: column;
+  padding: 55px 24px 24px;
+  text-align: start;
+}
+.inc-event-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 18px;
+}
+.inc-event-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 14px;
+  border-radius: 16px;
+  background: #EDEFEB;
+  color: #6d6d6d;
+  font-size: 16px;
+  font-weight: 600;
+  line-height: 1.5;
+}
+.inc-event-chip svg {
+  font-size: 20px;
+  flex: 0 0 auto;
+}
+.inc-event-title {
+  font-size: 20px;
+  font-weight: 800;
+  line-height: 1.6;
+  color: #1E1E1E;
+  margin: 0 0 12px;
+}
+.inc-event-desc {
+  font-size: 16px;
+  line-height: 1.9;
+  color: #6D6D6D;
+  margin: 0 0 5px;
+}
+/* [pin] وجاهي, ورشة عمل — pinned to the card's bottom edge */
+.inc-event-type {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: auto;
+  font-size: 16px;
+  font-weight: 800;
+  color: #4C5C37;
+}
+.inc-event-type svg {
+  font-size: 24px;
+  flex: 0 0 auto;
+  color: #4c5c37;
+}
+
+/* ============================================================
+   "الحاضنة بيتك الثاني ، البوم الحاضنة" — hover photo album
+   ============================================================ */
+.inc-album {
+  position: relative;
+  padding: 90px 0 100px;
+  background: #ffffff;
+  overflow: hidden;
+}
+/* the sponsor section's pale branch, turned into the bottom-left corner */
+.inc-album-leaf {
+  position: absolute;
+  bottom: -46px;
+  left: -46px;
+  width: 230px;
+  transform: rotate(66deg);
+  pointer-events: none;
+  z-index: 0;
+}
+.inc-album > .container {
+  position: relative;
+  z-index: 1;
+}
+
+/* three columns — the tall video card spans both rows on the start side */
+.inc-album-grid {
+  display: grid;
+  grid-template-columns: 0.57fr 1fr 0.57fr;
+  grid-template-rows: 300px 255px;
+  grid-template-areas:
+    "video featured mentor"
+    "video workshop community";
+  gap: 18px;
+}
+.inc-album-card-video {
+  grid-area: video;
+}
+.inc-album-card-featured {
+  grid-area: featured;
+}
+.inc-album-card-workshop {
+  grid-area: workshop;
+}
+.inc-album-card-mentor {
+  grid-area: mentor;
+}
+.inc-album-card-community {
+  grid-area: community;
+}
+
+.inc-album-card {
+  position: relative;
+  margin: 0;
+  border-radius: 16px;
+  overflow: hidden;
+}
+.inc-album-photo {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* chips + captions sit on the gradient and only appear while hovering */
+.inc-album-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    0deg,
+    rgba(30, 30, 30, 0.7) 0%,
+    rgba(0, 0, 0, 0) 50%,
+    rgba(0, 0, 0, 0) 100%
+  );
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+.inc-album-card:hover .inc-album-overlay {
+  opacity: 1;
+}
+
+.inc-album-chip {
+  position: absolute;
+  background: #ffffff;
+  color: #1c1c1c;
+  font-size: 14px;
+  font-weight: 600;
+  padding: 7px 14px;
+  border-radius:100px;
+  white-space: nowrap;
+}
+.inc-album-chip-top-end {
+  top: 16px;
+  inset-inline-end: 16px;
+}
+.inc-album-chip-bottom-end {
+  bottom: 16px;
+  inset-inline-start: 16px;
+}
+.inc-album-chip-bottom-start {
+  bottom: 16px;
+  inset-inline-start: 16px;
+}
+
+.inc-album-caption {
+  position: absolute;
+  bottom: 16px;
+  inset-inline-start: 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  color: #ffffff;
+  text-align: start;
+}
+.inc-album-caption b {
+  font-size: 20px;
+  font-weight: 800;
+}
+.inc-album-caption span {
+  font-size: 18px;
+  opacity: 0.85;
+  color: rgba(255, 255, 255, 0.70);
+
+}
+
+/* dark-green play badge on the launch-day video — always visible */
+.inc-album-play {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  background: #4c5c37;
+  color: #ffffff;
+  font-size: 18px;
+  z-index: 1;
+}
+
+/* ============================================================
+   "فريق خبراء متخصص" — five-up expert cards. The olive border,
+   the dark photo tint and the LinkedIn action are hover-only.
+   ============================================================ */
+.inc-experts {
+  padding: 30px 0 45px;
+  background: #ffffff;
+}
+.inc-expert-row {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 24px;
+}
+.inc-expert-card {
+  display: flex;
+  flex-direction: column;
+  border-radius: 24px;
+  border: 1px solid #c8c8c8;
+  background: #ffffff;
+  overflow: hidden;
+  transition: border-color 0.3s ease;
+}
+.inc-expert-card:hover {
+  border-color: #4c5c37;
+}
+.inc-expert-media {
+  position: relative;
+  height: 200px;
+  background: lightgray;
+}
+.inc-expert-media img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+/* flat dark tint over the photo — hover-only */
+.inc-expert-media::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: rgba(42, 44, 41, 0.44);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+.inc-expert-card:hover .inc-expert-media::after {
+  opacity: 1;
+}
+.inc-expert-actions {
+  position: absolute;
+  top: 14px;
+  inset-inline-end: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  z-index: 1;
+}
+.inc-expert-action {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 42px;
+  height: 42px;
+ border-radius: 24px;
+border: 1px solid  #4C5C37;
+  background: inherit;
+  color: #4c5c37 !important;
+  font-size: 20px;
+  line-height: 1;
+  text-decoration: none;
+  transition: all 0.1s ease-in-out;
+}
+.inc-expert-action:hover {
+  color: #38422a;
+  background: #fff;
+}
+/* the LinkedIn action only exists while the card is hovered */
+.inc-expert-action-linkedin {
+  font-size: 18px;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.3s ease, visibility 0.3s ease;
+}
+.inc-expert-card:hover .inc-expert-action-linkedin {
+  opacity: 1;
+  visibility: visible;
+}
+.inc-expert-body {
+  padding: 18px 13px 14px;
+}
+.inc-expert-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+.inc-expert-name {
+  font-size: 18px;
+  font-weight: 800;
+  color: #1c1c1c;
+  margin: 0;
+}
+.inc-expert-badge {
+  flex: 0 0 auto;
+  padding: 5px 12px;
+  border-radius: 999px;
+  background: #fdf3e3;
+  color: #c88a2e;
+  font-size: 12px;
+  font-weight: 700;
+  white-space: nowrap;
+}
+.inc-expert-desc {
+  font-size: 13px;
+  line-height: 1.9;
+  color: #7A8572;
+  margin: 0;
+}
+
+/* ============================================================
+   FAQ — "الأسئلة التي تدور ببالك؟" (eighth section)
+   Same accordion as the support page's sp-faq-*, with the leaf
+   cutout sitting in the section's bottom-left corner.
+   ============================================================ */
+.inc-faq {
+  position: relative;
+  padding: 40px 0;
+}
+.inc-faq-leaf {
+  position: absolute;
+  bottom: -30px;
+  left: -33px;
+  width: 220px;
+  transform: rotate(196deg) scaleY(-1);
+  pointer-events: none;
+  z-index: 3;
+}
+.inc-faq > .container {
+  position: relative;
+  z-index: 1;
+}
+.inc-faq-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 30px;
+  align-items: flex-start;
+}
+.inc-faq-col {
+  flex: 1 1 56%;
+  min-width: 300px;
+  order: 2;
+  margin-top: 40px;
+}
+.inc-faq-visual {
+  flex: 1 1 28%;
+  min-width: 260px;
+  order: 1;
+}
+.inc-faq-visual img {
+  width: 100%;
+  height: auto;
+  display: block;
+  border-radius: 16px;
+}
+.inc-faq-item {
+  background: #ffffff;
+  border: 1px solid #C8C8C8;
+  border-radius: 12px;
+  margin-bottom: 14px;
+  overflow: hidden;
+}
+.inc-faq-item.inc-faq-open {
+  background: #EDEFEB;
+  border-color: #4C5C37;
+}
+.inc-faq-q {
+  width: 100%;
+  background: transparent;
+  border: 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 18px 22px;
+  font-size: 18px;
+  font-weight: 700;
+  color: #1c1c1c;
+  cursor: pointer;
+  text-align: start;
+}
+.inc-faq-open .inc-faq-q {
+  color: #374C1C !important;
+  border-bottom: 1px solid #C8C8C8;
+}
+.inc-faq-chevron {
+  flex: 0 0 auto;
+  font-size: 13px;
+  color: #000;
+  transition: transform 0.2s ease;
+}
+.inc-faq-open .inc-faq-chevron {
+  transform: rotate(180deg);
+  color: #000;
+}
+.inc-faq-a {
+  display: flex;
+  align-items: stretch;
+  gap: 14px;
+  font-size: 14px;
+  color: #5A5A5A;
+  line-height: 2;
+  margin: 16px 22px 18px;
+  padding: 0;
+}
+.inc-faq-a-bar {
+  flex: 0 0 4px;
+  width: 4px;
+  align-self: stretch;
+  border-radius: 16px;
+  background: var(--Secondary-Orange-400, #E1723B);
+}
+.inc-faq-a-text {
+  margin: 0;
+  text-align: start;
+}
+
+/* ============================================================
+   "يعمل خريجونا لدى جهات موثوقة" — the home page's automatic
+   .marquee logo strip (animation in style.css) with the
+   graduates' employer logos, normalized to one height.
+   ============================================================ */
+.inc-grads {
+  padding: 80px 0 70px;
+  background: #fff;
+}
+.inc-grads .inc-section-head {
+  margin-bottom: 56px;
+}
+.inc-grads .marquee {
+  margin-bottom: 0;
+}
+.inc-grads .marquee img {
+  height: 56px;
+  width: auto;
+}
+
+/* ============================================================
+   Join banner — "ابدأ رحلتك مع حاضنة صوت", tenth section.
+   Same JoinUs banner as the homepage (join-us-* in style.css);
+   the mock swaps the faint black overlay for a flat olive tint
+   and shows the collage uncropped-cover instead of stretched.
+   ============================================================ */
+.inc-join .join-us-banner::after {
+  background: linear-gradient(
+    0deg,
+    rgba(58, 79, 51, 0.55) 0%,
+    rgba(58, 79, 51, 0.55) 100%
+  );
+}
+.inc-join .join-us-bg {
+  object-fit: cover;
+}
+.inc-join .join-us-desc {
+  max-width: 640px;
+  margin-inline: auto;
+}
+
+/* ============================================================
+   "شهادات وتجارب خريجينا" — eleventh (last) section.
+   Rounded olive canvas (Primary-oliveGreen-50) with the shared
+   pattern.png scatter behind a translucent inner panel; copy +
+   "عرض الكل" on the start side, the white testimonial cards and
+   the dot-pager pill on the end side.
+   ============================================================ */
+.inc-testi {
+  padding: 40px 0 90px;
+  background: #ffffff;
+}
+.inc-testi-wrap {
+  position: relative;
+  border-radius: 20px;
+  background: rgba(237, 239, 235, 0.50);
+  padding: 24px;
+}
+/* the leaf/mic doodles sit on the wrap and show faintly through the
+   panel's translucent fill */
+.inc-testi-wrap::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: url("/assets/images/pattern.png") top center / 520px auto repeat;
+  opacity: 0.4;
+  pointer-events: none;
+}
+
+.inc-testi-panel {
+  position: relative;
+  border-radius: 16px;
+  background: #EDEFEB;
+  padding: 24px 26px;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 2.3fr);
+  gap: 48px;
+  align-items: center;
+}
+
+/* ---------- copy column (start / right in RTL) ---------- */
+.inc-testi-title {
+  font-size: 40px;
+  font-weight: 800;
+  color: #1c1c1c;
+  line-height: 1.5;
+  margin: 0 0 18px;
+}
+.inc-testi-sub {
+  font-size: 22px;
+  font-weight: 500;
+  color: #484848;
+  line-height: 1.9;
+  margin: 0;
+}
+.inc-testi-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 32px;
+  background: #4c5c37;
+  color: #ffffff !important;
+  font-size: 18px;
+  font-weight: 700;
+  border-radius: 24px;
+  padding: 12px 20px;
+  text-decoration: none;
+}
+.inc-testi-btn:hover {
+  background: #3d4a2c;
+  color: #ffffff;
+}
+.inc-testi-btn svg {
+  font-size: 14px;
+}
+
+/* ---------- card strip ---------- */
+.inc-testi-slider {
+  min-width: 0;
+}
+.inc-testi-track {
+  display: flex;
+  gap: 24px;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  scrollbar-width: none;
+  cursor: grab;
+}
+.inc-testi-track.dragging {
+  cursor: grabbing;
+  scroll-snap-type: none;
+  user-select: none;
+}
+.inc-testi-track::-webkit-scrollbar {
+  display: none;
+}
+.inc-testi-card {
+  position: relative;
+  overflow: hidden;
+  flex: 0 0 calc(50% - 12px);
+  border-radius: 20px;
+  border: 1px solid #DADADA;
+  background: #ffffff;
+  padding: 24px 24px 28px;
+}
+/* two cards fill the view exactly, so snapping only on the first card of
+   each pair makes every move advance a full two-card page */
+.inc-testi-card:nth-child(odd) {
+  scroll-snap-align: start;
+}
+/* pale-peach dot cluster in the card's top end corner */
+.inc-testi-card::before {
+  content: "";
+  position: absolute;
+top: -23px;
+  inset-inline-end: -30px;
+  width: 108px;
+  height: 84px;
+  background-image: radial-gradient(circle, #fff3eb 3.1px, transparent 3.6px);
+  background-size: 17px 17px;
+  pointer-events: none;
+  border-radius: 1000px;
+
+}
+
+.inc-testi-avatar {
+  position: relative;
+  display: block;
+  width: 64px;
+  height: 64px;
+  margin-bottom: 16px;
+}
+.inc-testi-avatar img {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  object-fit: cover;
+}
+.inc-testi-quote-badge {
+  position: absolute;
+  bottom: -2px;
+  inset-inline-end: -8px;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: #FFF3EB;
+  color: #FF7420;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+}
+.inc-testi-stars {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 16px;
+  margin-bottom: 12px;
+}
+.inc-testi-text {
+  font-size: 14px;
+  color: #5A5A5A;
+  line-height: 160%; /* 22.4px */
+  margin: 0 0 14px;
+}
+.inc-testi-cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: #4c5c37 !important;
+  font-size: 14px;
+  font-weight: 700;
+  text-decoration: none;
+  margin-bottom: 16px;
+}
+.inc-testi-cta:hover {
+  color: #38422a;
+}
+.inc-testi-cta svg {
+  width: 16px;
+  height: 16px;
+}
+.inc-testi-name {
+  display: block;
+  font-size: 14px;
+  font-weight: 800;
+  color: #1E1E1E;
+}
+.inc-testi-meta {
+  display: block;
+  font-size: 13px;
+  color: #6D6D6D;
+  margin-top: 4px;
+}
+
+/* ---------- dot pager ---------- */
+.inc-testi-dots {
+  display: flex;
+  justify-content: center;
+  margin-top: 28px;
+}
+.inc-testi-dots-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  background: transparent;
+  border: 1px solid rgba(76, 92, 55, 0.55);
+  border-radius: 40px;
+  padding: 8px 12px;
+}
+.inc-testi-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: #c6c9c0;
+  border: 0;
+  padding: 0;
+  cursor: pointer;
+  transition: all 0.25s ease;
+}
+.inc-testi-dot.active {
+  width: 15px;
+  height: 15px;
+  background: #4c5c37;
+}
+
+/* ============================================================
+   Responsive
+   ============================================================ */
+@media (max-width: 991.98px) {
+  .inc-album-grid {
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: 260px 220px 220px;
+    grid-template-areas:
+      "video featured"
+      "video workshop"
+      "mentor community";
+  }
+  .inc-album-leaf {
+    width: 150px;
+    bottom: -24px;
+    left: -34px;
+  }
+  .inc-nav-toggler {
+    display: inline-flex;
+  }
+  .inc-nav-menu {
+    flex-direction: column;
+    align-items: stretch;
+    width: 100%;
+  }
+  .inc-nav-links {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 14px;
+    margin-inline-start: 0;
+    padding: 14px 0;
+  }
+  .inc-nav-divider {
+    display: none;
+  }
+  .inc-nav-cta {
+    margin-inline-start: 0;
+    margin-bottom: 14px;
+    width: 100%;
+  }
+  .inc-hero-grid {
+    grid-template-columns: 1fr;
+    gap: 56px;
+    padding: 40px 0 34px;
+  }
+  .inc-hero-title {
+    font-size: 34px;
+  }
+  .inc-hero-desc {
+    font-size: 16px;
+    max-width: none;
+  }
+  .inc-stats {
+    grid-template-columns: repeat(2, 1fr);
+    row-gap: 26px;
+    /* 2×2 card is ~380px tall — margin compensates for half of it */
+    margin-top: -190px;
+  }
+  .inc-why {
+    padding: 250px 0 56px;
+  }
+  .inc-why-grid {
+    grid-template-columns: 1fr;
+    gap: 56px;
+  }
+  /* photo stays above the copy on mobile (it is already the first cell) */
+  .inc-why-media {
+    max-width: 420px;
+    margin-inline: auto;
+  }
+  .inc-section-title {
+    font-size: 26px;
+  }
+  .inc-section-sub {
+    font-size: 16px;
+  }
+  .inc-why-title {
+    font-size: 26px;
+  }
+  .inc-courses {
+    padding: 56px 0 60px;
+  }
+  .inc-course-row {
+    grid-template-columns: 1fr;
+    gap: 22px;
+  }
+  .inc-course-card {
+    min-height: 0;
+  }
+  /* single column: nothing left over for the media to absorb, so pin a height */
+  .inc-course-media {
+    min-height: 220px;
+  }
+  .inc-experts {
+    padding: 56px 0 60px;
+  }
+  .inc-expert-row {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 18px;
+  }
+  .inc-sponsor {
+    padding: 56px 0 60px;
+  }
+  .inc-events {
+    padding: 56px 0 60px;
+  }
+  .inc-events-filters {
+    gap: 10px;
+    margin-bottom: 28px;
+  }
+  .inc-events-filter {
+    padding: 10px 16px;
+    font-size: 14px;
+  }
+  .inc-event-row {
+    grid-template-columns: 1fr;
+    gap: 22px;
+  }
+  .inc-event-title {
+    font-size: 19px;
+  }
+  .inc-event-desc {
+    font-size: 15px;
+  }
+  .inc-sponsor-leaf {
+    width: 140px;
+    top: -14px;
+    right: -34px;
+  }
+  /* sidebar drops under the tracks */
+  .inc-sponsor-grid {
+    grid-template-columns: 1fr;
+    gap: 22px;
+  }
+  .inc-sponsor-side {
+    flex-direction: row;
+    align-items: stretch;
+    gap: 22px;
+  }
+  .inc-sponsor-waiting,
+  .inc-sponsor-impact {
+    flex: 1 1 0;
+  }
+  .inc-faq {
+    padding: 56px 0 60px;
+  }
+  .inc-faq-visual {
+    order: -1;
+    margin: 0 auto 10px;
+  }
+  .inc-testi {
+    padding: 32px 0 60px;
+  }
+  /* copy stacks above the cards */
+  .inc-testi-panel {
+    grid-template-columns: 1fr;
+    gap: 36px;
+    padding: 40px 28px;
+  }
+  .inc-testi-title {
+    font-size: 30px;
+  }
+  .inc-testi-sub {
+    font-size: 16px;
+  }
+}
+
+@media (max-width: 575.98px) {
+  .inc-album-grid {
+    grid-template-columns: 1fr;
+    grid-template-rows: 300px 240px 200px 200px 200px;
+    grid-template-areas:
+      "video"
+      "featured"
+      "workshop"
+      "mentor"
+      "community";
+    gap: 14px;
+  }
+  .inc-nav {
+    padding: 0 16px;
+  }
+  .inc-nav-social-label {
+    display: none;
+  }
+  .inc-hero-title {
+    font-size: 28px;
+  }
+  .inc-hero-badge-green {
+    inset-inline-end: -8px;
+  }
+  .inc-hero-badge-orange {
+    inset-inline-start: -8px;
+  }
+  .inc-stat-value {
+    font-size: 22px;
+  }
+  .inc-stat-label {
+    font-size: 13px;
+  }
+  /* smaller type → shorter card, so a smaller margin compensation */
+  .inc-stats {
+    margin-top: -150px;
+  }
+  .inc-why {
+    padding-top: 200px;
+  }
+  .inc-why-features {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+  .inc-expert-row {
+    grid-template-columns: 1fr;
+  }
+  .inc-sponsor-tracks {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+  .inc-sponsor-side {
+    flex-direction: column;
+  }
+  .inc-sponsor-cta {
+    font-size: 15px;
+  }
+  .inc-faq-visual {
+    display: none;
+  }
+  .inc-faq-leaf {
+    display: none;
+  }
+  .inc-faq-q {
+    font-size: 15px;
+    padding: 16px;
+  }
+  .inc-grads {
+    padding: 56px 0 50px;
+  }
+  .inc-grads .marquee img {
+    height: 40px;
+  }
+  .inc-testi-wrap {
+    padding: 14px;
+  }
+  .inc-testi-panel {
+    padding: 32px 18px;
+  }
+  /* one card per view — every card becomes a snap stop again */
+  .inc-testi-card {
+    flex-basis: 100%;
+    scroll-snap-align: start;
+  }
+}
