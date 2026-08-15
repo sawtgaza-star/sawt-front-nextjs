@@ -5,8 +5,13 @@ import LegacyInit from "@/components/LegacyInit";
 import TeamHero from "@/components/team/TeamHero";
 import TeamMemberProfile from "@/components/team/TeamMemberProfile";
 import TeamMembersSection from "@/components/team/TeamMembersSection";
-import { getTeamMember } from "@/components/team/team-data";
+import { TEAM_MEMBERS, getTeamMember } from "@/components/team/team-data";
 import JoinModal from "@/components/site/JoinModal";
+
+/* `output: 'export'` needs every dynamic segment pre-listed. */
+export function generateStaticParams() {
+  return TEAM_MEMBERS.map((m) => ({ id: String(m.id) }));
+}
 
 export default async function Page({
   params,
