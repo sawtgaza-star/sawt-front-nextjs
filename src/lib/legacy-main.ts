@@ -818,17 +818,19 @@ function scrollToTop() {
 }
 
 __ready(function () {
-  const path = (
-    window.location.pathname.split("/").pop() || "index.html"
-  ).toLowerCase();
+  // Strip the trailing slash before taking the last segment: the static export
+  // (output: 'export') is served as /team/index.html, so the live URL is
+  // "/team/" and a bare .split("/").pop() returned "" -> "index.html". That
+  // cleared .active from every link and underlined الرئيسية on every page.
+  const lastSegment = (value) =>
+    (value || "").replace(/\/+$/, "").split("/").pop().toLowerCase();
+
+  const path = lastSegment(window.location.pathname) || "index.html";
   const navLinks = document.querySelectorAll(".navbar-nav .nav-link");
   let matched = false;
 
   navLinks.forEach((link) => {
-    const href = (link.getAttribute("href") || "")
-      .split("/")
-      .pop()
-      .toLowerCase();
+    const href = lastSegment(link.getAttribute("href"));
     link.classList.remove("active");
     if (href && href !== "#" && href === path) {
       link.classList.add("active");
