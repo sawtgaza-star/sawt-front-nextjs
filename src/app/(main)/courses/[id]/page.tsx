@@ -1,3 +1,6 @@
+/* incubator.css first: the hero reuses the incubator navbar (.inc-nav*), and
+   every rule in that file is `inc-` namespaced so it can't touch `crs-`. */
+import "@/styles/incubator.css";
 import "@/styles/course.css";
 import { notFound } from "next/navigation";
 import LegacyInit from "@/components/LegacyInit";

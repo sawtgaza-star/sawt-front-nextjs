@@ -103,7 +103,7 @@ margin-top:20px !important;
   color: #fff;
 }
 .cr-breadcrumb {
-  font-size: 20px;
+  font-size: 18px;
   font-weight: 500;
   margin-bottom: 26px;
 }
@@ -129,7 +129,7 @@ margin-top:20px !important;
   font-weight: 700;
 }
 .cr-hero-title {
-  font-size: 28px;
+  font-size: 24px;
   font-weight: 800;
   margin-bottom: 18px;
 }
@@ -260,12 +260,16 @@ margin-top:20px !important;
   min-width: 34px;
   height: 34px;
   padding: 0 8px;
-  border: 1px solid #e2e5da;
+  border: 1px solid #E9E9E9;
   background: #fff;
   border-radius: 8px;
   color: #4c5c37;
-  font-size: 14px;
-  font-weight: 700;
+  /* design tokens — see styles/tokens.css */
+  font-family: var(--fontFamily-text, Rubik), "cairo", sans-serif;
+  font-size: var(--FontSize-textMd, 14px);
+  font-style: normal;
+  font-weight: var(--FontWeight-regular, 400);
+  line-height: var(--lineHeight-textMd, 21px);
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -1365,6 +1369,13 @@ background: var(--White, #FFF);
 }
 
 
+/* holds the pills; on desktop it is a plain full-width block, on mobile it
+   becomes the sideways scroll container (see the 767.98px block) */
+.cr-content-tabs-scroll {
+  order: 2;
+  width: 100%;
+}
+
 .cr-content-tabs {
   list-style: none;
   display: flex;
@@ -1374,7 +1385,7 @@ background: var(--White, #FFF);
   padding: 0;
   margin: 0;
   order: 2;
- 
+
 }
 .cr-content-tab {
   background: #F5F5F5;
@@ -2835,21 +2846,27 @@ display:none;
     order: 1;
     font-size: 14px;
   }
-  /* the pills become one sideways-scrolling row under the heading */
-  .cr-content-tabs {
+  /* the pills become one sideways-scrolling row under the heading. The scroll
+     lives on the wrapper, so the list itself carries no overflow. */
+  .cr-content-tabs-scroll {
     order: 2;
     flex-basis: 100%;
-    flex-wrap: nowrap;
     overflow-x: auto;
     overscroll-behavior-x: contain;
     -webkit-overflow-scrolling: touch;
     scrollbar-width: none;
+  }
+  .cr-content-tabs-scroll::-webkit-scrollbar {
+    display: none;
+  }
+  .cr-content-tabs {
+    flex-wrap: nowrap;
     gap: 8px;
     padding-bottom: 8px;
     padding-top: 20px;
-  }
-  .cr-content-tabs::-webkit-scrollbar {
-    display: none;
+    /* wide enough to overflow its scrolling wrapper instead of squeezing the
+       pills into the available width */
+    width: max-content;
   }
 
   .cr-content-tabs li {

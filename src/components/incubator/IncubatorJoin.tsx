@@ -4,7 +4,7 @@
    mock's flat olive overlay is layered by .inc-join in incubator.css. */
 export default function IncubatorJoin() {
   return (
-    <section className="inc-join join-us-section position-relative">
+    <section className="inc-join join-us-section position-relative" id="inc-join">
       <div className="join-us-banner">
         <img src="/assets/images/join-img.jpg" alt="" className="join-us-bg" />
         <div className="join-us-content text-center">
