@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Rubik } from "next/font/google";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "swiper/css/bundle";
+import "@/styles/tokens.css";
 import "@/styles/animations.css";
 import "@/styles/i18n.css";
 import PageAnimations from "@/components/PageAnimations";
@@ -68,6 +69,17 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           dangerouslySetInnerHTML={{
             __html:
               'try{var l=localStorage.getItem("lang")||"ar";var d=l==="ar"?"rtl":"ltr";var r=document.documentElement;r.setAttribute("dir",d);r.setAttribute("lang",l);document.body.setAttribute("dir",d);if(l!=="ar"){r.classList.add("i18n-pending");setTimeout(function(){r.classList.remove("i18n-pending")},2500)}}catch(e){}',
+          }}
+        />
+        {/* Marks the document as signed-in before first paint. The top bar
+            ships BOTH variants (guest CTAs + account/notification icons) and
+            style.css shows one of them off this class — so switching state
+            costs no JS on the critical path, no hydration mismatch and no
+            flash of the wrong navbar. See lib/auth-state.ts. */}
+        <script
+          dangerouslySetInnerHTML={{
+            __html:
+              'try{if(localStorage.getItem("sawt_auth")==="1"){document.documentElement.classList.add("sawt-authed")}}catch(e){}',
           }}
         />
         <PageAnimations />

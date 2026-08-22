@@ -117,7 +117,7 @@ a {
 .navbar .container {
   /* max-width: 89%; */
   background-color: rgba(255, 255, 255) !important;
-  border-radius: 0px 0px 10px 10px;
+  border-radius: 0px 0px 16px 16px;
   position: relative;
 }
 .navbar {
@@ -127,13 +127,14 @@ a {
 .navbar-collapse {
   display: flex;
   align-items: center;
-  justify-content: space-around;
+  /* links hug the logo on the right, the brand pills sit at the far left */
+  justify-content: space-between;
 }
 
 .nav-face {
   background-color: #ffffff;
   /* max-width: 89%; */
-  border-radius: 10px 10px 0px 0px;
+  border-radius: 16px 16px 0px 0px;
   margin-top: 10px;
   border-bottom: 1px solid rgba(218, 218, 218, 1) !important;
 }
@@ -168,6 +169,16 @@ a {
   header .navbar .container {
     padding-left: 12px;
     padding-right: 12px;
+  }
+  /* …and the three home carousels are the other exception: their strips show a
+     peek of the next card, which has to run to the screen edge. Bootstrap's
+     --bs-gutter-x and the 10px above are both cleared for those sections. */
+  .latest-news > .container,
+  .content-section > .container,
+  .team-section > .container {
+    --bs-gutter-x: 0;
+    padding-left: 0;
+    padding-right: 0;
   }
 }
 
@@ -212,8 +223,9 @@ a {
 }
 
 .nav-link {
-  color: rgba(127, 127, 127, 1) !important;
+  color: #7F7F7F !important;
   font-weight: 600 !important;
+  font-size:18px !important;
 }
 .nav-link:hover {
   color: rgba(76, 92, 55, 1) !important;
@@ -238,7 +250,7 @@ a {
   background: none;
   border: none;
   padding: 0;
-  font-size: 16px;
+  font-size: 20px;
   font-weight: 600;
   color: #1e1e1e;
   cursor: pointer;
@@ -248,6 +260,222 @@ a {
   display: block;
   width: 20px;
   height: 20px;
+}
+
+/* =========================================================
+   Top bar actions — [🔍 En] [أنشئ الحساب] [ادعم صوت]
+   ========================================================= */
+
+.nav-top-actions {
+  gap: 12px;
+}
+
+/* LTR island: the search circle sits to the LEFT of the language label */
+.nav-top-utils {
+  direction: ltr;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.nav-search-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 45px;
+  height: 45px;
+  padding: 0;
+  border: none;
+  border-radius: 100px;
+  background: #f2f2f2;
+  color: rgba(76, 92, 55, 1);
+  cursor: pointer;
+  transition: background-color 0.2s ease-in-out;
+}
+
+.nav-search-btn:hover {
+  background: #e5e9df;
+}
+
+.nav-search-btn svg {
+  display: block;
+  width: 21px;
+  height:21px;
+}
+
+.nav-cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 18px;
+  border-radius: 100px;
+  font-size: 16px;
+  font-weight: 600;
+  white-space: nowrap;
+  text-decoration: none;
+  transition: all 0.2s ease-in-out;
+}
+
+.nav-cta svg {
+  display: block;
+  width: 18px;
+  height: 18px;
+  flex: 0 0 auto;
+}
+
+.nav-cta-register {
+  background-color: rgba(76, 92, 55, 1);
+  color: #ffffff !important;
+}
+
+.nav-cta-register:hover {
+  background-color: rgb(50, 59, 38);
+  color: #ffffff !important;
+}
+
+.nav-cta-support {
+  background-color: #ffffff;
+  border: 1px solid rgba(76, 92, 55, 1);
+  color: #4C5C37 !important;
+}
+
+.nav-cta-support svg {
+  color: rgba(76, 92, 55, 1);
+}
+
+.nav-cta-support:hover {
+  background-color: rgb(229, 233, 223);
+}
+
+/* =========================================================
+   Signed-in top bar — [🔍] [👤] [🔔] [En] [ادعم صوت]
+
+   Both the guest and the signed-in halves are always in the markup; the
+   `sawt-authed` class on <html> (set before first paint, see app/layout.tsx)
+   decides which one paints. `!important` is needed because some of these
+   elements also carry Bootstrap's `d-flex`.
+   ========================================================= */
+
+.nav-authed-only {
+  display: none !important;
+}
+
+.sawt-authed .nav-authed-only {
+  display: inline-flex !important;
+}
+
+.sawt-authed .nav-guest-only {
+  display: none !important;
+}
+
+/* Plain (background-less) icon action — the account and bell buttons */
+.nav-icon-btn {
+  position: relative;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  padding: 0;
+  border: none;
+  border-radius: 100px;
+  background: none;
+  color: rgba(76, 92, 55, 1);
+  cursor: pointer;
+  transition: background-color 0.2s ease-in-out;
+}
+
+.nav-icon-btn:hover {
+  background: #f2f2f2;
+  color: rgba(76, 92, 55, 1);
+}
+
+.nav-icon-btn svg {
+  display: block;
+  width: 24px;
+  height: 24px;
+  flex-shrink: 0;
+}
+
+/* Unread counter — sits on the top-right corner of the bell */
+.nav-bell-badge {
+  position: absolute;
+  top: 1px;
+  right: 3px;
+  direction: ltr;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 17px;
+  height: 15px;
+  padding: 0 4px;
+  border-radius: var(--Spacing-md, 12px);
+  background: #ab1c1e;
+  color: #ffffff;
+  font-size: 10px;
+  font-weight: 600;
+  line-height: 1;
+}
+
+/* Collapsed (mobile) menu counterpart of the pair above */
+.nav-mobile-account {
+  margin: 8px 0;
+}
+
+/* =========================================================
+   Navbar brand pills — حاضنة صوت / صوت ميديا
+   ========================================================= */
+
+.nav-pills-group {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.nav-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 7px 14px;
+  border-radius: 100px;
+  background: #f2f2f2;
+  color: rgba(76, 92, 55, 1) !important;
+  font-size: 16px;
+  font-weight: 600;
+  white-space: nowrap;
+  text-decoration: none;
+  transition: background-color 0.2s ease-in-out;
+}
+
+.nav-pill:hover {
+  background: #e5e9df;
+}
+
+.nav-pill svg {
+  display: block;
+  width: 20px;
+  height: 20px;
+  flex: 0 0 auto;
+}
+
+/* the outbound arrow inherits the pill's olive, the brand marks keep their own */
+.nav-pill > svg:last-child {
+  color: rgba(76, 92, 55, 1);
+}
+
+/* it is drawn pointing up-and-out for RTL (↖); English flips the pill's flow,
+   so the arrow has to mirror with it (↗) */
+[dir="ltr"] .nav-pill > svg:last-child {
+  transform: scaleX(-1);
+}
+
+/* Collapsed menu: the pills stack with the links instead of hugging the edge */
+@media (max-width: 991.98px) {
+  .nav-pills-group {
+    width: 100%;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin-top: 10px;
+  }
 }
 
 .nav-link-back {
@@ -311,7 +539,8 @@ a {
   z-index: 1030;
 }
 
-/* Top bar (nav-face + navbar) pinned to the top while scrolling */
+/* Kept for reference only: the header no longer follows the scroll, so nothing
+   carries .is-fixed anymore (see initHeaderPin in legacy-main.ts). */
 .header-bar.is-fixed {
   position: fixed;
   top: 0px;
@@ -563,7 +792,7 @@ a {
 }
 
 .news-card {
-  border: 1px solid rgba(200, 200, 200, 1) !important;
+  border: 1px solid #C8C8C8 !important;
   border-radius: 16px !important;
   overflow: hidden;
   background-color: #fff;
@@ -587,12 +816,14 @@ svg {
 .card-body .card-title {
   padding-bottom: 10px;
   padding-top: 10px;
+  font-size: 20px;
 }
 
 .card-body .card-text {
-  border-bottom: 1px solid rgba(218, 218, 218, 1);
+  border-bottom: 1px solid #DADADA;
   padding-bottom: 10px;
-  font-size: 18px;
+  font-size: 16px;
+  color:#6D6D6D;
 }
 
 .card-footer {
@@ -659,6 +890,12 @@ svg {
 .news-card:hover {
   transform: translateY(-2px);
   box-shadow: 0 10px 10px rgba(0, 0, 0, 0.05);
+}
+
+/* the footer's date reads a step smaller than the "اقرأ المزيد" link beside it,
+   which keeps the .font-16 the footer sets */
+.news-card .card-footer > span:first-child {
+  font-size: 14px;
 }
 
 .count i {
@@ -4714,7 +4951,7 @@ svg {
 
   .navbar-collapse.show,
   .navbar-collapse.collapsing {
-    max-height: 80vh;
+    max-height: 85vh;
     overflow-y: auto;
     opacity: 1;
     visibility: visible;
@@ -5105,11 +5342,11 @@ svg {
 }
 
 .about-hero {
-  padding: 60px 15px 90px;
+  padding: 100px 15px 90px;
 }
 
 .about-breadcrumb {
-  font-size: 15px;
+  font-size: 18px;
   font-weight: 600;
   margin-bottom: 26px;
 }
@@ -5133,7 +5370,7 @@ svg {
 }
 
 .about-hero-title {
-  font-size: 28px;
+  font-size: 24px;
   font-weight: 800;
   margin-bottom: 18px;
 }
@@ -5141,7 +5378,7 @@ svg {
 .about-hero-desc {
   max-width: 1060px;
   margin: 0 auto;
-  font-size: 22px;
+  font-size: 24px;
   line-height: 2;
   color: #DADADA;
 }
@@ -6191,6 +6428,9 @@ svg {
 .member-text {
   margin: 20px;
 }
+.social-links {
+  margin-inline-start:10px;
+}
 
 .social-links a i {
   color: rgba(76, 92, 55, 1);
@@ -7065,6 +7305,12 @@ svg {
   display: none;
 }
 
+/* Tail of the collapsed phone drawer (language / CTAs / socials). On ≥768px
+   the top bar (.nav-face) owns all three, so this block stays out of the way. */
+.nav-mobile-extra {
+  display: none;
+}
+
 @media (max-width: 767.98px) {
   /* Hide the desktop-Chrome scrollbar (drawn on the LEFT because the page is
      RTL) at phone widths — real phones use overlay scrollbars anyway.
@@ -7128,6 +7374,209 @@ svg {
   .navbar-toggler-svg {
     width: 24px;
     height: 24px;
+  }
+
+  /* ---------- Collapsed menu — the phone drawer ----------
+     Reads as one card with the header above it: same 1px #dadada hairline and
+     8px radius, white, no shadow (the header's bottom corners are already
+     flattened while the drawer is open, further up in this file).
+     Stacking order inside the drawer, top to bottom:
+       search → links → brand pills → language / CTAs / socials. */
+  header .navbar .navbar-collapse {
+    flex-direction: column;
+    align-items: stretch !important;
+    padding: 12px 16px 16px;
+    border: 1px solid #dadada;
+    border-top: none;
+    border-radius: 0 0 8px 8px;
+    box-shadow: none;
+  }
+  header .navbar .navbar-collapse > .nav-search-div {
+    order: 1;
+    margin-bottom: 4px;
+  }
+  header .navbar .navbar-collapse > .navbar-nav {
+    order: 2;
+  }
+  header .navbar .navbar-collapse > .nav-pills-group {
+    order: 3;
+  }
+  header .navbar .navbar-collapse > .nav-mobile-account {
+    order: 4;
+    justify-content: center;
+  }
+  header .navbar .navbar-collapse > .nav-mobile-extra {
+    order: 5;
+    display: block;
+  }
+  /* their phone counterparts live in .nav-mobile-extra instead */
+  header .navbar .navbar-collapse > .searchDiv,
+  header .navbar .navbar-collapse > .contact-info-nav {
+    display: none !important;
+  }
+
+  header .navbar .navbar-collapse .search-input {
+    height: 48px;
+  }
+
+  /* one hairline-separated row per link, text on the start (right) edge */
+  header .navbar .navbar-collapse .navbar-nav {
+    width: 100%;
+    margin: 0 !important;
+    text-align: start !important;
+  }
+  header .navbar .navbar-collapse .nav-item {
+    width: 100%;
+    margin: 0;
+    background: none;
+    /* border-bottom: 1px solid #dadada; */
+  }
+  header .navbar .navbar-collapse .nav-link {
+    padding: 14px 12px;
+    font-size: 14px !important;
+    text-align: start;
+  }
+  /* the active row: grey plate + a thicker olive rule along its bottom edge.
+     The base .active rule paints the label by clipping the background to the
+     text, which would swallow the plate — put both back explicitly. */
+  header .navbar .navbar-collapse .nav-link.active {
+    background: #f2f2f2;
+    -webkit-background-clip: border-box;
+    background-clip: border-box;
+    -webkit-text-fill-color: rgba(76, 92, 55, 1);
+    color: rgba(76, 92, 55, 1) !important;
+    border-radius: 8px;
+  }
+  header .navbar .navbar-collapse .nav-link.active::after {
+    bottom: 0;
+    height: 3px;
+    border-radius: 0;
+  }
+
+  /* حاضنة صوت / صوت ميديا drop their pill look and join the list */
+  header .navbar .navbar-collapse .nav-pills-group {
+    width: 100%;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0;
+    margin: 0;
+  }
+  header .navbar .navbar-collapse .nav-pill {
+    justify-content: flex-start;
+    padding: 14px 12px;
+    border-radius: 0;
+    background: none;
+    color: #7F7F7F !important;
+    font-size: 14px;
+    /* border-bottom: 1px solid #dadada; */
+  }
+  header .navbar .navbar-collapse .nav-pill svg {
+    display: none;
+  }
+
+  /* ---------- Drawer tail — language / CTAs / socials ---------- */
+  .nav-mobile-extra {
+    width: 100%;
+  }
+  .nav-mobile-lang {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px 12px;
+    color: #7F7F7F;
+    font-size: 14px;
+    font-weight: 600;
+  }
+  /* LTR island so it reads [‹] [English] left-to-right, as in the design */
+  .nav-mobile-lang-btn {
+    direction: ltr;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 0;
+    border: none;
+    background: none;
+    color: #4C5C37;
+    font-size: 16px;
+    font-weight: 700;
+    cursor: pointer;
+  }
+  .nav-mobile-lang-btn svg {
+    display: block;
+    width: 16px;
+    height: 16px;
+  }
+  .nav-mobile-cta {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 4px 0 16px;
+  }
+  .nav-mobile-cta .nav-cta {
+    flex: 1 1 0;
+    min-width: 0;
+    justify-content: center;
+    height: 38px;
+    padding: 6px 8px;
+    font-size: 14px;
+  }
+  .nav-mobile-social {
+    display: flex;
+    align-items: center;
+    border-top: 1px solid #dadada;
+    padding-top: 14px;
+  }
+
+  .nav-mobile-social .social-links span {
+    font-size: 10px !important;
+    font-weight: 600;
+    color: #7F7F7F;
+    
+  }
+
+  .nav-mobile-social .social-links {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    margin: 0;
+    text-align: start;
+    /* even air between the marks; the label keeps its distance via the auto
+       margin below, so this gap only ever reads between icons */
+    gap: 18px;
+  }
+  /* Physical `margin-left`, not `margin-inline-end`: the app loads the LTR
+     Bootstrap build, so the `.ms-2` these elements carry is a
+     `margin-left: .5rem !important` — under dir="rtl" that lands on the same
+     (inline-end) edge and outranks any logical property. The auto margin here
+     is what pushes the whole icon group to the far left, label alone on the
+     right; the anchors give theirs up so only the flex gap spaces them. */
+  .nav-mobile-social .social-links > span {
+    margin-left: auto !important;
+  }
+
+  [dir="ltr"] .nav-mobile-social .social-links > span {
+    margin-left: 0 !important;
+    margin-right: auto !important;
+  }
+
+  .nav-mobile-social .social-links a {
+    display: inline-flex;
+    align-items: center;
+    color: rgba(76, 92, 55, 1);
+    margin-left: 0 !important;
+  }
+  /* the marks are a mix of Font Awesome glyphs and em-sized SVGs — pin both to
+     the same 16px box so the row stays compact next to the 16px label */
+  .nav-mobile-social .social-links a i {
+    font-size: 16px !important;
+  }
+  .nav-mobile-social .social-links a svg {
+    width: 16px;
+    height: 16px;
+  }
+  .nav-mobile-social .social-links a:hover {
+    padding: 0;
+    background: none;
   }
 
   /* ---------- Hero — node 4169:20892 (390x378) ---------- */

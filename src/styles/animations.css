@@ -65,7 +65,9 @@
     outline-offset: 2px;
   }
 
-  /* Pinned header slides in a touch softer than the legacy navSlideDown. */
+  /* Pinned header slides in a touch softer than the legacy navSlideDown.
+     Dead rule while the header does not follow the scroll — nothing carries
+     .is-fixed (see initHeaderPin). */
   html.sawt-anim .header-bar.is-fixed {
     animation: sawt-nav-in 0.45s cubic-bezier(0.22, 1, 0.36, 1);
   }

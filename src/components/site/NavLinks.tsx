@@ -61,17 +61,11 @@ export default function NavLinks() {
           الفريق
         </a>{" "}
       </li>{" "}
-      <li className="nav-item ms-lg-3">
-        {" "}
-        <a
-          className={"nav-link font-16" + isActive("/creators")}
-          href="/creators"
-          data-i18n="nav_creators"
-        >
-          صناع المحتوى
-        </a>{" "}
-      </li>{" "}
-      <li className="nav-item ms-lg-3">
+      {/* ادعم صوت is a top-bar CTA on desktop (NavTopBar) — this entry only
+          serves the collapsed menu, which is also why it sits above صناع
+          المحتوى: that's the order the phone design lists them in.
+          حاضنة صوت / صوت ميديا moved to NavPills. */}
+      <li className="nav-item ms-lg-3 d-lg-none">
         {" "}
         <a
           className={"nav-link font-16" + isActive("/support")}
@@ -81,27 +75,14 @@ export default function NavLinks() {
           ادعم صوت
         </a>{" "}
       </li>{" "}
-      <div className="v-divider d-none d-lg-block mx-3"></div>{" "}
       <li className="nav-item ms-lg-3">
         {" "}
         <a
-          className={"nav-link nav-link-back font-16" + isActive("/incubator")}
-          href="/incubator"
-          style={{ color: "rgba(76, 92, 55, 1) !important" }}
-          data-i18n="nav_incubator"
+          className={"nav-link font-16" + isActive("/creators")}
+          href="/creators"
+          data-i18n="nav_creators"
         >
-          حاضنة صوت
-        </a>{" "}
-      </li>{" "}
-      <li className="nav-item ms-lg-3">
-        {" "}
-        <a
-          className="nav-link nav-link-back font-16 font-color-green"
-          href="#"
-          style={{ color: "rgba(76, 92, 55, 1) !important" }}
-          data-i18n="nav_media"
-        >
-          صوت ميديا
+          صناع المحتوى
         </a>{" "}
       </li>{" "}
     </ul>

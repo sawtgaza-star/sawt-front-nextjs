@@ -13,16 +13,14 @@
 
 /* ============================================================
    Hero — solid olive band with the faint shared pattern.png
-   scatter; hosts SiteNav, the centered breadcrumb and the
-   badge/title/description copy.
+   scatter; hosts the incubator navbar, the centered breadcrumb and
+   the badge/title/description copy.
    ============================================================ */
 .crs-hero {
   position: relative;
   background: #364127;
-  /* top padding absorbs .nav-face's 10px top margin, which otherwise
-     collapses through the injected .header-bar and shows up as a white
-     strip above the hero — the olive must start at the page's top edge */
-  padding-top: 14px;
+  /* no top padding — .inc-nav-wrap brings its own 24px, same as /incubator */
+  padding-top: 0;
   padding-bottom: 72px;
 }
 .crs-hero::before {
@@ -37,10 +35,9 @@
   position: relative;
   z-index: 1;
 }
-/* Keep the navbar — and the .header-bar wrapper the sticky script injects —
-   above the hero copy and the floating card (same trick as .cr-header). */
-.crs-hero > .navbar,
-.crs-hero > .header-bar:not(.is-fixed) {
+/* Keep the navbar above the hero copy and the floating card
+   (same trick as .cr-header). */
+.crs-hero > .inc-nav-wrap {
   position: relative;
   z-index: 30;
 }

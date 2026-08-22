@@ -4,7 +4,7 @@ import { WHY_FEATURES } from "./why-features-data";
    the filming photo layered over two rounded blocks + a dotted grid. */
 export default function WhyIncubator() {
   return (
-    <section className="inc-why">
+    <section className="inc-why" id="inc-about">
       <div className="container">
         <div className="inc-why-grid">
           <div className="inc-why-media">

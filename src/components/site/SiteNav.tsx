@@ -1,8 +1,17 @@
 // @ts-nocheck
 /* eslint-disable */
-import { IconGlobe } from "@/components/ui/icons";
+import {
+  IconGlobe,
+  IconNavAccount,
+  IconNavBell,
+  IconChevronLeftSmall,
+  IconNavUserPlus,
+  IconNavMic,
+} from "@/components/ui/icons";
 import NavTopBar from "./NavTopBar";
 import NavLinks from "./NavLinks";
+import NavPills from "./NavPills";
+import NavSocialLinks from "./NavSocialLinks";
 import MobileSearchPanel from "./MobileSearchPanel";
 
 /* Shared top bar + navbar + mobile search (canonical version, unified across pages). */
@@ -78,8 +87,11 @@ export default function SiteNav() {
             id="mainNav"
           >
             {" "}
-            <NavLinks />{" "}
-            <div className="d-flex gap-2 nav-search-div">
+            <NavLinks /> <NavPills />{" "}
+            {/* The search field, the register/sign-in pair and the language
+                toggle below only serve the collapsed (mobile) menu — on ≥lg
+                their desktop counterparts live in NavTopBar. */}
+            <div className="d-flex gap-2 nav-search-div d-lg-none">
               {" "}
               <div className="position-relative nav-search-div">
                 {" "}
@@ -109,7 +121,7 @@ export default function SiteNav() {
                 />{" "}
               </div>{" "}
             </div>{" "}
-            <div className="contact-info-nav small d-flex">
+            <div className="contact-info-nav small d-flex nav-guest-only">
               {" "}
               <div className="register-btn">
                 {" "}
@@ -124,7 +136,32 @@ export default function SiteNav() {
                 </a>{" "}
               </div>{" "}
             </div>{" "}
-            <div className="searchDiv d-flex align-items-center gap-2">
+            {/* Same pair as the desktop top bar, for the collapsed menu. */}
+            <div className="nav-mobile-account align-items-center gap-2 nav-authed-only">
+              {" "}
+              <a
+                className="nav-icon-btn"
+                href="#"
+                aria-label="حسابي"
+                title="حسابي"
+                data-i18n-title="nav_account"
+              >
+                {" "}
+                <IconNavAccount />{" "}
+              </a>{" "}
+              <a
+                className="nav-icon-btn"
+                href="#"
+                aria-label="الإشعارات"
+                title="الإشعارات"
+                data-i18n-title="nav_notifications"
+              >
+                {" "}
+                <IconNavBell />{" "}
+                <span className="nav-bell-badge">10</span>{" "}
+              </a>{" "}
+            </div>{" "}
+            <div className="searchDiv d-flex d-lg-none align-items-center gap-2">
               {" "}
               <button
                 type="button"
@@ -135,6 +172,45 @@ export default function SiteNav() {
                 <IconGlobe />{" "}
                 <span data-i18n="auth_lang_label">En</span>{" "}
               </button>{" "}
+            </div>{" "}
+            {/* Phone-only tail of the drawer (<768px): language row, the CTA
+                pair and the social links. On ≥768 the top bar owns all three
+                and `.nav-mobile-extra` is display:none — see style.css. */}
+            <div className="nav-mobile-extra">
+              {" "}
+              <div className="nav-mobile-lang">
+                {" "}
+                <span data-i18n="nav_language">اللغة</span>{" "}
+                <button
+                  type="button"
+                  className="language-btn nav-mobile-lang-btn"
+                  aria-label="تغيير اللغة"
+                >
+                  {" "}
+                  <IconChevronLeftSmall />{" "}
+                  <span data-i18n="nav_lang_switch">English</span>{" "}
+                </button>{" "}
+              </div>{" "}
+              {/* RTL: first child sits on the right, as in the design */}
+              <div className="nav-mobile-cta">
+                {" "}
+                <a
+                  className="nav-cta nav-cta-register nav-guest-only"
+                  href="/register"
+                >
+                  {" "}
+                  <IconNavUserPlus />{" "}
+                  <span data-i18n="register_account">أنشئ حساب</span>{" "}
+                </a>{" "}
+                <a className="nav-cta nav-cta-support" href="/support">
+                  {" "}
+                  <IconNavMic /> <span data-i18n="nav_support">ادعم صوت</span>{" "}
+                </a>{" "}
+              </div>{" "}
+              <div className="nav-mobile-social">
+                {" "}
+                <NavSocialLinks />{" "}
+              </div>{" "}
             </div>{" "}
           </div>{" "}
         </div>{" "}

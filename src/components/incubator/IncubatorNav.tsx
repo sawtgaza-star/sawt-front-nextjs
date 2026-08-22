@@ -1,6 +1,12 @@
+import { IconChevronLeftSmall } from "@/components/ui/icons";
+import IncubatorNavLinks from "./IncubatorNavLinks";
+import IncubatorNavSocial from "./IncubatorNavSocial";
+
 /* The incubator's own navbar — a white floating card over the hero gradient.
    Deliberately NOT SiteNav: the mock gives this page a reduced bar (back to
-   the main platform + social on top, brand/links/support CTA below). */
+   the main platform + social on top, brand/links/support CTA below).
+   Below lg the card shrinks to brand + burger and everything else moves into
+   the drawer, mirroring the main site's phone menu — see incubator.css. */
 export default function IncubatorNav() {
   return (
     <div className="inc-nav-wrap">
@@ -12,46 +18,7 @@ export default function IncubatorNav() {
               <span data-i18n="inc_nav_back">العودة لمنصة صوت</span>
             </a>
 
-            <div className="inc-nav-social">
-              <span className="inc-nav-social-label" data-i18n="follow_us">
-                وسائل التواصل الاجتماعي :
-              </span>
-              <a href="#" aria-label="LinkedIn">
-                <i className="fab fa-linkedin-in"></i>
-              </a>
-              <a href="#" aria-label="Facebook">
-                <i className="fab fa-facebook-f"></i>
-              </a>
-              <a href="#" aria-label="Telegram">
-                <i className="fa-solid fa-paper-plane"></i>
-              </a>
-              <a href="#" aria-label="X">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="1.1em"
-                  height="1.1em"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    fill="currentColor"
-                    d="M19.57 4.488a.75.75 0 0 0-1.14-.976l-5.368 6.274l-5.224-5.938a1.8 1.8 0 0 0-1.357-.598H5.007c-.68 0-1.264.352-1.56.885a1.55 1.55 0 0 0 .204 1.795l6.286 7.147l-5.507 6.435a.75.75 0 1 0 1.14.976l5.368-6.274l5.224 5.938c.345.392.85.598 1.357.598h1.474c.681 0 1.264-.352 1.56-.885a1.55 1.55 0 0 0-.203-1.795l-6.287-7.146z"
-                  ></path>
-                </svg>
-              </a>
-              <a href="#" aria-label="Instagram">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="1.1em"
-                  height="1.1em"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    fill="currentColor"
-                    d="M9.367 2.25c-1.092 0-1.958 0-2.655.057c-.714.058-1.317.18-1.868.46a4.75 4.75 0 0 0-2.076 2.077c-.281.55-.403 1.154-.461 1.868c-.057.697-.057 1.563-.057 2.655v5.266c0 1.092 0 1.958.057 2.655c.058.714.18 1.317.46 1.869a4.75 4.75 0 0 0 2.077 2.075c.55.281 1.154.403 1.868.461c.697.057 1.563.057 2.655.057h5.266c1.092 0 1.958 0 2.655-.057c.714-.058 1.317-.18 1.869-.46a4.75 4.75 0 0 0 2.075-2.076c.281-.552.403-1.155.461-1.869c.057-.697.057-1.563.057-2.655V9.367c0-1.092 0-1.958-.057-2.655c-.058-.714-.18-1.317-.46-1.868a4.75 4.75 0 0 0-2.076-2.076c-.552-.281-1.155-.403-1.869-.461c-.697-.057-1.563-.057-2.655-.057zM16.25 6.5a.75.75 0 0 1 .75-.75h.5a.75.75 0 0 1 0 1.5H17a.75.75 0 0 1-.75-.75m-6.207 1.728a4.25 4.25 0 1 1 3.914 7.544a4.25 4.25 0 0 1-3.914-7.544"
-                  ></path>
-                </svg>
-              </a>
-            </div>
+            <IncubatorNavSocial />
           </div>
 
           <div className="inc-nav-main">
@@ -70,26 +37,79 @@ export default function IncubatorNav() {
               data-bs-target="#incNav"
               aria-label="القائمة"
             >
-              <i className="fa-solid fa-bars"></i>
+              {/* same staggered burger the main site's phone header uses */}
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                <path
+                  d="M14 18C14.5523 18 15 18.4477 15 19C15 19.5523 14.5523 20 14 20H4C3.44772 20 3 19.5523 3 19C3 18.4477 3.44772 18 4 18H14ZM20 11C20.5523 11 21 11.4477 21 12C21 12.5523 20.5523 13 20 13H4C3.44772 13 3 12.5523 3 12C3 11.4477 3.44772 11 4 11H20ZM20 4C20.5523 4 21 4.44772 21 5C21 5.55228 20.5523 6 20 6H10C9.44772 6 9 5.55228 9 5C9 4.44772 9.44772 4 10 4H20Z"
+                  fill="currentColor"
+                ></path>
+              </svg>
             </button>
 
             <div className="inc-nav-menu collapse" id="incNav">
-              <ul className="inc-nav-links">
-                <li>
-                  <a href="#inc-courses" data-i18n="inc_nav_courses">
-                    الكورسات
+              <IncubatorNavLinks />
+
+              {/* RTL: first child sits on the right, so the group reads
+                  [En] [انضم للحاضنة] [ادعم طلاب الحاضنة] right-to-left. */}
+              <div className="inc-nav-actions">
+                <button
+                  type="button"
+                  className="language-btn inc-nav-lang"
+                  aria-label="تغيير اللغة"
+                >
+                  <span data-i18n="auth_lang_label">En</span>
+                </button>
+                <a
+                  className="inc-nav-join"
+                  href="/incubator#inc-join"
+                  data-i18n="inc_nav_join"
+                >
+                  انضم للحاضنة
+                </a>
+                <a className="inc-nav-cta" href="/support" data-i18n="inc_nav_cta">
+                  ادعم طلاب الحاضنة
+                </a>
+              </div>
+
+              {/* Tail of the collapsed (below-lg) drawer: language row, the CTA
+                  pair side by side and the socials. On ≥lg the bar itself owns
+                  all three (.inc-nav-actions / .inc-nav-top) and this block is
+                  display:none — see incubator.css. */}
+              <div className="inc-nav-mobile-extra">
+                <div className="inc-nav-mobile-lang">
+                  <span data-i18n="nav_language">اللغة</span>
+                  <button
+                    type="button"
+                    className="language-btn inc-nav-mobile-lang-btn"
+                    aria-label="تغيير اللغة"
+                  >
+                    <IconChevronLeftSmall />
+                    <span data-i18n="nav_lang_switch">English</span>
+                  </button>
+                </div>
+
+                {/* RTL: first child sits on the right, as in the design */}
+                <div className="inc-nav-mobile-cta">
+                  <a
+                    className="inc-nav-join"
+                    href="/incubator#inc-join"
+                    data-i18n="inc_nav_join"
+                  >
+                    انضم للحاضنة
                   </a>
-                </li>
-                <li>
-                  <a href="#inc-workshops" data-i18n="inc_nav_workshops">
-                    الورشات
+                  <a
+                    className="inc-nav-cta"
+                    href="/support"
+                    data-i18n="inc_nav_cta"
+                  >
+                    ادعم طلاب الحاضنة
                   </a>
-                </li>
-              </ul>
-              <span className="inc-nav-divider" aria-hidden="true"></span>
-              <a className="inc-nav-cta" href="/support" data-i18n="inc_nav_cta">
-                ادعم طلاب الحاضنة
-              </a>
+                </div>
+
+                <div className="inc-nav-mobile-social">
+                  <IncubatorNavSocial />
+                </div>
+              </div>
             </div>
           </div>
         </div>

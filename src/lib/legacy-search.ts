@@ -136,21 +136,27 @@ export function initSearch() {
 
   // ---- Wire up the UI once the DOM is ready ----
   function init() {
-    // Mobile: reveal the slide-down search panel.
-    var toggleBtn = document.querySelector(".mobile-nav-search");
+    // Reveal the slide-down search panel. Two triggers open it: the phone
+    // header icon (.mobile-nav-search) and the top-bar icon on ≥md
+    // (.nav-search-btn) — wire every one of them, not just the first.
+    var toggleBtns = document.querySelectorAll(
+      ".mobile-nav-search, .nav-search-btn"
+    );
     var panel = document.getElementById("mobileSearchPanel");
     var form = panel ? panel.querySelector(".mobile-search-form") : null;
     var input = document.getElementById("mobileSearchInput");
     var closeBtn = document.getElementById("mobileSearchClose");
 
-    if (toggleBtn && panel) {
-      toggleBtn.addEventListener("click", function () {
-        var isOpen = panel.classList.toggle("open");
-        if (isOpen && input) {
-          setTimeout(function () {
-            input.focus();
-          }, 100);
-        }
+    if (panel) {
+      toggleBtns.forEach(function (toggleBtn) {
+        toggleBtn.addEventListener("click", function () {
+          var isOpen = panel.classList.toggle("open");
+          if (isOpen && input) {
+            setTimeout(function () {
+              input.focus();
+            }, 100);
+          }
+        });
       });
     }
     if (closeBtn && panel) {

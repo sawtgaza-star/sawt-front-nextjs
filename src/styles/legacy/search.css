@@ -101,6 +101,24 @@
   }
 }
 
+/* ≥md the panel is what the top-bar search icon opens, so it has to exist here
+   too — but as a floating card on the container grid, not a full-bleed strip
+   (the header sits over the hero at these widths). */
+@media (min-width: 768px) {
+  .mobile-search-panel {
+    display: block;
+    background: transparent;
+    border-bottom: none;
+    box-shadow: none;
+  }
+  .mobile-search-panel .mobile-search-form {
+    background: #fff;
+    border-radius: 12px;
+    padding: 8px 12px;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+  }
+}
+
 /* Highlighted match on the page after a search */
 mark.search-highlight {
   background: #ffe27a;
