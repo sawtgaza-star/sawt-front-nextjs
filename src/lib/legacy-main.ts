@@ -64,13 +64,17 @@ export function replayComments() {
   if (typeof render === "function") render();
 }
 
-/* Pin the top contact bar (nav-face) + navbar to the top while scrolling.
+/* Group the top contact bar (nav-face) + navbar into one .header-bar wrapper.
+   The header does NOT follow the scroll: it sits at the top of the document and
+   leaves the viewport with the rest of the page, so there is no pinning, no
+   spacer and no scroll listener here anymore. The wrapper still matters — it
+   keeps the two rows as one block for the hero's negative-margin overlap, and
+   the phone breakpoint positions the whole card over the hero through it.
    Exported so LegacyInit can re-run it on every visit: each page renders its
-   own <header> (SiteNav lives inside the hero), so a client-side navigation
-   destroys the wrapper this builds together with its scroll listener — and
-   initMainScripts() is one-time-guarded, so it can't rebuild them. */
+   own <header> (SiteNav lives inside the hero), and initMainScripts() is
+   one-time-guarded, so it can't rebuild the wrapper on a client-side nav. */
 export function initHeaderPin() {
-  // drop the previous page's listeners — they point at a detached wrapper
+  // undo whatever the previous page left behind (older builds pinned the bar)
   if ((window as any).__headerPinCleanup) {
     (window as any).__headerPinCleanup();
     (window as any).__headerPinCleanup = null;
@@ -80,8 +84,6 @@ export function initHeaderPin() {
   if (!navbar) return;
   const navFace = document.querySelector("header .nav-face");
 
-  // Wrap nav-face + navbar so they pin together as one bar while keeping
-  // their own centered layout (and the hero's negative-margin overlap).
   // Reuse the wrapper if this header is already wrapped (double-init guard).
   let bar = navbar.closest(".header-bar");
   if (!bar) {
@@ -93,49 +95,11 @@ export function initHeaderPin() {
     bar.appendChild(navbar);
   }
 
-  // Spacer preserves the bar's height in the flow once it goes fixed.
-  // Adopt the one this header may already carry: a re-init (client-side nav,
-  // fast refresh) used to build a fresh element and lose track of the old one,
-  // which then sat in the flow forever as a nav-height gap above the bar.
-  let spacer = bar.parentNode.querySelector(":scope > .header-bar-spacer");
-  if (!spacer) {
-    spacer = document.createElement("div");
-    spacer.className = "header-bar-spacer";
-  }
-  // an adopted spacer only belongs in the flow while the bar is actually
-  // pinned — otherwise it is dead height, and it would skew triggerPoint too
-  if (!bar.classList.contains("is-fixed") && spacer.parentNode) {
-    spacer.parentNode.removeChild(spacer);
-  }
-  let triggerPoint = bar.offsetTop;
-
-  function onScroll() {
-    const shouldFix = window.scrollY > triggerPoint;
-    if (shouldFix && !bar.classList.contains("is-fixed")) {
-      spacer.style.height = bar.offsetHeight + "px";
-      bar.parentNode.insertBefore(spacer, bar);
-      bar.classList.add("is-fixed");
-    } else if (!shouldFix && bar.classList.contains("is-fixed")) {
-      bar.classList.remove("is-fixed");
-      if (spacer.parentNode) spacer.parentNode.removeChild(spacer);
-    }
-  }
-
-  function onResize() {
-    if (!bar.classList.contains("is-fixed")) triggerPoint = bar.offsetTop;
-  }
-
-  window.addEventListener("scroll", onScroll, { passive: true });
-  window.addEventListener("resize", onResize);
-  (window as any).__headerPinCleanup = function () {
-    window.removeEventListener("scroll", onScroll);
-    window.removeEventListener("resize", onResize);
-    // hand the header back unpinned: the next init calls onScroll() and will
-    // re-pin it immediately if the page is still scrolled past the trigger
-    bar.classList.remove("is-fixed");
-    if (spacer.parentNode) spacer.parentNode.removeChild(spacer);
-  };
-  onScroll();
+  // A pinned bar used to reserve its height with a spacer; nothing is pinned
+  // now, so both the flag and any adopted spacer are dead weight in the flow.
+  bar.classList.remove("is-fixed");
+  const spacer = bar.parentNode.querySelector(":scope > .header-bar-spacer");
+  if (spacer && spacer.parentNode) spacer.parentNode.removeChild(spacer);
 }
 
 export function initMainScripts() {

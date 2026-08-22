@@ -1,14 +1,15 @@
-import SiteNav from "@/components/site/SiteNav";
+import IncubatorNav from "@/components/incubator/IncubatorNav";
 import type { Course } from "./course-data";
 
-/* Olive hero of the course detail page — SiteNav on top, centered breadcrumb,
+/* Olive hero of the course detail page — the incubator navbar on top (courses
+   are reached from /incubator, so the page keeps that bar), centered breadcrumb,
    then the badge/title/description block. The copy sits in the same
    1fr/360px grid as the body so it never runs under the floating
    registration card (which the aside pulls up over this hero). */
 export default function CourseHero({ course }: { course: Course }) {
   return (
     <header className="crs-hero">
-      <SiteNav />
+      <IncubatorNav />
 
       <div className="container">
         <nav className="crs-breadcrumb" aria-label="breadcrumb">

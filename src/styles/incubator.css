@@ -51,8 +51,7 @@
 .inc-nav {
   background: #ffffff;
   border:1px solid #DADADA;
-  border-radius: 16px;
-  box-shadow: 0 8px 24px rgba(28, 28, 28, 0.06);
+  border-radius: 8px;
   padding: 0 22px;
 }
 
@@ -163,7 +162,9 @@
   list-style: none;
   margin: 0;
   padding: 0;
-  margin-inline-start: 40px;
+  /* auto on both sides: the links sit centred in the gap between the brand and
+     the actions group, instead of hugging the brand */
+  margin-inline: auto;
 }
 .inc-nav-links a {
   font-size: 18px;
@@ -175,41 +176,103 @@
 /* !important needed to beat the base rule's !important color */
 .inc-nav-links a:hover,
 .inc-nav-links a.is-active {
-  color: #1c1c1c !important;
+  color: #4C5C37 !important;
 }
-.inc-nav-divider {
-  width: 1px;
-  height: 28px;
-  background: #DADADA;
-  margin-inline-start: 34px;
+/* The rule under the current section, in the label's own colour. It lives on
+   every link and is scaled to nothing until that link goes active, so moving
+   between sections wipes it out of the old label and into the new one instead
+   of making it blink. IncubatorNavLinks drives .is-active from the scroll. */
+.inc-nav-links a {
+  position: relative;
 }
+.inc-nav-links a::after {
+  content: "";
+  position: absolute;
+  inset-inline: 0;
+  bottom: -8px;
+  height: 2px;
+  background: #4C5C37;
+  border-radius: 2px;
+  transform: scaleX(0);
+  transition: transform 0.25s ease;
+}
+.inc-nav-links a.is-active {
+  font-weight: 700;
+}
+.inc-nav-links a.is-active::after {
+  transform: scaleX(1);
+}
+
+/* [En] [انضم للحاضنة] [ادعم طلاب الحاضنة] at the far (left) end — no auto
+   margin of its own, so the links' two autos split the free space evenly */
+.inc-nav-actions {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+}
+.inc-nav-lang {
+  border: 0;
+  background: transparent;
+  padding: 4px 6px;
+  font-size: 20px;
+  font-weight: 700;
+  color: #1c1c1c;
+  line-height: 1;
+  cursor: pointer;
+}
+.inc-nav-lang:hover {
+  color: #4c5c37;
+}
+.inc-nav-join,
 .inc-nav-cta {
-  margin-inline-start: auto;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  padding: 12px 26px;
+  padding: 12px 16px;
+  /* transparent on the filled pill so both keep the same box height */
+  border: 1px solid transparent;
   border-radius: 999px;
-  background: #4c5c37;
-  color: #ffffff !important;
-  font-size: 18px;
+  font-size: 16px;
   font-weight: 700;
   text-decoration: none;
   white-space: nowrap;
 }
-.inc-nav-cta:hover {
+.inc-nav-join {
+  background: #4c5c37;
+  color: #ffffff !important;
+}
+.inc-nav-join:hover {
   background: #38422a;
   color: #ffffff;
+}
+.inc-nav-cta {
+  background: #ffffff;
+  border: 1px solid #4c5c37;
+  color: #4c5c37 !important;
+}
+.inc-nav-cta:hover {
+  background: #eef1e9;
 }
 .inc-nav-toggler {
   display: none;
   margin-inline-start: auto;
   border: 0;
   background: transparent;
-  color: #4c5c37;
+  color: #1e1e1e;
   font-size: 22px;
-  line-height: 1;
+  line-height: 0;
   padding: 4px 6px;
+}
+.inc-nav-toggler svg {
+  display: block;
+  width: 24px;
+  height: 24px;
+}
+
+/* Tail of the collapsed drawer (language / CTAs / socials). From lg up the bar
+   itself owns all three, so this block stays out of the way. */
+.inc-nav-mobile-extra {
+  display: none;
 }
 
 /* ---------- Hero body ---------- */
@@ -1733,33 +1796,145 @@ top: -23px;
     bottom: -24px;
     left: -34px;
   }
+  /* ---------- The bar collapses to a drawer ----------
+     Closed, the card is brand + burger only; the back link and the socials
+     from the top row move into the drawer tail below, as in the design. */
+  .inc-nav-top {
+    display: none;
+  }
+  /* Float the bar over the hero instead of pushing it down — same trick the
+     home header uses on phones, so the open drawer covers the sections
+     underneath rather than shoving them away. .inc-hero is the containing
+     block; the height the bar gives up is paid back by .inc-hero-grid's
+     padding-top below. */
+  .inc-nav-wrap {
+    position: absolute;
+    top: 0;
+    inset-inline: 0;
+    z-index: 1030;
+  }
   .inc-nav-toggler {
     display: inline-flex;
   }
+  /* the menu drops onto its own full-width line under the brand row */
+  .inc-nav-main {
+    flex-wrap: wrap;
+    gap: 0;
+    padding: 12px 0;
+  }
+  .inc-nav-brand {
+    font-size: 16px;
+  }
+  .inc-nav-brand img {
+    height: 32px;
+  }
   .inc-nav-menu {
+    flex: 1 0 100%;
     flex-direction: column;
     align-items: stretch;
     width: 100%;
+    padding-top: 8px;
   }
+  /* one row per link, label on the start (right) edge */
   .inc-nav-links {
     flex-direction: column;
-    align-items: flex-start;
-    gap: 14px;
-    margin-inline-start: 0;
-    padding: 14px 0;
+    align-items: stretch;
+    gap: 0;
+    width: 100%;
+    margin-inline: 0;
+    padding: 0;
   }
-  .inc-nav-divider {
+  .inc-nav-links li {
+    width: 100%;
+  }
+  .inc-nav-links a {
+    display: block;
+    padding: 14px 12px;
+    font-size: 14px;
+    text-align: start;
+    border-radius: 8px;
+  }
+  /* the current row: grey plate + a thicker olive rule along its bottom edge */
+  .inc-nav-links a.is-active {
+    background: #f2f2f2;
+  }
+  .inc-nav-links a::after {
+    bottom: 0;
+    height: 3px;
+    border-radius: 0;
+  }
+  /* their drawer counterparts live in .inc-nav-mobile-extra instead */
+  .inc-nav-actions {
     display: none;
   }
-  .inc-nav-cta {
-    margin-inline-start: 0;
-    margin-bottom: 14px;
+
+  /* ---------- Drawer tail — language / CTAs / socials ---------- */
+  .inc-nav-mobile-extra {
+    display: block;
     width: 100%;
+  }
+  .inc-nav-mobile-lang {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px 12px;
+    color: #7f7f7f;
+    font-size: 14px;
+    font-weight: 600;
+  }
+  /* LTR island so it reads [‹] [English] left-to-right, as in the design */
+  .inc-nav-mobile-lang-btn {
+    direction: ltr;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    border: 0;
+    background: transparent;
+    padding: 0;
+    color: #4C5C37;
+    font-size: 16px;
+    font-weight: 700;
+    cursor: pointer;
+  }
+  .inc-nav-mobile-lang-btn svg {
+    display: block;
+    width: 16px;
+    height: 16px;
+  }
+  .inc-nav-mobile-cta {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 4px 0 16px;
+  }
+  .inc-nav-mobile-cta .inc-nav-join,
+  .inc-nav-mobile-cta .inc-nav-cta {
+    flex: 1 1 0;
+    min-width: 0;
+    justify-content: center;
+    height: 40px;
+    padding: 6px 8px;
+    font-size: 14px;
+  }
+  .inc-nav-mobile-social {
+    border-top: 1px solid #dadada;
+    padding: 14px 0 4px;
+  }
+  /* label alone on the right, the marks grouped at the far left */
+  .inc-nav-mobile-social .inc-nav-social {
+    display: flex;
+    width: 100%;
+  }
+  .inc-nav-mobile-social .inc-nav-social-label {
+    margin-inline-end: auto;
+    font-size: 10px;
+    font-weight: 600;
   }
   .inc-hero-grid {
     grid-template-columns: 1fr;
     gap: 56px;
-    padding: 40px 0 34px;
+    /* 40px of gap + the 80px the floating bar no longer occupies */
+    padding: 120px 0 34px;
   }
   .inc-hero-title {
     font-size: 34px;
@@ -1897,9 +2072,6 @@ top: -23px;
   }
   .inc-nav {
     padding: 0 16px;
-  }
-  .inc-nav-social-label {
-    display: none;
   }
   .inc-hero-title {
     font-size: 28px;

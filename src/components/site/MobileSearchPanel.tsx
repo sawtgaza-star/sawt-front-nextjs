@@ -1,9 +1,10 @@
 // @ts-nocheck
 /* eslint-disable */
-/* Slide-down mobile search panel (revealed by the mobile search icon). */
+/* Slide-down search panel — revealed by the phone header icon and, since the
+   desktop search field moved into the top bar, by that bar's search icon too. */
 export default function MobileSearchPanel() {
   return (
-    <div className="mobile-search-panel d-lg-none" id="mobileSearchPanel">
+    <div className="mobile-search-panel" id="mobileSearchPanel">
       {" "}
       <form className="mobile-search-form container" role="search">
         {" "}

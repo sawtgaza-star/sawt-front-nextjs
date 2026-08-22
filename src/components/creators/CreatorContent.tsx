@@ -62,20 +62,24 @@ export default function CreatorContent() {
 
 
         <div className="cr-content-head">
-          <ul className="cr-content-tabs">
-            {CATEGORIES.map((c, i) => (
-              <li key={c.key}>
-                <button
-                  type="button"
-                  className={"cr-content-tab" + (i === active ? " active" : "")}
-                  onClick={() => setActive(i)}
-                  data-i18n={c.key}
-                >
-                  {c.label}
-                </button>
-              </li>
-            ))}
-          </ul>
+          {/* the wrapper is the scroll container on mobile, so the pill list
+              itself never needs an overflow of its own */}
+          <div className="cr-content-tabs-scroll">
+            <ul className="cr-content-tabs">
+              {CATEGORIES.map((c, i) => (
+                <li key={c.key}>
+                  <button
+                    type="button"
+                    className={"cr-content-tab" + (i === active ? " active" : "")}
+                    onClick={() => setActive(i)}
+                    data-i18n={c.key}
+                  >
+                    {c.label}
+                  </button>
+                </li>
+              ))}
+            </ul>
+          </div>
           <h2 className="cr-content-title">
             <span className="cr-highlight">
               المحتوى

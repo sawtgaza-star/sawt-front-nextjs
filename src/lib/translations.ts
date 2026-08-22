@@ -20,8 +20,13 @@ export const translations: any = {
     follow_us: "وسائل التواصل الاجتماعي :",
     email: "info@sawtgaza.com",
     phone: "+972567247177",
-    register_account: "أنشئ حساب",
+    register_account: "أنشئ الحساب",
     sign_in: "تسجيل الدخول",
+    nav_account: "حسابي",
+    nav_notifications: "الإشعارات",
+    // Phone drawer language row — the label and the language it switches to
+    nav_language: "اللغة",
+    nav_lang_switch: "English",
 
     // Auth pages (login / register / forgot / otp / reset)
     auth_lang_label: "En",
@@ -202,6 +207,43 @@ export const translations: any = {
     news_title_highlight: "أخبارنا",
     news_subtitle: "شاهد أحدث القصص والفيديوهات من منصة صوت",
     view_all_news: "عرض جميع الأخبار",
+
+    // News page (/news)
+    news_breadcrumb: "أخر الأخبار",
+    // The mock keeps a fixed label as the hero's last crumb on /news/[id],
+    // not the article's own headline.
+    news_breadcrumb_article: "اسم الخبر الأخير",
+    news_hero_title: "صناع الأثر..الفريق خلف منصة صوت",
+    news_hero_desc:
+      "صوت منصة إعلامية مستقلة تُوثّق الواقع وتحكي قصص الناس، لتكون صوتاً لمن لا صوت له.",
+
+    // News detail page (/news/[id])
+    nws_share_title: "شارك الخبر",
+    nws_share_copy: "نسخ الرابط",
+    nws_support_title: "ادعم صوت",
+    nws_support_desc:
+      "تبرعك يساعد صانعي المحتوى في غزة على مواصلة إيصال قصصهم للعالم.",
+    nws_cat_gaza: "غزة",
+    nws_cat_section: "أخر أخبار صناع المحتوى - تصنيفات الخبر",
+    nws_article_title: "صانع المحتوى في غزة: أصوات تروي القصة من الداخل",
+    nws_article_desc:
+      "نشارككم آخر تحديثات صانعي المحتوى في غزة، حيث يعملون على إبراز قصص المبدعين وإيصال أصواتهم إلى العالم",
+    nws_meta_views: "١٢٤٥ مشاهدة",
+    nws_meta_read: "5 دقائق قراءة",
+    nws_meta_date: "5 مارس 2026",
+    nws_meta_author: "فريق منصة صوت",
+    nws_p_intro:
+      "في قلب الأحداث، يقف صانعو المحتوى الغزيون بكاميراتهم وهواتفهم، يوثّقون لحظات لن يراها العالم إلا من خلال عدساتهم. هؤلاء الشباب الذين آمنوا بقوة الكلمة والصورة، يحملون رسالة إنسانية نبيلة — إيصال الحقيقة كاملة إلى كل زاوية في العالم.",
+    nws_quote:
+      "\"الصورة أقوى من ألف كلمة، ونحن نؤمن أن كل لقطة نلتقطها هي شهادة للتاريخ\"",
+    nws_quote_by: "— أحد صانعي المحتوى في منصة صوت",
+    nws_p_platform:
+      "تأسست منصة صوت لتكون المظلة الجامعة لهؤلاء المبدعين، توفر لهم الأدوات والتدريب والدعم اللازم لإيصال صوتهم بأعلى جودة ممكنة. من خلال برامج الحاضنة المتخصصة، تتلقى مجموعات من الشباب تدريبات احترافية في مجال إنتاج المحتوى الرقمي والتصوير والمونتاج وإدارة وسائل التواصل الاجتماعي.",
+    nws_h2_programs: "برامج دعم صانعي المحتوى",
+    nws_p_programs:
+      "يشمل برنامج منصة صوت لدعم صانعي المحتوى عدة محاور رئيسية: التدريب التقني على أدوات الإنتاج، وورش العمل الإبداعية، وجلسات التوجيه مع خبراء الإعلام الرقمي، فضلاً عن توفير منصة لنشر المحتوى وتوزيعه على نطاق واسع.",
+    nws_related_title_pre: "أخبار ذات",
+    nws_related_title_highlight: "صلة",
 
     // Creators section
     creators_title_pre: "صُناع",
@@ -910,8 +952,10 @@ export const translations: any = {
     // Incubator page (/incubator) — nav
     inc_brand: "حاضنة صوت",
     inc_nav_back: "العودة لمنصة صوت",
-    inc_nav_courses: "الكورسات",
+    inc_nav_about: "عن الحاضنة",
+    inc_nav_courses: "الدورات",
     inc_nav_workshops: "الورشات",
+    inc_nav_join: "انضم للحاضنة",
     inc_nav_cta: "ادعم طلاب الحاضنة",
 
     // Incubator — hero
@@ -1389,6 +1433,10 @@ export const translations: any = {
     phone: "+972567247177",
     register_account: "Create Account",
     sign_in: "Sign In",
+    nav_account: "My account",
+    nav_notifications: "Notifications",
+    nav_language: "Language",
+    nav_lang_switch: "العربية",
 
     // Auth pages (login / register / forgot / otp / reset)
     auth_lang_label: "عربي",
@@ -1573,6 +1621,41 @@ export const translations: any = {
     news_title_highlight: "News",
     news_subtitle: "Watch the latest stories and videos from Sawt platform",
     view_all_news: "View All News",
+
+    // News page (/news)
+    news_breadcrumb: "Latest News",
+    news_breadcrumb_article: "Latest news title",
+    news_hero_title: "The Impact Makers — The Team Behind Sawt",
+    news_hero_desc:
+      "Sawt is an independent media platform documenting reality and telling people's stories, to be a voice for the voiceless.",
+
+    // News detail page (/news/[id])
+    nws_share_title: "Share the news",
+    nws_share_copy: "Copy link",
+    nws_support_title: "Support Sawt",
+    nws_support_desc:
+      "Your donation helps content creators in Gaza keep telling their stories to the world.",
+    nws_cat_gaza: "Gaza",
+    nws_cat_section: "Latest creator news - News categories",
+    nws_article_title: "Content Creators in Gaza: Voices Telling the Story From Within",
+    nws_article_desc:
+      "We share the latest from Gaza's content creators, working to spotlight creative talent and carry their voices to the world",
+    nws_meta_views: "1,245 views",
+    nws_meta_read: "5 min read",
+    nws_meta_date: "March 5, 2026",
+    nws_meta_author: "Sawt Platform Team",
+    nws_p_intro:
+      "At the heart of events stand Gaza's content creators, cameras and phones in hand, documenting moments the world would never see except through their lenses. These young people, who believe in the power of the word and the image, carry a noble human message — delivering the whole truth to every corner of the world.",
+    nws_quote:
+      "\"A picture is worth a thousand words, and we believe every shot we take is a testimony for history\"",
+    nws_quote_by: "— A content creator at Sawt",
+    nws_p_platform:
+      "Sawt was founded to be the umbrella for these creators, giving them the tools, training and support they need to deliver their voice at the highest possible quality. Through the incubator's specialised programmes, groups of young people receive professional training in digital content production, filming, editing and social media management.",
+    nws_h2_programs: "Creator support programmes",
+    nws_p_programs:
+      "Sawt's creator support programme covers several main tracks: technical training on production tools, creative workshops, mentoring sessions with digital media experts, and a platform to publish and distribute content widely.",
+    nws_related_title_pre: "Related",
+    nws_related_title_highlight: "News",
 
     // Creators section
     creators_title_pre: "Content",
@@ -2292,8 +2375,10 @@ export const translations: any = {
     // Incubator page (/incubator) — nav
     inc_brand: "Sawt Incubator",
     inc_nav_back: "Back to Sawt platform",
+    inc_nav_about: "About the incubator",
     inc_nav_courses: "Courses",
     inc_nav_workshops: "Workshops",
+    inc_nav_join: "Join the incubator",
     inc_nav_cta: "Support incubator students",
 
     // Incubator — hero
@@ -2774,6 +2859,11 @@ export const translations: any = {
 const LANG_KEY = "lang";
 
 export function getCurrentLang() {
+  // Prerender has no localStorage. Falling back to "ar" is what the SSR markup
+  // already assumes (see use-lang.ts), so a client component that calls t()
+  // while rendering — ReelActions does, inline on the news article — renders
+  // the same strings on both sides instead of throwing during `next build`.
+  if (typeof localStorage === "undefined") return "ar";
   return localStorage.getItem(LANG_KEY) || "ar";
 }
 

@@ -1,0 +1,21 @@
+/* ===== Design tokens =====
+   The Figma handoff writes styles as `var(--Token, fallback)`. The values here
+   match those fallbacks, so defining them changes nothing on its own — it just
+   makes the tokens the single place to adjust the type scale.
+
+   --fontFamily-text is NOT declared here: next/font sets it on <html> in
+   app/layout.tsx so the Rubik files are self-hosted and preloaded. */
+
+:root {
+  /* font size */
+  --FontSize-textMd: 14px;
+
+  /* line height */
+  --lineHeight-textMd: 21px;
+
+  /* font weight */
+  --FontWeight-regular: 400;
+  --FontWeight-medium: 500;
+  --FontWeight-semibold: 600;
+  --FontWeight-bold: 700;
+}
