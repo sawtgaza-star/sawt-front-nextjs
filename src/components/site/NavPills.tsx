@@ -20,7 +20,7 @@ export default function NavPills() {
         <span data-i18n="nav_incubator">حاضنة صوت</span>{" "}
         <IconNavPillArrow />{" "}
       </a>{" "}
-      <a className="nav-pill" href="#">
+      <a className="nav-pill" href="/media">
         {" "}
         <IconNavMedia /> <span data-i18n="nav_media">صوت ميديا</span>{" "}
         <IconNavPillArrow />{" "}

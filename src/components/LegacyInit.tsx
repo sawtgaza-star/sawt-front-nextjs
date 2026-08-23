@@ -70,8 +70,8 @@ export default function LegacyInit({ page }: { page: string }) {
         runCounters();
         replayComments();
       }
-      // The incubator stats strip reuses the exact same counter animation.
-      if (page === "incubator") {
+      // The incubator and صوت ميديا stat strips reuse the same counters.
+      if (page === "incubator" || page === "media") {
         const { runCounters } = await import("@/lib/legacy-main");
         runCounters();
       }
