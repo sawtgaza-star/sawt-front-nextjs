@@ -1,5 +1,6 @@
 /* creators.css first: the listing's card/pager rules live there, and news.css
    overrides some of them. */
+import type { Metadata } from "next";
 import "@/styles/creators.css";
 import "@/styles/news.css";
 import LegacyInit from "@/components/LegacyInit";
@@ -21,6 +22,23 @@ import { ALL_NEWS } from "@/components/news/news-data";
 /* `output: 'export'` needs every dynamic segment pre-listed. */
 export function generateStaticParams() {
   return ALL_NEWS.map((item) => ({ id: String(item.id) }));
+}
+
+/* Tab title = the article headline. getArticle() still returns the one mock
+   article for every id (see news-article-data.ts), so every article page shows
+   the same headline until a real feed lands — the wiring is already correct. */
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ id: string }>;
+}): Promise<Metadata> {
+  const { id } = await params;
+  const article = getArticle(id);
+
+  return {
+    title: `${article.title} | Sawt News`,
+    description: article.desc,
+  };
 }
 
 export default async function Page({

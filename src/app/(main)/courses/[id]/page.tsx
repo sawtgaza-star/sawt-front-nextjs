@@ -2,6 +2,7 @@
    every rule in that file is `inc-` namespaced so it can't touch `crs-`. */
 import "@/styles/incubator.css";
 import "@/styles/course.css";
+import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import LegacyInit from "@/components/LegacyInit";
 import CourseHero from "@/components/courses/CourseHero";
@@ -25,6 +26,24 @@ import { COURSES } from "@/components/courses/course-data";
 /* `output: 'export'` needs every dynamic segment pre-listed. */
 export function generateStaticParams() {
   return Object.keys(COURSES).map((id) => ({ id }));
+}
+
+/* Tab title = the course name. Unknown ids fall back to the incubator title;
+   the page itself notFound()s for them. */
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ id: string }>;
+}): Promise<Metadata> {
+  const { id } = await params;
+  const course = COURSES[id];
+
+  if (!course) return { title: "حاضنة صوت | Sawt Incubator" };
+
+  return {
+    title: `${course.title} | Sawt Incubator`,
+    description: course.desc,
+  };
 }
 
 export default async function Page({

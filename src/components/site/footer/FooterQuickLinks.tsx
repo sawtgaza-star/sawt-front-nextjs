@@ -32,7 +32,7 @@ export default function FooterQuickLinks() {
         </li>{" "}
         <li className="mb-4">
           {" "}
-          <a href="#" className="text-white text-decoration-none small">
+          <a href="/media" className="text-white text-decoration-none small">
             {" "}
             <span data-i18n="nav_media">صوت ميديا</span>
           </a>{" "}

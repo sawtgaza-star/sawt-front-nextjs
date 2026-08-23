@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import "@/styles/creators.css";
 import "@/styles/support.css";
 import LegacyInit from "@/components/LegacyInit";
@@ -8,6 +9,11 @@ import CheckoutWizard from "@/components/support/checkout/CheckoutWizard";
    where "المتابعة" on a /support/methods card lands. Server Component; the
    wizard itself is the client leaf that walks through the screens. Loads the
    same CSS pair as the rest of the support flow. */
+export const metadata: Metadata = {
+  title: "إتمام التبرع | Complete Donation",
+  description: "أكمل خطوات التبرع لمنصة صوت — اختيار المنصة ثم إثبات التبرع.",
+};
+
 export default function Page() {
   return (
     <div className="sp-page">
