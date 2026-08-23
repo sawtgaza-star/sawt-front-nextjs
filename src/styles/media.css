@@ -1,0 +1,2510 @@
+/* ============================================================
+   صوت ميديا (Sawt Media) — /media
+   Built from the design mockups. Every class is namespaced `sm-`
+   so it never clashes with style.css (loaded by the (main) layout),
+   incubator.css, creators.css or support.css.
+   ============================================================ */
+
+.sm-page {
+  /* palette, straight from the design tokens */
+  --sm-olive-900: #202717;
+  --sm-olive-700: #364127;
+  --sm-olive-500: #4c5c37;
+  --sm-olive-400: #707d5f;
+  --sm-olive-50: #edefeb;
+  --sm-orange-400: #e1723b;
+  --sm-orange-300: #ff7420;
+  --sm-orange-200: #ffb181;
+  --sm-orange-100: #fff3eb;
+  --sm-beige-100: #f1ece4;
+  --sm-gray-200: #dadada;
+  --sm-gray-300: #c8c8c8;
+  --sm-gray-800: #6d6d6d;
+  --sm-ink: #1c1c1c;
+  /* --sm-font-display is set by next/font on this same element (page.tsx) */
+  --sm-display: var(--sm-font-display), "Rubik", system-ui, sans-serif;
+
+  background: #ffffff;
+  color: var(--sm-ink);
+  overflow-x: clip;
+  /* own stacking context, so the hero's `z-index: -1` background layers sit
+     above this white fill but behind every section's content */
+  position: relative;
+  z-index: 0;
+}
+
+.sm-page h1,
+.sm-page h2,
+.sm-page h3,
+.sm-page .sm-stat-value {
+  font-family: var(--sm-display);
+  font-weight: 900;
+}
+
+/* ============================================================
+   Shared bits — pills, section heads, buttons
+   ============================================================ */
+.sm-head {
+  text-align: center;
+  margin-bottom: 40px;
+}
+.sm-head-start {
+  text-align: start;
+  margin-bottom: 24px;
+}
+
+.sm-pill {
+  display: inline-block;
+  padding: 4px 16px;
+  border-radius: 999px;
+  border: 0.8px solid #FFB181;
+  background: #FFF3EB;
+  color: #E1723B;
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 22px;
+  white-space: nowrap;
+}
+
+.sm-head-title {
+  margin: 14px 0 0;
+  font-size: 36px;
+  line-height: 1.35;
+  color: #1E1E1E;
+}
+.sm-head-hl {
+  color: var(--sm-olive-500);
+}
+.sm-head-sub {
+  margin: 12px 0 0;
+  font-size: 18px;
+  line-height: 26px;
+  color: #888;
+}
+.sm-head-start .sm-head-sub {
+  margin-inline-start: 0;
+}
+
+/* ---- buttons ---- */
+.sm-btn-green,
+.sm-btn-outline {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 12px 26px;
+  border-radius: 24px;
+  border: 1px solid transparent;
+  font-size: 18px;
+  font-weight: 700;
+  line-height: 1;
+  text-decoration: none;
+  cursor: pointer;
+  transition: background-color 0.2s ease, color 0.2s ease,
+    border-color 0.2s ease, transform 0.2s ease;
+}
+.sm-btn-green {
+  background: var(--sm-olive-500);
+  border-color: var(--sm-olive-500);
+  color: #ffffff !important;
+}
+.sm-btn-green:hover {
+  background: var(--sm-olive-700);
+  border-color: var(--sm-olive-700);
+  transform: translateY(-1px);
+}
+.sm-btn-green i {
+  font-size: 12px;
+}
+
+[dir="ltr"] .sm-btn-green i {
+  transform: rotate(180deg);
+}
+
+.sm-btn-lg {
+  padding: 15px 34px;
+  border-radius: 24px;
+  font-size: 18px;
+}
+
+.sm-btn-outline {
+  background: transparent;
+  border-color: var(--sm-olive-500);
+  color: var(--sm-olive-500) !important;
+}
+.sm-btn-outline:hover {
+background-color: rgb(229, 233, 223);
+  /* color: #ffffff !important; */
+  transform: translateY(-1px);
+}
+
+/* ---- the floating "98% رضا العملاء" chip ---- */
+.sm-chip {
+  position: absolute;
+  z-index: 3;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  border-radius: 16px;
+  background: #ffffff;
+  box-shadow: 0 0 40px 0 rgba(0, 0, 0, 0.09);
+  font-family: var(--sm-display);
+}
+.sm-chip-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  flex: 0 0 auto;
+  border-radius: 8px;
+  background: rgba(76, 92, 55, 0.08);
+}
+.sm-chip-text {
+  display: flex;
+  flex-direction: column;
+}
+/* design token: pargraph bold/4 */
+.sm-chip-text b {
+  font-size: 18px;
+  font-weight: 700;
+  line-height: 160%;
+  color: var(--sm-olive-500);
+}
+/* design token: pargraph/3 */
+.sm-chip-text small {
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 160%;
+  letter-spacing: 0.28px;
+  text-transform: capitalize;
+  color: #7a7a7a;
+}
+
+/* ============================================================
+   Hero — peach wash, the page's own navbar, headline, photo fan
+   ============================================================ */
+.sm-hero {
+  position: relative;
+  padding-bottom: 0;
+}
+
+/* ---- background stack (design artboard is 1435 wide) ----
+   Layers live behind every section (`z-index: -1` inside `.sm-page`'s
+   stacking context) because the two olive glows are anchored past the
+   artboard's bottom edge and wash over the top of the about section. */
+.sm-hero-frame {
+  position: relative;
+}
+.sm-hero-wash,
+.sm-hero-glow {
+  position: absolute;
+  z-index: -1;
+  pointer-events: none;
+}
+.sm-hero-wash {
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 1435px;
+  height: 857px;
+  background: radial-gradient(50% 50% at 50% 50%, #fff3eb 0%, #fff 100%);
+}
+/* the tighter wash shares the big one's centre: (857 - 631) / 2 */
+.sm-hero-wash-2 {
+  top: 113px;
+  width: 976px;
+  height: 631px;
+  background: radial-gradient(
+    50% 50% at 50% 50%,
+    rgba(255, 243, 235, 0.55) 0%,
+    rgba(255, 255, 255, 0) 100%
+  );
+}
+.sm-hero-glow {
+  width: 741.563px;
+  height: 678px;
+}
+.sm-hero-glow-right {
+  right: -301.562px;
+  bottom: -90px;
+  background: radial-gradient(
+    42.49% 42.49% at 50% 50%,
+    rgba(43, 74, 26, 0.16) 0%,
+    rgba(255, 255, 255, 0) 100%
+  );
+}
+.sm-hero-glow-left {
+  left: -181px;
+  bottom: -90px;
+  background: radial-gradient(
+    42.49% 42.49% at 50% 50%,
+    rgba(43, 74, 26, 0.27) 0%,
+    rgba(255, 255, 255, 0) 100%
+  );
+}
+
+/* ---- navbar ---- */
+.sm-nav-wrap {
+  padding-top: 18px;
+}
+.sm-nav-back-row {
+  display: flex;
+  justify-content: flex-start;
+  padding-bottom: 12px;
+}
+.sm-nav-back {
+  font-size: 14px;
+  font-weight: 600;
+  color: #4C5C37 !important;
+  text-decoration: none;
+  padding: 6px 12px;
+  margin: -6px -12px;
+  border-radius: 999px;
+  transition: background-color 0.2s ease;
+}
+.sm-nav-back:hover {
+  background: rgba(76, 92, 55, 0.08);
+}
+
+.sm-nav {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 16px 24px;
+  border-radius: 16px;
+  border: 1px solid #DADADA;
+  background: #ffffff;
+}
+.sm-nav-brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  text-decoration: none;
+  color: var(--sm-ink) !important;
+  font-family: var(--sm-display);
+  font-size: 19px;
+  font-weight: 900;
+  flex: 0 0 auto;
+}
+.sm-nav-brand svg {
+  width: 57px !important;
+  height: 59px !important;
+}
+
+.sm-nav-toggler {
+  display: none;
+  margin-inline-start: auto;
+  border: 0;
+  background: transparent;
+  color: var(--sm-ink);
+  padding: 6px;
+}
+
+.sm-nav-menu {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex: 1 1 auto;
+}
+/* The menu doubles as the mobile drawer, so it carries Bootstrap's `collapse`
+   class. `.collapse:not(.show)` is width-agnostic and outweighs `.sm-nav-menu`,
+   so from lg up it has to be beaten back — the equivalent of Bootstrap's own
+   `.navbar-expand-lg .navbar-collapse { display: flex }`. */
+@media (min-width: 992px) {
+  .sm-nav .sm-nav-menu.collapse:not(.show) {
+    display: flex;
+  }
+}
+.sm-nav-links {
+  display: flex;
+  align-items: center;
+  gap: 28px;
+  margin: 0 auto;
+  padding: 0;
+  list-style: none;
+}
+.sm-nav-links a {
+  font-size: 18px;
+  font-weight: 500;
+  color: #7F7F7F !important;
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+.sm-nav-links a:hover {
+  color: var(--sm-olive-500) !important;
+}
+
+.sm-nav-actions {
+  display: inline-flex;
+  align-items: center;
+  gap: 14px;
+  flex: 0 0 auto;
+}
+.sm-nav-lang {
+  border: 0;
+  background: transparent;
+  font-size: 18px;
+  font-weight: 600;
+  color: #484848;
+  padding: 6px 8px;
+  border-radius: 8px;
+  transition: background-color 0.2s ease;
+}
+.sm-nav-lang:hover {
+  background: #f2f2f2;
+}
+.sm-nav-cta {
+  display: inline-flex;
+  align-items: center;
+  padding: 11px 24px;
+  border-radius: 100px;
+  background: #4C5C37;
+  color: #ffffff !important;
+  font-size: 16px;
+  font-weight: 700;
+  /* keeps the pill at the design's 36px inside a 60px bar */
+  line-height: 1;
+  text-decoration: none;
+  transition: background-color 0.2s ease;
+}
+.sm-nav-cta:hover {
+  background: var(--sm-olive-700);
+}
+
+/* ---- headline ---- */
+.sm-hero-text {
+  text-align: center;
+  padding: 56px 0 34px;
+}
+.sm-hero-title {
+  margin: 0;
+  font-size: 48px;
+  line-height: 1.25;
+  color: var(--sm-ink);
+}
+.sm-hero-word {
+  display: block;
+  margin-top: 10px;
+  color: #FFB181;
+  animation: sm-word-in 0.5s ease both;
+  font-size: 58px !important;
+}
+@keyframes sm-word-in {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+.sm-hero-desc {
+  max-width: 840px;
+  margin: 22px auto 0;
+  font-size: 20px;
+  line-height: 28px;
+  color: #6D6D6D;
+}
+.sm-hero-cta {
+  display: flex;
+  justify-content: center;
+  gap: 14px;
+  margin-top: 26px;
+  flex-wrap: wrap;
+}
+
+/* ---- the fanned deck of stills (a carousel — see MediaHeroFan) ----
+   The seats are fixed positions and the cards ride through them: every tick
+   MediaHeroFan hands each card the next `.sm-fan-N` class and these
+   transitions carry it over. Seat 1 is the rightmost card, seat 3 the upright
+   middle one, seat 5 the leftmost, and seat 0 is the hidden seat past the
+   left edge where a card fades out before looping back round to seat 1.
+   RTL/LTR agnostic because the transforms are absolute, not flow-relative. */
+/* The deck is deliberately shorter than the cards: they overflow it and the
+   ticker (z-index 2) crops their bottoms, so the fan reads as rising out from
+   under the strip. The further a seat is from the middle, the deeper it sits
+   behind it. */
+.sm-hero-fan {
+  position: relative;
+  /* own stacking context, so the seats' z-indexes stay a private ordering and
+     the whole deck passes under the ticker (z-index 2) instead of over it */
+  z-index: 0;
+  /* 20px taller than the seats need, with the margin shortened to match: the
+     extra headroom is what the middle card is lifted into, so raising it
+     doesn't run it into the clip edge */
+  height: 254px;
+  margin-top: 6px;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  /* the cards keep bleeding past the container sideways, but stop dead at the
+     bottom edge — which the ticker sits flush against */
+  overflow-x: visible;
+  overflow-y: clip;
+}
+.sm-fan-card {
+  position: absolute;
+  top: 0;
+  width: 367px;
+  height: 258px;
+  border-radius: 22px;
+  overflow: hidden;
+  box-shadow: 0 18px 40px rgba(0, 0, 0, 0.16);
+  transform-origin: 50% 50%;
+  transition: transform 0.85s cubic-bezier(0.22, 0.61, 0.36, 1),
+    opacity 0.85s ease;
+  will-change: transform;
+}
+.sm-fan-card img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+/* Seat 1 is where the loop closes: a card reaches it from the hidden seat on
+   the far side, so it takes its place without a transform transition and only
+   fades in — otherwise it would sweep back across the whole deck. */
+.sm-fan-1 {
+  transform: translate(455px, 198px) rotate(25deg);
+  z-index: 2;
+  transition: opacity 0.85s ease;
+}
+.sm-fan-2 {
+  transform: translate(235px, 66px) rotate(20deg);
+  z-index: 3;
+}
+/* the seat in focus rides 20px above the rest of the arc */
+.sm-fan-3 {
+  transform: translate(0, 0) rotate(0deg);
+  z-index: 4;
+}
+.sm-fan-4 {
+  transform: translate(-235px, 66px) rotate(-20deg);
+  z-index: 3;
+}
+.sm-fan-5 {
+  transform: translate(-455px, 198px) rotate(-25deg);
+  z-index: 2;
+}
+.sm-fan-0 {
+  transform: translate(-680px, 270px) rotate(-30deg);
+  opacity: 0;
+  z-index: 1;
+}
+
+/* Artboard coordinates (1435 wide → centre 717.5), re-anchored to the frame's
+   centre so the pair keeps hugging the deck on wider screens:
+   left 155.938 → 717.5 - 155.938 = 561.562, right 160.655 → 556.845. */
+.sm-chip-hero-a {
+  top: 280.657px;
+  left: calc(50% - 561.562px);
+  transform: rotate(-3.779deg);
+}
+/* chip B hangs off the frame's bottom edge, which the deck now sets — the
+   offset keeps it the same 72px below the deck's top as on the artboard */
+.sm-chip-hero-b {
+  bottom: 216px;
+  right: calc(50% - 556.845px);
+  transform: rotate(4deg);
+}
+
+/* ---- services ticker riding the hero's bottom edge ---- */
+.sm-ticker {
+  position: relative;
+  z-index: 2;
+  margin-top: 0;
+  display: flex;
+  overflow: hidden;
+  padding: 17px 0;
+  background: #EDEFEB;
+  user-select: none;
+}
+.sm-ticker-group {
+  display: flex;
+  align-items: center;
+  gap: 44px;
+  padding-inline-start: 44px;
+  flex: 0 0 auto;
+  animation: sm-ticker 26s linear infinite;
+}
+.sm-ticker-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 44px;
+  font-size: 18px;
+  font-weight: 600;
+  color: #919191;
+  white-space: nowrap;
+}
+
+.sm-ticker-dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: var(--sm-orange-400);
+  flex: 0 0 auto;
+}
+@keyframes sm-ticker {
+  from {
+    transform: translateX(0);
+  }
+  /* RTL flips the axis for us: the groups are laid out right-to-left, so a
+     positive translate walks the strip leftwards on screen */
+  to {
+    transform: translateX(100%);
+  }
+}
+[dir="ltr"] .sm-ticker-group {
+  animation-name: sm-ticker-ltr;
+}
+@keyframes sm-ticker-ltr {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-100%);
+  }
+}
+
+/* ============================================================
+   About — "شريكك الإعلامي المتكامل"
+   ============================================================ */
+.sm-about {
+  padding: 84px 0;
+}
+.sm-about-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 56px;
+  align-items: center;
+}
+.sm-about-desc {
+  margin: 0 0 26px;
+  font-size: 20px;
+  line-height: 30px;
+  color: #636262;
+  text-align: start;
+}
+
+.sm-about-cards {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 18px;
+}
+.sm-about-card {
+  border-radius: 24px;
+  border: 1px solid transparent;
+  padding: 24px;
+  color: #ffffff;
+}
+.sm-about-card h3 {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0 0 10px;
+  font-size: 22px;
+  font-weight: 700;
+}
+/* the design's 11px dot — a different tint on each card. It runs on its own:
+   two rings expand out of it half a cycle apart, like a slow radar ping. */
+.sm-about-card-dot {
+  position: relative;
+  width: 11px;
+  height: 11px;
+  flex: 0 0 auto;
+  border-radius: 50%;
+  background: var(--sm-dot);
+}
+.sm-about-card-dot::before,
+.sm-about-card-dot::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background: var(--sm-dot);
+  animation: sm-dot-ping 2.6s cubic-bezier(0.22, 0.61, 0.36, 1) infinite;
+}
+.sm-about-card-dot::after {
+  animation-delay: 1.3s;
+}
+@keyframes sm-dot-ping {
+  0% {
+    transform: scale(1);
+    opacity: 0.65;
+  }
+  80%,
+  100% {
+    transform: scale(2.8);
+    opacity: 0;
+  }
+}
+.sm-about-card p {
+  margin: 0;
+  font-size: 18px;
+  line-height: 28px;
+  color: rgba(255, 255, 255, 0.9);
+}
+.sm-about-vision {
+  --sm-dot: rgba(195, 200, 195, 0.4);
+  background: var(--sm-orange-400);
+  text-align: start;
+}
+.sm-about-mission {
+  --sm-dot: var(--sm-olive-400);
+  border-color: var(--sm-olive-500);
+  background: var(--sm-olive-500);
+  text-align: start;
+}
+
+/* ---- the staggered collage ----
+   one 422px row holding two stacks. Each stack is a gap shorter than the row
+   and they anchor to opposite edges of it, which is what staggers them. */
+.sm-about-collage {
+  position: relative;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-template-rows: 422px;
+  column-gap: 16.906px;
+  row-gap: 16.906px;
+}
+.sm-about-col {
+  display: grid;
+  row-gap: 16.906px;
+  height: calc(100% - 16.906px);
+  min-height: 0;
+}
+/* column A = right in RTL: tall photo on top, sitting at the row's bottom */
+.sm-about-col-a {
+  align-self: end;
+  grid-template-rows: 261fr 127fr;
+}
+/* column B = left: short photo on top, sitting at the row's top */
+.sm-about-col-b {
+  align-self: start;
+  grid-template-rows: 145fr 243fr;
+}
+.sm-about-img {
+  display: block;
+  min-height: 0;
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 10px 26px rgba(0, 0, 0, 0.1);
+}
+.sm-about-img img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+.sm-chip-about {
+  top: -10px;
+  inset-inline-start: -46px;
+  text-align: start;
+}
+
+/* ============================================================
+   Stats — "أرقام نفخر بها"
+   ============================================================ */
+.sm-stats {
+  padding: 0 0 84px;
+}
+.sm-stats-panel {
+  border-radius: 16px;
+ background: rgba(237, 239, 235, 0.50);
+  padding: 48px 100px;
+
+}
+.sm-stats-row {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 18px;
+  margin-top: 34px;
+  text-align: center;
+}
+.sm-stat-value {
+  margin: 0;
+  font-size: 58px;
+  line-height: 1.2;
+  color: var(--sm-orange-300);
+}
+.sm-stat-label {
+  margin: 8px 0 0;
+  font-size: 18px;
+  color: #4C5C37;
+}
+
+/* ============================================================
+   Services — the stack of five cards
+   ============================================================ */
+.sm-services {
+  padding: 0 0 84px;
+}
+.sm-services-body {
+  position: relative;
+}
+
+/* the slider viewport: every slide shares one grid cell, so the box is as tall
+   as the tallest card and the slides move against each other inside it */
+.sm-services-view {
+  display: grid;
+  overflow: hidden;
+  border-radius: 24px;
+  cursor: grab;
+  /* a finger still scrolls the page: only mouse/pen drags the deck */
+  touch-action: pan-y;
+}
+/* while the mouse drags, the moving card follows it live with no easing */
+.sm-services-view.is-dragging {
+  cursor: grabbing;
+  user-select: none;
+}
+.sm-services-view.is-dragging .sm-svc-slide {
+  transition: none;
+}
+.sm-svc-slide {
+  grid-area: 1 / 1;
+  transition: transform 1.6s cubic-bezier(0.5, 0.05, 0.2, 1),
+  opacity 0.8s ease;
+  will-change: transform, opacity;
+}
+/* the deck is dealt: a card already passed keeps its place and is covered by
+   the next one rising over it, dimmed so the top card reads as the live one */
+.sm-svc-slide[data-state="prev"] {
+  transform: translateY(0) scale(0.985);
+  opacity: 1;
+}
+/* the cards still to come wait just below the viewport */
+.sm-svc-slide[data-state="next"] {
+  transform: translateY(100%);
+}
+.sm-svc-slide[data-state="current"] {
+  transform: translateY(var(--sm-drag-down, 0px));
+  opacity: 1;
+}
+/* only the adjacent card follows a drag — the rest of the deck stays parked */
+.sm-svc-slide[data-state="next"][data-adj="1"] {
+  transform: translateY(calc(100% + var(--sm-drag-up, 0px)));
+}
+/* dragging down uncovers the card underneath, so it stops looking "spent" */
+.is-drag-down .sm-svc-slide[data-state="prev"][data-adj="1"] {
+  transform: translateY(0) scale(1);
+  opacity: 1;
+}
+/* the lip of shadow that makes the top card sit on the one it covers */
+.sm-svc-slide > .sm-svc {
+  height: 100%;
+  box-shadow: 0 -18px 42px rgba(0, 0, 0, 0.14);
+}
+
+/* the thin scroll rail down the section's far edge — also the pagination */
+.sm-services-rail {
+  position: absolute;
+  inset-inline-end: -34px;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 7px;
+}
+.sm-rail-tick {
+  width: 8px;
+  height: 8px;
+  padding: 0;
+  border: 0;
+  border-radius: 999px;
+  background: #C3C8C3;
+  cursor: pointer;
+  transition: height 0.25s ease, background-color 0.25s ease;
+}
+.sm-rail-tick.active {
+  height: 26px;
+  background: var(--sm-olive-500);
+}
+
+.sm-svc {
+  position: relative;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  align-items: center;
+  gap: 40px;
+  border-radius: 24px;
+  padding: 40px;
+  overflow: hidden;
+}
+/* odd cards put the photo first (right in RTL); even cards flip it */
+.sm-svc-reverse .sm-svc-media {
+  order: -1;
+}
+
+/* The watermark lives inside .sm-svc-copy so it always sits on the text side of
+   the card, whichever side the photo was dealt to. z-index: -1 keeps it behind
+   the copy inside that column's stacking context (so still above the card
+   background), and anything that bleeds past the column is painted over by
+   .sm-svc-media, which comes later at the same z-index. */
+.sm-svc-watermark {
+  position: absolute;
+  z-index: -1;
+  /* The line box is trimmed to the digits so the number rests near the card's
+     bottom edge instead of floating mid-card. It hangs off the card's outer
+     edge on the copy side — the side the photo is not on — so it never lands
+     over the photo. Default cards keep the copy first (the right column in
+     RTL), so the number is anchored to the copy column's inline-start. */
+  bottom: -130px;
+  inset-inline-start: -30px;
+  font-family: var(--sm-display);
+  font-size: 400px;
+  font-weight: 900;
+  line-height: 0.75;
+  letter-spacing: -29.154px;
+  color: rgba(0, 0, 0, 0.05);
+  pointer-events: none;
+  user-select: none;
+}
+/* reversed cards deal the photo to the right, so the copy — and with it the
+   number — flips to the left half; anchor it to that column's inline-end. */
+.sm-svc-reverse .sm-svc-watermark {
+  inset-inline-start: auto;
+  inset-inline-end: -30px;
+}
+
+.sm-svc-olive-dark .sm-svc-watermark,
+.sm-svc-ink .sm-svc-watermark {
+  color: rgba(255, 255, 255, 0.05);
+}
+
+.sm-svc-copy {
+  position: relative;
+  z-index: 1;
+  text-align: start;
+}
+.sm-svc-num {
+  display: inline-flex;
+  flex-direction: row-reverse;
+  align-items: center;
+  gap: 10px;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--sm-orange-300);
+  letter-spacing: 2px;
+}
+.sm-svc-num i {
+  display: block;
+  width: 26px;
+  height: 1px;
+  background: currentColor;
+}
+.sm-svc-title {
+  margin: 10px 0 0;
+  font-size: 48px;
+  line-height: 1.3;
+}
+.sm-svc-tagline {
+  margin: 8px 0 0;
+  font-size: 20px;
+  font-weight: 600;
+  color: var(--sm-orange-300);
+}
+.sm-svc-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 16px;
+}
+.sm-svc-tag {
+  padding: 5px 15px;
+  border-radius: 99px;
+  border: 0.8px solid var(--sm-gray-200);
+  font-size: 12px;
+  font-weight: 500;
+  white-space: nowrap;
+}
+.sm-svc-desc {
+  margin: 16px 0 0;
+  font-size: 16px;
+  line-height: 27px;
+  max-width: 460px;
+}
+.sm-svc-btn {
+  margin-top: 22px;
+  padding: 8px 20px;
+  font-size: 14px;
+}
+
+.sm-svc-media {
+  position: relative;
+  z-index: 1;
+  border-radius: 18px;
+  overflow: hidden;
+  aspect-ratio: 4 / 3;
+  box-shadow: 0 14px 34px rgba(0, 0, 0, 0.18);
+}
+.sm-svc-media img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+/* ---- per-card palettes, straight from the design ----
+   The button is the one element that never changes: oliveGreen-500 on white,
+   on all five cards — that is .sm-btn-green, so no card overrides it. */
+.sm-svc-beige {
+  background: var(--sm-beige-100);
+}
+.sm-svc-olive-light {
+  background: var(--sm-olive-50);
+}
+.sm-svc-peach {
+  background: var(--sm-orange-100);
+}
+.sm-svc-beige .sm-svc-title {
+  color: #1A2910;
+}
+.sm-svc-olive-light .sm-svc-title,
+.sm-svc-peach .sm-svc-title {
+  color: #1E1E1E;
+}
+/* 03 is the one card whose eyebrow + tagline are olive instead of orange */
+.sm-svc-olive-light .sm-svc-num,
+.sm-svc-olive-light .sm-svc-tagline {
+  color: var(--sm-olive-400);
+}
+.sm-svc-beige .sm-svc-desc,
+.sm-svc-olive-light .sm-svc-desc,
+.sm-svc-peach .sm-svc-desc {
+  color: #484848;
+}
+.sm-svc-beige .sm-svc-tag,
+.sm-svc-olive-light .sm-svc-tag,
+.sm-svc-peach .sm-svc-tag {
+  color: var(--sm-olive-500);
+  border-color: var(--sm-gray-200);
+  background: #F2F2F2;
+}
+
+.sm-svc-olive-dark {
+  background: var(--sm-olive-700);
+}
+.sm-svc-ink {
+  background: var(--sm-olive-900);
+}
+.sm-svc-olive-dark .sm-svc-title {
+  color: var(--sm-olive-50);
+}
+.sm-svc-ink .sm-svc-title {
+  color: #ffffff;
+}
+.sm-svc-olive-dark .sm-svc-desc,
+.sm-svc-ink .sm-svc-desc {
+  color: var(--sm-gray-200);
+}
+.sm-svc-olive-dark .sm-svc-tag,
+.sm-svc-ink .sm-svc-tag {
+  color: var(--sm-olive-50);
+  border-color: var(--sm-olive-700);
+}
+/* 02 tints its chips translucent over the card; 04 fills them olive-500 */
+.sm-svc-olive-dark .sm-svc-tag {
+  background: rgba(30, 30, 30, 0.30);
+  backdrop-filter: blur(2px);
+}
+.sm-svc-ink .sm-svc-tag {
+  background: var(--sm-olive-500);
+}
+
+/* ============================================================
+   Why — "لماذا صوت ميديا"
+   ============================================================ */
+.sm-why {
+  padding: 0 0 84px;
+}
+.sm-why .sm-head {
+  margin-bottom: 30px;
+}
+/* the strip bleeds past the container's left edge, as the design crops it.
+   the extra vertical padding leaves room for the hovered card's tilt + shadow. */
+.sm-why-strip {
+  display: flex;
+  gap: 28px;
+  overflow-x: auto;
+  padding: 22px 0 34px;
+  padding-inline-start: 30px;
+  padding-inline-end: max(24px, calc((100vw - 1140px) / 2));
+  scrollbar-width: none;
+  /* the hover auto-scroll drives scrollLeft per frame — smooth would fight it */
+  scroll-behavior: auto;
+}
+.sm-why-strip::-webkit-scrollbar {
+  display: none;
+}
+.sm-why-card {
+  position: relative;
+  flex: 0 0 356px;
+  border-radius: 24px;
+  border: 1px solid var(--sm-gray-300);
+  background: #ffffff;
+  padding: 30px 28px 34px;
+  text-align: start;
+  transition: transform 0.35s cubic-bezier(0.2, 0.7, 0.3, 1),
+    box-shadow 0.35s ease;
+}
+/* hover tilts the card, as the design's hover state shows it */
+.sm-why-card:hover,
+.sm-why-card:focus-within {
+  transform: rotate(-3deg) translateY(-6px);
+  box-shadow: 0 18px 40px rgba(54, 65, 39, 0.13);
+  z-index: 2;
+}
+/* --sm-why-accent is set per card (media-why-data.tsx) and is the same design
+   token that paints that card's icon */
+.sm-why-dot {
+  position: absolute;
+  top: 34px;
+  inset-inline-end: 28px;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--sm-why-accent, #879279);
+}
+.sm-why-icon svg {
+  width: 70px;
+  height: 70px;
+}
+.sm-why-card-title {
+  margin: 20px 0 0;
+  font-size: 24px;
+}
+.sm-why-card-desc {
+  margin: 12px 0 0;
+  font-size: 15px;
+  line-height: 30px;
+  color: #7F7F7F;
+}
+@media (prefers-reduced-motion: reduce) {
+  .sm-why-card {
+    transition: none;
+  }
+  .sm-why-card:hover,
+  .sm-why-card:focus-within {
+    transform: none;
+  }
+}
+@media (max-width: 575.98px) {
+  .sm-why-strip {
+    gap: 18px;
+    padding-inline-start: 16px;
+  }
+  .sm-why-card {
+    flex: 0 0 min(300px, 82vw);
+    padding: 24px 22px 26px;
+  }
+  .sm-why-dot {
+    top: 28px;
+    inset-inline-end: 22px;
+  }
+  .sm-why-icon svg {
+    width: 64px;
+    height: 64px;
+  }
+  .sm-why-card-title {
+    font-size: 24px;
+  }
+  .sm-why-card-desc {
+    font-size: 15px;
+    line-height: 26px;
+  }
+}
+
+/* ============================================================
+   Process — "رحلتنا معك"
+   ============================================================ */
+.sm-process {
+  position: relative;
+  padding: 64px 0 56px;
+  background: var(--sm-olive-50);
+  overflow: hidden;
+}
+/* the design pins both washes to physical corners (green top-right, warm
+   bottom-left), so these stay `right`/`left` rather than logical insets */
+.sm-process-glow {
+  position: absolute;
+  width: 741.563px;
+  height: 678px;
+  pointer-events: none;
+}
+.sm-process-glow-a {
+  top: -242px;
+  right: -367.562px;
+  background: radial-gradient(
+    42.49% 42.49% at 50% 50%,
+    rgba(43, 74, 26, 0.16) 0%,
+    rgba(255, 255, 255, 0) 100%
+  );
+}
+.sm-process-glow-b {
+  bottom: -236px;
+  left: -445px;
+  background: radial-gradient(
+    42.49% 42.49% at 50% 50%,
+    rgba(255, 177, 129, 0.33) 0%,
+    rgba(255, 255, 255, 0) 100%
+  );
+}
+.sm-process > .container,
+.sm-process-scroll {
+  position: relative;
+  z-index: 1;
+}
+.sm-process .sm-head {
+  margin-bottom: 28px;
+}
+
+.sm-process-scroll {
+  overflow-x: auto;
+  padding-bottom: 8px;
+  scrollbar-width: none;
+}
+.sm-process-scroll::-webkit-scrollbar {
+  display: none;
+}
+.sm-process-track {
+  position: relative;
+  display: flex;
+  align-items: center;
+  min-width: max-content;
+  padding-inline: max(24px, calc((100vw - 1140px) / 2));
+  height: 320px;
+}
+.sm-process-line {
+  position: absolute;
+  inset-inline: 0;
+  top: 50%;
+  height: 1px;
+  background: linear-gradient(
+    90deg,
+    rgba(112, 125, 95, 0) 0%,
+    rgba(112, 125, 95, 0.55) 12%,
+    rgba(255, 116, 32, 0.55) 88%,
+    rgba(255, 116, 32, 0) 100%
+  );
+}
+
+/* six equal slots across the 1140 container; the card overhangs its slot a
+   little on both sides, the way the mock has neighbouring rows overlap */
+.sm-process-step {
+  position: relative;
+  flex: 0 0 190px;
+  height: 100%;
+}
+.sm-step-card {
+  position: absolute;
+  inset-inline: -17px;
+  border-radius: 16px;
+  border: 1px solid #f2f2f2;
+  /* the bottom edge is always 2px so the hover highlight can only recolour it
+     — growing the border would shift the card against its `top`/`bottom` */
+  border-bottom-width: 2px;
+  background: #ffffff;
+  padding: 16px;
+  text-align: start;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.05);
+  overflow: hidden;
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+/* the orange under-rule, scaled from its right (= start) edge so it sweeps
+   right-to-left on hover; `overflow: hidden` trims it to the rounded corners */
+.sm-step-card::after {
+  content: "";
+  position: absolute;
+  inset-inline: 0;
+  bottom: 0;
+  height: 2px;
+  background: var(--sm-orange-300);
+  transform: scaleX(0);
+  transform-origin: right center;
+  transition: transform 0.45s cubic-bezier(0.22, 0.7, 0.3, 1);
+  pointer-events: none;
+}
+/* cards sit clear of the rail: above it for odd steps, below for even */
+.sm-step-up .sm-step-card {
+  bottom: calc(50% + 44px);
+}
+.sm-step-down .sm-step-card {
+  top: calc(50% + 44px);
+}
+.sm-step-watermark {
+  position: absolute;
+  bottom: -18px;
+  inset-inline-end: 12px;
+  font-family: var(--sm-display);
+  font-size: 52px;
+  font-weight: 900;
+  line-height: 52px;
+  color: rgba(255, 243, 235, 0.44);
+  pointer-events: none;
+  transition: color 0.25s ease;
+}
+/* hover lifts the card, lights the orange under-rule and brings the step
+   number forward. `:focus-within` gives the same state to keyboard users. */
+.sm-step-card:hover,
+.sm-step-card:focus-within {
+  transform: translateY(-4px);
+  box-shadow: 0 14px 34px rgba(0, 0, 0, 0.1);
+}
+.sm-step-card:hover::after,
+.sm-step-card:focus-within::after {
+  transform: scaleX(1);
+}
+.sm-step-card:hover .sm-step-watermark,
+.sm-step-card:focus-within .sm-step-watermark {
+  color: rgba(255, 177, 129, 0.38);
+}
+.sm-step-title {
+  position: relative;
+  margin: 0;
+  font-size: 17px;
+  line-height: 26px;
+}
+.sm-step-desc {
+  position: relative;
+  margin: 6px 0 0;
+  font-size: 13px;
+  line-height: 21px;
+  color: #7F7F7F;
+}
+
+.sm-step-node {
+  position: absolute;
+  top: 50%;
+  inset-inline-start: 50%;
+  transform: translate(50%, -50%);
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  /* the halo colour each node's spotlight burns in */
+  --sm-node-glow: rgba(255, 116, 32, 0.3);
+  animation: sm-node-spot 1.9s ease-in-out infinite;
+}
+/* RTL puts the first child on the right; translate(50%) walks the node back
+   over the rail either way because inset-inline-start already mirrors */
+[dir="ltr"] .sm-step-node {
+  transform: translate(-50%, -50%);
+}
+.sm-step-up .sm-step-node {
+  background: var(--sm-orange-300);
+}
+.sm-step-down .sm-step-node {
+  background: var(--sm-olive-700);
+  --sm-node-glow: rgba(54, 65, 39, 0.26);
+}
+
+/* the halo grows out of the dot and fades back into it — at 0 spread/blur it
+   is hidden underneath the circle, so only the ring's size is ever animated */
+@keyframes sm-node-spot {
+  0%,
+  100% {
+    box-shadow: 0 0 0 0 var(--sm-node-glow), 0 0 0 0 var(--sm-node-glow);
+  }
+  45% {
+    box-shadow: 0 0 0 7px var(--sm-node-glow), 0 0 16px 4px var(--sm-node-glow);
+  }
+}
+/* the lamps fire right-to-left along the rail, one after the other
+   (child 1 of the track is the rail itself, so the steps start at 2) */
+.sm-process-step:nth-child(2) .sm-step-node {
+  animation-delay: 0s;
+}
+.sm-process-step:nth-child(3) .sm-step-node {
+  animation-delay: 0.18s;
+}
+.sm-process-step:nth-child(4) .sm-step-node {
+  animation-delay: 0.36s;
+}
+.sm-process-step:nth-child(5) .sm-step-node {
+  animation-delay: 0.54s;
+}
+.sm-process-step:nth-child(6) .sm-step-node {
+  animation-delay: 0.72s;
+}
+.sm-process-step:nth-child(7) .sm-step-node {
+  animation-delay: 0.9s;
+}
+
+/* ============================================================
+   Works — "أبرز أعمالنا"
+   ============================================================ */
+.sm-works {
+  padding: 84px 0;
+}
+.sm-works-wall {
+  position: relative;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+  height: 560px;
+  padding: 20px;
+  border-radius: 20px;
+  background: #EDEFEB;
+  overflow: hidden;
+}
+.sm-works-col {
+  overflow: hidden;
+   border-radius: 20px;
+}
+.sm-works-loop {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  animation: sm-works-up 13s linear infinite;
+}
+/* the middle column drifts the other way, as in the design */
+.sm-works-col-2 .sm-works-loop {
+  animation-name: sm-works-down;
+  animation-duration: 10s;
+}
+.sm-works-shot {
+  position: relative;
+  display: block;
+  border-radius: 14px;
+  overflow: hidden;
+  flex: 0 0 auto;
+  height: 260px;
+}
+.sm-works-shot img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+@keyframes sm-works-up {
+  from {
+    transform: translateY(0);
+  }
+  to {
+    transform: translateY(-50%);
+  }
+}
+@keyframes sm-works-down {
+  from {
+    transform: translateY(-50%);
+  }
+  to {
+    transform: translateY(0);
+  }
+}
+
+/* pinned to the bottom of its own tile, so it rides the column's drift */
+.sm-works-card {
+  position: absolute;
+  z-index: 2;
+  inset-inline: 12px;
+  bottom: 12px;
+  border: 0.778px solid var(--Primary-oliveGreen-500, #4C5C37);
+
+  border-radius: 16px;
+  background: #F2F2F2;
+  padding: 16px 18px;
+  box-shadow: 0 14px 40px rgba(0, 0, 0, 0.16);
+}
+.sm-works-card-tags {
+  display: flex;
+  gap: 8px;
+  justify-content: flex-start;
+}
+.sm-works-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 3px 12px;
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+.sm-works-chip svg {
+  width: 13px;
+  height: 13px;
+}
+.sm-works-chip-tag {
+  border: 0.8px solid var(--sm-orange-200);
+  background: var(--sm-orange-100);
+  color: var(--sm-orange-300);
+}
+.sm-works-chip-date {
+  border: 0.8px solid var(--sm-orange-200);
+  background: var(--sm-orange-100);
+  color: var(--sm-orange-300);
+}
+.sm-works-card-body {
+  display: flex;
+  flex-direction: row-reverse;
+  align-items: center;
+  gap: 14px;
+  margin-top: 12px;
+}
+.sm-works-card-text {
+  flex: 1 1 auto;
+  text-align: start;
+}
+.sm-works-card-text h3 {
+  margin: 0;
+  font-size: 18px;
+}
+.sm-works-card-text p {
+  margin: 4px 0 0;
+  font-size: 11px;
+color:#6D6D6D;
+
+}
+.sm-works-card-go {
+  flex: 0 0 auto;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  border: 1px solid #4C5C37;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: #4C5C37 !important;
+  transition: background-color 0.2s ease;
+}
+.sm-works-card-go:hover {
+  background: #f2f2f2;
+}
+.sm-works-more {
+  display: flex;
+  justify-content: center;
+  margin-top: 34px;
+}
+
+/* ============================================================
+   Sectors — "من نخدم ؟"
+   ============================================================ */
+.sm-sectors {
+  padding: 0 0 84px;
+}
+.sm-sectors-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 22px;
+}
+.sm-sector {
+  position: relative;
+  border-radius: 24px;
+  border: 0.8px solid #C8C8C8;
+  background: #EDEFEB;
+  padding: 30px 26px 32px;
+  text-align: start;
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+/* the orange top rule, drawn over the card's own top border between the two
+   rounded corners, and scaled from its right (= start) edge so it sweeps
+   right-to-left on hover */
+.sm-sector::before {
+  content: "";
+  position: absolute;
+  top: -0.8px;
+  inset-inline: 24px;
+  height: 2px;
+  border-radius: 2px;
+  background: var(--sm-orange-400);
+  transform: scaleX(0);
+  transform-origin: right center;
+  transition: transform 0.45s cubic-bezier(0.22, 0.7, 0.3, 1);
+  pointer-events: none;
+}
+/* hover lifts the card and draws the rule in. `:focus-within` repeats it for
+   keyboards. */
+.sm-sector:hover,
+.sm-sector:focus-within {
+  transform: translateY(-4px);
+  box-shadow: 0 14px 34px rgba(0, 0, 0, 0.1);
+}
+.sm-sector:hover::before,
+.sm-sector:focus-within::before {
+  transform: scaleX(1);
+}
+
+.sm-sector-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 68px;
+  height: 70px;
+  border-radius: 12px;
+  background: #FFF3EB;
+}
+
+.sm-sector-icon  svg {
+   width: 32px;
+  height: 32px;
+}
+
+.sm-sector-title {
+  margin: 20px 0 0;
+  font-size: 32px;
+}
+.sm-sector-tagline {
+  margin: 18px 0 0;
+  font-size: 14px;
+  font-weight: 700;
+  color: #4C5C37;
+}
+.sm-sector-desc {
+  margin: 14px 0 0;
+  font-size: 14px;
+  line-height: 25px;
+  color: #7F7F7F;
+}
+.sm-sector-points {
+  margin: 20px 0 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.sm-sector-points li {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 14px;
+  color: #6D6D6D;
+}
+.sm-sector-points i {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #E1723B;
+  flex: 0 0 auto;
+}
+
+/* ============================================================
+   Partners — "شركاء النجاح"
+   ============================================================ */
+.sm-partners {
+  padding: 0 0 70px;
+}
+.sm-partners .sm-head {
+  margin-bottom: 0;
+}
+/* the strip runs full-bleed under the head; the legacy .marquee's own
+   margin-bottom is dropped so this section owns its bottom rhythm */
+.sm-partners-marquee {
+  margin-top: 44px;
+  margin-bottom: 0;
+}
+/* space-around already spreads them on wide screens; the gap only kicks in
+   once the row is narrower than its logos */
+.sm-partners-marquee .marquee-group {
+  gap: 40px;
+  padding-inline: 20px;
+}
+/* style.css sizes .marquee img at `height: 80%` (no parent height → auto), so
+   the Figma exports land at wildly different sizes. Cap them to one row height
+   and let each keep its aspect ratio. The extra class outranks
+   `.marquee-group img` regardless of which stylesheet Next emits first. */
+.sm-partners-marquee .marquee-group img {
+  width: auto;
+  height: auto;
+  max-height: 56px;
+  max-width: 190px;
+  object-fit: contain;
+  flex: 0 0 auto;
+  filter: grayscale(1);
+  opacity: 0.7;
+}
+
+/* ============================================================
+   Consultation — "احجز استشارتك"
+   ============================================================ */
+.sm-consult {
+  padding: 76px 0;
+  background: var(--sm-olive-50);
+}
+.sm-consult-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 56px;
+  align-items: center;
+}
+.sm-consult-desc {
+  margin: 0 0 26px;
+  font-size: 18px;
+  line-height: 28px;
+  color: #7A7A7A;
+}
+.sm-consult-perks {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px 22px;
+}
+.sm-consult-perks li {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 16px;
+  font-weight: 600;
+  color: #484848;
+}
+.sm-consult-perk-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: #DFE1DB;
+  color: #E1723B !important;
+  flex: 0 0 auto;
+}
+
+.sm-consult-perk-icon svg {
+  width: 20px;
+  height: 20px;
+}
+/* the four marks come from different sections and ship with baked-in paints
+   (#FF7420, white…) — the chips force the one perk colour */
+.sm-consult-perk-icon svg [fill]:not([fill="none"]) {
+  fill: #E1723B !important;
+}
+.sm-consult-perk-icon svg [stroke]:not([stroke="none"]) {
+  stroke: #E1723B !important;
+}
+
+/* ---- the booking card ---- */
+.sm-form {
+  border-radius: 20px;
+  background: #ffffff;
+  padding: 24px;
+}
+.sm-form-title {
+  margin: 0 0 20px;
+  font-size: 24px;
+}
+.sm-field {
+  margin-bottom: 16px;
+}
+.sm-label {
+  display: block;
+  margin-bottom: 7px;
+  font-size: 14px;
+  font-weight: 600;
+  color: #1E1E1E;
+}
+.sm-input-wrap {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+.sm-input-icon {
+  position: absolute;
+  inset-inline-start: 14px;
+  display: inline-flex;
+  align-items: center;
+  color: #9a9a9a;
+  font-size: 16px;
+  pointer-events: none;
+}
+.sm-input-icon svg {
+  width: 20px;
+  height: 20px;
+}
+.sm-input {
+  width: 100%;
+  height: 46px;
+  padding-inline-start: 40px;
+  padding-inline-end: 14px;
+  border-radius: 8px;
+  border: 1px solid #DADADA;
+  background: #ffffff;
+  font-size: 14px;
+  color: var(--sm-ink);
+  outline: none;
+}
+.sm-input::placeholder {
+  color: #b6b6b6;
+}
+/* no green on focus — just a slightly firmer neutral border, so the field
+   still reads as active without the olive tint or halo */
+.sm-input:focus {
+  border-color: var(--sm-gray-300);
+  box-shadow: none;
+}
+
+/* phone row: country box + number, mirroring the join modal's field */
+.sm-phone-wrap {
+  display: flex;
+  gap: 10px;
+}
+.sm-phone-num {
+  flex: 1 1 auto;
+}
+.sm-country-box {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  height: 46px;
+  padding: 0 12px;
+  border-radius: 10px;
+  border: 1px solid var(--sm-gray-200);
+  background: #ffffff;
+  flex: 0 0 auto;
+}
+.sm-country-caret {
+  font-size: 10px;
+  color: #9a9a9a;
+}
+.sm-country-code {
+  font-size: 13px;
+  color: #3f3f3f;
+  direction: ltr;
+}
+.sm-country-flag {
+  width: 20px;
+  height: 14px;
+  border-radius: 2px;
+}
+
+.sm-select-wrap .sm-input {
+  padding-inline-start: 14px;
+  padding-inline-end: 38px;
+  appearance: none;
+  cursor: pointer;
+}
+.sm-select-caret {
+  position: absolute;
+  inset-inline-end: 14px;
+  font-size: 11px;
+  color: #9a9a9a;
+  pointer-events: none;
+}
+.sm-select:invalid,
+.sm-select option[value=""] {
+  color: #b6b6b6;
+}
+
+.sm-form-submit {
+  width: 100%;
+  margin-top: 10px;
+  padding: 16px;
+  border-radius: 24px;
+}
+
+/* ============================================================
+   Packages — "اختر باقتك"
+   ============================================================ */
+.sm-packages {
+  padding: 84px 0 60px;
+}
+.sm-pkg-track {
+  display: flex;
+  gap: 22px;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  padding: 10px 4px 20px;
+  scrollbar-width: none;
+}
+.sm-pkg-track::-webkit-scrollbar {
+  display: none;
+}
+.sm-pkg {
+  position: relative;
+  flex: 0 0 calc((100% - 44px) / 3);
+  scroll-snap-align: center;
+  padding-top: 10px;
+  /* the track stretches the articles; this passes that height down to the
+     white body so every bundle card ends on the same line */
+  display: flex;
+  flex-direction: column;
+}
+.sm-pkg-tab {
+  position: absolute;
+  top: 0;
+  inset-inline: 26px;
+  height: 34px;
+  border-radius: 20px 20px 0 0;
+}
+.sm-pkg-body {
+  position: relative;
+  border-radius: 20px;
+  border: 1px solid var(--sm-gray-200);
+  background: #ffffff;
+  padding: 26px 24px 28px;
+  text-align: start;
+}
+.sm-pkg-title {
+  margin: 0;
+  font-size: 26px;
+}
+.sm-pkg-tagline {
+  margin: 8px 0 0;
+  font-size: 13px;
+  font-weight: 700;
+}
+.sm-pkg-desc {
+  margin: 14px 0 0;
+  font-size: 13px;
+  line-height: 24px;
+  color: var(--sm-gray-800);
+}
+.sm-pkg-features {
+  margin: 20px 0 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+.sm-pkg-features li {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+}
+.sm-pkg-features i {
+  width: 6px;
+  height: 6px;
+  margin-top: 7px;
+  border-radius: 50%;
+  flex: 0 0 auto;
+}
+.sm-pkg-feature-text {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.sm-pkg-feature-text b {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--sm-ink);
+}
+.sm-pkg-feature-text small {
+  font-size: 13px;
+  color: #7F7F7F;
+}
+.sm-pkg-cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 24px;
+  padding: 12px 16px;
+  border-radius: 24px;
+  border: 1px solid var(--sm-gray-200);
+  font-size: 16px;
+  font-weight: 700;
+  text-decoration: none;
+  color: var(--sm-ink) !important;
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+/* per-bundle accents */
+.sm-pkg-orange .sm-pkg-tab {
+  background: var(--sm-orange-300);
+}
+.sm-pkg-orange .sm-pkg-body {
+  border-color: var(--sm-orange-300);
+}
+.sm-pkg-orange .sm-pkg-tagline,
+.sm-pkg-orange .sm-pkg-features i {
+  color: var(--sm-orange-300);
+  background: var(--sm-orange-300);
+}
+.sm-pkg-orange .sm-pkg-tagline {
+  background: none;
+}
+.sm-pkg-orange .sm-pkg-cta {
+  border-color: var(--sm-orange-300);
+}
+.sm-pkg-orange .sm-pkg-cta:hover {
+  background: var(--sm-orange-300);
+  color: #ffffff !important;
+}
+
+.sm-pkg-olive .sm-pkg-tab {
+  background: var(--sm-olive-400);
+}
+.sm-pkg-olive .sm-pkg-body {
+  border-color: var(--sm-olive-400);
+}
+.sm-pkg-olive .sm-pkg-tagline {
+  color: var(--sm-olive-400);
+}
+.sm-pkg-olive .sm-pkg-features i {
+  background: var(--sm-olive-400);
+}
+.sm-pkg-olive .sm-pkg-cta {
+  border-color: var(--sm-olive-400);
+}
+.sm-pkg-olive .sm-pkg-cta:hover {
+  background: var(--sm-olive-400);
+  color: #ffffff !important;
+}
+
+.sm-pkg-gray .sm-pkg-tab {
+  background: var(--sm-gray-800);
+}
+.sm-pkg-gray .sm-pkg-body {
+  border-color: var(--sm-gray-800);
+}
+.sm-pkg-gray .sm-pkg-tagline {
+  color: var(--sm-gray-800);
+}
+.sm-pkg-gray .sm-pkg-features i {
+  background: var(--sm-gray-800);
+}
+.sm-pkg-gray .sm-pkg-cta {
+  border-color: var(--sm-gray-800);
+}
+.sm-pkg-gray .sm-pkg-cta:hover {
+  background: var(--sm-gray-800);
+  color: #ffffff !important;
+}
+
+/* ---- shared arrow + dot pager ---- */
+.sm-pager {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  margin-top: 26px;
+}
+.sm-pager-arrow {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: 0;
+  background:var(--sm-olive-500);
+  color: #fff;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+.sm-pager-arrow:hover {
+  background: var(--sm-olive-700);
+  border-color: var(--sm-olive-700);
+}
+.sm-pager-olive .sm-pager-arrow {
+  background: var(--sm-olive-500);
+  color: #ffffff;
+}
+.sm-pager-olive .sm-pager-arrow:hover {
+  background: var(--sm-olive-700);
+}
+.sm-pager-dots {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+.sm-pager-dot {
+  width: 7px;
+  height: 7px;
+  padding: 0;
+  border: 0;
+  border-radius: 999px;
+  background: #d6d6d6;
+  cursor: pointer;
+  transition: width 0.25s ease, background-color 0.25s ease;
+}
+.sm-pager-dot.active {
+  width: 26px;
+  background: var(--sm-olive-500);
+}
+
+/* ============================================================
+   Testimonials — "ماذا يقول عنّا عملاؤنا"
+   ============================================================ */
+.sm-testi {
+  padding: 40px 0 80px;
+  /* the design puts the whole block on a full-bleed olive-50 band */
+  background: var(--sm-olive-50);
+}
+.sm-testi-track {
+  display: flex;
+  gap: 22px;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  /* the side padding is what lets the first and last card reach the middle */
+  padding: 20px max(24px, calc((100% - 460px) / 2)) 30px;
+  scrollbar-width: none;
+}
+.sm-testi-track::-webkit-scrollbar {
+  display: none;
+}
+.sm-testi-card {
+  position: relative;
+  flex: 0 0 min(460px, 82vw);
+  scroll-snap-align: center;
+  border-radius: 20px;
+  background: #ffffff;
+  padding: 20px 22px 26px;
+  text-align: start;
+  /* neighbours sit back: the design dims, blurs and shrinks everything but the
+     middle — 0.873 is what turns the 20px radius into the design's 17.453px */
+  border: 0.582px solid rgba(0, 0, 0, 0.05);
+  opacity: 0.4;
+  filter: blur(2.1816787719726562px);
+  box-shadow: 0 2.909px 14.545px 0 rgba(0, 0, 0, 0.05);
+  transform: scale(0.873);
+  transition: opacity 0.3s ease, filter 0.3s ease, box-shadow 0.3s ease,
+    border-color 0.3s ease, transform 0.3s ease;
+}
+.sm-testi-card.active {
+  opacity: 1;
+  filter: none;
+  transform: none;
+  border: 1px solid #DADADA;
+  box-shadow: 0 4px 4px 0 rgba(0, 0, 0, 0.08);
+
+
+}
+.sm-testi-avatar {
+  position: relative;
+  display: block;
+  width: 64px;
+  height: 64px;
+}
+.sm-testi-avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 50%;
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  display: block;
+}
+/* the design's quote mark: a small chip tucked under the avatar's inner corner */
+.sm-testi-avatar::after {
+  content: "99";
+  position: absolute;
+  bottom: 4px;
+  inset-inline-end: -7px;
+  padding: 2px 4px;
+  border-radius: 4222px;
+  border: 0.6px solid #FFF3EB;
+  background: #FFF3EB;
+  color: var(--sm-orange-300);
+  font-size: 10px;
+  line-height: 15px;
+  font-weight: 700;
+}
+.sm-testi-stars {
+  display: flex;
+  gap: 4px;
+  /* start = right in RTL: the row lines up with the avatar above it */
+  justify-content: flex-start;
+  margin-top: 16px;
+  margin-bottom: 14px;
+}
+.sm-testi-stars svg {
+  width: 16px;
+  height: 16px;
+}
+.sm-testi-quote {
+  margin: 0;
+  font-size: 14px;
+  line-height: 23px;
+  color: #5A5A5A;
+  text-align: start;
+}
+.sm-testi-name {
+  display: block;
+  margin-top: 22px;
+  font-size: 15px;
+  font-weight: 700;
+  text-align: start;
+}
+.sm-testi-meta {
+  display: block;
+  margin-top: 4px;
+  font-size: 12px;
+  color: #6D6D6D;
+  text-align: start;
+}
+
+/* ============================================================
+   FAQ — "الأسئلة التي تدور ببالك؟"
+   The accordion and the thinking-student visual are the
+   incubator page's block (inc-faq-*), under this page's own
+   pill heading.
+   ============================================================ */
+.sm-faq {
+  position: relative;
+  padding: 84px 0 60px ;
+}
+.sm-faq-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 30px;
+  align-items: flex-start;
+}
+.sm-faq-col {
+  flex: 1 1 56%;
+  min-width: 300px;
+  order: 2;
+  margin-top: 40px;
+}
+.sm-faq-visual {
+  flex: 1 1 28%;
+  min-width: 260px;
+  order: 1;
+}
+.sm-faq-visual img {
+  width: 100%;
+  height: auto;
+  display: block;
+  border-radius: 16px;
+}
+.sm-faq-item {
+  background: #ffffff;
+  border: 1px solid #c8c8c8;
+  border-radius: 12px;
+  margin-bottom: 14px;
+  overflow: hidden;
+}
+.sm-faq-item.sm-faq-open {
+  background: #edefeb;
+  border-color: #4c5c37;
+}
+.sm-faq-q {
+  width: 100%;
+  background: transparent;
+  border: 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 18px 22px;
+  font-size: 18px;
+  font-weight: 700;
+  color: #1c1c1c;
+  cursor: pointer;
+  text-align: start;
+}
+.sm-faq-open .sm-faq-q {
+  color: #374c1c !important;
+  border-bottom: 1px solid #c8c8c8;
+}
+.sm-faq-chevron {
+  flex: 0 0 auto;
+  font-size: 13px;
+  color: #000;
+  transition: transform 0.2s ease;
+}
+.sm-faq-open .sm-faq-chevron {
+  transform: rotate(180deg);
+  color: #000;
+}
+.sm-faq-a {
+  display: flex;
+  align-items: stretch;
+  gap: 14px;
+  font-size: 14px;
+  color: #5a5a5a;
+  line-height: 2;
+  margin: 16px 22px 18px;
+  padding: 0;
+}
+.sm-faq-a-bar {
+  flex: 0 0 4px;
+  width: 4px;
+  align-self: stretch;
+  border-radius: 16px;
+  background: #e1723b;
+}
+.sm-faq-a-text {
+  margin: 0;
+  text-align: start;
+}
+
+/* ============================================================
+   Responsive
+   ============================================================ */
+@media (max-width: 1199.98px) {
+  .sm-fan-card {
+    width: 300px;
+    height: 211px;
+  }
+  .sm-fan-1 {
+    transform: translate(372px, 160px) rotate(25deg);
+  }
+  .sm-fan-2 {
+    transform: translate(192px, 54px) rotate(20deg);
+  }
+  .sm-fan-4 {
+    transform: translate(-192px, 54px) rotate(-20deg);
+  }
+  .sm-fan-5 {
+    transform: translate(-372px, 160px) rotate(-25deg);
+  }
+  .sm-fan-0 {
+    transform: translate(-560px, 219px) rotate(-30deg);
+  }
+  .sm-hero-fan {
+    height: 191px;
+    margin-top: 10px;
+  }
+  .sm-chip-hero-a {
+    top: 250px;
+    left: calc(50% - 430px);
+  }
+  .sm-chip-hero-b {
+    bottom: 40px;
+    right: calc(50% - 430px);
+  }
+  .sm-pkg {
+    flex: 0 0 min(340px, 84%);
+  }
+}
+
+@media (max-width: 991.98px) {
+  /* nav collapses to brand + burger; the rest moves into the drawer */
+  .sm-nav {
+    flex-wrap: wrap;
+  }
+  .sm-nav-toggler {
+    display: inline-flex;
+  }
+  .sm-nav-menu {
+    flex-basis: 100%;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 10px;
+    padding: 12px 0 6px;
+  }
+  .sm-nav-menu.collapse:not(.show) {
+    display: none;
+  }
+  .sm-nav-menu.collapsing,
+  .sm-nav-menu.collapse.show {
+    display: flex;
+  }
+  .sm-nav-links {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+    margin: 0;
+  }
+  .sm-nav-actions {
+    justify-content: flex-start;
+  }
+  .sm-chip-hero-a {
+    top: 210px;
+    left: calc(50% - 360px);
+  }
+  .sm-chip-hero-b {
+    bottom: 30px;
+    right: calc(50% - 360px);
+  }
+
+  /* the collage is full width here, so the chip can no longer hang off its
+     edge into the copy gutter */
+  .sm-chip-about {
+    inset-inline-end: 0;
+  }
+
+  .sm-about-row,
+  .sm-consult-row {
+    grid-template-columns: 1fr;
+    gap: 34px;
+  }
+  /* photo moves above the questions once the two columns stack */
+  .sm-faq-visual {
+    order: -1;
+    margin: 0 auto 10px;
+  }
+  .sm-faq-col {
+    margin-top: 0;
+  }
+
+  .sm-stats-row {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 26px 18px;
+  }
+  .sm-sectors-grid {
+    grid-template-columns: 1fr;
+  }
+  .sm-svc {
+    grid-template-columns: 1fr;
+    gap: 26px;
+    padding: 28px;
+  }
+  .sm-svc-reverse .sm-svc-media {
+    order: 0;
+  }
+  /* single column: every card stacks copy under photo, so the number goes back
+     to one consistent side instead of alternating. */
+  .sm-svc-watermark,
+  .sm-svc-reverse .sm-svc-watermark {
+    font-size: 260px;
+    line-height: 0.75;
+    bottom: -82px;
+    inset-inline-start: -30px;
+    inset-inline-end: auto;
+  }
+  /* no room beside the card: the rail lies down under it as a row of dots */
+  .sm-services-body {
+    display: flex;
+    flex-direction: column;
+  }
+  .sm-services-rail {
+    order: 2;
+    position: static;
+    transform: none;
+    flex-direction: row;
+    justify-content: center;
+    margin-top: 22px;
+    gap: 8px;
+  }
+  .sm-rail-tick.active {
+    width: 26px;
+    height: 4px;
+  }
+  .sm-works-wall {
+    height: 460px;
+  }
+}
+
+@media (max-width: 767.98px) {
+  .sm-hero-text {
+    padding: 40px 0 26px;
+  }
+  /* the deck narrows to three cards: the outer two seats keep their places so
+     the carousel still slides in and out of them, they just do it invisibly */
+  .sm-hero-fan {
+    height: 152px;
+    margin-top: 14px;
+  }
+  .sm-fan-card {
+    width: 240px;
+    height: 169px;
+  }
+  .sm-fan-1 {
+    transform: translate(290px, 112px) rotate(25deg);
+    opacity: 0;
+  }
+  .sm-fan-2 {
+    transform: translate(150px, 44px) rotate(20deg);
+  }
+  .sm-fan-4 {
+    transform: translate(-150px, 44px) rotate(-20deg);
+  }
+  .sm-fan-5 {
+    transform: translate(-290px, 96px) rotate(-25deg);
+    opacity: 0;
+  }
+  .sm-fan-0 {
+    transform: translate(-430px, 148px) rotate(-30deg);
+  }
+  .sm-chip-hero-a,
+  .sm-chip-hero-b {
+    display: none;
+  }
+  .sm-chip-about {
+    inset-inline-end: 4%;
+    top: 8px;
+  }
+
+  .sm-about,
+  .sm-works {
+    padding: 56px 0;
+  }
+  .sm-stats-panel {
+    padding: 32px 20px 36px;
+  }
+  .sm-stats-row {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .sm-about-collage {
+    grid-template-rows: 330px;
+  }
+  .sm-about-cards {
+    grid-template-columns: 1fr;
+  }
+  .sm-consult-perks {
+    grid-template-columns: 1fr;
+  }
+  .sm-works-wall {
+    grid-template-columns: repeat(2, 1fr);
+    height: 400px;
+  }
+  .sm-works-col-3 {
+    display: none;
+  }
+  .sm-works-card {
+    inset-inline: 8px;
+    bottom: 8px;
+    padding: 12px 14px;
+  }
+  .sm-partners-marquee .marquee-group img {
+    max-height: 40px;
+    max-width: 140px;
+  }
+  .sm-partners-marquee .marquee-group {
+    gap: 28px;
+  }
+  .sm-works-card-text h3 {
+    font-size: 16px;
+  }
+  .sm-process-step {
+    flex-basis: 200px;
+  }
+  .sm-process-track {
+    height: 340px;
+  }
+  /* no room for the photo: the questions take the full width */
+  .sm-faq-visual {
+    display: none;
+  }
+  .sm-faq-q {
+    font-size: 15px;
+    padding: 16px;
+  }
+  .sm-form {
+    padding: 22px 20px 26px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sm-ticker-group,
+  .sm-works-loop {
+    animation: none;
+  }
+  .sm-hero-word {
+    animation: none;
+  }
+  .sm-about-card-dot::before,
+  .sm-about-card-dot::after {
+    animation: none;
+    opacity: 0;
+  }
+  .sm-svc-slide {
+    transition: none;
+  }
+  .sm-sector {
+    transition: none;
+  }
+  .sm-sector:hover,
+  .sm-sector:focus-within {
+    transform: none;
+  }
+  /* the rule still appears on hover, it just no longer sweeps in */
+  .sm-sector::before {
+    transition: none;
+  }
+  /* keep the halo, drop the pulse */
+  .sm-step-node {
+    animation: none;
+    box-shadow: 0 0 0 6px var(--sm-node-glow);
+  }
+}

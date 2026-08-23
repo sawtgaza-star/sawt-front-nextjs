@@ -86,7 +86,7 @@ export default function FooterLinksMobile() {
           </li>{" "}
           <li>
             {" "}
-            <a href="#" className="text-white text-decoration-none">
+            <a href="/media" className="text-white text-decoration-none">
               {" "}
               <span data-i18n="nav_media">صوت ميديا</span>
             </a>{" "}

@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import "@/styles/creators.css";
 import "@/styles/support.css";
 import LegacyInit from "@/components/LegacyInit";
@@ -16,6 +17,12 @@ import SupportFaq from "@/components/support/SupportFaq";
    slider and the FAQ accordion are client leaves.
    creators.css supplies the breadcrumb hero (cr-header/cr-hero) and the
    shared section heading (cr-section-head / cr-highlight). */
+export const metadata: Metadata = {
+  title: "ادعم صوت | Support Sawt",
+  description:
+    "ادعم منصة صوت وساهم في إيصال قصص الناس — تبرّعك يموّل الحاضنة وصنّاع المحتوى والقصص التي لم تُروَ بعد.",
+};
+
 export default function Page() {
   return (
     <div className="sp-page">

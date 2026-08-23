@@ -1424,6 +1424,233 @@ export const translations: any = {
     crs_dm_outcome_after_i3: "تتقن إطلاق الحملات الممولة وإدارتها.",
     crs_dm_outcome_after_i4: "تمتلك ملف أعمال (portfolio).",
     crs_dm_outcome_after_i5: "تعرف كيف تقرأ المؤشرات وتحسّن النتائج.",
+
+    /* ===== صوت ميديا — /media ===== */
+    sm_brand: "صوت ميديا",
+    sm_nav_back: "العودة لمنصة صوت",
+    sm_nav_about: "عن صوت ميديا",
+    sm_nav_works: "أعمالنا",
+    sm_nav_services: "خدماتنا",
+    sm_nav_process: "منهجيتنا",
+    sm_cta_start: "ابدأ مشروعك",
+    sm_cta_services: "تعرف على خدماتنا",
+    sm_chip_satisfaction: "رضا العملاء",
+
+    sm_hero_title: "...صوت ميديا تقدم",
+    sm_hero_word_consult: "الاستشارات",
+    sm_hero_word_video: "إنتاج الفيديوهات",
+    sm_hero_word_photo: "التصوير الاحترافي",
+    sm_hero_word_design: "التصميم الجرافيكي",
+    sm_hero_word_content: "صناعة المحتوى",
+    sm_hero_desc:
+      "نحوّل أفكارك إلى تجارب إعلامية مؤثرة. من الاستراتيجية إلى الإنتاج والنشر — كل شيء في مكان واحد.",
+
+    sm_tick_graphic: "التصميم الجرافيكي",
+    sm_tick_coverage: "التغطية والاستشارات",
+    sm_tick_video: "إنتاج الفيديوهات",
+    sm_tick_ux: "تصميم تجربة مستخدم",
+    sm_tick_ui: "تصميم واجهه المستخدم",
+    sm_tick_content: "صناعة المحتوى",
+
+    sm_about_pill: "من نحن",
+    sm_about_title: "شريكك الإعلامي المتكامل",
+    sm_about_desc:
+      "صوت ميديا وكالة إعلامية إبداعية متكاملة، تقدم حلولاً إعلامية شاملة من الاستراتيجية إلى الإنتاج والنشر. لسنا مجرد مزود خدمات — نحن شريكك الإبداعي الذي يفهم أهدافك ويعمل على تحقيقها.",
+    sm_about_vision_title: "رؤيتنا",
+    sm_about_vision_desc:
+      "أن تصبح منصة التقنية الأولى لإدارة معارض الكتب في العالم العربي.",
+    sm_about_mission_title: "رسالتنا",
+    sm_about_mission_desc:
+      "تمكين منظمي معارض الكتب من إدارة فعالياتهم بكفاءة أعلى وتجربة أكثر.",
+
+    sm_stats_pill: "صوت ميديا  في ارقام",
+    sm_stats_title: "أرقام نفخر بها",
+    sm_stats_sub: "أرقام تعكس ثقة عملائنا وجودة عملنا",
+    sm_stat_campaigns: "حملة إعلامية منفذة",
+    sm_stat_years: "سنوات خبرة",
+    sm_stat_satisfaction: "نسبة رضا العملاء",
+    sm_stat_clients: "عميل سعيد",
+    sm_stat_projects: "مشروع منجز",
+
+    sm_services_pill: "خدماتنا",
+    sm_services_title: "حلول إعلامية متكاملة",
+    sm_services_sub: "اكتشف خدماتنا خطوة بخطوة — اسحب للأسفل",
+    sm_svc_more: "استكشف المزيد",
+    sm_svc_tagline: "كل صورة تحكي ألف كلمة",
+    sm_svc_tag_drone: "Drone",
+    sm_svc_tag_branding: "Personal Branding",
+    sm_svc_tag_products: "تصوير المنتجات",
+    sm_svc_tag_events: "تصوير الفعاليات",
+    sm_svc_photo_title: "التصوير الاحترافي",
+    sm_svc_photo_desc:
+      "نلتقط اللحظات التي تستحق أن تُرى. بعين خبيرة وأدوات احترافية، نحوّل كل لحظة إلى صورة تعكس جوهر ما تريد قوله للعالم.",
+    sm_svc_video_title: "إنتاج الفيديوهات",
+    sm_svc_video_desc:
+      "نصنع فيديوهات احترافية تحكي قصة علامتك التجارية بأسلوب إبداعي يجذب الانتباه ويحقق أهدافك التسويقية، من اللقطة الأولى حتى التسليم النهائي.",
+    sm_svc_graphic_title: "التصميم الجرافيكي",
+    sm_svc_content_title: "صناعة المحتوى",
+    sm_svc_coverage_title: "التغطية والاستشارات",
+    sm_svc_coverage_desc:
+      "نغطي مؤتمراتك ومبادراتك ونعدّ تقاريرها الإعلامية، ونقدّم لك تدريبًا على صناعة المحتوى والظهور أمام الكاميرا، واستشارات لبناء حضورك الإعلامي.",
+
+    sm_why_pill: "مميزات صوت ميديا",
+    sm_why_title: "لماذا صوت ميديا",
+    sm_why_sub:
+      "صوت ميديا فريق يتن خبرته من حكاية أصعب القصص بمصداقية، وتوصّلها لجمهور عالمي",
+    sm_why_deadline_title: "الالتزام بالمواعيد",
+    sm_why_deadline_desc:
+      "نسلّم في الوقت المحدد دائمًا. الوقت أمرٌ ومنهج، ندعمه وتُعتمد خطة أعمالك.",
+    sm_why_quality_title: "جودة عالمية",
+    sm_why_quality_desc:
+      "معايير إنتاج احترافية في كل مشروع نُنجزه. جودة تُغني عن حديثنا عن مزاياها.",
+    sm_why_team_title: "فريق متخصص",
+    sm_why_team_desc:
+      "خبراء في الإنتاج والإبداع والتسويق يعملون كفريق متكامل لتحويل رؤيتك إلى واقع.",
+    sm_why_integrated_title: "حلول متكاملة",
+    sm_why_integrated_desc:
+      "من أول فكرة حتى آخر بيكسل — نغطي كل احتياجاتك الإبداعية في مكان واحد بدون تشتيت.",
+    sm_why_impact_title: "نتائج قابلة للقياس",
+    sm_why_impact_desc:
+      "محتوى لا يُنتَج للجمال فقط — يُقاس بالأرقام ويُحقق أهدافك التجارية بوضوح.",
+
+    sm_process_pill: "منهجيتنا",
+    sm_process_title: "رحلتنا معك",
+    sm_process_sub: "ست خطوات واضحة تضمن لك نتيجة استثنائية في كل مرة",
+    sm_step_request_title: "طلب الخدمة",
+    sm_step_request_desc: "تتواصل معنا وتخبرنا عن فكرتك. نرد في أقل من 24 ساعة.",
+    sm_step_discovery_title: "دراسة الاحتياج",
+    sm_step_discovery_desc: "نحلل متطلباتك ونفهم جمهورك وأهدافك بعمق.",
+    sm_step_plan_title: "إعداد الخطة",
+    sm_step_plan_desc: "نضع خطة عمل واضحة بجدول زمني وميزانية محددة.",
+    sm_step_produce_title: "التنفيذ والإنتاج",
+    sm_step_produce_desc: "ينفّذ الفريق المشروع بمعايير احترافية ومتابعة مستمرة.",
+    sm_step_review_title: "المراجعة والتسليم",
+    sm_step_review_desc: "نراجع العمل معك ونعدّله حتى يصل إلى الصورة التي تريدها.",
+    sm_step_followup_title: "المتابعة بعد التسليم",
+    sm_step_followup_desc: "نبقى معك بعد التسليم لقياس الأثر ودعم ما يحتاج تطويرًا.",
+
+    sm_works_pill: "أعمالنا",
+    sm_works_title: "أبرز أعمالنا",
+    sm_works_sub:
+      "نستعرض أبرز مشاريعنا في الإنتاج والتصوير والتصميم والتسويق. نتائج قابلة للقياس تتحدث عن نفسها.",
+    sm_works_tag: "تطوير",
+    sm_works_date: "2026 أغسطس",
+    sm_works_card_title: "خطة تسويقية ل متجر روبانا",
+    sm_works_card_sub:
+      "استراتيجية التسويق الرقمي (Digital Marketing Strategy) - 2026",
+    sm_works_more: "شاهد المزيد من اعمالنا",
+
+    sm_sectors_pill: "القطاعات",
+    sm_sectors_title: "من نخدم ؟",
+    sm_sectors_sub:
+      "تخصص في ثلاثة قطاعات رئيسية نفهم احتياجاتها بعمق ونُقدم حلولاً إعلامية مُصمّمة لكل منها.",
+    sm_sector_startups_title: "المشاريع الناشئة",
+    sm_sector_startups_tagline: "نبني معك من الصفر",
+    sm_sector_startups_desc:
+      "نفهم أن كل مشروع ناشئ يحتاج هوية قوية وحضورًا يُثبت وجوده من اليوم الأول. نرافقك من الفكرة إلى التنفيذ بخطة واضحة.",
+    sm_sector_startups_p1: "هوية بصرية من الصفر",
+    sm_sector_startups_p2: "محتوى لبناء الجمهور",
+    sm_sector_startups_p3: "فيديو تعريفي احترافي",
+    sm_sector_startups_p4: "حضور رقمي متكامل",
+    sm_sector_inst_title: "المؤسسات",
+    sm_sector_inst_tagline: "حضور يليق بثقلكم",
+    sm_sector_inst_desc:
+      "المؤسسات الحكومية والمدنية والأهلية تحتاج إعلامًا يعكس مصداقيتها وقيمها. نُنتج محتوى يعبّر عن هذا الثقل باحتراف.",
+    sm_sector_inst_p1: "تغطية وتوثيق الفعاليات",
+    sm_sector_inst_p2: "تقارير مرئية احترافية",
+    sm_sector_inst_p3: "هوية بصرية مؤسسية",
+    sm_sector_inst_p4: "إعلام داخلي وخارجي",
+    sm_sector_comp_title: "الشركات",
+    sm_sector_comp_tagline: "محتوى يحقق نتائج",
+    sm_sector_comp_desc:
+      "نعمل مع الشركات لتحويل أهدافها التجارية إلى محتوى مؤثر يصل للعملاء المناسبين ويحقق عائدًا ملموسًا وقابلًا للقياس.",
+    sm_sector_comp_p1: "حملات تسويق رقمي",
+    sm_sector_comp_p2: "إعلانات تجارية مؤثرة",
+    sm_sector_comp_p3: "إدارة هوية العلامة",
+    sm_sector_comp_p4: "تصوير منتجات احترافي",
+
+    sm_partners_title: "شركاء النجاح",
+
+    sm_consult_pill: "الاستشارات",
+    sm_consult_title: "احجز استشارتك مع خبراء صوت ميديا",
+    sm_consult_desc:
+      "صوت ميديا وكالة إعلامية إبداعية متكاملة، تقدم حلولاً إعلامية شاملة من الاستراتيجية إلى الإنتاج والنشر. لسنا مجرد مزود خدمات — نحن شريكك الإبداعي الذي يفهم أهدافك ويعمل على تحقيقها.",
+    sm_consult_perk_team: "فريق متخصص ومحترف",
+    sm_consult_perk_full: "حلول إعلامية متكاملة",
+    sm_consult_perk_privacy: "سرية تامة",
+    sm_consult_perk_impact: "صناعة أثر حقيقي ومستدام",
+    sm_form_title: "احجز الأن",
+    sm_form_name: "الاسم الكامل",
+    sm_form_name_ph: "محمد احمد",
+    sm_form_phone: "رقم الهاتف",
+    sm_form_phone_ph: "59999999",
+    sm_form_email: "البريد الالكتروني",
+    sm_form_email_ph: "Mohamed@Gmail.Com",
+    sm_form_service: "الخدمة المطلوبة",
+    sm_form_service_ph: "اختر الخدمة المطلوبة",
+    sm_form_submit: "احجز استشارتك",
+
+    sm_pkg_pill: "الباقات",
+    sm_pkg_title: "جمعنا لك الخدمات المناسبة في باقة واحدة ,",
+    sm_pkg_title_hl: "اختر باقتك",
+    sm_pkg_sub:
+      "باقات متخصصة حسب نوع الخدمة — كل باقة مصممة لتلبية احتياجات محددة بدقة.",
+    sm_pkg_social_title: "باقة السوشيل ميديا",
+    sm_pkg_social_tagline: "حضور رقمي احترافي ومتكامل",
+    sm_pkg_social_desc:
+      "كل ما تحتاجه لبناء حضور قوي على منصات التواصل الاجتماعي من تصميم ومحتوى وإدارة.",
+    sm_pkg_web_title: "باقة المواقع الإلكترونية",
+    sm_pkg_web_desc:
+      "تصميم وبرمجة مواقع إلكترونية احترافية من الصفر حتى الإطلاق.",
+    sm_pkg_mkt_title: "باقة التسويق الرقمي",
+    sm_pkg_mkt_tagline: "تعزيز الظهور الرقمي وزيادة المبيعات",
+    sm_pkg_mkt_desc:
+      "استراتيجيات تسويقية مبتكرة تشمل الإعلانات المدفوعة والتسويق عبر البريد الإلكتروني.",
+    sm_pkg_note_daily: "تصاميم يومية لجميع المنصات",
+    sm_pkg_note_publish: "نشر ومتابعة وتفاعل يومي",
+    sm_pkg_note_growth: "استراتيجية مدروسة للنمو",
+    sm_pkg_note_copy: "كتابة كابشنات وقصص هادفة",
+    sm_pkg_note_reels: "محتوى مرئي سريع الوصول",
+    sm_pkg_note_support: "صيانة ودعم فني مستمر",
+    sm_pkg_f_social_1: "تصاميم سوشيل ميديا",
+    sm_pkg_f_social_2: "إدارة الحسابات",
+    sm_pkg_f_social_3: "خطة تسويقية شهرية",
+    sm_pkg_f_social_4: "إنتاج محتوى مكتوب",
+    sm_pkg_f_social_5: "ريلز وفيديوهات قصيرة",
+    sm_pkg_f_web_1: "تصميم UI/UX",
+    sm_pkg_f_web_2: "برمجة الواجهة الأمامية",
+    sm_pkg_f_web_3: "برمجة الخادم",
+    sm_pkg_f_web_4: "تحسين SEO",
+    sm_pkg_f_web_5: "دعم ما بعد الإطلاق",
+    sm_pkg_f_mkt_1: "تحليل البيانات",
+    sm_pkg_f_mkt_2: "إدارة الحملات الإعلانية",
+    sm_pkg_f_mkt_3: "تحليل أداء الحملة",
+    sm_pkg_f_mkt_4: "إنتاج محتوى ترويجي",
+    sm_pkg_f_mkt_5: "تقارير شهرية للأداء",
+
+    sm_testi_pill: "اراء العملاء",
+    sm_testi_title: "ماذا يقول عنّا عملاؤنا",
+    sm_testi_quote:
+      "التوجيه الذي تلقيته من المرشدين كان له تأثير كبير على مسيرتي. نصائحهم القيّمة ساعدتني في اتخاذ قرارات مدروسة في مشاريعي.",
+    sm_testi_sara_name: "سارة القحطاني",
+    sm_testi_sara_meta: "مخرجة — تقنية",
+    sm_testi_khaled_name: "خالد الحسيني",
+    sm_testi_khaled_meta: "مدير تسويق — تجارة",
+    sm_testi_rana_name: "رنا العمري",
+    sm_testi_rana_meta: "مؤسِّسة — مشروع ناشئ",
+    sm_testi_yousef_name: "يوسف الدوس",
+    sm_testi_yousef_meta: "مدير اتصال — مؤسسة",
+
+    sm_faq_pill: "الأسئلة الشائعة",
+    sm_faq_title: "الأسئلة التي تدور ببالك؟",
+    sm_faq_sub: "أرقام حقيقية تعكس قوة مجتمعنا",
+    sm_faq_q1: "هل يمكنني نشر أعمالي بعد التدريب؟",
+    sm_faq_q2: "هل أحتاج خبرة مسبقة للتقديم؟",
+    sm_faq_q3: "هل البرنامج نظري أم عملي؟",
+    sm_faq_q4: "هل يمكنني نشر أعمالي بعد التدريب؟",
+    sm_faq_q5: "هل أحصل على شهادة بعد الانتهاء؟",
+    sm_faq_a:
+      "البرنامج عملي بشكل كامل، حيث ستقوم بتطبيق كل ما تتعلمه عبر مشاريع حقيقية.",
   },
 
   en: {
@@ -2853,6 +3080,237 @@ export const translations: any = {
     crs_dm_outcome_after_i3: "You master launching and managing paid campaigns.",
     crs_dm_outcome_after_i4: "You have a portfolio of your work.",
     crs_dm_outcome_after_i5: "You know how to read metrics and improve results.",
+
+    /* ===== Sawt Media — /media ===== */
+    sm_brand: "Sawt Media",
+    sm_nav_back: "Back to Sawt platform",
+    sm_nav_about: "About Sawt Media",
+    sm_nav_works: "Our work",
+    sm_nav_services: "Services",
+    sm_nav_process: "Our method",
+    sm_cta_start: "Start your project",
+    sm_cta_services: "Explore our services",
+    sm_chip_satisfaction: "Client satisfaction",
+
+    sm_hero_title: "Sawt Media presents...",
+    sm_hero_word_consult: "Consulting",
+    sm_hero_word_video: "Video production",
+    sm_hero_word_photo: "Professional photography",
+    sm_hero_word_design: "Graphic design",
+    sm_hero_word_content: "Content creation",
+    sm_hero_desc:
+      "We turn your ideas into media experiences that land. From strategy to production and publishing — all in one place.",
+
+    sm_tick_graphic: "Graphic design",
+    sm_tick_coverage: "Coverage & consulting",
+    sm_tick_video: "Video production",
+    sm_tick_ux: "UX design",
+    sm_tick_ui: "UI design",
+    sm_tick_content: "Content creation",
+
+    sm_about_pill: "About us",
+    sm_about_title: "Your full-service media partner",
+    sm_about_desc:
+      "Sawt Media is a full-service creative agency delivering media solutions from strategy through production and publishing. We are not just a vendor — we are the creative partner who understands your goals and works to reach them.",
+    sm_about_vision_title: "Our vision",
+    sm_about_vision_desc:
+      "To become the leading technology platform for managing book fairs in the Arab world.",
+    sm_about_mission_title: "Our mission",
+    sm_about_mission_desc:
+      "To help book-fair organisers run their events more efficiently and with a better experience.",
+
+    sm_stats_pill: "Sawt Media in numbers",
+    sm_stats_title: "Numbers we are proud of",
+    sm_stats_sub: "Numbers that reflect our clients' trust and our quality",
+    sm_stat_campaigns: "Media campaigns delivered",
+    sm_stat_years: "Years of experience",
+    sm_stat_satisfaction: "Client satisfaction rate",
+    sm_stat_clients: "Happy clients",
+    sm_stat_projects: "Projects completed",
+
+    sm_services_pill: "Our services",
+    sm_services_title: "Integrated media solutions",
+    sm_services_sub: "Discover our services step by step — scroll down",
+    sm_svc_more: "Explore more",
+    sm_svc_tagline: "Every picture tells a thousand words",
+    sm_svc_tag_drone: "Drone",
+    sm_svc_tag_branding: "Personal Branding",
+    sm_svc_tag_products: "Product photography",
+    sm_svc_tag_events: "Event photography",
+    sm_svc_photo_title: "Professional photography",
+    sm_svc_photo_desc:
+      "We capture the moments worth seeing. With an expert eye and professional gear, we turn every moment into an image that carries what you want to tell the world.",
+    sm_svc_video_title: "Video production",
+    sm_svc_video_desc:
+      "We produce professional videos that tell your brand's story creatively, grab attention and meet your marketing goals — from the first shot to final delivery.",
+    sm_svc_graphic_title: "Graphic design",
+    sm_svc_content_title: "Content creation",
+    sm_svc_coverage_title: "Coverage & consulting",
+    sm_svc_coverage_desc:
+      "We cover your conferences and initiatives and write up their media reports, train you on content creation and on-camera presence, and advise you on building your media presence.",
+
+    sm_why_pill: "Why Sawt Media",
+    sm_why_title: "Why Sawt Media",
+    sm_why_sub:
+      "A team that draws on its experience to tell the hardest stories with credibility, and carry them to a global audience",
+    sm_why_deadline_title: "On-time delivery",
+    sm_why_deadline_desc:
+      "We always deliver on schedule. Time is a discipline, and your plan is what we protect.",
+    sm_why_quality_title: "World-class quality",
+    sm_why_quality_desc:
+      "Professional production standards on every project we deliver — quality that speaks for itself.",
+    sm_why_team_title: "Specialist team",
+    sm_why_team_desc:
+      "Production, creative and marketing experts working as one team to turn your vision into reality.",
+    sm_why_integrated_title: "End-to-end solutions",
+    sm_why_integrated_desc:
+      "From the first idea to the last pixel — every creative need covered in one place, with no scatter.",
+    sm_why_impact_title: "Measurable results",
+    sm_why_impact_desc:
+      "Content that isn't made to look pretty — it's measured in numbers and hits your business goals.",
+
+    sm_process_pill: "Our method",
+    sm_process_title: "Our journey with you",
+    sm_process_sub: "Six clear steps that guarantee an exceptional result every time",
+    sm_step_request_title: "Service request",
+    sm_step_request_desc:
+      "You reach out and tell us your idea. We reply in under 24 hours.",
+    sm_step_discovery_title: "Needs discovery",
+    sm_step_discovery_desc:
+      "We analyse your requirements and get to know your audience and goals in depth.",
+    sm_step_plan_title: "Building the plan",
+    sm_step_plan_desc: "We set a clear plan with a timeline and a defined budget.",
+    sm_step_produce_title: "Execution & production",
+    sm_step_produce_desc:
+      "The team delivers the project to professional standards, with continuous follow-up.",
+    sm_step_review_title: "Review & delivery",
+    sm_step_review_desc:
+      "We review the work with you and refine it until it matches what you had in mind.",
+    sm_step_followup_title: "Post-delivery follow-up",
+    sm_step_followup_desc:
+      "We stay with you after delivery to measure the impact and support what needs work.",
+
+    sm_works_pill: "Our work",
+    sm_works_title: "Selected work",
+    sm_works_sub:
+      "A look at our best projects in production, photography, design and marketing. Measurable results that speak for themselves.",
+    sm_works_tag: "Development",
+    sm_works_date: "August 2026",
+    sm_works_card_title: "Marketing plan for Rubana store",
+    sm_works_card_sub: "Digital Marketing Strategy - 2026",
+    sm_works_more: "See more of our work",
+
+    sm_sectors_pill: "Sectors",
+    sm_sectors_title: "Who do we serve?",
+    sm_sectors_sub:
+      "We specialise in three main sectors, understand their needs deeply and design media solutions for each.",
+    sm_sector_startups_title: "Startups",
+    sm_sector_startups_tagline: "We build with you from zero",
+    sm_sector_startups_desc:
+      "Every startup needs a strong identity and a presence that proves it exists from day one. We walk with you from idea to execution with a clear plan.",
+    sm_sector_startups_p1: "Visual identity from scratch",
+    sm_sector_startups_p2: "Content that builds an audience",
+    sm_sector_startups_p3: "Professional intro video",
+    sm_sector_startups_p4: "Complete digital presence",
+    sm_sector_inst_title: "Institutions",
+    sm_sector_inst_tagline: "A presence that matches your weight",
+    sm_sector_inst_desc:
+      "Government, civil and non-profit institutions need media that reflects their credibility and values. We produce content that carries that weight professionally.",
+    sm_sector_inst_p1: "Event coverage & documentation",
+    sm_sector_inst_p2: "Professional visual reports",
+    sm_sector_inst_p3: "Institutional visual identity",
+    sm_sector_inst_p4: "Internal & external comms",
+    sm_sector_comp_title: "Companies",
+    sm_sector_comp_tagline: "Content that delivers results",
+    sm_sector_comp_desc:
+      "We work with companies to turn commercial goals into content that reaches the right customers and returns something tangible and measurable.",
+    sm_sector_comp_p1: "Digital marketing campaigns",
+    sm_sector_comp_p2: "High-impact commercials",
+    sm_sector_comp_p3: "Brand identity management",
+    sm_sector_comp_p4: "Professional product photography",
+
+    sm_partners_title: "Partners in success",
+
+    sm_consult_pill: "Consulting",
+    sm_consult_title: "Book a consultation with Sawt Media's experts",
+    sm_consult_desc:
+      "Sawt Media is a full-service creative agency delivering media solutions from strategy through production and publishing. We are not just a vendor — we are the creative partner who understands your goals and works to reach them.",
+    sm_consult_perk_team: "A specialist, professional team",
+    sm_consult_perk_full: "End-to-end media solutions",
+    sm_consult_perk_privacy: "Full confidentiality",
+    sm_consult_perk_impact: "Real, lasting impact",
+    sm_form_title: "Book now",
+    sm_form_name: "Full name",
+    sm_form_name_ph: "Mohamed Ahmed",
+    sm_form_phone: "Phone number",
+    sm_form_phone_ph: "59999999",
+    sm_form_email: "Email address",
+    sm_form_email_ph: "Mohamed@Gmail.Com",
+    sm_form_service: "Service needed",
+    sm_form_service_ph: "Choose the service you need",
+    sm_form_submit: "Book your consultation",
+
+    sm_pkg_pill: "Packages",
+    sm_pkg_title: "We bundled the right services into one package,",
+    sm_pkg_title_hl: "pick yours",
+    sm_pkg_sub:
+      "Packages specialised by service type — each one built to meet a specific need precisely.",
+    sm_pkg_social_title: "Social media package",
+    sm_pkg_social_tagline: "A professional, complete digital presence",
+    sm_pkg_social_desc:
+      "Everything you need to build a strong presence on social platforms — design, content and management.",
+    sm_pkg_web_title: "Websites package",
+    sm_pkg_web_desc:
+      "Design and development of professional websites, from scratch through launch.",
+    sm_pkg_mkt_title: "Digital marketing package",
+    sm_pkg_mkt_tagline: "More digital visibility and more sales",
+    sm_pkg_mkt_desc:
+      "Inventive marketing strategies covering paid ads and email marketing.",
+    sm_pkg_note_daily: "Daily designs for every platform",
+    sm_pkg_note_publish: "Daily publishing, monitoring and engagement",
+    sm_pkg_note_growth: "A deliberate growth strategy",
+    sm_pkg_note_copy: "Purposeful captions and stories",
+    sm_pkg_note_reels: "Fast-reach visual content",
+    sm_pkg_note_support: "Ongoing maintenance and support",
+    sm_pkg_f_social_1: "Social media designs",
+    sm_pkg_f_social_2: "Account management",
+    sm_pkg_f_social_3: "Monthly marketing plan",
+    sm_pkg_f_social_4: "Written content production",
+    sm_pkg_f_social_5: "Reels and short videos",
+    sm_pkg_f_web_1: "UI/UX design",
+    sm_pkg_f_web_2: "Front-end development",
+    sm_pkg_f_web_3: "Back-end development",
+    sm_pkg_f_web_4: "SEO optimisation",
+    sm_pkg_f_web_5: "Post-launch support",
+    sm_pkg_f_mkt_1: "Data analysis",
+    sm_pkg_f_mkt_2: "Ad campaign management",
+    sm_pkg_f_mkt_3: "Campaign performance analysis",
+    sm_pkg_f_mkt_4: "Promotional content production",
+    sm_pkg_f_mkt_5: "Monthly performance reports",
+
+    sm_testi_pill: "Client reviews",
+    sm_testi_title: "What our clients say about us",
+    sm_testi_quote:
+      "The guidance I got from the mentors had a huge effect on my path. Their advice helped me make well-considered decisions on my projects.",
+    sm_testi_sara_name: "Sara Al-Qahtani",
+    sm_testi_sara_meta: "Director — Technology",
+    sm_testi_khaled_name: "Khaled Al-Husseini",
+    sm_testi_khaled_meta: "Marketing manager — Retail",
+    sm_testi_rana_name: "Rana Al-Omari",
+    sm_testi_rana_meta: "Founder — Startup",
+    sm_testi_yousef_name: "Yousef Al-Dous",
+    sm_testi_yousef_meta: "Communications lead — Institution",
+
+    sm_faq_pill: "FAQ",
+    sm_faq_title: "The questions on your mind",
+    sm_faq_sub: "Real numbers that reflect the strength of our community",
+    sm_faq_q1: "Can I publish my work after the training?",
+    sm_faq_q2: "Do I need prior experience to apply?",
+    sm_faq_q3: "Is the programme theoretical or practical?",
+    sm_faq_q4: "Can I publish my work after the training?",
+    sm_faq_q5: "Do I get a certificate at the end?",
+    sm_faq_a:
+      "The programme is fully practical — you apply everything you learn on real projects.",
   },
 };
 

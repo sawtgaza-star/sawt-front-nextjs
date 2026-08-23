@@ -19,8 +19,13 @@ const rubik = Rubik({
   variable: "--fontFamily-text",
 });
 
+/* The title here doubles as the home page's: (main)/page.tsx is a Client
+   Component, and Next.js reads `metadata` from Server Components only, so `/`
+   has nowhere of its own to declare one. Every other route sets its own title
+   (in its page.tsx, or a metadata-only layout.tsx where the page is a client
+   one), so this default is only ever seen on `/`. */
 export const metadata: Metadata = {
-  title: "Sawt",
+  title: "منصة صوت | Sawt Platform",
   icons: { icon: "/assets/images/icon.png" },
 };
 
