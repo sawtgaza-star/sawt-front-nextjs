@@ -1,29 +1,18 @@
 "use client";
-import { useEffect, useState } from "react";
+import { HERO_FAN } from "./media-photos";
+import { useHeroRotation } from "./MediaHeroRotation";
 
-/* The orange half of "…صوت ميديا تقدم" cycles through the agency's services.
-   Client leaf on purpose — the rest of the hero stays a Server Component.
+/* The orange half of "…صوت ميديا تقدم". It doesn't run a cycle of its own: it
+   names whichever card of the fan is in the focus seat, so the word and the
+   photo under it always change on the same tick (see MediaHeroRotation).
 
    Each word carries its own data-i18n key, so a language switch mid-cycle
    still translates: initTranslate() runs on the node that happens to be
    mounted, and the next tick remounts an already-correct one. */
-const WORDS = [
-  { key: "sm_hero_word_consult", text: "الاستشارات" },
-  { key: "sm_hero_word_video", text: "إنتاج الفيديوهات" },
-  { key: "sm_hero_word_photo", text: "التصوير الاحترافي" },
-  { key: "sm_hero_word_design", text: "التصميم الجرافيكي" },
-  { key: "sm_hero_word_content", text: "صناعة المحتوى" },
-];
-
 export default function MediaHeroWord() {
-  const [i, setI] = useState(0);
+  const { focus } = useHeroRotation();
+  const w = HERO_FAN[focus];
 
-  useEffect(() => {
-    const id = setInterval(() => setI((n) => (n + 1) % WORDS.length), 2600);
-    return () => clearInterval(id);
-  }, []);
-
-  const w = WORDS[i];
   return (
     /* keyed so React swaps the node and the fade-up animation replays */
     <span className="sm-hero-word" key={w.key} data-i18n={w.key}>

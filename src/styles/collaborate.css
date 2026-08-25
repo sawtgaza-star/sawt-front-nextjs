@@ -1,0 +1,1202 @@
+/* ============================================================
+   Collaborate page (تعاون معنا) — /collaborate
+   Where the home hero's "تعاون معنا" button lands. Built from the
+   design mockup. Every class is namespaced `cl-` so it never
+   clashes with style.css (loaded by the (main) layout) or
+   creators.css, whose breadcrumb hero (cr-header / cr-hero) and
+   section heading pair (cr-section-head / cr-highlight) this page
+   reuses — same arrangement as /support.
+   ============================================================ */
+
+.cl-page {
+  background-color: #ffffff;
+  /* Horizontal only. A plain `overflow: hidden` also clips vertically, which
+     cut the dial-code / platform menus off at the page's bottom edge — i.e.
+     right where the footer starts — since an absolutely-positioned element
+     can't escape a clipping ancestor. `clip` on one axis leaves the other
+     genuinely visible (`hidden` would force it to `auto`). */
+  overflow-x: clip;
+}
+
+/* The mock's heading is black, including the brush-stroke word that the
+   global .cr-highlight (creators.css) paints green. Same override /support
+   uses for its own sections. */
+.cl-page .cr-section-title,
+.cl-page .cr-section-title .cr-highlight {
+  color: #1c1c1c;
+  text-align: center;
+}
+
+.cl-section {
+  padding: 80px 0;
+}
+
+/* ---------- "اختر نوع التعاون" — the four collaboration types ----------
+   Four equal cards on one row in the mock; they wrap to 2 then 1 below. */
+.cl-types-row {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  align-items: stretch;
+  gap: 20px;
+}
+
+/* Each option is a <label>, so the whole card is the radio's hit area. */
+.cl-type {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  padding: 20px 32px;
+  background: #ffffff;
+  border: 1px solid #c8c8c8;
+  border-radius: 20px;
+  cursor: pointer;
+  transition: border-color 0.2s ease, background 0.2s ease;
+}
+.cl-type:hover {
+  border-color: #4c5c37;
+}
+.cl-type.is-selected {
+  border-color: #4c5c37;
+  background: #EDEFEB;
+}
+
+/* the native input stays focusable but is covered by .cl-type-dot */
+.cl-type-input {
+  position: absolute;
+  opacity: 0;
+  width: 0;
+  height: 0;
+  margin: 0;
+}
+
+/* icon tile on the RTL start side, radio on the other */
+.cl-type-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+.cl-type-icon {
+  display: flex;
+  width: 68px;
+  height: 68px;
+  flex: 0 0 68px;
+  justify-content: center;
+  align-items: center;
+  border-radius: 16px;
+  background: #edefeb;
+}
+/* Selected card: the panel takes the olive tint, so the tile flips to white
+   to keep the glyph (#364127) reading against it. */
+.cl-type.is-selected .cl-type-icon {
+  background: #ffffff;
+}
+.cl-type-icon svg {
+  display: block;
+  width: 32px;
+  height: 32px;
+  fill: #364127;
+}
+
+.cl-type-dot {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  flex: 0 0 20px;
+  margin-top: 4px;
+  border: 2px solid #1c1c1c;
+  border-radius: 50%;
+}
+.cl-type-dot::after {
+  content: "";
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: #1c1c1c;
+  transform: scale(0);
+  transition: transform 0.15s ease;
+}
+.cl-type-input:checked + .cl-type-head .cl-type-dot::after {
+  transform: scale(1);
+}
+.cl-type-input:focus-visible + .cl-type-head .cl-type-dot {
+  outline: 2px solid #4c5c37;
+  outline-offset: 3px;
+}
+
+.cl-type-title {
+  font-size: 22px;
+  font-weight: 800;
+  color: #1c1c1c;
+  text-align: start;
+  margin-bottom: 10px;
+}
+.cl-type-desc {
+  font-size: 15px;
+  color: #6d6d6d;
+  line-height: 1.9;
+  text-align: start;
+  margin-bottom: 0;
+  /* keeps every card the same height regardless of copy length */
+  flex: 1 1 auto;
+}
+
+/* ============================================================
+   "صانع محتوى" application wizard
+   Opens under the type cards once that card is picked: a progress
+   card, one step of fields at a time, and a prev / dots / next
+   footer. The mock keeps this column narrower than the container.
+   ============================================================ */
+.cl-wizard {
+  max-width: 1100px;
+  margin-inline: auto;
+}
+
+/* --- progress card: "الخطوة N من 3" + the step rail --- */
+.cl-steps-card {
+  position: relative;
+  margin-bottom: 44px;
+  padding: 20px 24px;
+  background: #F2F2F2;
+  border-radius: 16px;
+}
+/* second surface sitting behind the card — the negative inset is the strip
+   that shows as a frame all the way around */
+.cl-steps-card::before {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  inset: -10px;
+  background: #DFE1DB;
+  border-radius: 16px;
+}
+.cl-steps-counter {
+  margin: 0 0 8px;
+  font-size: 14px;
+  font-weight: 600;
+  color: #4c5c37;
+  text-align: start;
+}
+.cl-steps {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.cl-step {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+.cl-step-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 56px;
+  height: 56px;
+  flex: 0 0 56px;
+  border-radius: 32px;
+  background: #dadada;
+  color: #919191;
+  font-size: 24px;
+}
+.cl-step-label {
+  font-size: 20px;
+  font-weight: 600;
+  color: #919191;
+  white-space: nowrap;
+}
+/* rule that joins a step to the next one — the last step has nothing to join */
+.cl-step-line {
+  width: 84px;
+  height: 2px;
+  background: #c8c8c8;
+}
+.cl-step:last-child .cl-step-line {
+  display: none;
+}
+
+.cl-step.is-active .cl-step-icon {
+  background: #FFF3EB;
+  color: #FF7420;
+}
+.cl-step.is-active .cl-step-label {
+  color: #1c1c1c;
+  font-weight: 800;
+}
+
+/* a step already behind the current one: solid orange tick, and its rule is
+   filled in up to the next step */
+.cl-step.is-done .cl-step-icon {
+  background: #ff7420;
+  color: #ffffff;
+}
+.cl-step.is-done .cl-step-label {
+  color: #1c1c1c;
+  font-weight: 800;
+}
+.cl-step.is-done .cl-step-line {
+  background: #ff7420;
+}
+
+/* --- two-step rail ("تعاون آخر") ---
+   Three circles fill the card on their own, so those rails stay centred with a
+   fixed rule. With only two, the mock anchors them at the start of the card and
+   stretches the rule between them instead, leaving the tail of the card empty. */
+.cl-steps.is-pair {
+  flex-wrap: nowrap;
+  justify-content: flex-start;
+  max-width: 74%;
+}
+.cl-steps.is-pair .cl-step:first-child {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+.cl-steps.is-pair .cl-step-label {
+  flex: 0 0 auto;
+}
+.cl-steps.is-pair .cl-step-line {
+  width: auto;
+  flex: 1 1 auto;
+  min-width: 56px;
+}
+
+/* --- the fields of one step --- */
+.cl-form {
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+}
+.cl-field {
+  display: flex;
+  flex-direction: column;
+}
+.cl-label {
+  display: block;
+  margin-bottom: 10px;
+  font-size: 16px;
+  font-weight: 700;
+  color: #1c1c1c;
+  text-align: start;
+}
+
+/* the icon sits inside the border, so the frame is on the wrapper and the
+   input itself is chrome-less */
+.cl-input-wrap {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex: 1 1 auto;
+  min-width: 0;
+  height: 48px;
+  padding: 0 16px;
+  background: #ffffff;
+  border: 1px solid #DADADA;
+  border-radius: 8px;
+  transition: border-color 0.2s ease;
+}
+.cl-input-wrap:focus-within {
+  /* border-color: #4c5c37; */
+}
+
+.cl-input-wrap.is-invalid {
+  border-color: #d64545;
+}
+.cl-input-icon {
+  display: inline-flex;
+  align-items: center;
+  font-size: 17px;
+  color: #919191;
+}
+.cl-input {
+  flex: 1 1 auto;
+  min-width: 0;
+  border: 0;
+  background: transparent;
+  font-family: inherit;
+  font-size: 16px;
+  color: #1c1c1c;
+  text-align: start;
+}
+.cl-input:focus {
+  outline: none;
+}
+.cl-input::placeholder {
+  color: #b3b3b3;
+}
+/* the number field carries no spinner in the mock */
+.cl-input[type="number"]::-webkit-outer-spin-button,
+.cl-input[type="number"]::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+.cl-input[type="number"] {
+  -moz-appearance: textfield;
+  appearance: textfield;
+}
+
+.cl-error {
+  margin: 8px 0 0;
+  font-size: 13px;
+  color: #d64545;
+  text-align: start;
+}
+.cl-hint {
+  margin: 10px 0 0;
+  font-size: 14px;
+  color: #7F7F7F;
+  text-align: start;
+}
+
+.cl-counter {
+  margin: 6px 0 0;
+  font-size: 12px;
+  color: #a6a6a6;
+  text-align: end;
+}
+
+.cl-textarea {
+  width: 100%;
+  min-height: 118px;
+  padding: 14px 16px;
+  background: #ffffff;
+  border: 1px solid #e5e5e5;
+  border-radius: 10px;
+  font-family: inherit;
+  font-size: 16px;
+  color: #1c1c1c;
+  line-height: 1.8;
+  text-align: start;
+  resize: vertical;
+}
+.cl-textarea:focus {
+  outline: none;
+  /* border-color: #4c5c37; */
+}
+.cl-textarea::placeholder {
+  color: #b3b3b3;
+}
+
+/* --- phone row: dial-code box + the number field --- */
+.cl-phone-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.cl-country {
+  position: relative;
+  flex: 0 0 auto;
+}
+.cl-country-box {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  height: 48px;
+  padding: 0 14px;
+  background: #ffffff;
+  border: 1px solid #e5e5e5;
+  border-radius: 8px;
+  font-family: inherit;
+  font-size: 15px;
+  color: #1c1c1c;
+  cursor: pointer;
+}
+.cl-country-flag {
+  width: 22px;
+  height: 16px;
+  border-radius: 2px;
+}
+.cl-country-caret {
+  display: inline-flex;
+  align-items: center;
+  font-size: 11px;
+  color: #919191;
+}
+.cl-country-menu {
+  position: absolute;
+  z-index: 20;
+  top: calc(100% + 6px);
+  inset-inline-start: 0;
+  display: none;
+  width: 280px;
+  padding: 8px;
+  background: #ffffff;
+  border: 1px solid #e5e5e5;
+  border-radius: 12px;
+  box-shadow: 0 12px 32px rgba(28, 28, 28, 0.12);
+}
+.cl-country.is-open .cl-country-menu {
+  display: block;
+}
+.cl-country-search input {
+  width: 100%;
+  height: 38px;
+  padding: 0 12px;
+  border: 1px solid #e5e5e5;
+  border-radius: 8px;
+  font-family: inherit;
+  font-size: 14px;
+}
+.cl-country-search input:focus {
+  outline: none;
+  border-color: #4c5c37;
+}
+.cl-country-list {
+  max-height: 240px;
+  margin-top: 8px;
+  overflow-y: auto;
+}
+.cl-country-option {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  padding: 8px 10px;
+  background: transparent;
+  border: 0;
+  border-radius: 8px;
+  font-family: inherit;
+  font-size: 14px;
+  color: #1c1c1c;
+  text-align: start;
+  cursor: pointer;
+}
+.cl-country-option:hover,
+.cl-country-option.is-selected {
+  background: #edefeb;
+}
+.cl-country-option-flag {
+  width: 22px;
+  height: 16px;
+  border-radius: 2px;
+  flex: 0 0 22px;
+}
+.cl-country-option-name {
+  flex: 1 1 auto;
+}
+.cl-country-option-code {
+  color: #6d6d6d;
+  direction: ltr;
+}
+
+/* --- step 2: "نوع المحتوى الذي تنتجه" chips --- */
+.cl-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.cl-chip {
+padding: 4px 8px;
+
+  background: #F5F5F5;
+  border: 0;
+  border-radius: 8px;
+  font-family: inherit;
+  font-size: 18px;
+  font-weight: 500;
+  color: #7A7A7A;
+  cursor: pointer;
+  transition: background 0.2s ease, color 0.2s ease;
+}
+.cl-chip:hover {
+  background: #e2e2e2;
+}
+.cl-chip.is-on {
+  background: #4c5c37;
+  color: #ffffff;
+}
+
+/* --- funding step 2: "نوع الدعم الذي ترغبون بتقديمه" tick boxes ---
+   Same square as .cl-terms, but stacked one option per line with the box on
+   the RTL start side, and it fills solid green once ticked. */
+.cl-checks {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.cl-check {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 16px;
+  color: #6d6d6d;
+  cursor: pointer;
+}
+.cl-check-input {
+  position: absolute;
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+.cl-check-box {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  flex: 0 0 20px;
+  background: #ffffff;
+  border: 1px solid #B6B6B6;
+  border-radius: 4px;
+  font-size: 10px;
+  color: #ffffff;
+}
+.cl-check-box i {
+  opacity: 0;
+  transition: opacity 0.15s ease;
+}
+.cl-check-input:checked + .cl-check-box {
+  background: #4c5c37;
+  border-color: #4c5c37;
+}
+.cl-check-input:checked + .cl-check-box i {
+  opacity: 1;
+}
+.cl-check-input:checked ~ span {
+  /* color: #FFF; */
+}
+.cl-check-input:focus-visible + .cl-check-box {
+  outline: 2px solid #4c5c37;
+  outline-offset: 2px;
+}
+
+/* --- step 3: the social-link rows --- */
+.cl-social-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+/* Platform picker. A native <select> paints its option list with the OS
+   widget, which ignores every rule here (system font, blue highlight) and
+   spills over the fields underneath — so it's a button + panel like
+   .cl-country, and the box below is that button's frame. */
+.cl-social-pick {
+  position: relative;
+  flex: 0 0 auto;
+}
+.cl-social-pick-box {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  height: 48px;
+  padding: 0 12px;
+  background: #ffffff;
+  border: 1px solid #e5e5e5;
+  border-radius: 10px;
+  font-family: inherit;
+  cursor: pointer;
+}
+.cl-social-brand {
+  display: inline-flex;
+  align-items: center;
+  font-size: 16px;
+  color: #919191;
+}
+.cl-social-name {
+  flex: 1 1 auto;
+  min-width: 74px;
+  font-size: 14px;
+  color: #919191;
+  text-align: start;
+  white-space: nowrap;
+}
+.cl-social-caret {
+  display: inline-flex;
+  align-items: center;
+  font-size: 11px;
+  color: #919191;
+}
+
+/* the option list the page can actually style */
+.cl-social-menu {
+  position: absolute;
+  z-index: 20;
+  top: calc(100% + 6px);
+  inset-inline-start: 0;
+  display: none;
+  width: 200px;
+  max-height: 260px;
+  padding: 8px;
+  overflow-y: auto;
+  background: #ffffff;
+  border: 1px solid #e5e5e5;
+  border-radius: 12px;
+  box-shadow: 0 12px 32px rgba(28, 28, 28, 0.12);
+}
+.cl-social-pick.is-open .cl-social-menu {
+  display: block;
+}
+.cl-social-option {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  padding: 8px 10px;
+  background: transparent;
+  border: 0;
+  border-radius: 8px;
+  font-family: inherit;
+  font-size: 14px;
+  color: #1c1c1c;
+  text-align: start;
+  cursor: pointer;
+}
+.cl-social-option:hover,
+.cl-social-option.is-selected {
+  background: #edefeb;
+}
+.cl-social-option-brand {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 18px;
+  font-size: 16px;
+  color: #919191;
+}
+.cl-social-option-name {
+  flex: 1 1 auto;
+}
+.cl-social-remove {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  background: transparent;
+  border: 0;
+  font-size: 17px;
+  color: #e04343;
+  cursor: pointer;
+}
+.cl-social-remove:hover {
+  color: #b52f2f;
+}
+
+.cl-add-platform {
+  display: inline-flex;
+  align-items: center;
+  align-self: flex-start;
+  gap: 8px;
+  padding: 8px 12px;
+  background: #ffffff;
+  border: 1px solid #4C5C37;
+  border-radius: 24px;
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 600;
+  color: #6D6D6D;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+.cl-add-platform:hover {
+  background: #f3f3f3;
+}
+
+/* --- intro-video drop zone --- */
+.cl-drop {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  padding: 34px 24px;
+  background: #f7f7f4;
+border: 1px dashed #4C5C37;
+  border-radius:24px;
+  text-align: center;
+  cursor: pointer;
+}
+.cl-drop-input {
+  position: absolute;
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+.cl-drop-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 68px;
+  height: 68px;
+  border-radius: 16px;
+  background: #4c5c37;
+  color: #ffffff;
+  font-size: 30px;
+}
+.cl-drop-title {
+  font-size: 20px;
+  font-weight: 800;
+  color: #1c1c1c;
+}
+.cl-drop-hint {
+  font-size: 18px;
+  color: #6D6D6D;
+}
+.cl-drop-file {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: 12px;
+  padding: 10px 16px;
+  background: #edefeb;
+  border-radius: 10px;
+  font-size: 14px;
+}
+.cl-drop-file-size {
+  color: #6d6d6d;
+}
+.cl-drop-remove {
+  padding: 0;
+  background: transparent;
+  border: 0;
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 600;
+  color: #d64545;
+  cursor: pointer;
+}
+
+/* --- join terms + the confirmation note --- */
+.cl-terms {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 14px;
+  font-weight: 700;
+  color: #4c5c37;
+  cursor: pointer;
+}
+.cl-terms-input {
+  position: absolute;
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+.cl-terms-box {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 18px;
+  height: 18px;
+  flex: 0 0 18px;
+  border: 1.5px solid #4c5c37;
+  border-radius: 4px;
+  font-size: 10px;
+  color: #4c5c37;
+}
+.cl-terms-box i {
+  opacity: 0;
+  transition: opacity 0.15s ease;
+}
+.cl-terms-input:checked + .cl-terms-box i {
+  opacity: 1;
+}
+.cl-terms.is-invalid .cl-terms-box {
+  border-color: #d64545;
+}
+.cl-terms-input:focus-visible + .cl-terms-box {
+  outline: 2px solid #4c5c37;
+  outline-offset: 2px;
+}
+
+.cl-note {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 24px;
+  background: #fff3eb;
+  border-radius: 12px;
+  /* the accent sits on the panel's start edge (= right in RTL) */
+  border-inline-start: 3px solid #ff7420;
+  font-size: 20px;
+  color: #1c1c1c;
+}
+.cl-note-icon {
+  display: inline-flex;
+  align-items: center;
+  font-size: 18px;
+  color: #161616;
+}
+
+/* --- step footer (rule + back / dots / next) --- */
+.cl-nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-top: 30px;
+  padding-top: 24px;
+  border-top: 1px solid #e5e5e5;
+}
+.cl-nav-back {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 0;
+  background: transparent;
+  border: 0;
+  font-family: inherit;
+  font-size: 16px;
+  font-weight: 700;
+  color: #6d6d6d;
+  cursor: pointer;
+      flex-direction: row-reverse;
+}
+.cl-nav-back:hover {
+  color: #1c1c1c;
+}
+.cl-nav-back-arrow,
+.cl-nav-next-arrow {
+  display: inline-flex;
+  align-items: center;
+  font-size: 18px;
+}
+/* the chevron ships pointing to the inline end, so "back" flips it */
+.cl-nav-back-arrow {
+  transform: rotate(180deg);
+}
+[dir="ltr"] .cl-nav-back-arrow {
+  transform: none;
+}
+[dir="ltr"] .cl-nav-next-arrow {
+  transform: rotate(180deg);
+}
+/* the submit arrow points up-left, so English mirrors it to up-right —
+   rotating it like the chevron would send it down-right instead */
+[dir="ltr"] .cl-nav-next-arrow.is-diagonal {
+  transform: scaleX(-1);
+}
+
+.cl-nav-dots {
+
+  padding: 6px 10px;
+
+
+
+    display: inline-flex;
+  align-items: center;
+  gap: 6px;
+
+ border-radius: 10.667px;
+  border: 0.667px solid  #4C5C37;
+  border-radius: 999px;
+}
+.cl-nav-dot {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: #c8c8c8;
+}
+.cl-nav-dot.is-on {
+  width: 10px;
+  height: 10px;
+  background: #4C5C37;
+}
+
+.cl-nav-next {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 16px;
+  background: #4c5c37;
+  border: 0;
+  border-radius: 999px;
+  font-family: inherit;
+  font-size: 16px;
+  font-weight: 600;
+  color: #ffffff;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+.cl-nav-next:hover {
+  background: #3d4a2c;
+}
+
+/* --- what replaces the wizard once the application is in --- */
+.cl-done {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  padding: 56px 24px;
+  background: #f7f7f4;
+  border: 1px solid #dfe1db;
+  border-radius: 20px;
+  text-align: center;
+}
+.cl-done-icon {
+  display: inline-flex;
+  font-size: 44px;
+  color: #4c5c37;
+}
+.cl-done-title {
+  font-size: 24px;
+  font-weight: 800;
+  color: #1c1c1c;
+  margin: 0;
+}
+.cl-done-desc {
+  font-size: 16px;
+  color: #6d6d6d;
+  margin: 0;
+}
+
+@media (max-width: 1199.98px) {
+  .cl-types-row {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .cl-step-line {
+    width: 48px;
+  }
+  .cl-step-label {
+    font-size: 17px;
+  }
+}
+
+@media (max-width: 767.98px) {
+
+.cl-steps-card::before {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  inset: -5px;
+  background: #DFE1DB;
+  border-radius: 16px;
+}
+
+  .cl-steps-counter {
+    font-size:12px
+  }
+
+  .cl-section {
+    padding: 30px 0;
+  }
+  .cl-types-row {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 16px;
+  }
+  .cl-type {
+    padding: 20px;
+  }
+  .cl-type-icon {
+    width: 56px;
+    height: 56px;
+    flex: 0 0 56px;
+  }
+  .cl-type-icon svg {
+    width: 28px;
+    height: 28px;
+  }
+  .cl-type-title {
+    font-size: 20px;
+  }
+
+  .cl-steps-card {
+    padding: 12px 16px;
+    margin-bottom: 32px;
+  }
+  /* Three labelled steps can't sit side by side on a phone, so the mock keeps
+     only the label of the step being filled in and lets the rest ride as bare
+     circles. The rail no longer spans the card, so it starts at the card's
+     inline start instead of staying centred. */
+  .cl-steps {
+    gap: 8px;
+    justify-content: flex-start;
+  }
+  .cl-step {
+    gap: 8px;
+  }
+  .cl-step-icon {
+    width: 32px;
+    height: 32px;
+    flex: 0 0 32px;
+    font-size: 16px;
+  }
+  .cl-label {
+     font-size: 14px;
+  }
+
+  .cl-chip {
+    font-size: 13px;
+  }
+  .cl-note{
+font-size: 14px;
+font-weight: 800;
+  }
+  .cl-drop-title {
+    font-size: 18px;
+  }
+  .cl-drop-hint {
+    font-size: 14px;
+  }
+
+    .cl-step-label,.cl-chip {
+    font-size: 13px;
+  }
+  .cl-step-label {
+    display: none;
+  }
+  .cl-step.is-active .cl-step-label {
+    display: inline;
+  }
+  .cl-step-line {
+    width: 12px;
+  }
+  /* the phone card is too narrow to keep a tail free */
+  .cl-steps.is-pair {
+    max-width: none;
+  }
+  .cl-steps.is-pair .cl-step-line {
+    min-width: 18px;
+  }
+
+  /* --- fields: the whole form steps down a size on the phone --- */
+  .cl-form {
+    gap: 18px;
+  }
+  .cl-input-wrap {
+    height: 36px;
+    padding: 0 12px;
+    gap: 8px;
+  }
+  .cl-input,
+  .cl-textarea {
+    font-size: 13px;
+  }
+  .cl-input-icon {
+    font-size: 14px;
+  }
+  .cl-textarea {
+    min-height: 104px;
+    padding: 10px 12px;
+  }
+  .cl-hint {
+    font-size: 12px;
+  }
+  .cl-error {
+    font-size: 12px;
+  }
+
+  /* The dial code and the number keep one line — the mock parks the code box
+     at the inline end (the left in RTL) with the number filling the rest,
+     which is the reverse of the desktop row. */
+  .cl-phone-row {
+    flex-wrap: nowrap;
+    gap: 10px;
+  }
+  .cl-country-box {
+    height: 36px;
+    padding: 0 10px;
+    gap: 6px;
+    font-size: 13px;
+  }
+  .cl-country-flag {
+    width: 18px;
+    height: 13px;
+  }
+  /* the box now hugs the row's end edge, so a menu hanging off its inline
+     start would run off the screen — pin it to the other edge instead */
+  .cl-country-menu {
+    inset-inline-start: auto;
+    inset-inline-end: 0;
+    width: min(280px, calc(100vw - 40px));
+  }
+
+  .cl-chips {
+    gap: 10px;
+  }
+
+  /* the platform, the link and the bin keep one line too */
+  .cl-social-row {
+    flex-wrap: nowrap;
+    gap: 8px;
+  }
+  .cl-social-pick {
+    flex: 0 0 auto;
+  }
+  .cl-social-pick-box {
+    height: 36px;
+    padding: 0 8px;
+    gap: 6px;
+    border-radius: 8px;
+  }
+  .cl-social-brand {
+    font-size: 13px;
+  }
+  .cl-social-name {
+    min-width: 44px;
+    font-size: 11px;
+  }
+  .cl-social-remove {
+    width: 24px;
+    height: 24px;
+    font-size: 15px;
+  }
+  .cl-add-platform {
+    margin-top: 8px;
+    padding: 6px 12px;
+    font-size: 12px;
+  }
+
+  .cl-drop {
+    gap: 12px;
+    padding: 28px 16px;
+  }
+  .cl-terms {
+    font-size: 12px;
+    font-weight:700;
+  }
+  .cl-note {
+    padding: 14px;
+  }
+  .cl-done-icon {
+        font-size: 32px;
+  }
+  .cl-done-title {
+     font-size: 18px;
+  }
+  .cl-done-desc ,  {
+    font-size: 14px;
+  }
+  .cl-check {
+    font-size: 13px;
+  }
+  .cl-check-box {
+    flex: 0 0 16px;
+        width: 16px;
+    height: 16px;
+  }
+  .cl-note-icon {
+    font-size: 14px;
+  }
+
+  /* the mock's footer is back / next only — no dot indicator */
+  .cl-nav {
+    gap: 10px;
+    margin-top: 24px;
+    padding-top: 20px;
+  }
+  .cl-nav-dots {
+    display: none;
+  }
+  .cl-nav-back,
+  .cl-nav-next {
+    font-size: 14px;
+  }
+  .cl-nav-next {
+    padding: 9px 14px;
+  }
+}

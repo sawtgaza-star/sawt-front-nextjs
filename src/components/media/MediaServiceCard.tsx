@@ -45,7 +45,10 @@ export default function MediaServiceCard({
           {service.desc}
         </p>
 
-        <a className="sm-btn-green sm-svc-btn" href="#sm-consult">
+        <a
+          className="sm-btn-green sm-svc-btn"
+          href={"/media/services/" + service.key}
+        >
           <span data-i18n="sm_svc_more">استكشف المزيد</span>
           <i className="fa-solid fa-arrow-left-long"></i>
         </a>

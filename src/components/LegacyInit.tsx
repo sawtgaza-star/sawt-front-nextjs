@@ -32,7 +32,7 @@ export default function LegacyInit({ page }: { page: string }) {
       // @ts-ignore
       await import("bootstrap/dist/js/bootstrap.bundle.min.js");
 
-      if (["home", "about", "creators", "team", "content", "support", "courses", "news"].includes(page)) {
+      if (["home", "about", "creators", "team", "content", "support", "courses", "news", "collaborate"].includes(page)) {
         const { initMainScripts, initHeaderPin } = await import("@/lib/legacy-main");
         const { initSearch } = await import("@/lib/legacy-search");
         initMainScripts();

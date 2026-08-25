@@ -1,6 +1,7 @@
 /* "أرقام نفخر بها" — listed in the design's order (first = rightmost in RTL).
-   `value` keeps its +/% suffix out of the number so runCounters() can animate
-   the digits, exactly like the home and incubator stat strips. */
+   `value` keeps its +/% suffix out of the number so the count-up can animate
+   the digits — here it is the scroll-triggered initCounters(), which starts
+   when the panel enters the viewport. */
 export type MediaStat = { key: string; value: string; label: string; labelKey: string };
 
 export const MEDIA_STATS: MediaStat[] = [

@@ -1,13 +1,16 @@
 import MediaNav from "./MediaNav";
+import MediaHeroRotation from "./MediaHeroRotation";
 import MediaHeroWord from "./MediaHeroWord";
 import MediaHeroFan from "./MediaHeroFan";
 import MediaSatisfactionChip from "./MediaSatisfactionChip";
 import MediaTicker from "./MediaTicker";
 
 /* Hero of /media — hosts the page's own navbar, the headline whose second
-   line cycles through the services, the two CTAs, the two floating rating
-   chips and the fanned deck of production stills. The services ticker rides
-   the bottom edge, straddling the hero and the about section. */
+   line names the service in focus, the two CTAs, the two floating rating
+   chips and the fanned deck of production stills. Headline word and deck run
+   off one clock (MediaHeroRotation), so the orange word always belongs to the
+   photo in the middle seat. The services ticker rides the bottom edge,
+   straddling the hero and the about section. */
 export default function MediaHero() {
   return (
     <header className="sm-hero">
@@ -25,29 +28,31 @@ export default function MediaHero() {
 
         <MediaNav />
 
-        <div className="container">
-          <div className="sm-hero-text">
-            <h1 className="sm-hero-title">
-              <span data-i18n="sm_hero_title">...صوت ميديا تقدم</span>
-              <MediaHeroWord />
-            </h1>
-            <p className="sm-hero-desc" data-i18n="sm_hero_desc">
-              نحوّل أفكارك إلى تجارب إعلامية مؤثرة. من الاستراتيجية إلى الإنتاج
-              والنشر — كل شيء في مكان واحد.
-            </p>
-            <div className="sm-hero-cta">
-              <a className="sm-btn-green" href="#sm-consult">
-                <span data-i18n="sm_cta_start">ابدأ مشروعك</span>
-                <i className="fa-solid fa-angle-left"></i>
-              </a>
-              <a className="sm-btn-outline" href="#sm-services" data-i18n="sm_cta_services">
-                تعرف على خدماتنا
-              </a>
+        <MediaHeroRotation>
+          <div className="container">
+            <div className="sm-hero-text">
+              <h1 className="sm-hero-title">
+                <span data-i18n="sm_hero_title">...صوت ميديا تقدم</span>
+                <MediaHeroWord />
+              </h1>
+              <p className="sm-hero-desc" data-i18n="sm_hero_desc">
+                نحوّل أفكارك إلى تجارب إعلامية مؤثرة. من الاستراتيجية إلى الإنتاج
+                والنشر — كل شيء في مكان واحد.
+              </p>
+              <div className="sm-hero-cta">
+                <a className="sm-btn-green" href="/media/contact">
+                  <span data-i18n="sm_cta_start">ابدأ مشروعك</span>
+                  <i className="fa-solid fa-angle-left"></i>
+                </a>
+                <a className="sm-btn-outline" href="#sm-services" data-i18n="sm_cta_services">
+                  تعرف على خدماتنا
+                </a>
+              </div>
             </div>
-          </div>
 
-          <MediaHeroFan />
-        </div>
+            <MediaHeroFan />
+          </div>
+        </MediaHeroRotation>
 
         {/* the chips are artboard-level, not part of the deck: the design puts
             the -3.779° one beside the headline and the +4° one over the deck */}
