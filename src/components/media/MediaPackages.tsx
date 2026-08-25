@@ -4,13 +4,14 @@ import { IconChevronLeftSmall } from "@/components/ui/icons";
 import { MEDIA_PACKAGES } from "./media-packages-data";
 import { useSnapSlider } from "./useSnapSlider";
 
-/* "اختر باقتك" — three bundle cards on a snap track with the arrow+dot pager
-   under them. Client component because of the pager; the cards themselves are
-   plain markup driven by media-packages-data. */
+/* "اختر باقتك" — the bundle cards on a snap track with the arrow+dot pager
+   under them. Three cards fit at desktop width and the rest are paged in, so
+   the dots come from the slider's measured stops rather than one per package
+   (see useSnapSlider). Client component because of the pager; the cards
+   themselves are plain markup driven by media-packages-data. */
 export default function MediaPackages() {
-  const { trackRef, active, onScroll, goTo, next, prev } = useSnapSlider(
-    MEDIA_PACKAGES.length
-  );
+  const { trackRef, stops, active, onScroll, goTo, next, prev, dragProps } =
+    useSnapSlider(MEDIA_PACKAGES.length);
 
   return (
     <section className="sm-packages">
@@ -26,7 +27,7 @@ export default function MediaPackages() {
           subKey="sm_pkg_sub"
         />
 
-        <div className="sm-pkg-track" ref={trackRef} onScroll={onScroll}>
+        <div className="sm-pkg-track" ref={trackRef} onScroll={onScroll} {...dragProps}>
           {MEDIA_PACKAGES.map((p) => (
             <article className={"sm-pkg sm-pkg-" + p.tone} key={p.key}>
               <span className="sm-pkg-tab" aria-hidden="true"></span>
@@ -74,12 +75,12 @@ export default function MediaPackages() {
           </button>
 
           <span className="sm-pager-dots">
-            {MEDIA_PACKAGES.map((p, i) => (
+            {stops.map((stop, i) => (
               <button
-                key={p.key}
+                key={MEDIA_PACKAGES[stop.slide].key}
                 type="button"
                 className={"sm-pager-dot" + (i === active ? " active" : "")}
-                aria-label={`الباقة ${i + 1}`}
+                aria-label={`الباقة ${stop.slide + 1}`}
                 onClick={() => goTo(i)}
               ></button>
             ))}

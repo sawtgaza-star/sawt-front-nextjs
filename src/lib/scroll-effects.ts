@@ -78,7 +78,10 @@ export function initParallax(): () => void {
 
 /* ------------------------------ counters ------------------------------ */
 
-const COUNTER_SELECTOR = ".cr-stat-num, .cr-profile-stat-num, .sp-stat-value";
+const COUNTER_SELECTOR =
+  ".cr-stat-num, .cr-profile-stat-num, .sp-stat-value, .sm-stat-value, " +
+  /* the two headline figures and the three result figures of a case study */
+  ".sm-pj-figure-value, .sm-pj-result-value";
 const COUNT_DURATION = 1600;
 
 function findDigitTextNode(root: Node): Text | null {

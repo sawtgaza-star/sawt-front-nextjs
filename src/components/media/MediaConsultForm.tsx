@@ -1,11 +1,12 @@
 import { MEDIA_SERVICES } from "./media-services-data";
 import { IconMail, IconUser } from "@/components/ui/icons";
 import { IconFormPhone } from "./media-icons";
+import MediaCountrySelect from "./MediaCountrySelect";
 
 /* The "احجز الأن" card. Stays a Server Component: like the rest of the site's
    forms it has no backend yet, so there is no submit handler to hydrate — the
-   markup mirrors the join-modal's phone field (country box + flag) so it
-   inherits the same look. */
+   only client leaf is the phone field's country picker, which mirrors the
+   join-modal's dropdown so the two fields look and behave alike. */
 export default function MediaConsultForm() {
   return (
     <form className="sm-form" noValidate>
@@ -36,11 +37,7 @@ export default function MediaConsultForm() {
           رقم الهاتف
         </label>
         <div className="sm-phone-wrap">
-          <div className="sm-country-box">
-            <i className="fa-solid fa-chevron-down sm-country-caret"></i>
-            <span className="sm-country-code">+970</span>
-            <span className="fi fi-ps sm-country-flag"></span>
-          </div>
+          <MediaCountrySelect />
           <div className="sm-input-wrap sm-phone-num">
             <i className="sm-input-icon">
               <IconFormPhone />

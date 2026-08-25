@@ -483,6 +483,14 @@ export const IconArrowUpLeftSolid = () => (
   </svg>
 );
 
+/* Up-left arrow, lighter than IconArrowUpLeftSolid — the submit button that
+   closes a /collaborate wizard ("تسليم الطلب"). */
+export const IconArrowUpLeftThin = () => (
+  <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 16 16" fill="none">
+    <path d="M8.66699 3.5C8.94309 3.50004 9.16698 3.72389 9.16699 4C9.16699 4.27611 8.9431 4.49996 8.66699 4.5H5.20703L12.3535 11.6465C12.5488 11.8417 12.5488 12.1583 12.3535 12.3535C12.1583 12.5487 11.8417 12.5488 11.6465 12.3535L4.5 5.20703V8.66699C4.49982 8.94299 4.27603 9.16699 4 9.16699C3.72398 9.16697 3.50018 8.94297 3.5 8.66699V4C3.5 3.87204 3.54885 3.74412 3.64648 3.64648C3.74412 3.54885 3.87204 3.5 4 3.5H8.66699Z" fill="currentColor" />
+  </svg>
+);
+
 /* Double quote marks — the badge on the testimonial avatars. */
 export const IconQuoteMarks = () => (
   <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 12 12" fill="none">

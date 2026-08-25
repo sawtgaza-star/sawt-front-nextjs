@@ -20,8 +20,10 @@ export default function MediaStats() {
           <div className="sm-stats-row">
             {MEDIA_STATS.map((s) => (
               <div className="sm-stat" key={s.key}>
-                {/* .counter → animated by the shared runCounters() */}
-                <p className="sm-stat-value counter">{s.value}</p>
+                {/* counted up by initCounters() when the panel scrolls into
+                    view — not by the page-load runCounters(), which would be
+                    long finished before the section is reached */}
+                <p className="sm-stat-value">{s.value}</p>
                 <p className="sm-stat-label" data-i18n={s.labelKey}>
                   {s.label}
                 </p>
