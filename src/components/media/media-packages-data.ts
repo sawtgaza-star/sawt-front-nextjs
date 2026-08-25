@@ -1,5 +1,7 @@
-/* "اختر باقتك" — the three bundles, right-to-left as in the design. `tone`
-   drives the card's tab colour, border and accent (orange / olive / gray). */
+/* "اختر باقتك" — the bundles, right-to-left as in the design. `tone` drives
+   the card's tab colour, border and accent (orange / olive / gray), cycling
+   down the list. Three cards fit the track at desktop width, so the list has
+   to stay longer than three for the pager under it to have somewhere to go. */
 export type MediaPackage = {
   key: string;
   tone: "orange" | "olive" | "gray";
@@ -62,6 +64,40 @@ export const MEDIA_PACKAGES: MediaPackage[] = [
       { key: "mkt_3", name: "تحليل أداء الحملة", noteKey: "sm_pkg_note_growth", note: "استراتيجية مدروسة للنمو" },
       { key: "mkt_4", name: "إنتاج محتوى ترويجي", noteKey: "sm_pkg_note_copy", note: "كتابة كابشنات وقصص هادفة" },
       { key: "mkt_5", name: "تقارير شهرية للأداء", noteKey: "sm_pkg_note_support", note: "صيانة ودعم فني مستمر" },
+    ],
+  },
+  {
+    key: "production",
+    tone: "orange",
+    title: "باقة الإنتاج المرئي",
+    titleKey: "sm_pkg_prod_title",
+    tagline: "قصة تُروى بالصوت والصورة",
+    taglineKey: "sm_pkg_prod_tagline",
+    desc: "تصوير وإنتاج فيديوهات احترافية من كتابة السيناريو حتى المونتاج النهائي.",
+    descKey: "sm_pkg_prod_desc",
+    features: [
+      { key: "prod_1", name: "كتابة السيناريو", noteKey: "sm_pkg_note_script", note: "فكرة وسرد مكتوب باحتراف" },
+      { key: "prod_2", name: "التصوير الاحترافي", noteKey: "sm_pkg_note_crew", note: "طاقم وأدوات تصوير كاملة" },
+      { key: "prod_3", name: "المونتاج والإخراج", noteKey: "sm_pkg_note_edit", note: "مونتاج وتصحيح ألوان" },
+      { key: "prod_4", name: "التعليق الصوتي", noteKey: "sm_pkg_note_voice", note: "أصوات احترافية وموسيقى" },
+      { key: "prod_5", name: "نسخ لكل المنصات", noteKey: "sm_pkg_note_reels", note: "محتوى مرئي سريع الوصول" },
+    ],
+  },
+  {
+    key: "brand",
+    tone: "olive",
+    title: "باقة الهوية البصرية",
+    titleKey: "sm_pkg_brand_title",
+    tagline: "علامة تُعرف من أول نظرة",
+    taglineKey: "sm_pkg_brand_tagline",
+    desc: "بناء هوية بصرية متكاملة من الشعار حتى دليل استخدام العلامة التجارية.",
+    descKey: "sm_pkg_brand_desc",
+    features: [
+      { key: "brand_1", name: "تصميم الشعار", noteKey: "sm_pkg_note_logo", note: "مقترحات متعددة حتى الاعتماد" },
+      { key: "brand_2", name: "نظام الألوان والخطوط", noteKey: "sm_pkg_note_system", note: "نظام بصري موحّد" },
+      { key: "brand_3", name: "المطبوعات الرسمية", noteKey: "sm_pkg_note_print", note: "بطاقات وأوراق ومغلفات" },
+      { key: "brand_4", name: "قوالب السوشيل ميديا", noteKey: "sm_pkg_note_daily", note: "تصاميم يومية لجميع المنصات" },
+      { key: "brand_5", name: "دليل الهوية", noteKey: "sm_pkg_note_guide", note: "ملف إرشادي كامل للاستخدام" },
     ],
   },
 ];

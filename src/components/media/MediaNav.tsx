@@ -3,8 +3,11 @@ import { IconMediaLogo } from "./media-icons";
 /* صوت ميديا's own navbar — a white rounded card floating over the hero's peach
    wash, with "العودة لمنصة صوت" sitting above it (outside the card, as in the
    design). Deliberately NOT SiteNav: this page gets the reduced agency bar.
-   Below lg everything past the brand collapses into the Bootstrap drawer. */
-export default function MediaNav() {
+   Below lg everything past the brand collapses into the Bootstrap drawer.
+
+   The links are anchors into /media's sections, so a page that is not /media
+   (the works listing) passes `base="/media"` to send them back there first. */
+export default function MediaNav({ base = "" }: { base?: string }) {
   return (
     <div className="sm-nav-wrap">
       <div className="container">
@@ -38,29 +41,31 @@ export default function MediaNav() {
           <div className="sm-nav-menu collapse" id="smNav">
             <ul className="sm-nav-links">
               <li>
-                <a href="#sm-about" data-i18n="sm_nav_about">
+                <a href={base + "#sm-about"} data-i18n="sm_nav_about">
                   عن صوت ميديا
                 </a>
               </li>
               <li>
-                <a href="#sm-works" data-i18n="sm_nav_works">
+                <a href={base + "#sm-works"} data-i18n="sm_nav_works">
                   أعمالنا
                 </a>
               </li>
               <li>
-                <a href="#sm-services" data-i18n="sm_nav_services">
+                <a href={base + "#sm-services"} data-i18n="sm_nav_services">
                   خدماتنا
                 </a>
               </li>
               <li>
-                <a href="#sm-process" data-i18n="sm_nav_process">
+                <a href={base + "#sm-process"} data-i18n="sm_nav_process">
                   منهجيتنا
                 </a>
               </li>
             </ul>
 
             {/* RTL: first child sits on the right, so this reads
-                [En] [ابدأ مشروعك] right-to-left, matching the design. */}
+                [En] [ابدأ مشروعك] right-to-left, matching the design. The CTA
+                is the one item that leaves the page rather than jumping to a
+                section — it opens /media/contact. */}
             <div className="sm-nav-actions">
               <button
                 type="button"
@@ -69,7 +74,7 @@ export default function MediaNav() {
               >
                 <span data-i18n="auth_lang_label">En</span>
               </button>
-              <a className="sm-nav-cta" href="#sm-consult" data-i18n="sm_cta_start">
+              <a className="sm-nav-cta" href="/media/contact" data-i18n="sm_cta_start">
                 ابدأ مشروعك
               </a>
             </div>

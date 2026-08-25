@@ -19,7 +19,7 @@ import { MEDIA_SERVICES } from "./media-services-data";
 
    Autoplay stops while the pointer/focus is on the section, while dragging,
    while the section is off-screen, and under prefers-reduced-motion. */
-const INTERVAL = 3000;
+const INTERVAL = 2000;
 /* how far a drag must travel to count as a page turn, and as a real drag */
 const SNAP = 70;
 const SLOP = 6;
@@ -32,8 +32,8 @@ export default function MediaServicesSlider() {
   const [dragging, setDragging] = useState(false);
   const [dir, setDir] = useState<"up" | "down" | null>(null);
   const viewRef = useRef<HTMLDivElement>(null);
-  const startY = useRef(0);
-  const moved = useRef(false);
+  const drag = useRef<{ id: number; y: number; moved: boolean } | null>(null);
+  const swallowClick = useRef(false);
 
   useEffect(() => {
     const el = viewRef.current;
@@ -66,24 +66,38 @@ export default function MediaServicesSlider() {
 
   const onPointerDown = (e: React.PointerEvent<HTMLDivElement>) => {
     if (e.pointerType === "touch" || e.button !== 0) return;
-    startY.current = e.clientY;
-    moved.current = false;
-    setDragging(true);
-    e.currentTarget.setPointerCapture(e.pointerId);
+    swallowClick.current = false;
+    drag.current = { id: e.pointerId, y: e.clientY, moved: false };
   };
 
   const onPointerMove = (e: React.PointerEvent<HTMLDivElement>) => {
-    if (!dragging) return;
-    let dy = e.clientY - startY.current;
-    if (Math.abs(dy) > SLOP) moved.current = true;
+    const d = drag.current;
+    if (!d || e.pointerId !== d.id) return;
+    let dy = e.clientY - d.y;
+    /* a few pixels of slack, so a plain click on the card's CTA is still a
+       click: the pointer is captured only once the drag is committed, because
+       capturing retargets the click and the link under it would never fire */
+    if (!d.moved && Math.abs(dy) < SLOP) return;
+    if (!d.moved) {
+      d.moved = true;
+      setDragging(true);
+      e.currentTarget.setPointerCapture(d.id);
+    }
     /* nothing to deal past the ends — let the deck resist instead */
     if ((active === 0 && dy > 0) || (active === count - 1 && dy < 0)) dy /= 3.5;
     setOffset(dy);
   };
 
   const endDrag = (e: React.PointerEvent<HTMLDivElement>) => {
-    if (!dragging) return;
-    const dy = e.clientY - startY.current;
+    const d = drag.current;
+    if (!d || e.pointerId !== d.id) return;
+    drag.current = null;
+    if (!d.moved) return;
+    /* a drag that actually moved swallows the click it ends on */
+    swallowClick.current = true;
+    if (e.currentTarget.hasPointerCapture(d.id))
+      e.currentTarget.releasePointerCapture(d.id);
+    const dy = e.clientY - d.y;
     setDragging(false);
     setOffset(0);
     if (dy <= -SNAP) setActive((i) => Math.min(count - 1, i + 1));
@@ -92,11 +106,10 @@ export default function MediaServicesSlider() {
 
   /* a drag that ended on a link/button must not also trigger it */
   const onClickCapture = (e: React.MouseEvent<HTMLDivElement>) => {
-    if (moved.current) {
-      e.preventDefault();
-      e.stopPropagation();
-      moved.current = false;
-    }
+    if (!swallowClick.current) return;
+    swallowClick.current = false;
+    e.preventDefault();
+    e.stopPropagation();
   };
 
   return (
