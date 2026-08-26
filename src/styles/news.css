@@ -687,8 +687,11 @@
      runs edge to edge. */
   .nws-related > .container {
     --bs-gutter-x: 0;
-    padding-left: 0;
-    padding-right: 0;
+    /* the peek runs off the END edge only; the first card keeps a start gutter
+       so it doesn't sit flush against the screen — same 20px as the three home
+       carousels in legacy/style.css */
+    padding-inline-start: 10px;
+    padding-inline-end: 0;
   }
   .nws-related-title {
     font-size: 24px;

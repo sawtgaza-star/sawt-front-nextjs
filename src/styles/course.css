@@ -61,6 +61,11 @@
   margin: 0 8px;
   opacity: 0.85;
 }
+/* the crumb separator follows the reading direction, like .crs-btn-green's
+   arrow below */
+[dir="ltr"] .crs-breadcrumb-sep {
+  transform: rotate(180deg);
+}
 .crs-breadcrumb-active {
   color: #ff7420;
   font-weight: 700;

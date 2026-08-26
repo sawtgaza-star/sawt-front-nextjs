@@ -1,6 +1,4 @@
 import {
-  IconChevronLeftSmall,
-  IconChevronLeftThin,
   IconCoinBitcoin,
   IconHandsGive,
   IconPayCard,
@@ -20,29 +18,46 @@ const METHOD_ICON = {
   crypto: IconCoinBitcoin,
 };
 
+/* One option of "اختر طريقة الدعم التي تناسبك". Presentational — the pick lives
+   in PaymentMethods. Same anatomy at every breakpoint: the card is a <label> so
+   the whole panel is the radio's hit area, the native input stays in the DOM for
+   keyboard + a11y and is visually replaced by .sp-method-dot, which CSS fills on
+   :checked (same mechanics as .cl-type on /collaborate). */
 export default function PaymentMethodCard({
   method,
+  checked,
+  onSelect,
 }: {
   method: PaymentMethod;
+  checked: boolean;
+  onSelect: () => void;
 }) {
   const Icon = METHOD_ICON[method.value];
 
   return (
-    /* .sp-method holds the coloured tab that peeks out above the white card */
-    <div className={`sp-method sp-method--${method.accent}`}>
-      <span className="sp-method-tab" aria-hidden="true"></span>
-
-      <article className="sp-method-card">
-        <div className="sp-method-head">
-          <span className="sp-method-icon" aria-hidden="true">
-            <Icon />
+    <div className="sp-method">
+      <label className={"sp-method-card" + (checked ? " is-selected" : "")}>
+        <input
+          type="radio"
+          name="payment-method"
+          className="sp-method-input"
+          value={method.value}
+          checked={checked}
+          onChange={onSelect}
+        />
+        <span className="sp-method-head">
+          <span className="sp-method-marks">
+            <span className="sp-method-icon" aria-hidden="true">
+              <Icon />
+            </span>
+            <span className="sp-method-brands" aria-hidden="true">
+              <LogoVisa />
+              <LogoMastercard />
+              <LogoPaypal />
+            </span>
           </span>
-          <div className="sp-method-brands">
-            <LogoMastercard />
-            <LogoPaypal />
-            <LogoVisa />
-          </div>
-        </div>
+          <span className="sp-method-dot" aria-hidden="true"></span>
+        </span>
 
         <h3 className="sp-method-title" data-i18n={method.titleKey}>
           {method.title}
@@ -50,19 +65,7 @@ export default function PaymentMethodCard({
         <p className="sp-method-desc" data-i18n={method.descKey}>
           {method.desc}
         </p>
-
-        <a href={method.href} className="sp-method-cta">
-          <span data-i18n="support_method_continue">المتابعة</span>
-          {/* The mock uses a different chevron below 768px — both ship and CSS
-              picks one, so each breakpoint matches its design exactly. */}
-          <i className="sp-method-cta-arrow sp-method-cta-arrow--lg" aria-hidden="true">
-            <IconChevronLeftSmall />
-          </i>
-          <i className="sp-method-cta-arrow sp-method-cta-arrow--sm" aria-hidden="true">
-            <IconChevronLeftThin />
-          </i>
-        </a>
-      </article>
+      </label>
     </div>
   );
 }

@@ -1,6 +1,6 @@
 "use client";
 import { useState } from "react";
-import { IconChevronDownBold } from "@/components/ui/icons";
+import { IconChevronDownBold, IconHeartOutline } from "@/components/ui/icons";
 import { INCUBATOR_FAQS } from "./incubator-faq-data";
 
 /* "الأسئلة التي تدور ببالك؟" — eighth section of /incubator. Same accordion as
@@ -66,6 +66,30 @@ export default function IncubatorFaq() {
                 </div>
               );
             })}
+
+            {/* mobile mock only — "لديك سؤال آخر؟" contact card under the
+                accordion; CSS keeps it hidden from sm up (same treatment as
+                the support page's .sp-faq-more) */}
+            <div className="inc-faq-more">
+              <span className="inc-faq-more-icon" aria-hidden="true">
+                <IconHeartOutline />
+              </span>
+              <h3
+                className="inc-faq-more-title"
+                data-i18n="support_faq_more_title"
+              >
+                لديك سؤال آخر؟
+              </h3>
+              <p
+                className="inc-faq-more-desc"
+                data-i18n="support_faq_more_desc"
+              >
+                فريقنا جاهز للإجابة — سنردّ عليك خلال ساعات
+              </p>
+              <a href="/#join" className="inc-btn-green">
+                <span data-i18n="support_contact_us">تواصل معنا</span>
+              </a>
+            </div>
           </div>
         </div>
       </div>
