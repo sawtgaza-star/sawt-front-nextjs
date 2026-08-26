@@ -16,16 +16,22 @@ export default function TeamMemberProfile({ member }: { member: TeamMember }) {
       <div className="container">
         <div className="team-detail-grid">
           <div className="team-detail-info">
-            <h1 className="team-detail-name" data-i18n={member.nameKey}>
-              {member.name}
-            </h1>
-            <p className="team-detail-role" data-i18n={member.roleKey}>
-              {member.role}
-            </p>
-            <p className="team-detail-experience">
-              <i className="fa-solid fa-star" aria-hidden="true"></i>
-              <span data-i18n="team_detail_experience">5 سنوات من الخبرة</span>
-            </p>
+            {/* Name/role on the start side, the experience badge pushed to the
+                opposite end of the same row (top-left in RTL) — per the mock. */}
+            <div className="team-detail-head">
+              <div className="team-detail-identity">
+                <h1 className="team-detail-name" data-i18n={member.nameKey}>
+                  {member.name}
+                </h1>
+                <p className="team-detail-role" data-i18n={member.roleKey}>
+                  {member.role}
+                </p>
+              </div>
+              <p className="team-detail-experience">
+                <i className="fa-solid fa-star" aria-hidden="true"></i>
+                <span data-i18n="team_detail_experience">5 سنوات من الخبرة</span>
+              </p>
+            </div>
 
             <h2 className="team-detail-about-title" data-i18n="team_detail_about_title">
               نبذه عنه
@@ -40,6 +46,13 @@ export default function TeamMemberProfile({ member }: { member: TeamMember }) {
               يضمن تدفق المحتوى الإبداعي والقصص الإنسانية بسلاسة تامة وبأعلى جودة
               ممكنة.
             </p>
+
+            {/* i18n key sits on the inner <span>: applyTranslations() replaces
+                textContent, which would drop the chevron if it were on the <a>. */}
+            <a className="team-detail-work-btn" href="/media/works">
+              <span data-i18n="team_detail_work_btn">شاهد اعمالي في صوت ميديا</span>
+              <i className="fa-solid fa-chevron-left" aria-hidden="true"></i>
+            </a>
 
             <div className="team-detail-follow">
               <span

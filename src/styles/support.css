@@ -1933,8 +1933,10 @@ color:#4C5C37 !important;
 
 /* ============================================================
    Payment methods — /support/methods ("اختر طريقة الدعم التي تناسبك")
-   Three cards, each with a coloured pill "tab" peeking out above it.
-   Accent per card: orange #FF7420 / olive #4C5C37 / gray #6D6D6D.
+   Three identical neutral cards: grey outline, a pick circle on the far
+   (left in RTL) side of the header, brand marks + a 68px olive icon tile on
+   the near side. Desktop and mobile share the anatomy — only the widths and
+   type sizes change.
    ============================================================ */
 .sp-methods-row {
   display: flex;
@@ -1942,40 +1944,48 @@ color:#4C5C37 !important;
   justify-content: center;
   align-items: stretch;
   gap: 24px;
+  margin-top: 40px;
 }
 
-/* Wrapper exists only to hold the tab behind the card — the padding-top is
-   the strip of colour that stays visible above the white panel. */
 .sp-method {
-  position: relative;
   display: flex;
   flex: 1 1 300px;
   max-width: 453px;
-  padding-top: 18px;
 }
-.sp-method-tab {
-  position: absolute;
-  top: 0;
-  left: 50%;
-  transform: translateX(-50%);
-  width: calc(100% - 60px);
-  height: 42px;
-  border-radius: 130px;
-  z-index: 0;
-}
+/* Each option is a <label>, so the whole card is the radio's hit area. */
 .sp-method-card {
   position: relative;
-  z-index: 1;
   display: flex;
   flex-direction: column;
   width: 100%;
   background: #ffffff;
-  border: 1px solid #6d6d6d;
+  border: 1px solid #c8c8c8;
   border-radius: 20px;
   padding: 24px;
+  cursor: pointer;
+  transition: border-color 0.2s ease, background 0.2s ease;
+}
+.sp-method-card:hover {
+  border-color: #4c5c37;
+}
+/* Picked card — the palette comes straight off the "صانع محتوى" card
+   (.cl-type.is-selected): olive outline + olive tint, and the icon tile flips
+   to white so the glyph keeps reading. */
+.sp-method-card.is-selected {
+  border-color: #4c5c37;
+  background: #edefeb;
 }
 
-/* --- card header: icon on the RTL start side, brand marks on the other --- */
+/* the native input stays focusable but is covered by .sp-method-dot */
+.sp-method-input {
+  position: absolute;
+  opacity: 0;
+  width: 0;
+  height: 0;
+  margin: 0;
+}
+
+/* --- card header: marks on the RTL start side, pick circle on the other --- */
 .sp-method-head {
   display: flex;
   align-items: center;
@@ -1983,113 +1993,85 @@ color:#4C5C37 !important;
   gap: 12px;
   margin-bottom: 22px;
 }
+.sp-method-marks {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
 .sp-method-icon {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 48px;
-  height: 48px;
-  flex: 0 0 48px;
-  border-radius: 12px;
-  font-size: 26px;
+  width: 68px;
+  height: 68px;
+  flex: 0 0 68px;
+  border-radius: 16px;
+  background: #edefeb;
+  color: #364127;
+  font-size: 32px;
+  transition: background 0.2s ease;
+}
+.sp-method-card.is-selected .sp-method-icon {
+  background: #ffffff;
 }
 .sp-method-brands {
   display: flex;
   align-items: center;
-  gap: 6px;
+  gap: 8px;
 }
-/* The brand SVGs ship with a white card behind them, so they need an outline
-   to stay visible on the white panel. */
 .sp-method-brands svg {
   display: block;
-  width: 37px;
-  height: 27px;
+  width: 30px;
+  height: 22px;
+}
+/* The brand SVGs ship with a white plate behind the mark. It is invisible on
+   the white card but would show as a white chip once the card takes the olive
+   tint, so drop it here — the mock shows bare marks. */
+.sp-method-brands svg path[fill="white"] {
+  fill: transparent;
+}
+
+.sp-method-dot {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  flex: 0 0 20px;
+  border: 2px solid #1c1c1c;
+  border-radius: 50%;
+}
+.sp-method-dot::after {
+  content: "";
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: #1c1c1c;
+  transform: scale(0);
+  transition: transform 0.15s ease;
+}
+.sp-method-input:checked + .sp-method-head .sp-method-dot::after {
+  transform: scale(1);
+}
+.sp-method-input:focus-visible + .sp-method-head .sp-method-dot {
+  outline: 2px solid #4c5c37;
+  outline-offset: 3px;
 }
 
 .sp-method-title {
-  font-size: 26px;
+  font-size: 20px;
   font-weight: 800;
   color: #1c1c1c;
   margin-bottom: 12px;
-  text-align:start
+  text-align: start;
 }
 .sp-method-desc {
-  font-size: 18px;
-  color: #6D6D6D;
-  line-height: 1.9;
-  margin-bottom: 24px;
-  /* pushes every card's CTA to the same baseline */
-  flex: 1 1 auto;
-    text-align:start
-}
-
-.sp-method-cta {
-  align-self: flex-start;
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  border: 1px solid #4C5C37;
-  border-radius: 999px;
-  padding: 6px 18px;
   font-size: 16px;
-  font-weight: 600;
-  color: #4C5C37 !important;
-  text-decoration: none;
-  transition: background 0.2s ease;
-}
-.sp-method-cta:hover {
-  background: #ebebeb;
-  color: #1c1c1c;
-}
-.sp-method-cta-arrow {
-  display: inline-flex;
-  align-items: center;
-  font-size: 18px;
-  color: #4c5c37;
-}
-
-
-
-[dir='ltr'] .sp-method-cta-arrow {
-  transform:rotate(180deg)
-}
-/* Desktop chevron by default; the thin one is swapped in under 768px. */
-.sp-method-cta-arrow--sm {
-  display: none;
-}
-
-/* --- accents --- */
-.sp-method--orange .sp-method-tab {
-  background: #ff7420;
-}
-.sp-method--orange .sp-method-card {
-  border-color: #ff7420;
-}
-.sp-method--orange .sp-method-icon {
-  color: #ff7420;
-  background: #fff1e8;
-}
-
-.sp-method--green .sp-method-tab {
-  background: #4c5c37;
-}
-.sp-method--green .sp-method-card {
-  border-color: #4c5c37;
-}
-.sp-method--green .sp-method-icon {
-  color: #364127;
-  background: #eef1ea;
-}
-
-.sp-method--gray .sp-method-tab {
-  background: #6d6d6d;
-}
-.sp-method--gray .sp-method-card {
-  border-color: #6d6d6d;
-}
-.sp-method--gray .sp-method-icon {
-  color: #484848;
-  background: #f0f0f0;
+  color: #6d6d6d;
+  line-height: 1.9;
+  margin-bottom: 0;
+  flex: 1 1 auto;
+  text-align: start;
 }
 
 @media (max-width: 991.98px) {
@@ -2097,11 +2079,10 @@ color:#4C5C37 !important;
     flex: 1 1 320px;
   }
 }
-/* --- mobile mock (<768px): cards stack, brand marks and the CTA shrink, and
-   the CTA moves to the far (left) side of the card with the thin chevron. --- */
+/* --- mobile mock (<768px): the cards stack full-width; the anatomy above is
+   unchanged, only the paddings and type shrink. --- */
 @media (max-width: 767.98px) {
   .sp-methods-row {
-    margin-top: 40px;
     gap: 25px;
   }
   .sp-method {
@@ -2114,22 +2095,18 @@ color:#4C5C37 !important;
   .sp-method-head {
     margin-bottom: 18px;
   }
-  .sp-method-icon {
-    width: 44px;
-    height: 44px;
-    flex: 0 0 44px;
-    font-size: 24px;
-  }
   .sp-method-brands svg {
-    width: 32px;
-    height: 23px;
+    width: 28px;
+    height: 20px;
+  }
+  .sp-method-brands {
+    gap: 6px;
   }
   .sp-method-title {
     font-size: 20px;
   }
   .sp-method-desc {
     font-size: 14px;
-    margin-bottom: 20px;
   }
 
   .cr-breadcrumb {
@@ -2138,25 +2115,6 @@ color:#4C5C37 !important;
 header .navbar .container {
   border-bottom:1px solid #DADADA;
 }
-
-  .sp-method-cta {
-    align-self: flex-start;
-    gap: 10px;
-    padding: 8px 22px;
-    background: #ffffff;
-    border-color: #d9d9d9;
-  }
-  .sp-method-cta:hover {
-    background: #f5f5f5;
-  }
-  .sp-method-cta-arrow--lg {
-    display: none;
-  }
-  .sp-method-cta-arrow--sm {
-    display: inline-flex;
-    font-size: 14px;
-    color: #1e1e1e;
-  }
 }
 
 /* ============================================================

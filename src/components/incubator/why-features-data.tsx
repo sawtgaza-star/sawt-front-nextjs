@@ -3,7 +3,7 @@ import {
   IconVideoPlay,
   IconHandStar,
   IconPeoplePair,
-  IconMicOutline,
+  IconMicStand,
 } from "@/components/ui/icons";
 
 /* "لماذا حاضنة صوت؟" — 2×2 feature grid. Order is the mock's reading order:
@@ -49,6 +49,6 @@ export const WHY_FEATURES: WhyFeature[] = [
     titleKey: "inc_why_reach_title",
     desc: "فرصة لنشر أعمالك والوصول إلى جمهور أوسع",
     descKey: "inc_why_reach_desc",
-    icon: <IconMicOutline />,
+    icon: <IconMicStand />,
   },
 ];

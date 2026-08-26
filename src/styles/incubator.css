@@ -540,12 +540,23 @@ border: 1px solid  #DADADA;
   width: 100%;
   height: auto;
 }
+/* story.png carries its rounded corners baked into the asset (top-start +
+   bottom-end of the RTL mock, the other two square). The shapes and the dot
+   grid are placed logically, so in English they move to the opposite side —
+   the photo's corners and these radii have to follow them, or the composition
+   comes apart. Hence the logical radii below and the LTR flip above. */
+[dir="ltr"] .inc-why-img {
+  transform: scaleX(-1);
+}
 .inc-why-shape-green,
 .inc-why-shape-peach {
   position: absolute;
   z-index: 1;
-  /* the mock's shapes: only the top-left and bottom-right corners are round */
-  border-radius: 99.823px 0;
+  /* two opposite corners round — top-left + bottom-right in the RTL mock.
+     Stated logically so the pair mirrors with the direction; the physical
+     `99.823px 0` left the radii behind when the shapes moved. */
+  border-start-end-radius: 99.823px;
+  border-end-start-radius: 99.823px;
 }
 .inc-why-shape-green {
   width: 86%;
@@ -558,7 +569,7 @@ border: 1px solid  #DADADA;
   width: 80%;
   height: 80%;
   bottom: -32px;
-  inset-inline-start: -16px;
+  inset-inline-start: -34px;
   background: #fff3eb;
 }
 /* dotted grid tucked behind the photo's bottom outer corner — orange, with the
@@ -604,11 +615,13 @@ border: 1px solid  #DADADA;
   position: relative;
   display: flex;
   flex-direction: column;
-  min-height: 342px;
+  min-height: 400px;
   background: #ffffff;
   border-radius: 16px;
   border: 1px solid  #DADADA;
   overflow: hidden;
+  /* olive on hover, when the card becomes a copy of the featured one */
+  transition: border-color 0.45s ease;
 }
 
 /* the whole card links to its course page; the CTA is raised above it */
@@ -700,6 +713,12 @@ border: 1px solid  #DADADA;
   flex: 0 0 auto;
 }
 
+/* Transparent to layout at rest, so the title and the rating block lay out
+   exactly as the two loose blocks they have always been. Only the phone block
+   at the bottom of this file turns it into the mock's single row. */
+.inc-course-titlerow {
+  display: contents;
+}
 .inc-course-title {
   font-size: 20px;
   font-weight: 800;
@@ -758,21 +777,185 @@ border: 1px solid  #DADADA;
   margin-top: auto;
   padding: 12px 20px;
   border-radius: 999px;
-  background: #4c5c37;
-  color: #ffffff !important;
+  border: 1px solid  #4C5C37;
+
+
+  background: #fff;
+  color: #4C5C37 !important;
   font-size: 18px;
   font-weight: 700;
   text-decoration: none;
+  transition: background-color 0.25s ease;
 }
 .inc-course-card:not(.is-featured) .inc-course-cta {
   margin-top: 18px;
 }
+/* hover tints the pill instead of inverting it — outline and label stay put */
 .inc-course-cta:hover {
-  background: #38422a;
-  color: #ffffff;
+  background: var(--Primary-oliveGreen-100, #D3D9CC);
+  color: #4C5C37 !important;
 }
 .inc-course-cta i {
   font-size: 13px;
+}
+
+/* ---------- hover reveal ----------
+   At rest the photo cards look exactly as before. On hover they turn into the
+   featured middle card: olive outline, photo gone, the same detail blocks
+   filling the card with the CTA on its bottom edge.
+
+   The row is a grid with content-driven height, so anything the hover grows in
+   normal flow re-sizes the whole row and with it the two cards nobody is
+   pointing at. That is why the photo cards' whole layout is taken OUT of flow
+   (.inc-course-inner, below): all they contribute to the row is their own
+   min-height, hovered or not, so the row is sized by the featured card alone
+   and never moves. */
+/* Each hidden block sits in a one-row grid wrapper that animates 0fr → 1fr,
+   which interpolates the block's REAL height.
+
+   The obvious version — max-height 0 → a generous ceiling — is what caused the
+   jolt: a ceiling well above the block's true height is reached in the first
+   third of the animation, so the text finishes opening while the panel behind
+   it is still growing, briefly making the content taller than the card. On this
+   curve, panel and content move together and the content is always the smaller
+   of the two, whichever blocks a card hides and wherever they sit in the body.
+
+   Wrapping also means each block keeps its own margins: they live inside the
+   grid area, so they are clipped away with the block at 0fr instead of leaving
+   a gap in the resting card. */
+.inc-course-reveal {
+  display: grid;
+  grid-template-rows: 0fr;
+  overflow: hidden;
+  opacity: 0;
+  transition: grid-template-rows 0.45s ease, opacity 0.3s ease;
+}
+/* `start` rather than the default `stretch`: a stretched item is resized to the
+   animating track, which squashes the CTA's box (padding and all) instead of
+   just hiding part of it. At `start` every block keeps its own height and the
+   wrapper's clip wipes it into view — the button is full-size the whole way.
+   min-height:0 keeps the block from forcing the track open. */
+.inc-course-reveal > * {
+  align-self: start;
+  min-height: 0;
+}
+.inc-course-card:hover .inc-course-reveal,
+.inc-course-card:focus-within .inc-course-reveal {
+  grid-template-rows: 1fr;
+  opacity: 1;
+}
+/* the wrapper takes the CTA's place in the body's flex order (see the spacer) */
+.inc-course-reveal--cta {
+  order: 2;
+}
+.inc-course-media {
+  overflow: hidden;
+}
+.inc-course-card:not(.is-featured):hover,
+.inc-course-card:not(.is-featured):focus-within {
+  border-color: var(--Primary-oliveGreen-500, #4c5c37);
+}
+/* the picture is scaled to cover, so walking object-position down to its bottom
+   edge drags it up through the frame as the panel climbs over it */
+.inc-course-media img {
+  transition: object-position 0.45s ease;
+}
+.inc-course-card:hover .inc-course-media img,
+.inc-course-card:focus-within .inc-course-media img {
+  object-position: 50% 100%;
+}
+
+/* photo + body live in here rather than directly in the card, so the pair can
+   be lifted out of flow without either of them changing size relative to the
+   other — the resting card is pixel-identical either way */
+.inc-course-inner {
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 auto;
+  min-height: 0;
+}
+/* a flex column so the body can hand its free space to the spacer below; with
+   no free space at rest the children lay out exactly as they did as blocks, and
+   hover never has to switch `display` mid-animation */
+.inc-course-card:not(.is-featured) .inc-course-body {
+  display: flex;
+  flex-direction: column;
+}
+/* NB: the paragraph deliberately keeps the flex default (min-height: auto, i.e.
+   it will not shrink past its own text). Letting it shrink looks like a fix for
+   a body that outgrows its card, but it glitches: a `max-height` reveal hits its
+   real height in the first third of the animation while the panel is still
+   growing, so for that moment the content is taller than the box and the
+   paragraph visibly collapses and re-wraps. Keep every card's open content
+   inside the card height instead — that is what `min-height: 400px` is for. */
+
+/* ---------- hover: the photo card turns INTO the featured card ----------
+   Same olive outline, same body filling the card, same CTA on the bottom edge.
+   .inc-course-media is the flex child holding the leftover height, so handing
+   its flex-grow over to the body (both transitioned) drains the photo box to
+   nothing across the same 0.45s the text blocks take to open.
+   Three-up row only: below 992px the cards are stacked, so there is no
+   neighbour to disturb and the layout can stay in flow. */
+@media (min-width: 992px) {
+  .inc-course-card:not(.is-featured) .inc-course-inner {
+    /* THE fix for cards nudging each other: absolute, so nothing that happens
+       inside a photo card on hover reaches the grid row. The row is then sized
+       by the featured card and the 400px min-height alone, and it holds still
+       whichever card the pointer is over. */
+    position: absolute;
+    inset: 0;
+  }
+  .inc-course-card:not(.is-featured) .inc-course-media {
+    /* min-height has to be in here too, or leaving the card snaps the photo
+       box straight back to 150px instead of easing down into place */
+    transition: flex-grow 0.45s ease, min-height 0.45s ease;
+  }
+  .inc-course-card:not(.is-featured) .inc-course-body {
+    transition: flex-grow 0.45s ease;
+  }
+  /* A flexible spacer, ordered just before the CTA, is what carries the body's
+     free space — so the button glides down as the panel opens and back up as it
+     closes. Switching the CTA's own margin-top to `auto` on hover would do the
+     same job going in, but `auto` is not animatable: on the way out the button
+     would jump the moment the pointer left. */
+  .inc-course-card:not(.is-featured) .inc-course-body::after {
+    content: "";
+    flex: 1 1 0;
+    order: 1;
+  }
+  .inc-course-card:not(.is-featured) .inc-course-cta {
+    order: 2;
+  }
+  .inc-course-card:not(.is-featured):hover .inc-course-media,
+  .inc-course-card:not(.is-featured):focus-within .inc-course-media {
+    /* the 150px floor keeps the photo alive while the body is short; here it
+       has to give way so the body can take the whole card */
+    min-height: 0;
+    flex-grow: 0;
+  }
+  .inc-course-card:not(.is-featured):hover .inc-course-body,
+  .inc-course-card:not(.is-featured):focus-within .inc-course-body {
+    flex-grow: 1;
+  }
+}
+
+/* Stacked cards have no hover to open them with, so nothing stays collapsed —
+   every card just shows the full detail set. The extra class out-ranks the
+   `:hover` rule above, which a tap can latch onto on touch browsers. */
+@media (max-width: 991.98px) {
+  .inc-course-card .inc-course-reveal {
+    grid-template-rows: 1fr;
+    opacity: 1;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .inc-course-reveal,
+  .inc-course-media,
+  .inc-course-body,
+  .inc-course-media img {
+    transition: none;
+  }
 }
 
 /* ============================================================
@@ -978,8 +1161,7 @@ line-height: 24px; /* 150% */
 .inc-sponsor-impact-row {
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  gap: 12px;
+  gap: 7px;
 }
 .inc-sponsor-impact-value {
   font-size: 20px;
@@ -1390,11 +1572,11 @@ border: 1px solid  #4C5C37;
 }
 .inc-expert-badge {
   flex: 0 0 auto;
-  padding: 5px 12px;
+  padding: 2px 8px;
   border-radius: 999px;
   background: #fdf3e3;
   color: #c88a2e;
-  font-size: 12px;
+  font-size: 10px;
   font-weight: 700;
   white-space: nowrap;
 }
@@ -1512,6 +1694,47 @@ border: 1px solid  #4C5C37;
   text-align: start;
 }
 
+/* "لديك سؤال آخر؟" contact card under the accordion — phone mock only, the
+   same treatment the support page gives its .sp-faq-more card. The <576px
+   block is what switches it on. */
+.inc-faq-more {
+  display: none;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  background: #edefeb;
+  border-radius: 24px;
+  padding: 28px 20px;
+  margin-top: 24px;
+}
+.inc-faq-more-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 64px;
+  height: 64px;
+  border-radius: 18px;
+  background: rgba(255, 116, 32, 0.12);
+  color: #ff7420;
+  font-size: 24px;
+  margin-bottom: 14px;
+}
+.inc-faq-more-title {
+  font-size: 18px;
+  font-weight: 800;
+  color: #1c1c1c;
+  margin: 0 0 6px;
+}
+.inc-faq-more-desc {
+  font-size: 14px;
+  color: #6d6d6d;
+  margin: 0 0 18px;
+}
+.inc-faq-more .inc-btn-green {
+  font-size: 14px;
+  padding: 12px 36px;
+}
+
 /* ============================================================
    "يعمل خريجونا لدى جهات موثوقة" — the home page's automatic
    .marquee logo strip (animation in style.css) with the
@@ -1527,9 +1750,19 @@ border: 1px solid  #4C5C37;
 .inc-grads .marquee {
   margin-bottom: 0;
 }
+/* The exports come in wildly different proportions — holidayme is a long
+   wordmark, altibbi a small square — so sizing by height alone leaves the
+   strip looking mismatched, one logo dwarfing the next. Each gets the SAME
+   slot instead and is contained inside it, which lines them all up at one
+   optical weight whatever their own aspect ratio is. */
+.inc-grads .marquee-group {
+  gap: 48px;
+}
 .inc-grads .marquee img {
+  flex: 0 0 auto;
+  width: 150px;
   height: 56px;
-  width: auto;
+  object-fit: contain;
 }
 
 /* ============================================================
@@ -1636,6 +1869,10 @@ border: 1px solid  #4C5C37;
 .inc-testi-track {
   display: flex;
   gap: 24px;
+  /* the track is a scroll box, so `overflow-x: auto` clips vertically too and
+     the card's hover lift (-6px) + its shadow would be cut off. Pad the box
+     out and pull the pager back up so the visible spacing stays the mock's. */
+  padding: 12px 0 24px;
   overflow-x: auto;
   scroll-snap-type: x mandatory;
   scrollbar-width: none;
@@ -1712,11 +1949,22 @@ top: -23px;
   font-size: 16px;
   margin-bottom: 12px;
 }
+/* clamped to the mock's three lines; the card's chevron control opens it */
 .inc-testi-text {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3;
+  line-clamp: 3;
+  overflow: hidden;
   font-size: 14px;
   color: #5A5A5A;
   line-height: 160%; /* 22.4px */
   margin: 0 0 14px;
+}
+.inc-testi-card.is-open .inc-testi-text {
+  -webkit-line-clamp: unset;
+  line-clamp: unset;
+  overflow: visible;
 }
 .inc-testi-cta {
   display: inline-flex;
@@ -1728,12 +1976,23 @@ top: -23px;
   text-decoration: none;
   margin-bottom: 16px;
 }
+/* it is a <button> now, not a link — strip the UA chrome back to the mock */
+.inc-testi-cta {
+  border: 0;
+  background: transparent;
+  padding: 0;
+  cursor: pointer;
+}
 .inc-testi-cta:hover {
   color: #38422a;
 }
 .inc-testi-cta svg {
   width: 16px;
   height: 16px;
+  transition: transform 0.2s ease;
+}
+.inc-testi-card.is-open .inc-testi-cta svg {
+  transform: rotate(180deg);
 }
 .inc-testi-name {
   display: block;
@@ -1752,7 +2011,7 @@ top: -23px;
 .inc-testi-dots {
   display: flex;
   justify-content: center;
-  margin-top: 28px;
+  margin-top: 4px; /* + the track's 24px bottom padding = the mock's 28px */
 }
 .inc-testi-dots-pill {
   display: inline-flex;
@@ -1777,6 +2036,63 @@ top: -23px;
   width: 15px;
   height: 15px;
   background: #4c5c37;
+}
+/* pager arrows flanking the dots — phone mock only (see the <576px block);
+   filled olive on the start edge, outlined on the end one */
+.inc-testi-arrow {
+  display: none;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  width: 26px;
+  height: 26px;
+  padding: 0;
+  border-radius: 50%;
+  border: 1px solid rgba(76, 92, 55, 0.55);
+  background: transparent;
+  color: #4c5c37;
+  font-size: 12px;
+  line-height: 1;
+  cursor: pointer;
+}
+.inc-testi-arrow-next {
+  background: #4c5c37;
+  border-color: #4c5c37;
+  color: #ffffff;
+}
+
+/* ============================================================
+   English (LTR)
+   ============================================================ */
+/* Every chevron on the page is authored pointing "forward" for Arabic, so it
+   has to mirror when the language toggle flips the document direction. */
+[dir="ltr"] .inc-btn-green i,
+[dir="ltr"] .inc-course-cta i,
+[dir="ltr"] .inc-nav-back i,
+[dir="ltr"] .inc-nav-mobile-lang-btn svg {
+  transform: rotate(180deg);
+}
+/* the drawer's language row is an LTR island so Arabic reads "‹ English" with
+   the chevron on the outer side; English has to mirror the whole pair, not
+   just the glyph, or the arrow ends up pointing back at its own label */
+[dir="ltr"] .inc-nav-mobile-lang-btn {
+  flex-direction: row-reverse;
+}
+/* "عرض الكل" points up-LEFT, so English mirrors it to up-right — rotating it
+   like a chevron would send it down-right instead */
+[dir="ltr"] .inc-testi-btn svg {
+  transform: scaleX(-1);
+}
+/* The testimonials pager is the one control that must not turn its glyphs
+   around — they are physical, each arrow walks the dots the way it points
+   (see TestimonialsSlider's `step`). The right-pointing one is first in the
+   DOM, so it lands on the start edge and English would put it on the LEFT;
+   swap the two ends instead. The dots keep their own start-to-end order. */
+[dir="ltr"] .inc-testi-arrow-prev {
+  order: -1;
+}
+[dir="ltr"] .inc-testi-arrow-next {
+  order: 1;
 }
 
 /* ============================================================
@@ -1956,10 +2272,28 @@ top: -23px;
     grid-template-columns: 1fr;
     gap: 56px;
   }
-  /* photo stays above the copy on mobile (it is already the first cell) */
+  /* stacked, the mock reads copy first and drops the photo underneath it —
+     `order` rather than a DOM swap, so the desktop row keeps photo-first */
+  .inc-why-text {
+    order: 1;
+    margin-inline-start: 0;
+  }
+  /* Every decoration hangs OUTSIDE the photo — the green block by 30px, the
+     peach one by 16px, the dot grid by 48px — and stacked there is no column
+     gutter left to absorb them, so the screen edge clips them. The BOX itself
+     has to give the room up: padding cannot, because the shapes are laid out
+     against this element's padding edge and would just follow it back out. */
   .inc-why-media {
+    order: 2;
+    width: calc(100% - 76px);
     max-width: 420px;
     margin-inline: auto;
+  }
+  /* pulled a little closer in, so the widest bleed still clears the 38px the
+     box gives up on each side */
+  .inc-why-dots {
+    inset-inline-end: -34px;
+    bottom: -30px;
   }
   .inc-section-title {
     font-size: 26px;
@@ -2058,85 +2392,543 @@ top: -23px;
   }
 }
 
+
+.inc-hero-text ,.inc-why-text , .inc-expert-body ,.inc-testi-panel {
+  text-align: start;
+}
+/* ============================================================
+   Phones — the /incubator mobile mock, section by section.
+   ============================================================ */
 @media (max-width: 575.98px) {
-  .inc-album-grid {
-    grid-template-columns: 1fr;
-    grid-template-rows: 300px 240px 200px 200px 200px;
-    grid-template-areas:
-      "video"
-      "featured"
-      "workshop"
-      "mentor"
-      "community";
-    gap: 14px;
-  }
-  .inc-nav {
-    padding: 0 16px;
+
+
+  /* ---------- Hero ---------- */
+  .inc-hero-grid {
+    gap: 44px;
+    /* clears the floating nav card (24px offset + ~56px bar) */
+    padding: 100px 0 30px;
   }
   .inc-hero-title {
-    font-size: 28px;
+    font-size: 24px;
+    margin-bottom: 16px;
   }
+  .inc-hero-desc {
+    font-size: 16px;
+    color: #6D6D6D;
+
+    line-height: 1.9;
+    margin-bottom: 22px;
+  }
+  .inc-btn-green {
+    font-size: 14px;
+    padding: 11px 22px;
+  }
+  /* the mock's collage runs the full column width and is a squarer crop */
+  .inc-hero-img {
+    width: 100%;
+    aspect-ratio: 1.4;
+    border-radius: 16px;
+    border-width: 4px;
+  }
+  .inc-hero-badge {
+    padding: 9px 14px;
+  }
+  .inc-hero-badge b {
+    font-size: 18px;
+  }
+  .inc-hero-badge span {
+    font-size: 12px;
+  }
+  /* both counters straddle the frame's edge: the green one sits mostly ABOVE
+     the photo's end corner, the orange one below its start corner */
   .inc-hero-badge-green {
-    inset-inline-end: -8px;
+    top: -32px;
+    inset-inline-end: 0;
   }
   .inc-hero-badge-orange {
-    inset-inline-start: -8px;
+    bottom: -14px;
+    inset-inline-start: -6px;
+  }
+
+  /* ---------- Stats strip: all four counters stay on ONE row ---------- */
+  .inc-stats {
+    grid-template-columns: repeat(4, 1fr);
+    column-gap: 4px;
+    row-gap: 0;
+    padding: 16px 6px;
+    border-radius: 14px;
+    /* the single row is ~110px tall, and the compensation is half of it */
+    margin-top: -55px;
+    box-shadow: 0 5px 40px 0 rgba(0, 0, 0, 0.05);
+
+
+  }
+  .inc-stat-icon {
+    width: 54px;
+    height: 30px;
+    margin-bottom: 4px;
+  }
+  .inc-stat-icon svg {
+    width: 26px;
+    height: 26px;
   }
   .inc-stat-value {
-    font-size: 22px;
+    font-size: 14px !important;
+    margin-bottom: 2px;
   }
   .inc-stat-label {
-    font-size: 13px;
+    font-size: 10px !important;
+    line-height: 1.4;
   }
-  /* smaller type → shorter card, so a smaller margin compensation */
-  .inc-stats {
-    margin-top: -150px;
+
+  /* ---------- Shared headings ---------- */
+  .inc-section-title {
+    font-size: 20px;
   }
+  .inc-section-sub {
+    font-size: 16px;
+    line-height: 1.8;
+  }
+
+  /* ---------- لماذا حاضنة صوت؟ ---------- */
   .inc-why {
-    padding-top: 200px;
+    /* the stats card now overhangs the hero by only ~55px */
+    padding: 100px 0 46px;
+  }
+  .inc-why-grid {
+    gap: 40px;
+  }
+  .inc-why-title {
+    font-size: 20px;
+  }
+  .inc-why-desc {
+    font-size: 16px;
+    margin-bottom: 26px;
   }
   .inc-why-features {
     grid-template-columns: 1fr;
     gap: 20px;
   }
-  .inc-expert-row {
-    grid-template-columns: 1fr;
+  /* stacked, the mock reads down the grid's END column first and the start one
+     second: إرشاد متخصص · إيصال صوتك · تدريب عملي · مشاريع واقعية */
+  .inc-why-feature:nth-child(1) {
+    order: 3;
+  }
+  .inc-why-feature:nth-child(2) {
+    order: 1;
+  }
+  .inc-why-feature:nth-child(3) {
+    order: 4;
+  }
+  .inc-why-feature:nth-child(4) {
+    order: 2;
+  }
+  /* icon moves to the row's END (left) edge, the copy keeps the start one */
+  .inc-why-feature {
+    align-items: center;
+    gap: 12px;
+  }
+  .inc-why-feature-body {
+    flex: 1 1 auto;
+  }
+  .inc-why-feature-icon {
+    width: 40px;
+    height: 40px;
+    font-size: 20px;
+  }
+  .inc-why-feature-title {
+    font-size: 16px;
+  }
+  .inc-why-feature-desc {
+    font-size: 14px;
+  }
+
+  /* ---------- دوراتنا الأكثر شهرة ---------- */
+  .inc-courses {
+    padding: 40px 0 44px;
+    margin-top:40px;
+  }
+  .inc-course-card {
+    border-radius: 14px;
+  }
+  /* single column: nothing is left over for the media to absorb, so the photo
+     is pinned to the mock's 2:1 crop instead of a flat min-height */
+  .inc-course-media {
+    flex: 0 0 auto;
+    min-height: 0;
+    aspect-ratio: 2 / 1;
+  }
+  .inc-course-cat,
+  .inc-course-soon {
+    font-size: 12px;
+  }
+  .inc-course-chip {
+    font-size: 12px;
+    padding: 5px 9px;
+  }
+  .inc-faq-a {
+    font-size: 13px;
+  }
+  /* title and stars share one row, pushed to opposite edges */
+  .inc-course-titlerow {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+  }
+  .inc-course-title {
+    font-size: 18px;
+  }
+  .inc-course-rating {
+    margin-top: 0;
+    font-size: 15px;
+  }
+  .inc-course-card .inc-course-reveal {
+    font-size: 14px;
+  }
+  .inc-course-desc {
+    font-size: 14px;
+  }
+  /* the mock's phone card stops at the tutor line — the whole card is already
+     a link to the course, so the pill is dropped rather than crammed in */
+  .inc-course-reveal--cta {
+    display: none;
+  }
+  .inc-course-cta {
+    font-size: 14px;
+  }
+
+  /* ---------- ساعد طلاب في الانضمام للحاضنة ---------- */
+  .inc-sponsor {
+    padding: 40px 0 44px;
   }
   .inc-sponsor-tracks {
     grid-template-columns: 1fr;
-    gap: 20px;
+    gap: 16px;
   }
-  .inc-sponsor-side {
-    flex-direction: column;
+  .inc-sponsor-card {
+    padding: 18px 18px 16px;
+    border-radius: 16px;
+  }
+  .inc-sponsor-card-title {
+    font-size: 20px;
+  }
+  .inc-sponsor-card-desc {
+    font-size: 14px;
+    margin-bottom: 10px;
+  }
+  .inc-sponsor-meta {
+    gap: 14px;
+    margin-bottom: 14px;
+    font-size: 14px;
   }
   .inc-sponsor-cta {
-    font-size: 15px;
+    padding: 12px 14px;
+    font-size: 14px !important;
   }
-  .inc-faq-visual {
+  /* the two sidebar panels stay SIDE BY SIDE on phones, the orange one
+     narrower than the waiting list — as in the mock */
+  .inc-sponsor-side {
+    flex-direction: row;
+    gap: 12px;
+  }
+  .inc-sponsor-waiting {
+    flex: 1.7 1 0;
+    padding: 12px;
+  }
+  .inc-sponsor-impact {
+    flex: 1 1 0;
+    padding: 14px 12px;
+  }
+  .inc-sponsor-side-title {
+    font-size: 14px;
+  }
+  .inc-sponsor-student {
+    gap: 8px;
+    padding: 7px 9px;
+  }
+  .inc-sponsor-avatar {
+    width: 28px;
+    height: 28px;
+    font-size: 11px;
+  }
+  .inc-sponsor-student-name {
+    font-size: 14px;
+  }
+  .inc-sponsor-student-meta {
+    font-size: 12px;
+  }
+  .inc-sponsor-more {
+    font-size: 12px;
+  }
+  .inc-sponsor-impact-value {
+    font-size: 16px;
+  }
+  .inc-sponsor-impact-label {
+    font-size: 12px;
+  }
+
+  /* ---------- استكشف أحدث فعالياتنا ---------- */
+  .inc-events {
+    padding: 40px 0 44px;
+  }
+  /* start-aligned heading with no sub line, as in the mock */
+  .inc-events .inc-section-head {
+    text-align: start;
+    margin-bottom: 18px;
+  }
+  .inc-events .inc-section-sub {
     display: none;
   }
-  .inc-faq-leaf {
+  /* the chips run off the edge on one swipeable row instead of wrapping */
+  .inc-events-filters {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    scrollbar-width: none;
+    gap: 8px;
+    margin-bottom: 20px;
+  }
+  .inc-events-filters::-webkit-scrollbar {
     display: none;
   }
-  .inc-faq-q {
-    font-size: 15px;
-    padding: 16px;
+  .inc-events-filter {
+    flex: 0 0 auto;
+    padding: 9px 14px;
+    font-size: 13px;
   }
+  .inc-event-badge {
+    width: 68px;
+    height: 68px;
+    bottom: -34px;
+    inset-inline-end: 20px;
+  }
+  .inc-event-badge b,
+  .inc-event-badge span {
+    font-size: 12px;
+  }
+  .inc-event-body {
+    padding: 44px 18px 20px;
+  }
+  .inc-event-chip {
+    padding: 6px 11px;
+    font-size: 13px;
+  }
+  .inc-event-chip svg {
+    font-size: 16px;
+  }
+  .inc-event-title {
+    font-size: 16px;
+  }
+  .inc-event-desc {
+    font-size: 13px;
+  }
+  .inc-event-type {
+    font-size: 14px;
+  }
+
+  /* ---------- ألبوم الحاضنة ---------- */
+  .inc-album {
+    padding: 40px 0 50px;
+  }
+  /* the launch-day video runs the full width, the rest pair up two to a row */
+  .inc-album-grid {
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: 210px 190px 190px;
+    grid-template-areas:
+      "video video"
+      "workshop featured"
+      "community mentor";
+    gap: 12px;
+  }
+  /* nothing to hover on a phone: the cards that carry a caption show it (and
+     their gradient) permanently, exactly the two the mock has lit up. The
+     chip-only cards stay clean, as they do there. */
+  .inc-album-card:has(.inc-album-caption) .inc-album-overlay {
+    opacity: 1;
+  }
+  .inc-album-caption b {
+    font-size: 15px;
+  }
+  .inc-album-caption span {
+    font-size: 12px;
+  }
+  .inc-album-chip {
+    padding: 6px 11px;
+    font-size: 12px;
+  }
+
+  /* ---------- فريق خبراء متخصص ---------- */
+  .inc-experts {
+    padding: 40px 0 44px;
+  }
+  /* A swipeable strip with the next card peeking in, instead of a stack. The
+     start edge keeps the page's inset so the first card lines up with every
+     other section; the END edge gives it back, so the peeking card is cut off
+     by the screen rather than sitting behind a gutter. */
+  .inc-expert-row {
+    display: flex;
+    gap: 14px;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    scrollbar-width: none;
+    margin-inline-end: -28px;
+  }
+  .inc-expert-row::-webkit-scrollbar {
+    display: none;
+  }
+  .inc-expert-card {
+    flex: 0 0 75%;
+    scroll-snap-align: start;
+  }
+  .inc-expert-media {
+    height: 230px;
+  }
+  .inc-expert-name {
+    font-size: 18px;
+  }
+  .inc-expert-desc {
+    font-size: 12px;
+  }
+
+  /* ---------- يعمل خريجونا لدى جهات موثوقة ---------- */
   .inc-grads {
-    padding: 56px 0 50px;
+    padding: 40px 0 40px;
+  }
+  .inc-grads .inc-section-head {
+    margin-bottom: 28px;
+  }
+  .inc-grads .marquee-group {
+    gap: 28px;
   }
   .inc-grads .marquee img {
-    height: 40px;
+    width: 96px;
+    height: 36px;
   }
+
+  /* ---------- الأسئلة ---------- */
+  .inc-faq {
+    padding: 40px 0 44px;
+  }
+  .inc-faq-visual,
+  .inc-faq-leaf,
+  .inc-faq .inc-section-sub {
+    display: none;
+  }
+  /* the visual is gone, so its stacking offset goes with it; min-width:0 keeps
+     the desktop 300px floor from overflowing a 320px screen */
+  .inc-faq-col {
+    margin-top: 0;
+    min-width: 0;
+  }
+  .inc-faq-q {
+    padding: 16px;
+    font-size: 14px;
+  }
+  .inc-faq-more {
+    display: flex;
+  }
+
+  /* ---------- شهادات وتجارب خريجينا ----------
+     The rounded olive canvas is dropped here: the SECTION is the olive
+     ground, and the white card sits straight on it. */
+  .inc-testi {
+    background: #edefeb;
+    padding: 30px 0 40px;
+    margin-top: 40px;
+  }
+
   .inc-testi-wrap {
-    padding: 14px;
+    padding: 0;
+    border-radius: 0;
+    background: transparent;
+  }
+  /* the doodle scatter belongs to the canvas that is no longer there */
+  .inc-testi-wrap::before {
+    display: none;
   }
   .inc-testi-panel {
-    padding: 32px 18px;
+    gap: 18px;
+    padding: 0;
+    border-radius: 0;
+    background: transparent;
+  }
+  /* `display: contents` dissolves the copy block so the heading, the sub and
+     the card strip are all siblings in the panel's single column and can be
+     ordered against each other. */
+  .inc-testi-copy {
+    display: contents;
+  }
+  .inc-testi-title {
+    order: 1;
+    margin-bottom: 0;
+    font-size: 20px;
+    text-align: center;
+  }
+  /* one line here, unlike the two-line stack of the desktop column */
+  .inc-testi-title br {
+    display: none;
+  }
+  .inc-testi-sub {
+    order: 2;
+    font-size: 16px;
+    text-align: center;
+  }
+  .inc-testi-slider {
+    order: 3;
+  }
+  /* the mock has no "عرض الكل" on phones — the strip is the whole control */
+  .inc-testi-btn {
+    display: none;
+  }
+  /* no hover on phones — the track needs no room for the lift */
+  .inc-testi-track {
+    gap: 16px;
+    padding: 10px 0;
+  }
+
+  [dir='ltr']   .inc-nav-mobile-cta .inc-nav-join,
+  .inc-nav-mobile-cta .inc-nav-cta {
+    font-size: 12px;
+  }
+  .inc-hero-text,.inc-why-text ,.inc-sponsor-impact ,.inc-expert-body , .inc-testi-card {
+    text-align: start;
   }
   /* one card per view — every card becomes a snap stop again */
   .inc-testi-card {
     flex-basis: 100%;
     scroll-snap-align: start;
+    padding: 20px 18px 22px;
+  }
+
+  /* pager: bare arrows + dots on the olive ground, no enclosing pill */
+  .inc-testi-dots {
+    margin-top: 20px;
+  }
+  .inc-testi-dots-pill {
+    gap: 7px;
+    padding: 0;
+    border: 0;
+  }
+  .inc-testi-arrow {
+    display: inline-flex;
+    width: 34px;
+    height: 34px;
+    margin-inline: 12px;
+    font-size: 14px;
+  }
+  .inc-testi-arrow-prev {
+    border-color: transparent;
+    background: #4c5c37;
+    color:#fff
+  }
+  /* the current page is a bar rather than a bigger dot */
+  .inc-testi-dot {
+    width: 6px;
+    height: 6px;
+  }
+  .inc-testi-dot.active {
+    width: 22px;
+    height: 6px;
+    border-radius: 100px;
   }
 }

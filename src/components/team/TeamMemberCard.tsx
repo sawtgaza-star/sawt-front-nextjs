@@ -4,9 +4,15 @@ import type { TeamMember } from "./team-data";
 /* Team member card: portrait photo with a green name/role badge overlaid near
    the bottom (matches the /team mock). The circular arrow links to the member's
    detail page (/team/[id]). */
-export default function TeamMemberCard({ member }: { member: TeamMember }) {
+export default function TeamMemberCard({
+  member,
+  className,
+}: {
+  member: TeamMember;
+  className?: string;
+}) {
   return (
-    <article className="team-member-card">
+    <article className={"team-member-card" + (className ? " " + className : "")}>
       <div className="team-member-photo">
         <img src={member.photo} alt={member.name} />
         <div className="team-member-badge">

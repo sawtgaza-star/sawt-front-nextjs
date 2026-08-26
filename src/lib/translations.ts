@@ -324,6 +324,7 @@ export const translations: any = {
     team_detail_about_title: "نبذه عنه",
     team_detail_bio:
       "متخصص في تحويل الأفكار والرؤى المعقدة إلى تجارب (UI/UX) مصمم واجهات وتجربة مستخدم رقمية بخبرة تمتد لأكثر من 5 سنوات في فهم سلوك المستخدمين وتحليل احتياجاتهم، أركز في عملي على تحقيق التوازن المثالي بين جمالية الواجهات وأعلى معايير سهولة الاستخدام والوصول. الشغف المهني لفريق «صوت» غزة يترجم إيماني بأهمية تكنولوجيا الإعلام؛ حيث أعمل على تطوير وتصميم واجهات المنصة لتكون الجسر البصري والرقمي الذي يضمن تدفق المحتوى الإبداعي والقصص الإنسانية بسلاسة تامة وبأعلى جودة ممكنة.",
+    team_detail_work_btn: "شاهد اعمالي في صوت ميديا",
     team_detail_follow: "تابعنا على :",
     team_members_title: "اعضاء الفريق",
     team_members_title_pre: "اعضاء",
@@ -748,13 +749,13 @@ export const translations: any = {
     support_method_continue: "المتابعة",
     support_method_gateway_title: "دفع إلكتروني",
     support_method_gateway_desc:
-      "يتم التبرع باستخدام بوابة دفع آمنة وسهلة الاستخدام، بحيث يقدر المتبرع إتمام العملية بسرعة وبطريقة موثوقة.",
-    support_method_transfer_title: "تحويل مباشر",
+      "يتم التبرع عبر منصة خارجية آمنة وسهلة الاستخدام، بحيث يقدر المتبرع إتمام العملية بسرعة وبطريقة موثوقة.",
+    support_method_transfer_title: "رعاية أو تمويل",
     support_method_transfer_desc:
       "يتم التبرع من خلال بيانات حساب بنكي أو محفظة إلكترونية، ثم يقوم المتبرع بإرفاق إثبات التحويل ليتم توثيق التبرع.",
     support_method_crypto_title: "عملات رقمية",
     support_method_crypto_desc:
-      "يتم التبرع باستخدام عملات رقمية مدعومة، مع إمكانية إرسال إثبات العملية بعد التحويل لتأكيد المساهمة.",
+      "يتم التبرع عبر منصة خارجية آمنة وسهلة الاستخدام، بحيث يقدر المتبرع إتمام العملية بسرعة وبطريقة موثوقة.",
 
     // Donation wizard (/support/checkout)
     checkout_step_counter_pre: "الخطوة",
@@ -999,16 +1000,21 @@ export const translations: any = {
     inc_course_level_high: "مرتفع",
     inc_course_cat_design: "التصميم",
     inc_course_cat_marketing: "التسويق",
+    inc_course_cat_data: "البيانات",
     inc_course_graphic_title: "تصميم الجرافيك",
     inc_course_graphic_duration: "15 ساعة",
     inc_course_graphic_hours: "4 ساعات",
+    inc_course_graphic_desc:
+      "استراتيجيات فعالة لكتابة المحتوى الجذاب وزيادة التفاعل",
     inc_course_data_title: "تحليل البيانات",
     inc_course_data_duration: "25 ساعة",
     inc_course_data_hours: "8 ساعات",
     inc_course_data_desc:
-      "استراتيجيات فعالة لكتابة المحتوى الجذاب وزيادة التفاعل.استراتيجيات فعالة لكتابة المحتوى الجذاب وزيادة التفاعل.",
+      "استراتيجيات فعالة لكتابة المحتوى الجذاب وزيادة التفاعل",
     inc_course_data_tutor: "أحمد الرفاعي",
     inc_course_marketing_title: "تسويق المحتوى الرقمي",
+    inc_course_marketing_duration: "18 ساعة",
+    inc_course_marketing_hours: "6 ساعات",
     inc_course_marketing_desc:
       "استراتيجيات فعالة لكتابة المحتوى الجذاب وزيادة التفاعل",
 
@@ -1149,6 +1155,9 @@ export const translations: any = {
     inc_testi_title_hl: "خريجينا",
     inc_testi_sub:
       "اكتشف كيف غيّرت حاضنة صوت حياة المئات من الطلاب الذين بدأوا رحلتهم من الصفر وأصبحوا اليوم محترفين مطلوبين في سوق العمل.",
+    /* the card's chevron control — opens / closes the clamped quote */
+    inc_testi_read_more: "اقرأ المزيد",
+    inc_testi_read_less: "اقرأ أقل",
     inc_testi_sara_quote:
       "التوجيه الذي تلقيته من المرشدين كان له تأثير كبير على مسيرتي. نصائحهم القيمة ساعدتني في اتخاذ قرارات مدروسة في مشاريعي.",
     inc_testi_sara_cta: "انضم إلينا",
@@ -2303,6 +2312,7 @@ export const translations: any = {
     team_detail_about_title: "About",
     team_detail_bio:
       "Specialized in transforming complex ideas and visions into (UI/UX) experiences. A digital interface and user-experience designer with over 5 years of experience in understanding user behavior and analyzing their needs. In my work I focus on striking the perfect balance between interface aesthetics and the highest standards of usability and accessibility. My professional passion for the Sawt Gaza team reflects my belief in the importance of media technology; I work on developing and designing the platform's interfaces to be the visual and digital bridge that ensures creative content and human stories flow seamlessly and at the highest possible quality.",
+    team_detail_work_btn: "See my work on Sawt Media",
     team_detail_follow: "Follow us :",
     team_members_title: "Team Members",
     team_members_title_pre: "Team",
@@ -2703,13 +2713,13 @@ export const translations: any = {
     support_method_continue: "Continue",
     support_method_gateway_title: "Online payment",
     support_method_gateway_desc:
-      "Donate through a secure, easy-to-use payment gateway, so you can complete the transaction quickly and reliably.",
-    support_method_transfer_title: "Direct transfer",
+      "Donate through a secure, easy-to-use external platform, so you can complete the transaction quickly and reliably.",
+    support_method_transfer_title: "Sponsorship or funding",
     support_method_transfer_desc:
       "Donate using bank account or e-wallet details, then attach the transfer receipt so the donation can be verified.",
     support_method_crypto_title: "Digital currencies",
     support_method_crypto_desc:
-      "Donate using supported digital currencies, with the option to send proof of the transaction afterwards to confirm your contribution.",
+      "Donate through a secure, easy-to-use external platform, so you can complete the transaction quickly and reliably.",
 
     // Donation wizard (/support/checkout)
     checkout_step_counter_pre: "Step",
@@ -2962,16 +2972,21 @@ export const translations: any = {
     inc_course_level_high: "Advanced",
     inc_course_cat_design: "Design",
     inc_course_cat_marketing: "Marketing",
+    inc_course_cat_data: "Data",
     inc_course_graphic_title: "Graphic design",
     inc_course_graphic_duration: "15 hours",
     inc_course_graphic_hours: "4 hours",
+    inc_course_graphic_desc:
+      "Effective strategies for writing engaging content and boosting interaction",
     inc_course_data_title: "Data analysis",
     inc_course_data_duration: "25 hours",
     inc_course_data_hours: "8 hours",
     inc_course_data_desc:
-      "Effective strategies for writing engaging content and boosting interaction. Effective strategies for writing engaging content and boosting interaction.",
+      "Effective strategies for writing engaging content and boosting interaction",
     inc_course_data_tutor: "Ahmed Al-Rifai",
     inc_course_marketing_title: "Digital content marketing",
+    inc_course_marketing_duration: "18 hours",
+    inc_course_marketing_hours: "6 hours",
     inc_course_marketing_desc:
       "Effective strategies for writing engaging content and boosting interaction",
 
@@ -3117,6 +3132,8 @@ export const translations: any = {
     inc_testi_title_hl: "our graduates",
     inc_testi_sub:
       "Discover how the Sawt incubator changed the lives of hundreds of students who started their journey from scratch and are now sought-after professionals in the job market.",
+    inc_testi_read_more: "Read more",
+    inc_testi_read_less: "Read less",
     inc_testi_sara_quote:
       "The guidance I received from the mentors had a huge impact on my journey. Their valuable advice helped me make well-considered decisions in my projects.",
     inc_testi_sara_cta: "Join us",
