@@ -1,5 +1,5 @@
 import Link from "next/link";
-import TeamMemberCard from "./TeamMemberCard";
+import TeamMembersSlider from "./TeamMembersSlider";
 import { TEAM_MEMBERS, type TeamMember } from "./team-data";
 
 /* "اعضاء الفريق" block on the member detail page: a centred, decorated heading,
@@ -26,11 +26,7 @@ export default function TeamMembersSection({
           </span>
         </h2>
 
-        <div className="team-members-row">
-          {members.map((m) => (
-            <TeamMemberCard key={m.id} member={m} />
-          ))}
-        </div>
+        <TeamMembersSlider members={members} />
 
         <div className="team-members-more">
           <Link href="/team">

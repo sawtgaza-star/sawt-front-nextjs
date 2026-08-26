@@ -177,8 +177,10 @@ a {
   .content-section > .container,
   .team-section > .container {
     --bs-gutter-x: 0;
-    padding-left: 0;
-    padding-right: 0;
+    /* the peek runs off the END edge only; the first card keeps a 10px gutter
+       so it doesn't sit flush against the screen */
+    padding-inline-start: 10px;
+    padding-inline-end: 0;
   }
 }
 
@@ -5421,7 +5423,7 @@ svg {
     padding: 20px 20px;
     background: #fff;
     border-top: 1px solid rgba(0, 0, 0, 0.08);
-    font-size: 15px;
+    font-size: 13px;
   }
   .about-breadcrumb a {
     color: rgba(92, 92, 92, 1) !important;
@@ -7505,6 +7507,14 @@ svg {
     display: block;
     width: 16px;
     height: 16px;
+  }
+  /* English mirrors the whole pair — chevron to the outer side AND turned
+     round — otherwise the arrow points back at its own label */
+  [dir="ltr"] .nav-mobile-lang-btn {
+    flex-direction: row-reverse;
+  }
+  [dir="ltr"] .nav-mobile-lang-btn svg {
+    transform: rotate(180deg);
   }
   .nav-mobile-cta {
     display: flex;
