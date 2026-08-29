@@ -1,8 +1,57 @@
-import type { NewsArticle } from "./news-article-data";
+import type { NewsArticle, NewsBodyBlock } from "./news-article-data";
+
+/* One authored block — same elements the news prose below uses, so a story
+   article renders through the identical CSS. */
+function Block({ block }: { block: NewsBodyBlock }) {
+  if (block.type === "h2") {
+    return (
+      <h2 className="nws-h2" data-i18n={block.key}>
+        {block.text}
+      </h2>
+    );
+  }
+  if (block.type === "quote") {
+    return (
+      <blockquote className="nws-quote">
+        <p className="nws-quote-text" data-i18n={block.key}>
+          {block.text}
+        </p>
+        <cite className="nws-quote-by" data-i18n={block.byKey}>
+          {block.by}
+        </cite>
+      </blockquote>
+    );
+  }
+  return (
+    <p className="nws-p" data-i18n={block.key}>
+      {block.text}
+    </p>
+  );
+}
 
 /* The article itself: opening paragraph, pull quote, the platform paragraph,
-   then the "برامج دعم صانعي المحتوى" block with its photo pair. */
+   then the "برامج دعم صانعي المحتوى" block with its photo pair.
+
+   The news mock's copy stays inline (it is the design's own text); an article
+   that carries `body` — /stories/[slug] does — renders that instead, then the
+   same photo pair. */
 export default function NewsBody({ article }: { article: NewsArticle }) {
+  if (article.body) {
+    return (
+      <div className="nws-body">
+        {article.body.map((block, i) => (
+          <Block key={block.key + i} block={block} />
+        ))}
+
+        <div className="nws-body-images">
+          {article.bodyImages.map((img) => (
+            <img key={img.src} src={img.src} alt={img.alt} />
+          ))}
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="nws-body">
       <p className="nws-p" data-i18n="nws_p_intro">

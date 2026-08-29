@@ -4,14 +4,18 @@ import type { MediaServicePage } from "./media-service-page-data";
 /* Banner of /media/services/[slug] — the same dark collage the works listing
    and the case study use (media.css styles all three through `.sm-wp-hero`),
    with a three-step breadcrumb: الرئيسية › خدماتنا › اسم الخدمة. Only the last
-   step is orange. */
+   step is orange.
+
+   `sm-wp-hero-plain` is the works listing's phone treatment, shared here: below
+   md the collage drops away and the banner reads as ink on the page's own
+   white, the way the artboard opens this page. Desktop is untouched. */
 export default function MediaServiceHero({
   service,
 }: {
   service: MediaServicePage;
 }) {
   return (
-    <header className="sm-wp-hero">
+    <header className="sm-wp-hero sm-wp-hero-plain">
       <span className="sm-wp-hero-veil" aria-hidden="true" />
 
       <MediaNav base="/media" />

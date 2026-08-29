@@ -24,9 +24,14 @@ const rubik = Rubik({
    has nowhere of its own to declare one. Every other route sets its own title
    (in its page.tsx, or a metadata-only layout.tsx where the page is a client
    one), so this default is only ever seen on `/`. */
+/* The tab icon comes from the `icon.svg` file convention, not from `icons`
+   here: this pointed at /assets/images/icon.png, which doesn't exist, so every
+   tab fell back to the browser's globe. `src/app/icon.svg` (منصة صوت's olive
+   branch) covers the whole site; /media, /incubator and /courses each drop
+   their own icon.svg next to their route so a section's tab wears its own
+   mark. */
 export const metadata: Metadata = {
   title: "منصة صوت | Sawt Platform",
-  icons: { icon: "/assets/images/icon.png" },
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {

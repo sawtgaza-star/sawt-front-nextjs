@@ -8317,15 +8317,13 @@ svg {
     display: block;
     background: #EDEFEB;
     border-radius: 20px;
-    /* 10px per side — same grid as .footer-custom-bg and the navbar card */
-    margin: 0 10px 16px;
+    /* 10px per side — same grid as .footer-custom-bg and the navbar card.
+       The card now opens the footer on every page, so it carries its own top
+       room: whatever section it lands under (the join-us banner on home and
+       about, a full-bleed carousel elsewhere) ends flush against it. */
+    margin: 24px 10px 16px;
     padding: 24px 22px;
     text-align: start;
-  }
-  /* on the about page the card follows the join-us banner directly, which ends
-     flush — give it room so the two cards don't touch */
-  .join-us-section + .footer-newsletter-mobile {
-    margin-top: 24px;
   }
   .footer-nl-title {
     color: #1e1e1e;

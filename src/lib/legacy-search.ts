@@ -103,6 +103,45 @@ export function initSearch() {
     return walker.nextNode();
   }
 
+  // ---- Close the search UI once a match is found ----
+  // The phone drawer (#mainNav) hosts its own .search-input and covers the
+  // page, and the slide-down panel overlays the hero — with either still open
+  // the highlighted match is hidden behind them. Returns true if something was
+  // actually closed, so the caller can wait for the collapse animation before
+  // scrolling.
+  function closeSearchUi() {
+    var closed = false;
+
+    var nav = document.getElementById("mainNav");
+    if (nav && nav.classList.contains("show")) {
+      var bs = window.bootstrap;
+      if (bs && bs.Collapse) {
+        var inst =
+          bs.Collapse.getInstance(nav) || new bs.Collapse(nav, { toggle: false });
+        inst.hide();
+      } else {
+        // no Bootstrap on window — fall back to the classes it toggles, and
+        // keep the toggler's state in sync so the next tap still opens it
+        nav.classList.remove("show");
+        document
+          .querySelectorAll('[data-bs-target="#mainNav"]')
+          .forEach(function (btn) {
+            btn.classList.add("collapsed");
+            btn.setAttribute("aria-expanded", "false");
+          });
+      }
+      closed = true;
+    }
+
+    var panel = document.getElementById("mobileSearchPanel");
+    if (panel && panel.classList.contains("open")) {
+      panel.classList.remove("open");
+      closed = true;
+    }
+
+    return closed;
+  }
+
   // Search the current page, scroll to the first match and highlight it.
   function runSearch(term) {
     var q = (term || "").trim();
@@ -124,14 +163,24 @@ export function initSearch() {
 
     var mark = document.createElement("mark");
     mark.className = "search-highlight";
+    var target = mark;
     try {
       range.surroundContents(mark);
     } catch (e) {
       // Fallback: if the range can't be surrounded, just scroll to the parent.
-      node.parentElement.scrollIntoView({ behavior: "smooth", block: "center" });
-      return;
+      target = node.parentElement;
     }
-    mark.scrollIntoView({ behavior: "smooth", block: "center" });
+
+    // A match was found: get the drawer/panel out of the way first, then scroll
+    // — measuring the target while the collapse is still open lands short.
+    var closed = closeSearchUi();
+    if (closed) {
+      setTimeout(function () {
+        target.scrollIntoView({ behavior: "smooth", block: "center" });
+      }, 360); // Bootstrap's collapse transition is 350ms
+    } else {
+      target.scrollIntoView({ behavior: "smooth", block: "center" });
+    }
   }
 
   // ---- Wire up the UI once the DOM is ready ----

@@ -247,7 +247,10 @@ background-color: rgb(229, 233, 223);
 }
 
 /* ---- navbar ---- */
+/* the bar rides over the hero's washes, glows and photo deck */
 .sm-nav-wrap {
+  position: relative;
+  z-index: 10;
   padding-top: 18px;
 }
 .sm-nav-back-row {
@@ -277,13 +280,15 @@ background-color: rgb(229, 233, 223);
   border-radius: 16px;
   border: 1px solid #DADADA;
   background: #ffffff;
+  /* the phone panel hangs off this card's bottom edge (see `.sm-drawer`) */
+  position: relative;
 }
 .sm-nav-brand {
   display: inline-flex;
   align-items: center;
   gap: 10px;
   text-decoration: none;
-  color: var(--sm-ink) !important;
+  color: #4c5c37 !important;
   font-family: var(--sm-display);
   font-size: 19px;
   font-weight: 900;
@@ -308,15 +313,6 @@ background-color: rgb(229, 233, 223);
   align-items: center;
   gap: 16px;
   flex: 1 1 auto;
-}
-/* The menu doubles as the mobile drawer, so it carries Bootstrap's `collapse`
-   class. `.collapse:not(.show)` is width-agnostic and outweighs `.sm-nav-menu`,
-   so from lg up it has to be beaten back — the equivalent of Bootstrap's own
-   `.navbar-expand-lg .navbar-collapse { display: flex }`. */
-@media (min-width: 992px) {
-  .sm-nav .sm-nav-menu.collapse:not(.show) {
-    display: flex;
-  }
 }
 .sm-nav-links {
   display: flex;
@@ -372,6 +368,225 @@ background-color: rgb(229, 233, 223);
 }
 .sm-nav-cta:hover {
   background: var(--sm-olive-700);
+}
+
+/* ---- the phone panel the burger opens (MediaNavMobile) ----
+   The bottom half of the bar's card rather than a card of its own: it hangs
+   flush off the bar's bottom edge, keeps the same border and width, and only
+   its bottom corners are rounded — while it is up the bar drops its own bottom
+   rounding (see `html.sm-drawer-open .sm-nav`) so the two read as one white
+   card with a hairline between them. It floats over the hero: the page still
+   shows around and under it. Out of flow, so nothing below is pushed down, and
+   the body's scroll is locked while it is up so the card stays pinned to the
+   bar. The panel stays in the DOM at all times — initTranslate() wires the
+   `.language-btn` inside it once, on page load — so it is hidden with
+   visibility rather than unmounted. */
+.sm-drawer {
+  position: absolute;
+  /* the containing block is the bar's padding box, so `top: 100%` lands on its
+     bottom border and `-1px` on the sides lines the two borders up exactly —
+     the panel's own top border then sits on the bar's, as a single hairline */
+  top: 100%;
+  inset-inline: -1px;
+  z-index: 60;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 12px 8px 18px;
+  border-radius: 0 0 16px 16px;
+  border: 1px solid #dadada;
+  background: #ffffff;
+  /* offset down and pulled in by a negative spread, so the shadow never bleeds
+     back up over the bar the card is joined to */
+  box-shadow: 0 24px 44px -16px rgba(0, 0, 0, 0.22);
+  /* the bar sits ~66px down the hero; the rest of the screen is the card's,
+     and anything past it scrolls inside the card rather than off it */
+  max-height: calc(100vh - 100px);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(-10px);
+  transition: opacity 0.22s ease, transform 0.22s ease, visibility 0.22s;
+}
+.sm-drawer.is-open {
+  opacity: 1;
+  visibility: visible;
+  transform: none;
+}
+/* the bar gives up its bottom corners for as long as the panel hangs off it.
+   The delay is on the way back only: closing rounds them again once the panel
+   has faded, so the joint is never seen coming apart.
+   Scoped below lg like the panel itself, so resizing up to the desktop bar
+   while it is open can't leave that bar squared off with nothing under it. */
+@media (max-width: 991.98px) {
+  .sm-nav {
+    transition: border-radius 0.2s ease 0.18s;
+  }
+  html.sm-drawer-open .sm-nav {
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;
+    transition-delay: 0s;
+  }
+}
+/* Set on <html> while the panel is up (MediaNavMobile).
+   The panel is nested deep inside the page, so its own z-index only ever
+   competes inside its nearest stacking context. What it has to clear is
+   everything painted after it: the hero's own content and every section below.
+   `.sm-hero` is NOT a stacking context (position: relative, no z-index), so
+   `.sm-nav-wrap` competes directly inside `.sm-page` — lifting the bar alone
+   puts the panel over the lot. That matters because style.css gives the legacy
+   `.container` `position: relative; z-index: 10`, so the bar's container and
+   the hero's container are two contexts at the SAME z-index, and the hero's,
+   being later in the markup, used to paint its headline and photo deck over
+   the panel. The `html` prefix outranks `.sm-wp-hero .sm-nav-wrap`, which
+   drops the bar to z-index: 2 on the works/contact/service/case-study heroes.
+
+   The hero itself must NOT be lifted: its washes and glows are `z-index: -1`
+   children that deliberately paint behind every section (they bleed past the
+   hero and wash over the top of the about section). Giving `.sm-hero` a
+   z-index makes it a stacking context, which traps those layers inside it —
+   and since the big wash is an opaque white gradient, it would then paint OVER
+   the section below and blank it out.
+
+   `.sm-page`'s horizontal clip is dropped at the same time so it can never
+   trim the card; the locked body is what clips the page meanwhile. */
+.sm-drawer-open .sm-page {
+  overflow-x: visible;
+  z-index: 2500;
+}
+/* the works/contact/service/case-study hero is a stacking context of its own
+   (`isolation: isolate`) and clips its children — it has to be lifted, and to
+   let go of the clip, or the card would be cut off at the hero's bottom edge.
+   Nothing inside it overflows on its own, so dropping the clip is invisible. */
+.sm-drawer-open .sm-wp-hero {
+  z-index: 2000;
+  overflow: visible;
+}
+html.sm-drawer-open .sm-nav-wrap,
+html.sm-drawer-open .sm-nav-wrap > .container {
+  z-index: 3000;
+}
+/* a phone affordance only — the bar carries everything from lg up */
+@media (min-width: 992px) {
+  .sm-drawer {
+    display: none;
+  }
+}
+
+.sm-drawer-links {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+}
+.sm-drawer-link {
+  display: block;
+  padding: 15px 14px;
+  /* the rule is always there so the row never shifts when it lights up */
+  border-bottom: 2px solid transparent;
+  border-radius: 8px 8px 0 0;
+  font-size: 17px;
+  font-weight: 500;
+  color: #7f7f7f !important;
+  text-decoration: none;
+  text-align: start;
+  transition: background-color 0.2s ease, color 0.2s ease,
+    border-color 0.2s ease;
+}
+/* the design's current row: an olive-50 band under the label with the olive
+   rule along its bottom edge */
+.sm-drawer-link.is-active,
+.sm-drawer-link:hover,
+.sm-drawer-link:focus-visible {
+  background: var(--sm-olive-50);
+  border-bottom-color: var(--sm-olive-500);
+  color: var(--sm-olive-500) !important;
+  font-weight: 700;
+}
+
+.sm-drawer-lang {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 0 14px;
+  font-size: 16px;
+  color: #7f7f7f;
+}
+/* row-reverse: the chevron trails the language name on its outer side */
+.sm-drawer-lang-btn {
+  display: inline-flex;
+  /* flex-direction: row-reverse; */
+  align-items: center;
+  gap: 10px;
+  padding: 4px;
+  border: 0;
+  background: transparent;
+  font-family: inherit;
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--sm-olive-500);
+  cursor: pointer;
+}
+.sm-drawer-lang-btn i {
+  font-size: 13px;
+}
+[dir="ltr"] .sm-drawer-lang-btn i {
+  transform: rotate(180deg);
+}
+
+.sm-drawer-cta {
+  display: flex;
+  gap: 14px;
+  padding: 0 2px;
+}
+.sm-drawer-cta > a {
+  flex: 1 1 0;
+  min-width: 0;
+  padding: 12px 8px;
+  font-size: 15px;
+}
+
+/* the shared NavSocialLinks row, laid out the way SiteNav's phone menu lays
+   it out: label alone on the start edge, the five marks pushed to the other.
+   `.ms-2` on those elements is Bootstrap's LTR `margin-left` — physical, and
+   `!important` — so it has to be beaten with the same physical property. */
+.sm-drawer-social .social-links {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  margin: 0;
+  gap: 18px;
+  text-align: start;
+}
+.sm-drawer-social .social-links > span {
+  margin-left: auto !important;
+  font-size: 12px !important;
+  font-weight: 600;
+  color: #7f7f7f;
+}
+[dir="ltr"] .sm-drawer-social .social-links > span {
+  margin-left: 0 !important;
+  margin-right: auto !important;
+}
+.sm-drawer-social .social-links a {
+  display: inline-flex;
+  align-items: center;
+  margin-left: 0 !important;
+  color: var(--sm-olive-500);
+}
+.sm-drawer-social .social-links a i {
+  font-size: 18px !important;
+}
+.sm-drawer-social .social-links a svg {
+  width: 18px;
+  height: 18px;
+}
+.sm-drawer-social .social-links a:hover {
+  padding: 0;
+  background: none;
 }
 
 /* ---- headline ---- */
@@ -1115,11 +1330,15 @@ background-color: rgb(229, 233, 223);
     height: 64px;
   }
   .sm-why-card-title {
-    font-size: 24px;
+    font-size: 18px;
   }
   .sm-why-card-desc {
-    font-size: 15px;
+    font-size: 13px;
     line-height: 26px;
+  }
+  .sm-why-icon svg {
+    width: 50px;
+    height: 50px;
   }
 }
 
@@ -1270,7 +1489,7 @@ background-color: rgb(229, 233, 223);
 .sm-step-title {
   position: relative;
   margin: 0;
-  font-size: 17px;
+  font-size: 16px;
   line-height: 26px;
 }
 .sm-step-desc {
@@ -1384,20 +1603,59 @@ background-color: rgb(229, 233, 223);
   object-fit: cover;
   display: block;
 }
+/* one third of the track is exactly one pass of the column's list (MediaWorks
+   renders it three times), so the walk lands on the seam */
 @keyframes sm-works-up {
   from {
     transform: translateY(0);
   }
   to {
-    transform: translateY(-50%);
+    transform: translateY(-33.3333%);
   }
 }
 @keyframes sm-works-down {
   from {
-    transform: translateY(-50%);
+    transform: translateY(-33.3333%);
   }
   to {
     transform: translateY(0);
+  }
+}
+/* Phones lay the same loops sideways (mobile block below). The track hangs off
+   the inline-start edge of its row, so — exactly like the ticker above — RTL
+   has to walk it the positive way to keep the row full; drifting the other way
+   would drag the tiles off and leave the row empty. `-rev` is the same walk
+   taken backwards, for the row that runs against the other two. */
+@keyframes sm-works-side {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(33.3333%);
+  }
+}
+@keyframes sm-works-side-rev {
+  from {
+    transform: translateX(33.3333%);
+  }
+  to {
+    transform: translateX(0);
+  }
+}
+@keyframes sm-works-side-ltr {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-33.3333%);
+  }
+}
+@keyframes sm-works-side-ltr-rev {
+  from {
+    transform: translateX(-33.3333%);
+  }
+  to {
+    transform: translateX(0);
   }
 }
 
@@ -1437,7 +1695,7 @@ background-color: rgb(229, 233, 223);
 /* no hover to wait for on touch: the cards just stay up */
 @media (hover: none) {
   .sm-works-card {
-    opacity: 1;
+    /* opacity: 1; */
     transform: none;
     pointer-events: auto;
   }
@@ -2026,6 +2284,7 @@ color:#6D6D6D;
   font-size: 13px;
   font-weight: 700;
 }
+
 .sm-pkg-desc {
   margin: 14px 0 0;
   font-size: 13px;
@@ -2472,35 +2731,13 @@ color:#6D6D6D;
 }
 
 @media (max-width: 991.98px) {
-  /* nav collapses to brand + burger; the rest moves into the drawer */
-  .sm-nav {
-    flex-wrap: wrap;
-  }
+  /* the bar keeps only the brand and the burger; everything else moves into
+     the full-screen panel (.sm-drawer) */
   .sm-nav-toggler {
     display: inline-flex;
   }
   .sm-nav-menu {
-    flex-basis: 100%;
-    flex-direction: column;
-    align-items: stretch;
-    gap: 10px;
-    padding: 12px 0 6px;
-  }
-  .sm-nav-menu.collapse:not(.show) {
     display: none;
-  }
-  .sm-nav-menu.collapsing,
-  .sm-nav-menu.collapse.show {
-    display: flex;
-  }
-  .sm-nav-links {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 12px;
-    margin: 0;
-  }
-  .sm-nav-actions {
-    justify-content: flex-start;
   }
   .sm-chip-hero-a {
     top: 210px;
@@ -2579,76 +2816,528 @@ color:#6D6D6D;
   }
 }
 
+/* ============================================================
+   Mobile (≤767px) — the design's phone artboards. Every block below
+   mirrors one of them, in page order: nav, hero, about, stats,
+   services, why, process, works, sectors, partners, consultation,
+   packages, testimonials, FAQ.
+   ============================================================ */
 @media (max-width: 767.98px) {
-  .sm-hero-text {
-    padding: 40px 0 26px;
+  /* ---- shared section heads: one step down from the desktop scale ---- */
+  .sm-pill {
+    padding: 3px 14px;
+    font-size: 11px;
+    line-height: 20px;
   }
+  .sm-head {
+    margin-bottom: 26px;
+  }
+  .sm-nav {
+    height: 70px;
+  }
+
+  .sm-head-title {
+    margin-top: 10px;
+    font-size: 20px;
+    line-height: 1.4;
+  }
+  .sm-pkg-cta {
+    margin-top: 16px;
+    padding: 10px 14px;
+    font-size: 14px;
+  }
+
+  .sm-drawer-link , .sm-drawer-cta a {
+    font-size: 14px;
+  }
+.sm-drawer-social .social-links > span {
+    font-size: 12px ;
+  }
+  .sm-head-sub {
+    margin-top: 8px;
+    font-size: 14px;
+    line-height: 22px;
+  }
+
+  /* the floating rating chip shrinks with everything else */
+  .sm-chip {
+    gap: 6px;
+    padding: 6px 10px;
+    border-radius: 12px;
+  }
+  .sm-chip-icon {
+    width: 26px;
+    height: 26px;
+    border-radius: 6px;
+  }
+  .sm-chip-icon svg {
+    width: 15px;
+    height: 15px;
+  }
+  .sm-chip-text b {
+    font-size: 13px;
+  }
+  .sm-chip-text small {
+    font-size: 9px;
+    letter-spacing: 0;
+  }
+
+  /* ---- navbar: the card comes down to a single 54px row, brand on the start
+     edge and burger opposite, with the "back to Sawt" link kept above it ---- */
+  .sm-nav-wrap {
+    padding-top: 12px;
+  }
+  .sm-nav-back-row {
+    padding-bottom: 8px;
+  }
+  .sm-nav-back {
+    font-size: 13px;
+  }
+  .sm-nav {
+    gap: 10px;
+    padding: 8px 14px;
+    border-radius: 14px;
+  }
+  /* the joined half of the same card — same corner as the bar it hangs from */
+  .sm-drawer {
+    border-radius: 0 0 14px 14px;
+  }
+  .sm-nav-brand {
+    gap: 6px;
+    font-size: 16px;
+  }
+  .sm-nav-brand svg {
+    width: 34px !important;
+    height: 36px !important;
+  }
+  .sm-nav-toggler {
+    padding: 2px;
+  }
+
+  /* ---- hero ---- */
+  .sm-hero-text {
+    padding: 70px 0 14px;
+  }
+  .sm-hero-title {
+    font-size: 26px;
+    line-height: 1.25;
+  }
+  .sm-hero-word {
+    margin-top: 6px;
+    font-size: 29px !important;
+  }
+  .sm-hero-desc {
+    margin-top: 16px;
+    font-size: 12px;
+    line-height: 21px;
+  }
+  /* both CTAs stay on one row, sharing the width evenly as in the artboard */
+  .sm-hero-cta {
+    flex-wrap: nowrap;
+    gap: 12px;
+    margin-top: 20px;
+  }
+  .sm-hero-cta > a {
+    flex: 1 1 0;
+    min-width: 0;
+    padding: 11px 8px;
+    font-size: 14px;
+  }
+
   /* the deck narrows to three cards: the outer two seats keep their places so
      the carousel still slides in and out of them, they just do it invisibly */
   .sm-hero-fan {
-    height: 152px;
-    margin-top: 14px;
+    height: 122px;
+    margin-top: 12px;
   }
+  .sm-wp-crumb {
+    font-size: 13px !important;
+    line-height: 16px;
+  }
+  .sm-wp-hero-plain .sm-wp-hero-title {
+    font-size: 20px;
+    line-height: 1.25;
+  }
+
   .sm-fan-card {
-    width: 240px;
-    height: 169px;
+    width: 200px;
+    height: 141px;
+    border-radius: 16px;
   }
   .sm-fan-1 {
-    transform: translate(290px, 112px) rotate(25deg);
+    transform: translate(240px, 92px) rotate(25deg);
     opacity: 0;
   }
   .sm-fan-2 {
-    transform: translate(150px, 44px) rotate(20deg);
+    transform: translate(128px, 38px) rotate(20deg);
   }
   .sm-fan-4 {
-    transform: translate(-150px, 44px) rotate(-20deg);
+    transform: translate(-128px, 38px) rotate(-20deg);
   }
   .sm-fan-5 {
-    transform: translate(-290px, 96px) rotate(-25deg);
+    transform: translate(-240px, 80px) rotate(-25deg);
     opacity: 0;
   }
   .sm-fan-0 {
-    transform: translate(-430px, 148px) rotate(-30deg);
+    transform: translate(-360px, 120px) rotate(-30deg);
   }
-  .sm-chip-hero-a,
+  /* only the headline chip survives; the design parks it above the title,
+     hard against the start edge (right in RTL is where the artboard puts it) */
+  .sm-chip-hero-a {
+    display: flex;
+    top: 120px;
+    left: 22px;
+    right: auto;
+  }
   .sm-chip-hero-b {
     display: none;
   }
-  .sm-chip-about {
-    inset-inline-end: 4%;
-    top: 8px;
+
+  .sm-ticker {
+    padding: 12px 0;
+  }
+  .sm-ticker-group,
+  .sm-ticker-item {
+    gap: 28px;
+  }
+  .sm-ticker-group {
+    padding-inline-start: 28px;
+  }
+  .sm-ticker-item {
+    font-size: 12px;
+  }
+  .sm-ticker-dot {
+    width: 8px;
+    height: 8px;
   }
 
-  .sm-about,
-  .sm-works {
-    padding: 56px 0;
+  /* ---- about: the artboard reads head → collage → paragraph → cards, so the
+     copy column is dissolved (display: contents) and its children are ordered
+     against the collage directly ---- */
+  .sm-about {
+    padding: 48px 0;
   }
-  .sm-stats-panel {
-    padding: 32px 20px 36px;
+  .sm-about-row {
+    display: flex;
+    flex-direction: column;
+    gap: 22px;
   }
-  .sm-stats-row {
-    grid-template-columns: repeat(2, 1fr);
+  .sm-about-copy {
+    display: contents;
+  }
+  .sm-about-copy > .sm-head {
+    order: 1;
+    margin-bottom: 0;
   }
   .sm-about-collage {
-    grid-template-rows: 330px;
+    order: 2;
+  }
+  .sm-about-desc {
+    order: 3;
   }
   .sm-about-cards {
-    grid-template-columns: 1fr;
+    order: 4;
   }
-  .sm-consult-perks {
-    grid-template-columns: 1fr;
+  /* the head and the paragraph centre on mobile */
+  .sm-about .sm-head-start {
+    text-align: center;
+  }
+  .sm-about-desc {
+    margin: 0;
+    font-size: 12px;
+    line-height: 26px;
+    text-align: start;
+  }
+
+  .sm-about-collage {
+    grid-template-rows: 300px;
+    column-gap: 12px;
+    row-gap: 12px;
+  }
+  .sm-about-col {
+    row-gap: 12px;
+    height: calc(100% - 12px);
+  }
+  .sm-chip-about {
+    top: -2px;
+    inset-inline-start: 25%;
+    inset-inline-end: auto;
+  }
+
+  /* mission (olive) leads on mobile, vision (orange) follows */
+  .sm-about-cards {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+  .sm-about-mission {
+    order: -1;
+  }
+  .sm-about-card {
+    border-radius: 20px;
+    padding: 20px 22px;
+  }
+  .sm-about-card h3 {
+    font-size: 18px;
+    margin-bottom: 8px;
+  }
+  .sm-about-card p {
+    font-size: 14px;
+    line-height: 24px;
+    text-align: start;
+  }
+
+  /* ---- stats: 3 + 2 ---- */
+  .sm-stats {
+    padding-bottom: 48px;
+  }
+  .sm-stats-panel {
+    padding: 30px 18px 34px;
+  }
+  .sm-stats-row {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 24px 8px;
+    margin-top: 26px;
+  }
+  .sm-stat-value {
+    font-size: 22px;
+  }
+  .sm-stat-label {
+    margin-top: 4px;
+    font-size: 12px;
+  }
+
+  /* ---- services: copy over a near-square still ---- */
+  .sm-services {
+    padding-bottom: 48px;
+  }
+  .sm-svc {
+    gap: 20px;
+    padding: 22px 18px;
+    border-radius: 20px;
+  }
+  .sm-svc-title {
+    font-size: 28px;
+  }
+  .sm-svc-tagline {
+    font-size: 14px;
+  }
+  .sm-svc-tag {
+    font-size: 11px;
+    padding: 5px 12px;
+  }
+  .sm-svc-desc {
+    font-size: 14px;
+    line-height: 24px;
+  }
+  .sm-why .sm-head {
+    text-align: center;
+  }
+  
+  .sm-svc-media {
+    aspect-ratio: 1 / 1;
+  }
+  .sm-svc-watermark,
+  .sm-svc-reverse .sm-svc-watermark {
+    font-size: 200px;
+    bottom: -62px;
+    letter-spacing: -14px;
+  }
+
+  /* ---- why ---- */
+  .sm-why {
+    padding-bottom: 48px;
+  }
+
+  /* ---- process: the horizontal rail stands up into a vertical timeline,
+     rail on the start edge (right in RTL) with the cards beside it ---- */
+  .sm-process {
+    padding: 48px 0 44px;
+  }
+  .sm-process-scroll {
+    overflow: visible;
+    padding-bottom: 0;
+  }
+  .sm-process-track {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 20px;
+    min-width: 0;
+    height: auto;
+    padding-inline: 0;
+  }
+  .sm-process-line {
+    inset-inline-start: 56px;
+    inset-inline-end: auto;
+    top: 0;
+    bottom: 0;
+    width: 1.5px;
+    height: auto;
+    background: linear-gradient(
+      180deg,
+      rgba(112, 125, 95, 0) 0%,
+      rgba(112, 125, 95, 0.55) 8%,
+      rgba(255, 116, 32, 0.55) 92%,
+      rgba(255, 116, 32, 0) 100%
+    );
+  }
+  .sm-process-step {
+    flex: 0 0 auto;
+    height: auto;
+    padding-inline-start: 84px;
+    padding-inline-end: 16px;
+  }
+  /* the card leaves its absolute seat above/below the rail and simply flows */
+  .sm-step-card,
+  .sm-step-up .sm-step-card,
+  .sm-step-down .sm-step-card {
+    position: relative;
+    inset: auto;
+    padding: 16px 18px;
+    /* the step number now hangs below the card instead of being clipped by it */
+    overflow: visible;
+  }
+  /* the number drops out of the card and sits on the olive ground behind the
+     stack — negative z-index puts it under every card in the run */
+  .sm-step-watermark {
+    z-index: -1;
+    bottom: -5px;
+    inset-inline-end: 0px;
+    font-size: 60px;
+    line-height: 1;
+  }
+  .sm-step-node,
+  [dir="ltr"] .sm-step-node {
+    top: 50%;
+    inset-inline-start: 49px;
+    transform: translateY(-50%);
+  }
+  .sm-step-title {
+    font-size: 17px;
+    line-height: 25px;
+  }
+  .sm-step-desc {
+    font-size: 12px;
+    line-height: 20px;
+  }
+
+  /* ---- works: a phone has width to spare and no height, so the wall is
+     turned on its side — the three columns become three full-bleed rows of
+     upright tiles that drift sideways, the middle row against the other
+     two ---- */
+  .sm-works {
+    padding: 48px 0;
   }
   .sm-works-wall {
-    grid-template-columns: repeat(2, 1fr);
-    height: 400px;
+    display: flex;
+    flex-direction: column;
+    width: 100vw;
+    margin-inline: calc(50% - 50vw);
+    height: auto;
+    gap: 10px;
+    padding: 0;
+    border-radius: 0;
+    background: transparent;
   }
-  .sm-works-col-3 {
-    display: none;
+  .sm-works-col {
+    border-radius: 0;
+  }
+  /* Every row gets its own speed and starts part-way through its loop (the
+     negative delay), so the three are never in step: the wall reads as tiles
+     drifting past at their own pace rather than one block sliding, and the
+     rows sit at different offsets from each other however long you watch. */
+  .sm-works-loop {
+    flex-direction: row;
+    width: max-content;
+    gap: 10px;
+    animation-name: sm-works-side;
+    animation-duration: 12s;
+    animation-delay: -4s;
+  }
+  .sm-works-col-2 .sm-works-loop {
+    animation-name: sm-works-side-rev;
+    animation-duration: 9s;
+    animation-delay: -7s;
+  }
+  .sm-works-col-3 .sm-works-loop {
+    animation-duration: 15s;
+    animation-delay: -11s;
+  }
+  [dir="ltr"] .sm-works-loop {
+    animation-name: sm-works-side-ltr;
+  }
+  [dir="ltr"] .sm-works-col-2 .sm-works-loop {
+    animation-name: sm-works-side-ltr-rev;
+  }
+  .sm-works-shot {
+    width: 220px;
+    height: 220px;
+    border-radius: 10px;
+  }
+  .sm-pj-head {
+    align-items: center !important  ;
   }
   .sm-works-card {
     inset-inline: 8px;
     bottom: 8px;
     padding: 12px 14px;
+  }
+  .sm-works-card-text h3 {
+    font-size: 12px;
+  }
+  .sm-works-chip {
+    font-size: 10px;
+    padding: 4px 8px;
+  }
+  .sm-works-card-go {
+    width: 30px;
+    height: 30px;
+  }
+  .sm-works-more {
+    margin-top: 26px;
+  }
+  .sm-btn-lg {
+    /* padding: 10px 20px; */
+    font-size: 14px;
+  }
+
+  /* ---- sectors ---- */
+  .sm-sectors {
+    padding-bottom: 48px;
+  }
+  .sm-sector {
+    padding: 24px 20px 26px;
+    border-radius: 20px;
+  }
+  .sm-sector-icon {
+    width: 56px;
+    height: 58px;
+  }
+  .sm-sector-title {
+    margin-top: 16px;
+    font-size: 20px;
+  }
+  .sm-sector-tagline {
+    margin-top: 14px;
+    font-size: 14px;
+  }
+  .sm-sector-desc {
+    font-size: 14px;
+    line-height: 24px;
+  }
+  .sm-sector-points li {
+    font-size: 14px;
+  }
+  .sm-head-start {
+    text-align: center;
+  }
+
+  /* ---- partners ---- */
+  .sm-partners {
+    padding-bottom: 48px;
+  }
+  .sm-partners-marquee {
+    margin-top: 30px;
   }
   .sm-partners-marquee .marquee-group img {
     max-height: 40px;
@@ -2657,25 +3346,96 @@ color:#6D6D6D;
   .sm-partners-marquee .marquee-group {
     gap: 28px;
   }
-  .sm-works-card-text h3 {
-    font-size: 16px;
+
+  /* ---- consultation: the perks stay a 2×2 block, the form fills the width ---- */
+  .sm-consult {
+    padding: 48px 0;
   }
-  .sm-process-step {
-    flex-basis: 200px;
+  .sm-consult-desc {
+    margin-bottom: 22px;
+    font-size: 14px;
+    line-height: 25px;
   }
-  .sm-process-track {
-    height: 340px;
+  .sm-consult-perks {
+    grid-template-columns: 1fr 1fr;
+    gap: 14px 10px;
   }
-  /* no room for the photo: the questions take the full width */
-  .sm-faq-visual {
-    display: none;
+  .sm-consult-perks li {
+    gap: 8px;
+    font-size: 14px;
   }
-  .sm-faq-q {
-    font-size: 15px;
-    padding: 16px;
+  .sm-consult-perk-icon {
+    width: 36px;
+    height: 36px;
   }
   .sm-form {
     padding: 22px 20px 26px;
+  }
+  .sm-form-title {
+    font-size: 22px;
+  }
+  .sm-form-submit {
+    /* padding: 10px 20px; */
+    font-size: 14px;
+  }
+
+  /* ---- packages: one card per screen, no neighbour peeking in ---- */
+  .sm-packages {
+    padding: 48px 0 44px;
+  }
+  .sm-pkg-track {
+    gap: 16px;
+    padding: 10px 12px 20px;
+  }
+  .sm-pkg {
+    flex: 0 0 100%;
+  }
+  .sm-pkg-title {
+    font-size: 20px;
+  }
+
+  /* ---- testimonials: the centre-focus slider drops to a single card ---- */
+  .sm-testi {
+    padding: 32px 0 56px;
+  }
+  .sm-testi-track {
+    --sm-testi-overlap: 0px;
+    gap: 16px;
+    padding: 16px 16px 24px;
+  }
+  .sm-testi-card {
+    flex: 0 0 100%;
+    margin-inline: 0;
+    padding: 20px 20px 24px;
+  }
+  /* the blurred neighbours have nowhere to sit at this width, so only the
+     centred card is drawn — the others keep their slots for the scroll maths */
+  .sm-testi-card:not(.active) {
+    opacity: 0;
+  }
+
+  /* ---- FAQ: the artboard keeps the photo, above the questions ---- */
+  .sm-faq {
+    padding: 48px 0 0px;
+  }
+  .sm-faq-row {
+    gap: 18px;
+  }
+  .sm-faq-visual {
+    display: block;
+    flex: 0 0 100%;
+    min-width: 0;
+    max-width: 280px;
+    margin: 0 auto 6px;
+  }
+  .sm-faq-q {
+    font-size: 14px;
+    padding: 16px;
+  }
+  .sm-faq-a {
+    margin: 14px 16px 16px;
+    font-size: 13px;
+    line-height: 1.9;
   }
 }
 
@@ -3005,8 +3765,37 @@ background: rgba(0, 0, 0, 0.40);
   .sm-wp-hero-title {
     font-size: 22px;
   }
+
+  /* The listing banner opens on the page's own white on a phone, like the
+     first section of every other page: no collage, no veil, and nothing left
+     holding the banner to a fixed height. Everything the dark banner had
+     turned white goes back to ink — the "back to Sawt" link to its olive, the
+     crumb to the body grey, the headline to the page ink. The service page
+     opens the same way; the case study and contact banners keep the collage. */
+  .sm-wp-hero-plain {
+    min-height: 0;
+    background: none;
+  }
+  .sm-wp-hero-plain .sm-wp-hero-veil {
+    display: none;
+  }
+  .sm-wp-hero-plain .sm-nav-back {
+    color: var(--sm-olive-500) !important;
+  }
+  .sm-wp-hero-plain .sm-nav-back:hover {
+    background: rgba(76, 92, 55, 0.1);
+  }
+  .sm-wp-hero-plain .sm-wp-crumb a {
+    color: var(--sm-gray-800) !important;
+  }
+  .sm-wp-hero-plain .sm-wp-crumb-sep {
+    color: var(--sm-gray-300);
+  }
+  .sm-wp-hero-plain .sm-wp-hero-title {
+    color: var(--sm-ink);
+  }
   .sm-wp-body {
-    padding: 34px 0 56px;
+    padding: 34px 0 0px;
   }
   .sm-wp-grid {
     grid-template-columns: minmax(0, 1fr);
@@ -3428,7 +4217,7 @@ transform: rotate(-90deg);
   border-radius: 20px;
   background: #ffffff;
   border: 0.582px solid #DADADA;
-  box-shadow: 0 4px 4px 0 rgba(0, 0, 0, 0.08);
+  /* box-shadow: 0 4px 4px 0 rgba(0, 0, 0, 0.08); */
   padding: 20px 22px 26px;
   text-align: start;
 }
@@ -3447,6 +4236,11 @@ transform: rotate(-90deg);
   border-radius: 26843500px;
   background: #FFF3EB;
 }
+[dir='ltr'] .sm-pj-review-quote-badge {
+  left: 69.5px;
+}
+
+
 .sm-pj-review-avatar {
   display: block;
   width: 64px;
@@ -3588,45 +4382,249 @@ transform: rotate(-90deg);
   .sm-pj-review {
     grid-template-columns: minmax(0, 1fr);
   }
-  .sm-pj-results {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
 }
 
 @media (max-width: 767.98px) {
+  /* ---- intro: the identity stacks over the still (the row is already one
+     column from 992px down), and the whole block steps down a type size ---- */
   .sm-pj-intro {
     padding: 32px 0 20px;
+  }
+  .sm-pj-intro-row {
+    gap: 18px;
+  }
+  .sm-pj-chips {
+    margin-bottom: 12px;
   }
   .sm-pj-title {
     font-size: 22px;
   }
-  .sm-pj-tabs {
-    flex-wrap: wrap;
-  }
-  .sm-pj-tab {
-    padding: 10px 16px;
+  .sm-pj-specialty {
     font-size: 14px;
   }
-  .sm-pj-duo,
-  .sm-pj-results,
-  .sm-pj-gallery {
+  .sm-pj-desc {
+    margin-top: 10px;
+    font-size: 14px;
+    line-height: 22px;
+  }
+  .sm-pj-figures {
+    margin-top: 18px;
+    border-radius: 16px;
+    padding: 16px 10px;
+  }
+  .sm-pj-figure-value {
+    font-size: 22px;
+  }
+  .sm-pj-figure-label {
+    margin-top: 4px;
+    font-size: 12px;
+  }
+  /* the artboard crops the still much taller on a phone than the 2:1 band it
+     gets beside the copy on desktop */
+  .sm-pj-shot {
+    border-radius: 16px;
+    aspect-ratio: 8 / 7;
+  }
+
+  /* ---- the tab bar keeps all three tabs on one row: they shrink to fit
+     rather than wrapping, and sit against the start edge with the slack
+     left over on the far side, as in the artboard ---- */
+  .sm-pj-body {
+    padding: 30px 0 44px;
+  }
+  .sm-pj-tabs {
+    flex-wrap: nowrap;
+    gap: 6px;
+    padding: 8px 10px;
+    border-radius: 14px;
+  }
+  .sm-pj-tab {
+    padding: 9px 12px;
+    border-radius: 10px;
+    font-size: 14px;
+    white-space: nowrap;
+  }
+
+  .sm-pj-panel {
+    padding-top: 26px;
+  }
+  .sm-pj-head {
+    margin-bottom: 12px;
+    font-size: 24px;
+    gap: 8px;
+  }
+  .sm-pj-head + .sm-pj-head,
+  .sm-pj-results + .sm-pj-head {
+    margin-top: 26px;
+  }
+  /* the heading centres the dot against the line at this width (`.sm-pj-head`
+     above), so the nudge the flex-start version needs has to go with it */
+  .sm-pj-dot {
+    width: 8px;
+    height: 8px;
+    margin-top: 0;
+  }
+  .sm-pj-text {
+    font-size: 14px;
+    line-height: 22px;
+  }
+
+  /* ---- the challenges / solutions pair stacks ---- */
+  .sm-pj-duo {
     grid-template-columns: minmax(0, 1fr);
+    gap: 14px;
+    margin: 18px 0 26px;
   }
+  .sm-pj-note {
+    border-radius: 16px;
+    padding: 18px;
+  }
+  .sm-pj-note-notch {
+    width: 56px;
+    height: 56px;
+    border-radius: 0 0 0 56px;
+  }
+  .sm-pj-note-head {
+    gap: 8px;
+    margin-bottom: 10px;
+    font-size: 18px;
+  }
+  .sm-pj-note-list {
+    padding-inline-start: 16px;
+    gap: 6px;
+    font-size: 14px;
+    line-height: 20px;
+  }
+  /* the three figures stay side by side down to the narrowest phone — they
+     just get tighter, they never stack */
+  .sm-pj-results {
+    gap: 8px;
+  }
+  .sm-pj-result {
+    border-radius: 14px;
+    padding: 14px 8px;
+  }
+  .sm-pj-result-value {
+    font-size: 22px;
+  }
+  .sm-pj-result-label {
+    margin-top: 4px;
+    font-size: 12px;
+    line-height: 16px;
+  }
+
+  /* the frames keep the artboard's mosaic on a phone — narrow + wide, the
+     split mirrored, then one across the width — only shorter and tighter */
   .sm-pj-gallery {
-    grid-template-rows: none;
-    grid-auto-rows: auto;
-    aspect-ratio: auto;
+    gap: 8px;
+    aspect-ratio: 16 / 15;
   }
-  .sm-pj-frame:nth-child(n) {
-    grid-column: auto;
-    height: auto;
+  .sm-pj-frame {
+    border-radius: 12px;
   }
   .sm-pj-frame img {
-    height: auto;
-    aspect-ratio: 16 / 9;
+    border-radius: 10px;
+  }
+
+  /* ---- the stages ---- */
+  .sm-pj-stages {
+    gap: 12px;
+  }
+  .sm-pj-stage {
+    gap: 12px;
+    border-radius: 16px;
+    padding: 16px;
+  }
+  .sm-pj-stage-step {
+    width: 34px;
+    height: 34px;
+    font-size: 14px;
+  }
+  .sm-pj-stage-text h3 {
+    font-size: 16px;
+  }
+  .sm-pj-stage-text p {
+    font-size: 12px;
+    line-height: 20px;
+  }
+
+  /* ---- the client's verdict: the card over the meters (the grid is already
+     one column from 992px down) ---- */
+  .sm-pj-review {
+    gap: 22px;
+  }
+  .sm-pj-review-card {
+    border-radius: 16px;
+    padding: 16px 16px 20px;
+    margin-top: 20px;
+  }
+  .sm-pj-review-avatar {
+    width: 52px;
+    height: 52px;
+  }
+  /* the disc follows the smaller avatar's lower outer edge — still a physical
+     offset, so RTL does not flip it */
+  .sm-pj-review-quote-badge {
+    right: 54px;
+    top: 49px;
+    width: 22px;
+    height: 22px;
+  }
+  [dir='ltr'] .sm-pj-review-quote-badge {
+    left: 54px;
+    top: 49px;
+  }
+
+  .sm-pj-review-stars {
+    margin: 12px 0 10px;
+  }
+  .sm-pj-review-stars svg {
+    width: 13px;
+    height: 13px;
+  }
+  .sm-pj-review-quote {
+    font-size: 14px;
+    line-height: 20px;
+  }
+  .sm-pj-review-name {
+    margin-top: 16px;
+    font-size: 15px;
+  }
+  .sm-pj-review-meta {
+    font-size: 12px;
+  }
+  .sm-pj-bars {
+    gap: 18px;
+  }
+  .sm-pj-bar-top {
+    margin-bottom: 8px;
+  }
+  .sm-pj-bar-label {
+    font-size: 14px;
+  }
+  .sm-pj-bar-pct {
+    font-size: 18px;
+  }
+  .sm-pj-bar-track {
+    height: 6px;
+  }
+
+  /* the banner loses the desktop gutter: at this width the copy needs the
+     card's full measure, so the padding comes in and the fixed height goes */
+  .sm-pj-cta {
+    padding: 0 ;
+  }
+  .sm-pj-cta-card {
+    min-height: 0;
+    padding: 34px 22px;
   }
   .sm-pj-cta-title {
-    font-size: 24px;
+    font-size: 22px;
+  }
+  .sm-pj-cta-desc {
+    margin: 12px 0 20px;
+    font-size: 14px;
+    line-height: 22px;
   }
 }
 
@@ -3773,12 +4771,77 @@ transform: rotate(-90deg);
   .sm-sv-gallery {
     padding: 30px 0 6px;
   }
-  .sm-sv-features,
-  .sm-sv-grid {
-    grid-template-columns: minmax(0, 1fr);
+  /* the wide desktop crop stands up on a phone: a near-square frame at three
+     quarters of the viewport, its neighbours still peeking off both edges */
+  .sm-sv-track {
+    --sm-sv-shot-w: 76vw;
+    --sm-sv-overlap: 4px;
   }
+  .sm-sv-shot {
+    aspect-ratio: 15 / 16;
+    border-radius: 16px;
+  }
+
   .sm-sv-body {
-    padding: 26px 0 44px;
+    padding: 26px 10px 44px;
+  }
+  /* the paragraph centres here — at this measure a start-aligned last line
+     reads as a ragged edge under the centred block above it */
+  .sm-sv-text {
+    text-align: start;
+    font-size: 14px;
+    line-height: 24px;
+  }
+
+  /* the scope points stack, one full-width chip each */
+  .sm-sv-features {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 12px;
+  }
+  .sm-sv-feature {
+    padding: 14px;
+    font-size: 14px;
+    line-height: 22px;
+  }
+
+  /* "نماذج من أعمالنا" leaves the grid on a phone and runs as the same
+     full-bleed snap track the gallery above it uses, so the neighbouring
+     projects show at both edges. No pager: the artboard pages this one by
+     swipe alone, which is why it stays a Server Component. */
+  .sm-sv-grid {
+    display: flex;
+    gap: 14px;
+    /* full-bleed out of the container, then padded back in by the half-gutter
+       a 76vw tile needs to rest in the middle */
+    margin-inline: calc(50% - 60vw);
+    padding: 4px 12vw;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    scrollbar-width: none;
+  }
+  .sm-sv-grid::-webkit-scrollbar {
+    display: none;
+  }
+  .sm-sv-grid .sm-wp-tile {
+    flex: 0 0 76vw;
+    scroll-snap-align: center;
+    aspect-ratio: 15 / 16;
+  }
+  /* the tile keeps its resting card here — the project's name and the arrow,
+     not the chips and the project line a touch device otherwise opens
+     (see `@media (hover: none)` on `.sm-wp-chips`) */
+  .sm-sv-grid .sm-wp-chips,
+  .sm-sv-grid .sm-wp-card-text p {
+    display: none;
+  }
+  .sm-sv-grid .sm-wp-card {
+    inset-inline: 10px;
+    bottom: 10px;
+    border-radius: 14px;
+    padding: 10px 12px;
+  }
+  .sm-sv-grid .sm-wp-card-text h3 {
+    font-size: 15px;
   }
 }
 
@@ -3953,23 +5016,76 @@ transform: rotate(-90deg);
   }
 }
 
-@media (max-width: 575.98px) {
+@media (max-width: 767.98px) {
+  /* The artboard opens this page on the crumb and the still, nothing else:
+     the headline and the line under it are the desktop banner's, and they step
+     out here rather than repeat "تواصل معنا" over a crumb that already says it.
+     The page still leads with "لنبدأ العمل سويا" further down. */
+  .sm-ct-hero .sm-wp-hero-title,
+  .sm-ct-hero .sm-ct-hero-sub {
+    display: none;
+  }
+  .sm-ct-hero .sm-wp-hero-text {
+    padding: 22px 0 0;
+  }
+
   .sm-ct-body {
-    padding: 34px 0 54px;
+    padding: 20px 0 0px;
   }
+  .sm-ct-row {
+    gap: 22px;
+  }
+  /* and with the banner down to the crumb, the still is what the page opens
+     on — so the copy goes back after it */
+  .sm-ct-copy {
+    order: 0;
+  }
+  /* the still carries its own ratio here instead of the desktop column's
+     stretch-to-match height */
+  .sm-ct-photo {
+    border-radius: 16px;
+    aspect-ratio: 8 / 7;
+    min-height: 0;
+  }
+  .sm-ct-photo img {
+    min-height: 0;
+  }
+
   .sm-ct-title {
-    font-size: 24px;
+    font-size: 26px;
   }
+  .sm-ct-desc {
+    margin: 8px 0 18px;
+    font-size: 16px;
+    line-height: 22px;
+  }
+  .sm-ct-cards {
+    gap: 14px;
+  }
+  .sm-ct-trust {
+    margin-top: 20px;
+  }
+}
+
+@media (max-width: 575.98px) {
   .sm-ct-card {
-    padding: 12px;
-    gap: 10px;
+    padding: 18px 16px;
+    gap: 12px;
+    border-radius: 16px;
   }
   .sm-ct-card-icon {
-    width: 48px;
-    height: 48px;
+    width: 52px;
+    height: 52px;
+    border-radius: 10px;
   }
   .sm-ct-card-text b {
-    font-size: 16px;
+    font-size: 17px;
+    line-height: 24px;
+  }
+  .sm-ct-card-text small {
+    margin-top: 4px;
+    font-size: 12px;
+    line-height: 18px;
   }
   .sm-ct-trust {
     justify-content: flex-start;

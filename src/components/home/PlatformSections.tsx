@@ -2,11 +2,14 @@
 "use client";
 /* eslint-disable */
 import { IconEye, IconVideo, IconBook, IconUsers } from "@/components/ui/icons";
+import { LogoPlatform, LogoIncubator, LogoMedia } from "./platform-logos";
 
+/* `href` sends each card's اقرأ المزيد to that section's page; plain <a> (not
+   <Link>) because /content lives in its own CSS group — see CLAUDE.md. */
 const PLATFORMS = [
-  { nameKey: "platform_card1_name", name: "منصة صوت", descKey: "platform_card1_desc_alt", desc: "مكتبة غنية بالمحتوى الهادف الذي يسلّط الضوء على الواقع، ويمنح مساحة وصوت لمن لا صوت له .", stats: [{ Icon: IconEye, key: "stat_views_30m", text: "+30 مليون مشاهدة" }, { Icon: IconVideo, key: "stat_clips_100", text: "+100 مقطع" }] },
-  { nameKey: "platform_card2_title", name: "حاضنة صوت", descKey: "platform_card2_desc_alt", desc: "برامج تدريبية متخصصة لتطوير مهارات صناع المحتوى وتمكينهم من الإبداع والتميز.", stats: [{ Icon: IconUsers, key: "platform_stat_trainees", text: "+100 متدرب" }, { Icon: IconVideo, key: "platform_stat_projects", text: "+10 مشاريع منطلقة" }] },
-  { nameKey: "platform_card3_title", name: "صوت ميديا", descKey: "platform_card3_desc_alt", desc: "حلول إعلامية متكاملة تجمع بين الإبداع، الإنتاج، والتسويق الرقمي.", stats: [{ Icon: IconBook, key: "platform_stat_creative", text: "+500 محتوى ابداعي" }, { Icon: IconUsers, key: "platform_stat_clients", text: "+100 عميل راضي" }] },
+  { nameKey: "platform_card1_name", name: "منصة صوت", href: "/about", Logo: LogoPlatform, descKey: "platform_card1_desc_alt", desc: "مكتبة غنية بالمحتوى الهادف الذي يسلّط الضوء على الواقع، ويمنح مساحة وصوت لمن لا صوت له .", stats: [{ Icon: IconEye, key: "stat_views_30m", text: "+30 مليون مشاهدة" }, { Icon: IconVideo, key: "stat_clips_100", text: "+100 مقطع" }] },
+  { nameKey: "platform_card2_title", name: "حاضنة صوت", href: "/incubator", Logo: LogoIncubator, descKey: "platform_card2_desc_alt", desc: "برامج تدريبية متخصصة لتطوير مهارات صناع المحتوى وتمكينهم من الإبداع والتميز.", stats: [{ Icon: IconUsers, key: "platform_stat_trainees", text: "+100 متدرب" }, { Icon: IconVideo, key: "platform_stat_projects", text: "+10 مشاريع منطلقة" }] },
+  { nameKey: "platform_card3_title", name: "صوت ميديا", href: "/media", Logo: LogoMedia, descKey: "platform_card3_desc_alt", desc: "حلول إعلامية متكاملة تجمع بين الإبداع، الإنتاج، والتسويق الرقمي.", stats: [{ Icon: IconBook, key: "platform_stat_creative", text: "+500 محتوى ابداعي" }, { Icon: IconUsers, key: "platform_stat_clients", text: "+100 عميل راضي" }] },
 ];
 
 function PlatformCard({ item }: { item: (typeof PLATFORMS)[number] }) {
@@ -17,7 +20,7 @@ function PlatformCard({ item }: { item: (typeof PLATFORMS)[number] }) {
           <img src="/assets/images/Rectangle 592.png" alt="منصة المحتوى" className="img-fluid" />
           <div className="up-center-icon">
             <div className="center-img">
-              <img className="w-100 h-100" src="/assets/images/شعار الحاضنة.png" alt="شعار الحاضنة" />
+              <item.Logo />
             </div>
           </div>
         </div>
@@ -31,7 +34,7 @@ function PlatformCard({ item }: { item: (typeof PLATFORMS)[number] }) {
               </span>
             ))}
           </div>
-          <a href="#" className="read-more-btn text-white">
+          <a href={item.href} className="read-more-btn text-white">
             <span data-i18n="read_more">اقرأ المزيد</span>
             <span className="arrow"><i className="fa-solid fa-angle-left"></i></span>
           </a>

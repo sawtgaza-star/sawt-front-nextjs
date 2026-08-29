@@ -1,9 +1,14 @@
 "use client";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 
-/* The incubator navbar's link list. Client leaf: the underline follows the
-   section you're on — it moves the moment you click one, and keeps itself in
-   sync with the page while you scroll by hand. */
+/* The incubator navbar's link list. Client leaf: the picked section carries the
+   highlight — olive label + rule in the bar, grey plate under it in the phone
+   drawer (see .inc-nav-links a.is-active in incubator.css).
+
+   Click-driven on purpose, NOT a scroll-spy: the bar isn't sticky, it sits at
+   the top of the hero and scrolls out of view with it, so the only time you see
+   the highlight is back at the top — where a scroll-spy would just have reset it
+   to the first section and wiped the choice you made. */
 
 type NavLink = { id: string; key: string; label: string };
 
@@ -13,70 +18,20 @@ const LINKS: NavLink[] = [
   { id: "inc-workshops", key: "inc_nav_workshops", label: "الورشات" },
 ];
 
-/* A section becomes "current" once its top passes this far down the viewport. */
-const MARKER = 0.3;
-/* How long the clicked link keeps the underline while the page glides there. */
-const SCROLL_SETTLE_MS = 900;
-
 export default function IncubatorNavLinks() {
   const [active, setActive] = useState<string>(LINKS[0].id);
-  // While a click-driven scroll is in flight the clicked link owns the
-  // underline, so the sections it glides past can't flicker it on the way.
-  const lockRef = useRef(false);
-  const lockTimer = useRef<number>(0);
 
+  /* Arriving with the section already in the URL — the same bar on /courses
+     links back here as /incubator#inc-courses, and the hash survives a reload. */
   useEffect(() => {
-    const sections = LINKS.map((l) => document.getElementById(l.id)).filter(
-      (el): el is HTMLElement => el !== null,
-    );
-    if (!sections.length) return;
-
-    const sync = () => {
-      if (lockRef.current) return;
-
-      const atBottom =
-        window.innerHeight + window.scrollY >=
-        document.documentElement.scrollHeight - 2;
-      const line = atBottom ? window.innerHeight : window.innerHeight * MARKER;
-
-      // last section whose top has passed the line wins; at the very bottom the
-      // line drops to the viewport foot so the closing sections can win too
-      let current = LINKS[0].id;
-      for (const el of sections) {
-        if (el.getBoundingClientRect().top <= line) current = el.id;
-      }
-      setActive(current);
+    const fromHash = () => {
+      const id = window.location.hash.slice(1);
+      if (LINKS.some((l) => l.id === id)) setActive(id);
     };
-
-    // rAF-throttled: at most one measure per frame however fast the wheel spins
-    let frame = 0;
-    const onScroll = () => {
-      if (frame) return;
-      frame = requestAnimationFrame(() => {
-        frame = 0;
-        sync();
-      });
-    };
-    // taking over by hand hands the underline straight back to the scroll
-    const release = () => {
-      lockRef.current = false;
-    };
-
-    sync();
-    window.addEventListener("scroll", onScroll, { passive: true });
-    window.addEventListener("resize", onScroll);
-    window.addEventListener("wheel", release, { passive: true });
-    window.addEventListener("touchstart", release, { passive: true });
-    return () => {
-      if (frame) cancelAnimationFrame(frame);
-      window.removeEventListener("scroll", onScroll);
-      window.removeEventListener("resize", onScroll);
-      window.removeEventListener("wheel", release);
-      window.removeEventListener("touchstart", release);
-    };
+    fromHash();
+    window.addEventListener("hashchange", fromHash);
+    return () => window.removeEventListener("hashchange", fromHash);
   }, []);
-
-  useEffect(() => () => window.clearTimeout(lockTimer.current), []);
 
   // Own the scroll instead of letting the href do it: a plain "/incubator#id"
   // can resolve to a different document under `output: 'export'` (/incubator
@@ -86,17 +41,14 @@ export default function IncubatorNavLinks() {
     id: string,
   ) => {
     const section = document.getElementById(id);
-    if (!section) return; // no such section — let the browser follow the href
+    // no such section — this is the /courses bar, let the href carry us over
+    if (!section) return;
 
     event.preventDefault();
     setActive(id);
-    lockRef.current = true;
-    window.clearTimeout(lockTimer.current);
-    lockTimer.current = window.setTimeout(() => {
-      lockRef.current = false;
-    }, SCROLL_SETTLE_MS);
-
     section.scrollIntoView({ behavior: "smooth", block: "start" });
+    // replaceState, not the hash itself: setting location.hash would make the
+    // browser jump the page instantly and cut the glide short
     history.replaceState(null, "", `#${id}`);
   };
 

@@ -146,7 +146,7 @@ export default function UntoldStories() {
                         </p>
                       </div>
                       <a
-                        href="#"
+                        href={`/stories/${s.slug}`}
                         className="rs-arrow"
                         aria-label="عرض القصة"
                         data-i18n-title="rs_view_story"

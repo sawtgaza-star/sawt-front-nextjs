@@ -4,18 +4,20 @@ import "@/styles/creators.css";
 import "@/styles/news.css";
 import LegacyInit from "@/components/LegacyInit";
 import NewsHero from "@/components/news/NewsHero";
-import NewsCard from "@/components/news/NewsCard";
+import StoryCard from "@/components/stories/StoryCard";
 import Pagination from "@/components/ui/Pagination";
-import { ALL_NEWS, NEWS_PER_PAGE } from "@/components/news/news-data";
+import { ALL_STORIES, STORIES_PER_PAGE } from "@/components/stories/story-data";
+import { STORIES_PARENT, STORIES_HERO } from "@/components/stories/story-chrome";
 
-/* Full, paginated news listing — the "عرض جميع الأخبار" target from the home
-   page slider. Breadcrumb hero + 3×3 grid of the shared NewsCard. */
+/* Full, paginated stories listing — the "عرض جميع القصص" target from the story
+   article page. Same page as /news down to the CSS pair, the 3×3 grid and the
+   pager; the cards are the home slider's poster `.rs-card` (StoryCard). */
 export default function Page() {
-  const totalPages = Math.ceil(ALL_NEWS.length / NEWS_PER_PAGE);
+  const totalPages = Math.ceil(ALL_STORIES.length / STORIES_PER_PAGE);
   const [page, setPage] = useState(1);
 
-  const start = (page - 1) * NEWS_PER_PAGE;
-  const pageItems = ALL_NEWS.slice(start, start + NEWS_PER_PAGE);
+  const start = (page - 1) * STORIES_PER_PAGE;
+  const pageItems = ALL_STORIES.slice(start, start + STORIES_PER_PAGE);
 
   const goTo = (p: number) => {
     if (p < 1 || p > totalPages || p === page) return;
@@ -27,13 +29,13 @@ export default function Page() {
   return (
     <div className="news-page">
       <LegacyInit page="news" />
-      <NewsHero />
+      <NewsHero parent={STORIES_PARENT} hero={STORIES_HERO} />
       <main>
         <section className="news-grid-section">
           <div className="container">
-            <div className="news-grid">
-              {pageItems.map((item) => (
-                <NewsCard key={item.id} item={item} />
+            <div className="news-grid stories-grid">
+              {pageItems.map((story) => (
+                <StoryCard key={story.id} story={story} />
               ))}
             </div>
             <Pagination page={page} totalPages={totalPages} onChange={goTo} />

@@ -4,9 +4,9 @@ import type { MediaWork } from "./media-works-data";
 /* A project caption, laid over the bottom of its own tile in the works wall.
    It lives inside `.sm-works-shot`, so it drifts with the column instead of
    hanging still over it, and media.css keeps it hidden until the tile is
-   hovered. The wall renders every column twice for a seamless loop, so the
-   second copy passes `duplicate` and is hidden from the a11y tree (and taken
-   out of the tab order) to avoid announcing the project twice. */
+   hovered. The wall renders every column three times for a seamless loop, so
+   the repeat copies pass `duplicate` and are hidden from the a11y tree (and
+   taken out of the tab order) to avoid announcing the project three times. */
 export default function MediaWorksCard({
   work,
   duplicate,
