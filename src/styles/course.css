@@ -805,10 +805,22 @@ position: absolute;
   .crs-reg {
     margin-top: 14px; /* room for the orange tab */
   }
-  /* No top padding to add back: incubator.css floats `.inc-nav-wrap` below lg,
-     but `.crs-hero > .inc-nav-wrap` (course.css, higher specificity) keeps the
-     bar in flow here, so it still occupies its own height. */
+  /* Float the bar over the hero copy instead of pushing it down — the same
+     trick incubator.css uses below lg, re-stated here because the top-of-file
+     `.crs-hero > .inc-nav-wrap` rule pins it back in flow. With the open
+     drawer out of the flow it covers the breadcrumb/title underneath rather
+     than shoving them away. `.crs-hero` is the containing block; the height
+     the bar gives up is paid back by its padding-top below. */
+  .crs-hero > .inc-nav-wrap {
+    position: absolute;
+    top: 0;
+    inset-inline: 0;
+    z-index: 1030;
+  }
   .crs-hero {
+    /* ~122px the floating bar no longer occupies: its own 24px top padding,
+       the back-link line and the 70px white card */
+    padding-top: 122px;
     padding-bottom: 28px;
   }
   /* Below lg `.inc-nav` drops its white plate, so the back link sits straight
@@ -892,6 +904,9 @@ position: absolute;
   .crs-breadcrumb {
     font-size: 14px;
     margin: 24px 0 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
   .crs-breadcrumb-sep {
     font-size: 10px;
