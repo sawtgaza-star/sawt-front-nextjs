@@ -2,12 +2,15 @@
 "use client";
 /* eslint-disable */
 
+/* `id` is the /team/[id] the profile button opens (same ids TEAM_MEMBERS in
+   team-data.ts exposes). Plain <a>, not <Link>: /team loads its own CSS group,
+   like the navbar's الفريق link. */
 const MEMBERS = [
-  { photo: "member1.jpg", nameKey: "team_member_1", name: "هديل طافش" },
-  { photo: "member2.jpg", nameKey: "team_member_2", name: "محمد الأشقر" },
-  { photo: "member3.jpg", nameKey: "team_member_3", name: "محمود الصالح" },
-  { photo: "member4.jpg", nameKey: "team_member_4", name: "هديل طافش" },
-  { photo: "member5.jpg", nameKey: "team_member_5", name: "انس مليحة" },
+  { id: 0, photo: "member1.jpg", nameKey: "team_member_1", name: "هديل طافش" },
+  { id: 1, photo: "member2.jpg", nameKey: "team_member_2", name: "محمد الأشقر" },
+  { id: 2, photo: "member3.jpg", nameKey: "team_member_3", name: "محمود الصالح" },
+  { id: 3, photo: "member4.jpg", nameKey: "team_member_4", name: "هديل طافش" },
+  { id: 4, photo: "member5.jpg", nameKey: "team_member_5", name: "انس مليحة" },
 ];
 
 function TeamCard({ member }: { member: (typeof MEMBERS)[number] }) {
@@ -19,7 +22,7 @@ function TeamCard({ member }: { member: (typeof MEMBERS)[number] }) {
         <div className="member-name-tag" data-i18n={member.nameKey}>{member.name}</div>
       </div>
       <div className="btn-profile-wrapper">
-        <a href="#" className="btn-view-profile">
+        <a href={`/team/${member.id}`} className="btn-view-profile">
           <span data-i18n="view_profile">عرض الملف الشخصي</span>
           <i className="fa-solid fa-angle-left"></i>
         </a>

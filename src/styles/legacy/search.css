@@ -103,10 +103,35 @@
 
 /* ≥md the panel is what the top-bar search icon opens, so it has to exist here
    too — but as a floating card on the container grid, not a full-bleed strip
-   (the header sits over the hero at these widths). */
+   (the header sits over the hero at these widths).
+
+   Floating means out of flow: in flow the max-height 0→120px transition grew
+   the header by ~140px and pushed the whole page down every time the search
+   icon was pressed. `.mobile-search-anchor` (in SiteNav) is a zero-height
+   positioned box right under the navbar, so the card drops over the hero and
+   the page height never changes. */
 @media (min-width: 768px) {
+  .mobile-search-anchor {
+    position: relative;
+    height: 0;
+    /* The hero wrappers give every direct child a stacking position of their
+       own — `.about-header > *`, `.cr-header > *`, `.crs-hero > *`,
+       `.inc-hero > *` all set `position: relative; z-index: 1`. The anchor is
+       one of those children, and the hero block that follows it is another: at
+       an equal z-index the later sibling wins, so the hero's padding box
+       covered the panel and swallowed every click on the input. The page
+       stylesheets that carry those rules load after this one, hence the
+       !important. Stays under the join-modal overlay (2000). */
+    z-index: 1050 !important;
+  }
   .mobile-search-panel {
     display: block;
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    /* inside the anchor's own stacking context */
+    z-index: 1;
     background: transparent;
     border-bottom: none;
     box-shadow: none;

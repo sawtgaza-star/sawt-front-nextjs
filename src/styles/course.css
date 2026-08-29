@@ -805,8 +805,23 @@ position: absolute;
   .crs-reg {
     margin-top: 14px; /* room for the orange tab */
   }
+  /* No top padding to add back: incubator.css floats `.inc-nav-wrap` below lg,
+     but `.crs-hero > .inc-nav-wrap` (course.css, higher specificity) keeps the
+     bar in flow here, so it still occupies its own height. */
   .crs-hero {
     padding-bottom: 28px;
+  }
+  /* Below lg `.inc-nav` drops its white plate, so the back link sits straight
+     on this page's dark olive hero — its olive/grey default is unreadable
+     there. Desktop keeps it as is: the link is inside the white card. */
+  .crs-hero .inc-nav-back,
+  .crs-hero .inc-nav-back i {
+    color: #ffffff !important;
+  }
+  /* hover still paints the grey pill, so the ink goes back to dark */
+  .crs-hero .inc-nav-back:hover,
+  .crs-hero .inc-nav-back:hover i {
+    color: #1c1c1c !important;
   }
   .crs-hero-title {
     font-size: 26px;
@@ -820,11 +835,11 @@ position: absolute;
   .crs-sec-title {
     font-size: 22px;
   }
-  /* stacked cards need headroom for each tab; the branch would collide
-     with the cards at this width */
+  /* the قبل/بعد pair stays side by side all the way down — the two cards read
+     as one comparison, so stacking breaks the point; only the gap tightens.
+     The branch would still collide with the cards at this width. */
   .crs-outcomes-grid {
-    grid-template-columns: 1fr;
-    gap: 40px;
+    gap: 16px;
   }
   .crs-outcomes-leaf {
     display: none;
@@ -860,5 +875,359 @@ position: absolute;
   }
   .crs-reqs-grid {
     grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+/* ============================================================
+   Phones — the course page section by section, at the type scale
+   /incubator and /team use below 576px (see incubator.css's own
+   phone block): 20-22px section titles, 14-15px body copy, tighter
+   cards. Layout is CSS-only — the markup is the desktop one.
+   ============================================================ */
+@media (max-width: 575.98px) {
+  /* ---------- Hero ---------- */
+  .crs-hero {
+    padding-bottom: 24px;
+  }
+  .crs-breadcrumb {
+    font-size: 14px;
+    margin: 24px 0 18px;
+  }
+  .crs-breadcrumb-sep {
+    font-size: 10px;
+    margin: 0 6px;
+  }
+  .crs-badge {
+    font-size: 14px;
+    padding: 4px 14px;
+    margin-bottom: 12px;
+  }
+  .crs-hero-title {
+    font-size: 22px;
+    margin-bottom: 10px;
+  }
+  .crs-hero-desc {
+    font-size: 15px;
+    line-height: 1.9;
+  }
+
+  /* ---------- Body rhythm ---------- */
+  .crs-body {
+    padding: 24px 0 0px;
+  }
+  .crs-layout {
+    gap: 26px;
+  }
+  .crs-section {
+    padding-top: 18px;
+    margin-bottom: 22px;
+  }
+  .crs-sec-head {
+    gap: 10px;
+    margin-bottom: 18px;
+  }
+  .crs-sec-bar {
+    width: 4px;
+    height: 24px;
+  }
+  .crs-sec-title {
+    font-size: 20px;
+  }
+
+  /* ---------- Registration card ---------- */
+  /* the orange tab shrinks with the card so it still reads as a tab, not a
+     bar: shallower peek, pulled in from both edges */
+  .crs-reg::before {
+    top: -16px;
+    right: 24px;
+    left: 24px;
+    height: 44px;
+  }
+  .crs-reg {
+    margin-top: 10px;
+  }
+  .crs-reg-card {
+    border-radius: 20px;
+    padding: 18px 16px;
+  }
+  .crs-reg-kicker {
+    font-size: 14px;
+  }
+  .crs-reg-title {
+    font-size: 20px;
+    margin-bottom: 16px;
+  }
+  /* four boxes plus their colons have to fit a ~300px card */
+  .crs-countdown {
+    margin-bottom: 18px;
+  }
+  .crs-countdown-sep {
+    margin: 0 3px;
+  }
+  .crs-countdown-box {
+    padding: 8px 2px;
+  }
+  .crs-countdown-box b {
+    font-size: 19px;
+  }
+  .crs-countdown-box span {
+    font-size: 12px;
+  }
+  .crs-reg-meta {
+    margin-bottom: 16px;
+  }
+  .crs-reg-meta li {
+    font-size: 15px;
+    padding: 7px 0;
+  }
+  .crs-btn-green {
+    font-size: 15px;
+    padding: 10px 16px;
+  }
+
+  /* ---------- Share card ---------- */
+  .crs-share {
+    margin-top: 18px;
+    padding: 18px 16px;
+  }
+  .crs-share-title {
+    font-size: 20px;
+  }
+  .crs-share-desc {
+    font-size: 15px;
+    margin-bottom: 14px;
+  }
+  .crs-share-actions {
+    gap: 10px;
+  }
+  .crs-share-btn {
+    width: 44px;
+    height: 44px;
+    border-radius: 20px;
+  }
+  .crs-share-copy svg,
+  .crs-share-telegram svg {
+    width: 26px;
+    height: 26px;
+  }
+  .crs-share-facebook,
+  .crs-share-whatsapp {
+    font-size: 26px;
+  }
+  .crs-share-linkedin svg {
+    width: 17px;
+    height: 17px;
+    padding: 4px;
+  }
+
+  /* ---------- Program goals ---------- */
+  /* two per row on phones as well (the cards carry one short line of copy —
+     stacked they left half the screen empty); type drops a step to fit */
+  .crs-goals-grid {
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+  }
+  .crs-goal-card {
+    padding: 14px 12px;
+  }
+  .crs-goal-icon {
+    width: 44px;
+    height: 30px;
+  }
+  .crs-goal-icon svg {
+    width: 20px;
+    height: 20px;
+  }
+  .crs-goal-title {
+    font-size: 15px;
+    margin-bottom: 6px;
+  }
+  .crs-goal-desc {
+    font-size: 13px;
+    line-height: 1.7;
+  }
+
+  /* ---------- Modules accordion ---------- */
+  .crs-modules {
+    gap: 10px;
+  }
+  .crs-module-head {
+    padding: 12px 14px;
+    border-radius: 16px;
+  }
+  .crs-module-open .crs-module-head {
+    border-radius: 15px 15px 0 0;
+  }
+  .crs-module-open {
+    border-radius: 16px;
+  }
+  .crs-module-title {
+    font-size: 15px;
+  }
+  .crs-module-chevron svg {
+    width: 18px;
+    height: 18px;
+  }
+  .crs-module-lessons {
+    padding: 0 14px 4px;
+  }
+  /* the duration keeps its own line rather than squeezing the lesson name */
+  .crs-lesson {
+    flex-wrap: wrap;
+    gap: 8px;
+    padding: 10px 2px;
+    font-size: 14px;
+  }
+  .crs-lesson-icon svg {
+    width: 20px;
+    height: 20px;
+  }
+  .crs-lesson-duration {
+    font-size: 13px;
+  }
+
+  /* ---------- Outcomes (قبل / بعد البرنامج) ---------- */
+  /* two narrow columns: everything inside drops a step so the bullet copy
+     still wraps to readable lines */
+  .crs-outcomes-grid {
+    gap: 10px;
+    margin-top: 40px;
+  }
+  .crs-outcome::before {
+    top: -14px;
+    right: 16px;
+    left: 16px;
+    height: 40px;
+  }
+  .crs-outcome-card {
+    border-radius: 16px;
+    padding: 14px 12px;
+  }
+  .crs-outcome-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 12px;
+    margin-bottom: 12px;
+  }
+  .crs-outcome-icon svg {
+    width: 22px;
+    height: 22px;
+  }
+  .crs-outcome-title {
+    font-size: 17px;
+    margin-bottom: 12px;
+  }
+  .crs-outcome-list {
+    gap: 10px;
+  }
+  .crs-outcome-list li {
+    gap: 8px;
+    font-size: 13px;
+    line-height: 1.7;
+    align-items: flex-start;
+  }
+  /* start-aligned bullets: nudge the dot onto the first line's optical center */
+  .crs-outcome-dot {
+    width: 6px;
+    height: 6px;
+    margin-top: 7px;
+  }
+
+  /* ---------- Perk chips ---------- */
+  .crs-perks-grid {
+    gap: 10px;
+  }
+  .crs-perk {
+    align-items: flex-start;
+    gap: 8px;
+    border-radius: 14px;
+    padding: 10px 12px;
+    font-size: 14px;
+  }
+  .crs-perk-icon svg {
+    width: 20px;
+    height: 20px;
+    margin-top: 2px;
+  }
+
+  /* ---------- Registration requirements ---------- */
+  /* two per row, each keeping the desktop card shape (icon roundel over
+     centered copy); the fifth card sits alone on the last row */
+  .crs-reqs-grid {
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+  }
+  .crs-req-card {
+    gap: 10px;
+    padding: 14px 10px;
+  }
+  .crs-req-icon {
+    width: 44px;
+    height: 44px;
+  }
+  .crs-req-icon svg {
+    width: 22px;
+    height: 22px;
+  }
+  .crs-req-text {
+    font-size: 13px;
+  }
+
+  /* ---------- Selection steps ---------- */
+  /* one per row, roundel beside the copy — two columns squeezed the
+     descriptions too hard */
+  .crs-sel-grid {
+    gap: 18px;
+    margin-top: 24px;
+  }
+  .crs-sel-step {
+    gap: 12px;
+  }
+  .crs-sel-icon {
+    width: 42px;
+    height: 42px;
+  }
+  .crs-sel-icon svg {
+    width: 20px;
+    height: 20px;
+  }
+  .crs-sel-title {
+    font-size: 16px;
+  }
+  .crs-sel-desc {
+    font-size: 14px;
+  }
+
+  /* ---------- Trainer ---------- */
+  /* photo over the copy: a 134px portrait beside text leaves ~150px for the
+     bio on a phone */
+  .crs-trainer-card {
+    flex-direction: column;
+    gap: 14px;
+    border-radius: 18px;
+    padding: 18px 16px;
+  }
+  .crs-trainer-photo {
+    width: 96px;
+    height: 96px;
+    border-radius: 16px;
+  }
+  .crs-trainer-name {
+    font-size: 19px;
+  }
+  .crs-trainer-role {
+    font-size: 15px;
+    color: #000 !important;
+    font-weight: 600;
+  }
+  .crs-trainer-bio {
+    font-size: 15px;
+  }
+  .crs-trainer-follow {
+    font-size: 15px;
+  }
+  .crs-trainer-social {
+    width: 36px;
+    height: 36px;
   }
 }
