@@ -3,10 +3,16 @@ import MediaWorksCard from "./MediaWorksCard";
 import { WORK_COLUMNS } from "./media-works-data";
 
 /* "أبرز أعمالنا" — three columns of stills drifting vertically inside one
-   rounded panel (outer columns up, middle one down). Every tile carries its
-   own project card inside `.sm-works-shot`, so the card scrolls along with its
-   photo; hovering a tile reveals its card and pauses that column (media.css).
-   Each column's list is rendered twice so the CSS loop has no seam. */
+   rounded panel (outer columns up, middle one down); on phones media.css turns
+   the same three loops on their side, so they run as full-bleed rows. Every
+   tile carries its own project card inside `.sm-works-shot`, so the card
+   scrolls along with its photo; hovering a tile reveals its card and pauses
+   that column (media.css).
+
+   Each column's list is rendered three times and the CSS walks it by exactly
+   one pass, so the loop has no seam. Two passes were enough while the loops ran
+   vertically — sideways a pass is shorter than a wide phone, and the row would
+   run out of tiles before it came round. */
 export default function MediaWorks() {
   return (
     <section className="sm-works" id="sm-works">
@@ -24,11 +30,11 @@ export default function MediaWorks() {
           {WORK_COLUMNS.map((col, c) => (
             <div className={"sm-works-col sm-works-col-" + (c + 1)} key={c}>
               <div className="sm-works-loop">
-                {[0, 1].map((pass) =>
+                {[0, 1, 2].map((pass) =>
                   col.map((work) => (
                     <span className="sm-works-shot" key={`${pass}-${work.key}`}>
-                      <img src={work.photo} alt="" aria-hidden={pass === 1 || undefined} />
-                      <MediaWorksCard work={work} duplicate={pass === 1} />
+                      <img src={work.photo} alt="" aria-hidden={pass > 0 || undefined} />
+                      <MediaWorksCard work={work} duplicate={pass > 0} />
                     </span>
                   ))
                 )}

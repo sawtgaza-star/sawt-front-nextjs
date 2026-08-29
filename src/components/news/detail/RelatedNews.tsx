@@ -1,18 +1,60 @@
 "use client";
 import { useEffect, useRef, useState } from "react";
 import NewsCard from "@/components/news/NewsCard";
-import { ALL_NEWS } from "@/components/news/news-data";
+import { ALL_NEWS, type NewsItem } from "@/components/news/news-data";
 
 /* "أخبار ذات صلة" — the strip that closes the article. Same olive band, mic
    watermarks, heading treatment and "عرض جميع الأخبار" link as the home
    slider, but the detail page is not an owl page (LegacyInit only boots the
    carousels on "home"), so the track is a plain scroll container with the
-   creators listing's circular nav buttons. */
+   creators listing's circular nav buttons.
+
+   /stories/[id] renders the same strip with its own cards and headings — see
+   the props below; every default is the news copy, so /news/[id] is
+   unchanged. */
 /* six cards — three per view, so the nav buttons actually have somewhere to
    scroll (three filled the track exactly and left both arrows disabled) */
 const RELATED = ALL_NEWS.slice(0, 6);
 
-export default function RelatedNews() {
+type Heading = {
+  preKey: string;
+  pre: string;
+  highlightKey: string;
+  highlight: string;
+  subKey: string;
+  sub: string;
+};
+
+type MoreLink = { href: string; key: string; label: string };
+
+const NEWS_HEADING: Heading = {
+  preKey: "nws_related_title_pre",
+  pre: "أخبار ذات",
+  highlightKey: "nws_related_title_highlight",
+  highlight: "صلة",
+  subKey: "news_subtitle",
+  sub: "شاهد أحدث القصص والفيديوهات من منصة صوت",
+};
+
+const NEWS_MORE: MoreLink = {
+  href: "/news",
+  key: "view_all_news",
+  label: "عرض جميع الأخبار",
+};
+
+export default function RelatedNews({
+  items = RELATED,
+  heading = NEWS_HEADING,
+  more = NEWS_MORE,
+  children,
+}: {
+  items?: NewsItem[];
+  heading?: Heading;
+  more?: MoreLink;
+  /* cards for the track — defaults to `items` as NewsCards. /stories/[id]
+     passes its own `.rs-card` story cards instead. */
+  children?: React.ReactNode;
+}) {
   const trackRef = useRef<HTMLDivElement | null>(null);
   /* a nav button greys out once the track can't scroll further that way */
   /* the strip opens at its start, so that side's arrow renders disabled from
@@ -106,17 +148,17 @@ export default function RelatedNews() {
       <div className="container">
         <div className="text-center mb-2">
           <h2 className="fw-bold font-42 nws-related-title">
-            <span data-i18n="nws_related_title_pre">أخبار ذات</span>{" "}
-            <span className="who-us" data-i18n="nws_related_title_highlight">
-              صلة
+            <span data-i18n={heading.preKey}>{heading.pre}</span>{" "}
+            <span className="who-us" data-i18n={heading.highlightKey}>
+              {heading.highlight}
             </span>
           </h2>
           <p
             className="news-subtitle font-24"
             style={{ color: "rgba(90, 90, 90, 1)" }}
-            data-i18n="news_subtitle"
+            data-i18n={heading.subKey}
           >
-            شاهد أحدث القصص والفيديوهات من منصة صوت
+            {heading.sub}
           </p>
         </div>
 
@@ -150,15 +192,14 @@ export default function RelatedNews() {
             onDragStart={(e) => e.preventDefault()}
             onClickCapture={onClickCapture}
           >
-            {RELATED.map((item) => (
-              <NewsCard key={item.id} item={item} />
-            ))}
+            {children ??
+              items.map((item) => <NewsCard key={item.id} item={item} />)}
           </div>
         </div>
 
         <div className="text-center nws-related-more">
-          <a href="/news" className="px-4 py-2 fw-bold show-more-news">
-            <span data-i18n="view_all_news">عرض جميع الأخبار</span>{" "}
+          <a href={more.href} className="px-4 py-2 fw-bold show-more-news">
+            <span data-i18n={more.key}>{more.label}</span>{" "}
             <i className="fa-solid fa-angle-left me-2 arrow"></i>
           </a>
         </div>

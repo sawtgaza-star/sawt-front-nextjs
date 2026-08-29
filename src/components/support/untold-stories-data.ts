@@ -9,6 +9,8 @@ export type UntoldStory = {
   titleKey: string;
   full: string;
   fullKey: string;
+  /* the card's arrow opens /stories/{slug} — see components/stories/story-data */
+  slug: string;
 };
 
 const TEA_FULL =
@@ -25,6 +27,7 @@ export const UNTOLD_STORIES: UntoldStory[] = [
     titleKey: "rs_card1_title",
     full: TEA_FULL,
     fullKey: "rs_card1_full",
+    slug: "tea",
   },
   {
     key: "samir",
@@ -33,6 +36,7 @@ export const UNTOLD_STORIES: UntoldStory[] = [
     titleKey: "rs_card2_title",
     full: SAMIR_FULL,
     fullKey: "rs_card2_full",
+    slug: "samir",
   },
   {
     key: "samir-2",
@@ -41,6 +45,7 @@ export const UNTOLD_STORIES: UntoldStory[] = [
     titleKey: "rs_card2_title",
     full: SAMIR_FULL,
     fullKey: "rs_card2_full",
+    slug: "samir",
   },
   {
     key: "tea-2",
@@ -49,5 +54,6 @@ export const UNTOLD_STORIES: UntoldStory[] = [
     titleKey: "rs_card1_title",
     full: TEA_FULL,
     fullKey: "rs_card1_full",
+    slug: "tea",
   },
 ];

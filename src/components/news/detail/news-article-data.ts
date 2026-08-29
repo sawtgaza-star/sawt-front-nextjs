@@ -10,6 +10,14 @@
 
 export type NewsArticleImage = { src: string; alt: string };
 
+/* Body copy as data. The news article keeps its prose inline in NewsBody (it
+   is the mock's own copy); /stories/[slug] reuses the very same components and
+   passes its blocks through here. */
+export type NewsBodyBlock =
+  | { type: "p"; key: string; text: string }
+  | { type: "h2"; key: string; text: string }
+  | { type: "quote"; key: string; text: string; byKey: string; by: string };
+
 export type NewsArticle = {
   /* the pills above the title */
   categoryKey: string;
@@ -32,6 +40,8 @@ export type NewsArticle = {
   gallery: NewsArticleImage[];
   /* the pair of photos under "برامج دعم صانعي المحتوى" */
   bodyImages: NewsArticleImage[];
+  /* when set, NewsBody renders these instead of the news mock's own prose */
+  body?: NewsBodyBlock[];
 };
 
 const ARTICLE: NewsArticle = {

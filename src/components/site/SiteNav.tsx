@@ -47,9 +47,12 @@ export default function SiteNav() {
               ></path>{" "}
             </svg>{" "}
           </button>{" "}
+          {/* Plain <a>, not <Link>: SiteNav also renders under the `content`
+              route group, which loads content.css instead of style.css — a
+              soft navigation home would keep the wrong stylesheet. */}
           <a
             className="navbar-brand"
-            href="#"
+            href="/"
             style={{ marginRight: "0 !important" }}
           >
             {" "}
@@ -215,7 +218,12 @@ export default function SiteNav() {
           </div>{" "}
         </div>{" "}
       </nav>
-      <MobileSearchPanel />
+      {/* Zero-height anchor: ≥768px the panel is absolutely positioned inside
+          it, so opening the search overlays the hero instead of growing the
+          header and pushing the page down. */}
+      <div className="mobile-search-anchor">
+        <MobileSearchPanel />
+      </div>
     </>
   );
 }

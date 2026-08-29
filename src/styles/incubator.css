@@ -2113,10 +2113,29 @@ top: -23px;
     left: -34px;
   }
   /* ---------- The bar collapses to a drawer ----------
-     Closed, the card is brand + burger only; the back link and the socials
-     from the top row move into the drawer tail below, as in the design. */
+     Closed, the card is brand + burger only; the socials from the top row move
+     into the drawer tail below, as in the design.
+
+     The back-to-platform link stays out, but climbs above the card the way
+     صوت ميديا's does: the white plate moves off `.inc-nav` onto `.inc-nav-main`
+     so the top row is no longer inside it, leaving the link floating over the
+     hero on its own line. */
+  .inc-nav {
+    background: transparent;
+    border: 0;
+    border-radius: 0;
+    padding: 0;
+  }
   .inc-nav-top {
+    padding: 0 0 8px;
+    border-bottom: 0;
+  }
+  /* the socials have their own row in the drawer tail */
+  .inc-nav-top .inc-nav-social {
     display: none;
+  }
+  .inc-nav-back {
+    font-size: 13px;
   }
   /* Float the bar over the hero instead of pushing it down — same trick the
      home header uses on phones, so the open drawer covers the sections
@@ -2132,11 +2151,18 @@ top: -23px;
   .inc-nav-toggler {
     display: inline-flex;
   }
-  /* the menu drops onto its own full-width line under the brand row */
+  /* the menu drops onto its own full-width line under the brand row — and this
+     row is now the white card itself, since `.inc-nav` gave the plate up */
+  /* the closed card is a fixed 70px row — a minimum, not a height, so the
+     drawer can still grow the card past it when the burger opens it */
   .inc-nav-main {
     flex-wrap: wrap;
     gap: 0;
-    padding: 12px 0;
+    min-height: 70px;
+    padding: 12px 18px;
+    background: #ffffff;
+    border: 1px solid #dadada;
+    border-radius: 8px;
   }
   .inc-nav-brand {
     font-size: 16px;
@@ -2249,8 +2275,9 @@ top: -23px;
   .inc-hero-grid {
     grid-template-columns: 1fr;
     gap: 56px;
-    /* 40px of gap + the 80px the floating bar no longer occupies */
-    padding: 120px 0 34px;
+    /* 40px of gap + the ~122px the floating bar no longer occupies (the 70px
+       card plus the back-link line now sitting above it) */
+    padding: 162px 0 34px;
   }
   .inc-hero-title {
     font-size: 34px;
@@ -2405,8 +2432,9 @@ top: -23px;
   /* ---------- Hero ---------- */
   .inc-hero-grid {
     gap: 44px;
-    /* clears the floating nav card (24px offset + ~56px bar) */
-    padding: 100px 0 30px;
+    /* clears the floating nav card (24px offset + ~30px back-link line + the
+       70px bar) */
+    padding: 144px 0 30px;
   }
   .inc-hero-title {
     font-size: 24px;

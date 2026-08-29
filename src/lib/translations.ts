@@ -245,6 +245,45 @@ export const translations: any = {
     nws_related_title_pre: "أخبار ذات",
     nws_related_title_highlight: "صلة",
 
+    // Stories pages (/stories, /stories/[id]) — same components as the news pages
+    story_breadcrumb: "قصص النجاح",
+    view_all_stories: "عرض جميع القصص",
+    story_related_title_pre: "قصص ذات",
+    story_related_title_highlight: "صلة",
+    story_related_sub: "قصص حقيقية من غزة نقلتها منصة صوت إلى العالم",
+    story_hero_title: "قصص نجاح.. أصوات من غزة وصلت إلى العالم",
+    story_hero_desc:
+      "قصص حقيقية وثّقتها منصة صوت ونقلتها إلى العالم، لتكون صوتاً لمن لا صوت له.",
+    story_cat_section: "قصص نجاح - قصص من الواقع",
+    story_read_4: "4 دقائق قراءة",
+    story_read_6: "6 دقائق قراءة",
+    story_tea_title: "أغلي كاسة شاي: حين صار كوب الشاي رمزاً للصمود",
+    story_tea_views: "٣٢١٠ مشاهدة",
+    story_tea_date: "12 فبراير 2026",
+    story_tea_p1:
+      "في زاويةٍ صغيرة من مخيمٍ للنازحين، وعلى نارٍ أُشعلت من بقايا خشب البيوت المهدّمة، كان يغلي إبريق شاي. لم يكن مشهداً عادياً: كان صانع المحتوى يصوّره بهاتفٍ شبه فارغ من الشحن، ليقول للعالم إن الحياة هنا لم تتوقف بعد.",
+    story_tea_quote:
+      "\"كاسة الشاي هي آخر ما تبقّى لنا من طقوس الحياة الطبيعية — ولذلك هي أغلى كاسة في العالم\"",
+    story_tea_quote_by: "— صاحب القصة",
+    story_tea_p2:
+      "التقطت منصة صوت المقطع وأعادت روايته بلغةٍ يفهمها العالم: ترجمة، وتحرير، وتوزيع على المنصات. خلال أيام تجاوزت القصة حدود القطاع، ووصلت إلى ملايين المتابعين الذين رأوا في كوب الشاي البسيط صورةً كاملة عن الصمود.",
+    story_tea_h2: "من لقطة عابرة إلى رسالة عالمية",
+    story_tea_p3:
+      "ما بدأ كلقطةٍ عابرة تحوّل إلى مادة صحفية تناقلتها وسائل إعلام عربية ودولية، وفتح الباب أمام صاحب القصة ليكمل طريقه في صناعة المحتوى بدعمٍ من فريق المنصة: تدريب على أدوات الإنتاج، ومعدّات بديلة، ومساحة نشر دائمة. هكذا تعمل صوت — نلتقط الصوت، ونصنع له طريقاً إلى العالم.",
+    story_samir_title: "سمير البطل: من غزة إلى الأردن وأملٌ أن يمشي مجدداً",
+    story_samir_views: "٥٨٤٠ مشاهدة",
+    story_samir_date: "27 يناير 2026",
+    story_samir_p1:
+      "لم يكن سمير يحمل سوى هاتفه حين خرج ليوثّق ما جرى في حيّه. عاد بعد أيامٍ من الغياب وقد فقد يده اليمنى وقدمه اليسرى، لكنه لم يفقد الرغبة في أن يروي. من سرير المستشفى سجّل أول مقطع له بعد الإصابة، وقال فيه جملةً واحدة: ما زلت هنا.",
+    story_samir_quote:
+      "\"أخذوا يدي، لكنهم لم يأخذوا صوتي — وسأكمل الحكاية بما تبقّى منّي\"",
+    story_samir_quote_by: "— سمير",
+    story_samir_p2:
+      "نقلت منصة صوت قصته كاملة: التوثيق، والشهادات، ورحلة العلاج التي انتهت به في الأردن. تحوّل المقطع إلى حملة تضامنٍ واسعة، وفتح أمامه باب علاجٍ متخصص وأطرافٍ صناعية بعد أشهر من الانتظار.",
+    story_samir_h2: "الأمل بأن يمشي مجدداً",
+    story_samir_p3:
+      "اليوم يواصل سمير جلسات التأهيل، ويعود تدريجياً إلى الكاميرا التي أحبّها. يعمل فريق المنصة معه على سلسلةٍ توثّق رحلته خطوة بخطوة، لأن قصته لم تعد قصته وحده: صارت رسالة أملٍ لآلاف الفلسطينيين الذين يرون فيها أن الصوت أعلى من القنابل.",
+
     // Creators section
     creators_title_pre: "صُناع",
     creators_title_highlight: "المحتوى",
@@ -1443,6 +1482,10 @@ export const translations: any = {
     sm_nav_process: "منهجيتنا",
     sm_cta_start: "ابدأ مشروعك",
     sm_cta_services: "تعرف على خدماتنا",
+    sm_cta_consult: "احجز استشارة",
+    sm_lang_label: "اللغة",
+    /* the language the toggle switches TO, like auth_lang_label */
+    sm_lang_value: "English",
     sm_chip_satisfaction: "رضا العملاء",
 
     sm_hero_title:"صوت ميديا تقدم ...",
@@ -2204,6 +2247,45 @@ export const translations: any = {
       "Sawt's creator support programme covers several main tracks: technical training on production tools, creative workshops, mentoring sessions with digital media experts, and a platform to publish and distribute content widely.",
     nws_related_title_pre: "Related",
     nws_related_title_highlight: "News",
+
+    // Stories pages (/stories, /stories/[id]) — same components as the news pages
+    story_breadcrumb: "Success Stories",
+    view_all_stories: "View All Stories",
+    story_related_title_pre: "Related",
+    story_related_title_highlight: "Stories",
+    story_related_sub: "Real stories from Gaza carried to the world by Sawt",
+    story_hero_title: "Success Stories — Voices From Gaza That Reached the World",
+    story_hero_desc:
+      "Real stories documented by Sawt and carried to the world, to be a voice for the voiceless.",
+    story_cat_section: "Success stories - Stories from real life",
+    story_read_4: "4 min read",
+    story_read_6: "6 min read",
+    story_tea_title: "The World's Most Expensive Cup of Tea",
+    story_tea_views: "3,210 views",
+    story_tea_date: "February 12, 2026",
+    story_tea_p1:
+      "In a small corner of a displacement camp, over a fire lit from the wood of demolished homes, a teapot was boiling. It was no ordinary scene: a content creator was filming it on a phone almost out of charge, to tell the world that life here had not stopped.",
+    story_tea_quote:
+      "\"A cup of tea is the last ordinary ritual we have left — and that is why it is the most expensive cup in the world\"",
+    story_tea_quote_by: "— The storyteller",
+    story_tea_p2:
+      "Sawt picked up the clip and retold it in a language the world understands: translation, editing and distribution across platforms. Within days the story had crossed Gaza's borders and reached millions who saw, in one simple cup of tea, a complete picture of resilience.",
+    story_tea_h2: "From a passing shot to a global message",
+    story_tea_p3:
+      "What began as a passing shot became a news story carried by Arab and international outlets, and opened the way for its author to continue as a creator with the platform's support: training on production tools, replacement equipment and a permanent place to publish. That is how Sawt works — we pick up the voice and build it a road to the world.",
+    story_samir_title: "Samir the Hero: From Gaza to Jordan, and the Hope of Walking Again",
+    story_samir_views: "5,840 views",
+    story_samir_date: "January 27, 2026",
+    story_samir_p1:
+      "Samir carried nothing but his phone when he went out to document what had happened in his neighbourhood. He came back days later having lost his right hand and left leg — but not the will to tell the story. From his hospital bed he recorded his first clip after the injury, with a single sentence: I am still here.",
+    story_samir_quote:
+      "\"They took my hand, but they did not take my voice — and I will finish the story with what is left of me\"",
+    story_samir_quote_by: "— Samir",
+    story_samir_p2:
+      "Sawt told his story in full: the documentation, the testimonies, and the treatment journey that ended with him in Jordan. The clip turned into a wide solidarity campaign and opened the door to specialised care and prosthetics after months of waiting.",
+    story_samir_h2: "The hope of walking again",
+    story_samir_p3:
+      "Today Samir continues his rehabilitation sessions and is gradually returning to the camera he loved. The platform's team is working with him on a series documenting his journey step by step, because his story is no longer his alone: it has become a message of hope for thousands of Palestinians who see in it that the voice is louder than the bombs.",
 
     // Creators section
     creators_title_pre: "Content",
@@ -3419,6 +3501,9 @@ export const translations: any = {
     sm_nav_process: "Our method",
     sm_cta_start: "Start your project",
     sm_cta_services: "Explore our services",
+    sm_cta_consult: "Book a consultation",
+    sm_lang_label: "Language",
+    sm_lang_value: "العربية",
     sm_chip_satisfaction: "Client satisfaction",
 
     sm_hero_title: "Sawt Media presents...",

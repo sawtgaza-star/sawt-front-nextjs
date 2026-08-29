@@ -475,6 +475,16 @@
 
 }
 
+/* Story poster cards (.rs-card, style.css) run a little shorter here than in
+   the home slider: three across in the strip and in the listing grid, the
+   3/3.5 crop made the row tall enough to push the section's tail off-screen.
+   Only the stories pages match these selectors — /news/[id] fills the same
+   strip with white news cards. */
+.nws-related .rs-card-bg,
+.news-page .stories-grid .rs-card-bg {
+  aspect-ratio: 3 / 3.15;
+}
+
 .nws-related-slider {
   position: relative;
 }
