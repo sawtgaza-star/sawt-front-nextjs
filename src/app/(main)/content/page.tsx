@@ -7,7 +7,6 @@ import ContentHero from "@/components/content/ContentHero";
 import ContentFilterBar from "@/components/content/ContentFilterBar";
 import ContentGrid from "@/components/content/ContentGrid";
 import MostWatchedSection from "@/components/content/MostWatchedSection";
-import FooterNewsletterMobile from "@/components/site/footer/FooterNewsletterMobile";
 import {
   GRID_REELS,
   MOST_WATCHED_ROWS,
@@ -48,8 +47,6 @@ export default function Page() {
           <MostWatchedSection key={row.id} reels={row.reels} />
         ))}
       </main>
-      {/* mobile-only newsletter card, directly above the footer (as on home) */}
-      <FooterNewsletterMobile />
     </div>
   );
 }

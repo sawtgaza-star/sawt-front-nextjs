@@ -10,7 +10,6 @@ import NewsArticleHead from "@/components/news/detail/NewsArticleHead";
 import NewsGallery from "@/components/news/detail/NewsGallery";
 import NewsBody from "@/components/news/detail/NewsBody";
 import RelatedNews from "@/components/news/detail/RelatedNews";
-import FooterNewsletterMobile from "@/components/site/footer/FooterNewsletterMobile";
 import { getArticle } from "@/components/news/detail/news-article-data";
 import { ALL_NEWS } from "@/components/news/news-data";
 
@@ -75,9 +74,6 @@ export default async function Page({
         </div>
       </main>
       <RelatedNews />
-      {/* the newsletter card sits between the article and the dark footer; it is
-          `display: none` above 768px (style.css), so this is mobile-only */}
-      <FooterNewsletterMobile />
     </div>
   );
 }

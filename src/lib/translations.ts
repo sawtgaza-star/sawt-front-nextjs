@@ -1443,6 +1443,10 @@ export const translations: any = {
     sm_nav_process: "منهجيتنا",
     sm_cta_start: "ابدأ مشروعك",
     sm_cta_services: "تعرف على خدماتنا",
+    sm_cta_consult: "احجز استشارة",
+    sm_lang_label: "اللغة",
+    /* the language the toggle switches TO, like auth_lang_label */
+    sm_lang_value: "English",
     sm_chip_satisfaction: "رضا العملاء",
 
     sm_hero_title:"صوت ميديا تقدم ...",
@@ -3419,6 +3423,9 @@ export const translations: any = {
     sm_nav_process: "Our method",
     sm_cta_start: "Start your project",
     sm_cta_services: "Explore our services",
+    sm_cta_consult: "Book a consultation",
+    sm_lang_label: "Language",
+    sm_lang_value: "العربية",
     sm_chip_satisfaction: "Client satisfaction",
 
     sm_hero_title: "Sawt Media presents...",

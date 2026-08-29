@@ -3,10 +3,14 @@ import MediaNav from "./MediaNav";
 /* Banner of /media/works — the صوت photo collage (heroSectionImg) under an
    olive veil, with صوت ميديا's own navbar on top of it, then the breadcrumb and
    the headline. Unlike /media's hero this one is dark, so the nav's
-   "العودة لمنصة صوت" link flips to white (media.css). */
+   "العودة لمنصة صوت" link flips to white (media.css).
+
+   `sm-wp-hero-plain` is what sets this banner apart from the other three that
+   share `.sm-wp-hero`: on a phone it drops the collage and reads as ink on the
+   page's own white, the way every other page opens on mobile. */
 export default function MediaWorksHero() {
   return (
-    <header className="sm-wp-hero">
+    <header className="sm-wp-hero sm-wp-hero-plain">
       <span className="sm-wp-hero-veil" aria-hidden="true" />
 
       <MediaNav base="/media" />

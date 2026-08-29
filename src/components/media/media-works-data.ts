@@ -31,9 +31,9 @@ const MAY = { date: "2026 مايو", dateKey: "sm_works_date_may" };
 const APR = { date: "2026 أبريل", dateKey: "sm_works_date_apr" };
 const MAR = { date: "2026 مارس", dateKey: "sm_works_date_mar" };
 
-/* The three vertical columns of the wall. Each column loops its own list
-   (MediaWorks renders every list twice so the scroll is seamless); the middle
-   column drifts the other way. */
+/* The three vertical columns of the wall — three sideways rows on a phone.
+   Each column loops its own list (MediaWorks renders every list three times so
+   the scroll is seamless); the middle column drifts the other way. */
 export const WORK_COLUMNS: MediaWork[][] = [
   [
     {

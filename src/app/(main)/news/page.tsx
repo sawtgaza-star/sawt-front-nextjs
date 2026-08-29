@@ -6,7 +6,6 @@ import LegacyInit from "@/components/LegacyInit";
 import NewsHero from "@/components/news/NewsHero";
 import NewsCard from "@/components/news/NewsCard";
 import Pagination from "@/components/ui/Pagination";
-import FooterNewsletterMobile from "@/components/site/footer/FooterNewsletterMobile";
 import { ALL_NEWS, NEWS_PER_PAGE } from "@/components/news/news-data";
 
 /* Full, paginated news listing — the "عرض جميع الأخبار" target from the home
@@ -41,9 +40,6 @@ export default function Page() {
           </div>
         </section>
       </main>
-      {/* Newsletter card above the dark footer — the component is display:none
-          until the mobile breakpoint, so it only shows on phones. */}
-      <FooterNewsletterMobile />
     </div>
   );
 }

@@ -1,6 +1,8 @@
 // @ts-nocheck
 /* eslint-disable */
-/* Mobile-only newsletter card shown above the dark footer (home only). */
+/* Mobile-only newsletter card shown above the dark footer. Rendered by
+   SiteFooter, so it opens the footer on every page of the (main) group;
+   style.css keeps it `display: none` above 767.98px. */
 export default function FooterNewsletterMobile() {
   return (
     <div className="footer-newsletter-mobile">
