@@ -40,6 +40,10 @@ export default function CreatorCollaborations() {
         overlay.style.opacity = "1";
         overlay.style.pointerEvents = "all";
       }
+      // الإعجاب/الحفظ محفوظان لكل فيديو على حدة، والفيديو تغيّر مع الشركة
+      try {
+        (window as any).initReelActions?.();
+      } catch {}
     }
   }, [active]);
 
@@ -139,8 +143,8 @@ export default function CreatorCollaborations() {
                       </i>
                     </span>
                     <span
-                      onClick={() => {
-                        (window as any).shareVideo();
+                      onClick={(e) => {
+                        (window as any).shareVideo(e.currentTarget);
                       }}
                     >
                       <i>

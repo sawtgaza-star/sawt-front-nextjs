@@ -1,6 +1,23 @@
-// @ts-nocheck
-/* eslint-disable */
-export default function AboutPlatform() {
+import { localized, type AboutPlatformContent } from "@/lib/api/pages";
+import { splitHeading } from "./about-text";
+
+/* API `platform` block, and nothing else — see AboutHero. The heading's accent
+   is on its last word ("…لنكون صوتك؟"); see ./about-text. The birds are the
+   card's background art, not content, so they stay. */
+export default function AboutPlatform({
+  data,
+  lang = "ar",
+}: {
+  data?: AboutPlatformContent;
+  lang?: string;
+}) {
+  const title = localized(data?.title, lang);
+  const description = localized(data?.description, lang);
+  const image = data?.image_url;
+  const [titleHead, titleTail] = splitHeading(title, 1);
+
+  if (!title && !description && !image) return null;
+
   return (
     <section className="about-the-platform">
       {" "}
@@ -17,31 +34,22 @@ export default function AboutPlatform() {
             {" "}
             <div className="col-12 col-lg-5 about-the-platform-content">
               {" "}
-              <h2
-                className="about-the-platform-question"
-                data-i18n-html="about_platform_question_html"
-              >
-                ما الذي يدفعنا لنكون
-                <span className="platform-highlight">صوتك؟</span>{" "}
-              </h2>{" "}
-              <p
-                className="about-the-platform-desc"
-                data-i18n="about_platform_desc"
-              >
-                نؤمن أن لكل إنسان قصة تستحق أن تُروى، لذلك جاءت صوت لتكون
-                مساحة حرة للتعبير، حيث يلتقي الأفراد لمشاركة تجاربهم وأفكارهم
-                بصدق.نساعدك على إيصال صوتك إلى الآخرين، ونمنح المحتوى الإنساني
-                مساحة حقيقية ليُرى، ويُسمع، ويترك أثرًا.
-              </p>{" "}
+              {title ? (
+                <h2 className="about-the-platform-question">
+                  {titleHead}{" "}
+                  <span className="platform-highlight">{titleTail}</span>
+                </h2>
+              ) : null}{" "}
+              {description ? (
+                <p className="about-the-platform-desc">{description}</p>
+              ) : null}{" "}
             </div>{" "}
-            <div className="col-12 col-lg-7 about-the-platform-visual">
-              {" "}
-              <img
-                src="/assets/images/backgrounf_sawt.jpg"
-                alt="صوت"
-                className="about-platform-img"
-              />{" "}
-            </div>{" "}
+            {image ? (
+              <div className="col-12 col-lg-7 about-the-platform-visual">
+                {" "}
+                <img src={image} alt="صوت" className="about-platform-img" />{" "}
+              </div>
+            ) : null}{" "}
           </div>{" "}
         </div>{" "}
       </div>{" "}

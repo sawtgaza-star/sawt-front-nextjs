@@ -58,8 +58,21 @@ export function runCounters() {
 /* Re-render the reviews comments list. initMainScripts is one-time-guarded, so
    on client-side navigation back to home its __ready() pass can't refill the
    freshly-mounted #commentsList — LegacyInit replays this instead. */
+/* إعادة ربط عمود الريلز (السحب بالماوس + تبديل التعليقات + شريط التقدّم) بعد
+   كل تركيب جديد للصفحة الرئيسية — initMainScripts محروسة بمرة واحدة. */
+export function initReels() {
+  const setup = (window as any).__setupReels;
+  if (typeof setup === "function") setup();
+}
+
 export function replayComments() {
   if (!document.getElementById("commentsList")) return;
+  // الحاوية تعود إلى أعلى عند إعادة التركيب، فنعيد الريل النشط إلى الأول
+  const setReel = (window as any).setActiveReel;
+  if (typeof setReel === "function") {
+    setReel(0, true);
+    return;
+  }
   const render = (window as any).renderComments;
   if (typeof render === "function") render();
 }
@@ -238,48 +251,149 @@ __ready(() => {
 
 // ====== البيانات ======
 
-let commentsData = [
+/* لكل ريل تعليقاته الخاصة: الفهرس هنا = data-index على .reel-item.
+   commentsData يشير دائماً إلى تعليقات الريل الظاهر حالياً، حتى تبقى بقية
+   الدوال (renderComments / addComment / addReply) كما هي. */
+const reelsData = [
   {
-    id: 1,
-    av: "av-green",
-    letter: "ر",
-    name: "رنا الصالح",
-    text: "قصة ملهمة رغم كل التحديات 💚",
-    time: "منذ ساعة",
-    likes: 13,
-    liked: false,
-    replies: [
+    count: 341,
+    comments: [
       {
+        id: 1,
+        av: "av-green",
+        letter: "ر",
+        name: "رنا الصالح",
+        text: "قصة ملهمة رغم كل التحديات 💚",
+        time: "منذ ساعة",
+        likes: 13,
+        liked: false,
+        replies: [
+          {
+            av: "av-orange",
+            letter: "م",
+            name: "مها العبد",
+            text: "فعلاً، كلامك صح 🌷",
+          },
+        ],
+      },
+      {
+        id: 2,
         av: "av-orange",
         letter: "م",
         name: "مها العبد",
-        text: "فعلاً، كلامك صح 🌷",
+        text: "إصرار بيستحق الاحترام 👏",
+        time: "منذ ساعتين",
+        likes: 13,
+        liked: true,
+        replies: [],
+      },
+      {
+        id: 3,
+        av: "av-blue",
+        letter: "أ",
+        name: "أحمد باسم",
+        text: "حكاية بتعطي دافع للاستمرار",
+        time: "22 فبراير",
+        likes: 5,
+        liked: false,
+        replies: [],
       },
     ],
   },
   {
-    id: 2,
-    av: "av-orange",
-    letter: "م",
-    name: "مها العبد",
-    text: "إصرار بيستحق الاحترام 👏",
-    time: "منذ ساعتين",
-    likes: 13,
-    liked: true,
-    replies: [],
+    count: 187,
+    comments: [
+      {
+        id: 11,
+        av: "av-blue",
+        letter: "س",
+        name: "سامي درويش",
+        text: "التصوير والمونتاج بمستوى احترافي 🎬",
+        time: "منذ 20 دقيقة",
+        likes: 9,
+        liked: false,
+        replies: [],
+      },
+      {
+        id: 12,
+        av: "av-gray",
+        letter: "ه",
+        name: "هبة النجار",
+        text: "الصوت واضح والرسالة وصلت من أول ثانية",
+        time: "منذ 3 ساعات",
+        likes: 21,
+        liked: true,
+        replies: [
+          {
+            av: "av-green",
+            letter: "س",
+            name: "سامي درويش",
+            text: "تماماً، الإخراج مدروس 👌",
+          },
+        ],
+      },
+      {
+        id: 13,
+        av: "av-orange",
+        letter: "و",
+        name: "وسام أبو ندى",
+        text: "بانتظار الجزء الثاني من هذه الحكاية",
+        time: "أمس",
+        likes: 6,
+        liked: false,
+        replies: [],
+      },
+    ],
   },
   {
-    id: 3,
-    av: "av-blue",
-    letter: "أ",
-    name: "أحمد باسم",
-    text: "حكاية بتعطي دافع للاستمرار",
-    time: "22 فبراير",
-    likes: 5,
-    liked: false,
-    replies: [],
+    count: 96,
+    comments: [
+      {
+        id: 21,
+        av: "av-orange",
+        letter: "ل",
+        name: "لينا مطر",
+        text: "أصدق ما شاهدت هذا الأسبوع 🌿",
+        time: "منذ 45 دقيقة",
+        likes: 15,
+        liked: false,
+        replies: [],
+      },
+      {
+        id: 22,
+        av: "av-green",
+        letter: "خ",
+        name: "خالد شاهين",
+        text: "شكراً لأنكم تنقلون الصورة كما هي",
+        time: "منذ 5 ساعات",
+        likes: 11,
+        liked: false,
+        replies: [],
+      },
+      {
+        id: 23,
+        av: "av-blue",
+        letter: "د",
+        name: "دعاء الأغا",
+        text: "محتوى يستحق المشاركة مع الجميع 🔁",
+        time: "3 مارس",
+        likes: 8,
+        liked: true,
+        replies: [
+          {
+            av: "av-gray",
+            letter: "ل",
+            name: "لينا مطر",
+            text: "شاركته فعلاً 💚",
+          },
+        ],
+      },
+    ],
   },
 ];
+
+let activeReel = 0;
+let commentsData = reelsData[0].comments;
 
 const extraComments = [
   {
@@ -322,10 +436,29 @@ let showing = false;
 let currentOrder = "newest";
 
 function findComment(id) {
-  return (
-    commentsData.find((c) => c.id === id) ||
-    extraComments.find((c) => c.id === id)
-  );
+  for (const reel of reelsData) {
+    const found = reel.comments.find((c) => c.id === id);
+    if (found) return found;
+  }
+  return extraComments.find((c) => c.id === id);
+}
+
+/* عدّاد الترويسة "التعليقات (n)" — يُكتب من هنا لأن كل ريل له عدده الخاص،
+   ولذلك أُزيل data-i18n من .comments-count حتى لا تعيده الترجمة إلى 341. */
+function updateCommentsCount() {
+  const counter = document.querySelector(".comments-count");
+  if (!counter) return;
+  counter.textContent = `${t("comments_word")} (${reelsData[activeReel].count})`;
+}
+
+/* تبديل التعليقات عند الوصول إلى ريل آخر */
+function setActiveReel(index, force) {
+  if (!reelsData[index]) return;
+  if (index === activeReel && !force) return;
+  activeReel = index;
+  commentsData = reelsData[index].comments;
+  renderComments();
+  updateCommentsCount();
 }
 
 function replyMarkup(r) {
@@ -444,6 +577,7 @@ function addReply(el) {
 
 function renderComments() {
   const list = document.getElementById("commentsList");
+  if (!list) return;
 
   const sorted =
     currentOrder === "newest" ? [...commentsData].reverse() : [...commentsData];
@@ -547,10 +681,9 @@ function addComment() {
     });
   });
 
-  // حدّث العداد
-  const counter = document.querySelector(".comments-count");
-  const num = parseInt(counter.textContent.match(/\d+/)[0]) + 1;
-  counter.textContent = `${t("comments_word")} (${num})`;
+  // حدّث العداد (لكل ريل عدّاده الخاص)
+  reelsData[activeReel].count++;
+  updateCommentsCount();
 
   input.value = "";
   input.style.height = "auto";
@@ -561,6 +694,10 @@ __ready(() => {
   if (!newComment) return;
 
   renderComments();
+  updateCommentsCount();
+
+  // العدّاد لم يعد يحمل data-i18n، فنعيد كتابته بعد كل تبديل للغة
+  document.addEventListener("langchange", updateCommentsCount);
 
   newComment.addEventListener("keydown", (e) => {
     if (e.key === "Enter" && !e.shiftKey) {
@@ -624,33 +761,232 @@ function toggleVideoPlay(videoElement) {
   }
 }
 
-// دوال مساعدة للأزرار الأخرى
-function toggleLike(button) {
-  const icon = button.querySelector("i");
-  if (icon.classList.contains("fa-regular")) {
-    icon.classList.remove("fa-regular");
-    icon.classList.add("fa-solid");
-    icon.style.color = "red";
-  } else {
-    icon.classList.remove("fa-solid");
-    icon.classList.add("fa-regular");
-    icon.style.color = "";
+/* ============================================================
+   أزرار الريل: الحفظ · الإعجاب · المشاركة
+   ============================================================
+   كانت الحالة تعيش في الـ DOM وحده فتضيع مع كل إعادة تركيب للصفحة، وكانت
+   المشاركة مجرد alert. صارت الحالة تُحفظ في localStorage بمفتاح يخصّ كل ريل
+   (المسار + رابط الفيديو + الفهرس)، وتُعاد كتابتها على الأيقونات عند كل تهيئة. */
+
+const LIKE_RED = "#e0245e";
+const REEL_STORE_KEY = "sawt_reel_social";
+
+function readReelStore() {
+  try {
+    return JSON.parse(localStorage.getItem(REEL_STORE_KEY) || "{}") || {};
+  } catch (err) {
+    // التخزين قد يكون معطّلاً (تصفّح خاص) — نكمل بلا حفظ
+    return {};
   }
+}
+
+/* مفتاح ثابت للريل: نفس الفيديو في نفس الموضع من نفس الصفحة = نفس المفتاح.
+   الصفحة الرئيسية تكرّر الفيديو ذاته ثلاث مرات فيفرّقها data-index، وريل
+   التعاونات فهرسه 0 دائماً لكن رابط الفيديو يتغيّر مع كل شركة. */
+function reelKeyOf(el) {
+  const item = el && el.closest ? el.closest(".reel-item") : null;
+  if (!item) return null;
+
+  const video = item.querySelector("video");
+  let src = "";
+  if (video) {
+    const raw = video.getAttribute("src") || "";
+    try {
+      src = new URL(raw, location.href).pathname;
+    } catch (err) {
+      src = raw;
+    }
+  }
+  return location.pathname + "|" + src + "|" + (item.dataset.index || "0");
+}
+
+function readReelState(key) {
+  const entry = (key && readReelStore()[key]) || {};
+  return { liked: !!entry.liked, saved: !!entry.saved };
+}
+
+function writeReelState(key, patch) {
+  if (!key) return;
+  const store = readReelStore();
+  store[key] = Object.assign({ liked: false, saved: false }, store[key], patch);
+  try {
+    localStorage.setItem(REEL_STORE_KEY, JSON.stringify(store));
+  } catch (err) {}
+}
+
+/* الأزرار عناصر <span>، فنمنحها دور الزر واسمه حتى يقرأها القارئ الصوتي */
+function labelAction(span, key, pressed) {
+  const label = t(key);
+  span.setAttribute("aria-label", label);
+  span.setAttribute("title", label);
+  if (pressed !== undefined) span.setAttribute("aria-pressed", String(pressed));
+}
+
+/* قلب الريلز أيقونة SVG مضمّنة (وليست Font Awesome)، فتبديل fa-solid/fa-regular
+   وحده لا يغيّر شيئاً — نملأ مسار القلب باللون الأحمر عند الإعجاب. */
+function paintLike(span, liked) {
+  span.classList.toggle("liked", liked);
+
+  // المسار الأول في هذه الأيقونات هو مربّع شفاف، فنستهدف مسار القلب بالحد
+  const heart = span.querySelector("svg path[stroke]");
+  if (heart) {
+    heart.setAttribute("fill", liked ? LIKE_RED : "none");
+    heart.setAttribute("stroke", liked ? LIKE_RED : "currentColor");
+  } else {
+    // النسخة القديمة بأيقونة Font Awesome
+    const icon = span.querySelector("i");
+    if (icon) {
+      icon.classList.toggle("fa-solid", liked);
+      icon.classList.toggle("fa-regular", !liked);
+      icon.style.color = liked ? "red" : "";
+    }
+  }
+
+  labelAction(span, liked ? "reel_action_unlike" : "reel_action_like", liked);
+}
+
+/* نفس حالة القلب: أيقونة الحفظ SVG مضمّنة، فنملأها بلون النص عند الحفظ */
+function paintSave(span, saved) {
+  span.classList.toggle("saved", saved);
+
+  const mark = span.querySelector("svg path[stroke]");
+  if (mark) {
+    mark.setAttribute("fill", saved ? "currentColor" : "none");
+  } else {
+    const icon = span.querySelector("i");
+    if (icon) {
+      icon.classList.toggle("fa-solid", saved);
+      icon.classList.toggle("fa-regular", !saved);
+    }
+  }
+
+  labelAction(span, saved ? "reel_action_unsave" : "reel_action_save", saved);
+}
+
+function toggleLike(button) {
+  const liked = !button.classList.contains("liked");
+  paintLike(button, liked);
+  writeReelState(reelKeyOf(button), { liked });
 }
 
 function toggleSave(button) {
-  const icon = button.querySelector("i");
-  if (icon.classList.contains("fa-regular")) {
-    icon.classList.remove("fa-regular");
-    icon.classList.add("fa-solid");
-  } else {
-    icon.classList.remove("fa-solid");
-    icon.classList.add("fa-regular");
-  }
+  const saved = !button.classList.contains("saved");
+  paintSave(button, saved);
+  writeReelState(reelKeyOf(button), { saved });
+  showReelToast(t(saved ? "reel_saved_toast" : "reel_unsaved_toast"));
 }
 
-function shareVideo() {
-  alert("مشاركة الفيديو");
+/* رسالة صغيرة غير حاجبة أسفل الشاشة (نفس فكرة search-toast) */
+let reelToastEl = null;
+let reelToastTimer = null;
+
+function showReelToast(message) {
+  if (!reelToastEl || !reelToastEl.isConnected) {
+    reelToastEl = document.createElement("div");
+    reelToastEl.className = "reel-toast";
+    reelToastEl.setAttribute("role", "status");
+    document.body.appendChild(reelToastEl);
+  }
+  reelToastEl.textContent = message;
+  reelToastEl.classList.remove("show");
+  void reelToastEl.offsetWidth; // إعادة تشغيل الحركة عند الضغط المتتالي
+  reelToastEl.classList.add("show");
+
+  clearTimeout(reelToastTimer);
+  reelToastTimer = setTimeout(() => {
+    if (reelToastEl) reelToastEl.classList.remove("show");
+  }, 2200);
+}
+
+/* رابط الريل نفسه: عنوان الصفحة + مرساة العنصر التي نضيفها في initReelActions */
+function reelShareUrl(item) {
+  const base = location.origin + location.pathname + location.search;
+  return item && item.id ? base + "#" + item.id : base;
+}
+
+function copyReelText(text) {
+  if (navigator.clipboard && window.isSecureContext) {
+    return navigator.clipboard.writeText(text);
+  }
+  // http://localhost وما شابه: الحافظة غير متاحة، فنعود إلى execCommand
+  return new Promise((resolve, reject) => {
+    const area = document.createElement("textarea");
+    area.value = text;
+    area.setAttribute("readonly", "");
+    area.style.position = "fixed";
+    area.style.top = "-1000px";
+    area.style.opacity = "0";
+    document.body.appendChild(area);
+    area.select();
+    let ok = false;
+    try {
+      ok = document.execCommand("copy");
+    } catch (err) {
+      ok = false;
+    }
+    document.body.removeChild(area);
+    ok ? resolve() : reject(new Error("copy failed"));
+  });
+}
+
+function copyReelLink(url) {
+  copyReelText(url).then(
+    () => showReelToast(t("reel_share_copied")),
+    // آخر حل: نعرض الرابط للمستخدم لينسخه بنفسه
+    () => window.prompt(t("reel_share_copy"), url),
+  );
+}
+
+/* قائمة المشاركة الأصلية على الأجهزة التي تدعمها (الهواتف غالباً)، وعلى
+   سطح المكتب ننسخ رابط الريل مباشرة ونؤكّد ذلك برسالة. */
+function shareVideo(button) {
+  const item = button && button.closest ? button.closest(".reel-item") : null;
+  const url = reelShareUrl(item);
+  const titleEl = item && item.querySelector(".reel-title");
+  const title = (titleEl && titleEl.textContent.trim()) || document.title;
+
+  if (navigator.share) {
+    navigator.share({ title, url }).catch((err) => {
+      // AbortError = أغلق المستخدم القائمة بنفسه، فلا بديل هنا
+      if (!err || err.name !== "AbortError") copyReelLink(url);
+    });
+    return;
+  }
+  copyReelLink(url);
+}
+
+/* تهيئة أزرار كل ريل: مرساة للمشاركة، استرجاع حالة الإعجاب/الحفظ المحفوظة،
+   وتشغيل الأزرار بلوحة المفاتيح. تُستدعى عند كل تهيئة وبعد تبديل اللغة،
+   والحارس يمنع ازدواج المستمعين. ترتيب الأزرار في الترميز: حفظ · إعجاب · مشاركة. */
+function initReelActions() {
+  document.querySelectorAll(".reel-item").forEach((item, i) => {
+    const actions = item.querySelector(".reel-actions");
+    if (!actions) return;
+
+    if (!item.id) item.id = "reel-" + (item.dataset.index || i);
+
+    const saveBtn = actions.children[0];
+    const likeBtn = actions.children[1];
+    const shareBtn = actions.children[2];
+
+    const state = readReelState(reelKeyOf(actions));
+    if (saveBtn) paintSave(saveBtn, state.saved);
+    if (likeBtn) paintLike(likeBtn, state.liked);
+    if (shareBtn) labelAction(shareBtn, "reel_action_share");
+
+    if (actions.__reelActionsInit) return;
+    actions.__reelActionsInit = true;
+
+    Array.prototype.forEach.call(actions.children, (span) => {
+      span.setAttribute("role", "button");
+      span.setAttribute("tabindex", "0");
+      span.addEventListener("keydown", (e) => {
+        if (e.key !== "Enter" && e.key !== " ") return;
+        e.preventDefault();
+        span.click();
+      });
+    });
+  });
 }
 
 // ===== تقديم / ترجيع الريلز =====
@@ -672,6 +1008,8 @@ function formatTime(seconds) {
 
 function initReelSeek() {
   document.querySelectorAll(".reel-item").forEach((item) => {
+    if (item.__reelSeekInit) return;
+    item.__reelSeekInit = true;
     const video = item.querySelector("video");
     const bar = item.querySelector(".reel-progress");
     const fill = item.querySelector(".reel-progress-fill");
@@ -693,7 +1031,6 @@ function initReelSeek() {
     });
     updateTime();
 
-    let dragging = false;
     const seek = (clientX) => {
       const rect = bar.getBoundingClientRect();
       let ratio = (clientX - rect.left) / rect.width;
@@ -705,33 +1042,195 @@ function initReelSeek() {
       }
     };
 
+    /* الضغط على الشريط لم يعد ينقل الوقت فوراً: قد تكون بدايةَ سحبٍ عمودي
+       لتبديل الريل. ننتظر اتجاه الحركة — أفقي ⇒ تقديم/ترجيع، عمودي ⇒ نترك
+       الحركة لسحب الريلز فلا يتغيّر موضع الفيديو. النقرة المجرّدة (بلا حركة)
+       تبقى تنقل الوقت كما كانت. */
+    let seeking = false;
+    let pending = false;
+    let downX = 0;
+    let downY = 0;
+
     bar.addEventListener("pointerdown", (e) => {
-      e.stopPropagation();
-      dragging = true;
-      try {
-        bar.setPointerCapture(e.pointerId);
-      } catch (err) {}
-      seek(e.clientX);
+      pending = true;
+      seeking = false;
+      downX = e.clientX;
+      downY = e.clientY;
     });
+
     bar.addEventListener("pointermove", (e) => {
-      if (dragging) seek(e.clientX);
+      if (seeking) {
+        seek(e.clientX);
+        return;
+      }
+      if (!pending) return;
+      const dx = e.clientX - downX;
+      const dy = e.clientY - downY;
+      if (Math.abs(dy) > 4 && Math.abs(dy) >= Math.abs(dx)) {
+        pending = false; // سحب عمودي — يخصّ تبديل الريلز وحده
+        return;
+      }
+      if (Math.abs(dx) > 4) {
+        seeking = true;
+        try {
+          bar.setPointerCapture(e.pointerId);
+        } catch (err) {}
+        seek(e.clientX);
+      }
     });
-    bar.addEventListener("pointerup", () => (dragging = false));
-    bar.addEventListener("pointercancel", () => (dragging = false));
+
+    bar.addEventListener("pointerup", (e) => {
+      if (pending && !seeking) seek(e.clientX);
+      pending = false;
+      seeking = false;
+    });
+    bar.addEventListener("pointercancel", () => {
+      pending = false;
+      seeking = false;
+    });
   });
 }
 
-__ready(initReelSeek);
+/* أي ريل يقف في منتصف الحاوية الآن؟ */
+function detectActiveReel(container) {
+  const items = container.querySelectorAll(".reel-item");
+  if (!items.length) return;
+  const containerRect = container.getBoundingClientRect();
+  const center = containerRect.top + containerRect.height / 2;
 
-// إضافة مراقبة للتمرير
-const reelsContainer = document.getElementById("reelsContainer");
-let scrollTimeout;
+  let best = 0;
+  let bestDist = Infinity;
+  items.forEach((item, i) => {
+    const r = item.getBoundingClientRect();
+    const dist = Math.abs(r.top + r.height / 2 - center);
+    if (dist < bestDist) {
+      bestDist = dist;
+      best = i;
+    }
+  });
+  setActiveReel(best);
+}
 
-if (reelsContainer) {
+/* بعد السحب باليد نعيد الحاوية إلى أقرب ريل (scroll-snap معطّل أثناء السحب) */
+function snapToNearestReel(container) {
+  const items = container.querySelectorAll(".reel-item");
+  if (!items.length) return;
+  const step = items[0].offsetHeight || container.clientHeight;
+  if (!step) return;
+  const index = Math.min(
+    Math.max(Math.round(container.scrollTop / step), 0),
+    items.length - 1,
+  );
+  container.scrollTo({ top: index * step, behavior: "smooth" });
+  // نُعيد تفعيل التثبيت بعد أن يهدأ التمرير الناعم
+  setTimeout(() => {
+    container.style.scrollSnapType = "";
+  }, 400);
+}
+
+/* تحريك الريلز بالسحب بالماوس (اللمس يبقى على التمرير الأصلي) */
+function initReelsDrag(container) {
+  if (container.__reelsDragInit) return;
+  container.__reelsDragInit = true;
+
+  container.style.cursor = "grab";
+
+  let dragging = false;
+  let moved = false;
+  let startX = 0;
+  let startY = 0;
+  let startScroll = 0;
+  let capturedId = null;
+
+  const endDrag = () => {
+    if (!dragging) return;
+    dragging = false;
+    container.style.cursor = "grab";
+    if (capturedId !== null) {
+      try {
+        container.releasePointerCapture(capturedId);
+      } catch (err) {}
+      capturedId = null;
+    }
+    if (moved) snapToNearestReel(container);
+    else container.style.scrollSnapType = "";
+  };
+
+  container.addEventListener("pointerdown", (e) => {
+    moved = false;
+    if (e.pointerType !== "mouse" || e.button !== 0) return;
+    // الضغط على أزرار الحفظ/الإعجاب/المشاركة ليس سحباً
+    if (e.target.closest(".reel-actions")) return;
+    dragging = true;
+    startX = e.clientX;
+    startY = e.clientY;
+    startScroll = container.scrollTop;
+    container.style.cursor = "grabbing";
+    // التثبيت الإجباري يقاوم تغيير scrollTop يدوياً
+    container.style.scrollSnapType = "none";
+  });
+
+  container.addEventListener("pointermove", (e) => {
+    if (!dragging) return;
+    const dx = e.clientX - startX;
+    const dy = e.clientY - startY;
+    if (!moved) {
+      // حركة أفقية ⇒ المقصود شريط التقدّم، لا تبديل الريلز
+      if (Math.abs(dy) < 4 || Math.abs(dy) < Math.abs(dx)) return;
+      moved = true;
+      capturedId = e.pointerId;
+      try {
+        container.setPointerCapture(e.pointerId);
+      } catch (err) {}
+    }
+    e.preventDefault();
+    container.scrollTop = startScroll - dy;
+  });
+
+  container.addEventListener("pointerup", endDrag);
+  container.addEventListener("pointercancel", endDrag);
+  // منع سحب الفيديو/الصورة الافتراضي حتى لا يظهر شبح السحب
+  container.addEventListener("dragstart", (e) => e.preventDefault());
+
+  // ابتلاع النقرة التي تنهي السحب حتى لا تشغّل الفيديو أو تضغط زر الإعجاب
+  container.addEventListener(
+    "click",
+    (e) => {
+      if (!moved) return;
+      e.stopPropagation();
+      e.preventDefault();
+    },
+    true,
+  );
+}
+
+/* كل ما يخص عمود الريلز. يُعاد استدعاؤها من initReels المُصدَّرة عند كل زيارة
+   للصفحة الرئيسية، لأن initMainScripts محروسة بمرة واحدة. الحراسات أعلاه تمنع
+   ازدواج المستمعين على نفس العناصر. */
+function setupReels() {
+  initReelSeek();
+  initReelActions();
+
+  // أسماء الأزرار مكتوبة من t()، فنعيد كتابتها بعد كل تبديل للغة
+  if (!(document as any).__reelActionsLangBound) {
+    (document as any).__reelActionsLangBound = true;
+    document.addEventListener("langchange", initReelActions);
+  }
+
+  const reelsContainer = document.getElementById("reelsContainer");
+  if (!reelsContainer) return;
+
+  initReelsDrag(reelsContainer);
+  detectActiveReel(reelsContainer);
+
+  if (reelsContainer.__reelsScrollInit) return;
+  reelsContainer.__reelsScrollInit = true;
+
+  let scrollTimeout;
   reelsContainer.addEventListener("scroll", function () {
     clearTimeout(scrollTimeout);
     scrollTimeout = setTimeout(() => {
-      const reelItems = document.querySelectorAll(".reel-item");
+      const reelItems = reelsContainer.querySelectorAll(".reel-item");
       const containerRect = reelsContainer.getBoundingClientRect();
 
       reelItems.forEach((item) => {
@@ -742,7 +1241,7 @@ if (reelsContainer) {
           itemRect.top >= containerRect.top &&
           itemRect.bottom <= containerRect.bottom;
 
-        if (!isVisible && !video.paused) {
+        if (!isVisible && video && !video.paused) {
           video.pause();
           if (playOverlay) {
             playOverlay.style.opacity = "1";
@@ -751,9 +1250,14 @@ if (reelsContainer) {
           item.classList.remove("playing");
         }
       });
+
+      // بدّل التعليقات إلى تعليقات الريل الذي استقرّ في المنتصف
+      detectActiveReel(reelsContainer);
     }, 100);
   });
 }
+
+__ready(setupReels);
 
 const video = document.querySelector(".my-video");
 const progress = document.querySelector(".progress");
@@ -898,5 +1402,8 @@ __ready(function () {
   (window as any).scrollToTop = typeof scrollToTop !== 'undefined' ? scrollToTop : (window as any).scrollToTop;
   (window as any).skipReel = typeof skipReel !== 'undefined' ? skipReel : (window as any).skipReel;
   (window as any).renderComments = typeof renderComments !== 'undefined' ? renderComments : (window as any).renderComments;
+  (window as any).setActiveReel = typeof setActiveReel !== 'undefined' ? setActiveReel : (window as any).setActiveReel;
+  (window as any).__setupReels = typeof setupReels !== 'undefined' ? setupReels : (window as any).__setupReels;
+  (window as any).initReelActions = typeof initReelActions !== 'undefined' ? initReelActions : (window as any).initReelActions;
 
 }

@@ -46,7 +46,7 @@ if (otpInputs.length) {
 // --- العدّاد التنازلي ---
 const timerElement = document.querySelector(".timer");
 const resendLink = document.querySelector(".resend");
-const COUNTDOWN_SECONDS = 15;
+const COUNTDOWN_SECONDS = 60;
 let countdownInterval = null;
 
 function startCountdown(seconds) {
