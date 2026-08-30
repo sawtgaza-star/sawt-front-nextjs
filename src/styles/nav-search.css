@@ -1,0 +1,101 @@
+/* Expanding top-bar search field. Owned by <NavSearch /> rather than added to
+   style.css because the nav also renders under the `content` and (auth) route
+   groups, which load a different stylesheet — a rule in style.css would leave
+   the field unstyled there. Same arrangement as logout-toast.css.
+
+   The button keeps its own look from style.css (.nav-search-btn); everything
+   here is the field that grows out of it. */
+
+.nav-search {
+  display: flex;
+  align-items: center;
+  /* The row around it is direction: ltr (.nav-top-utils), so the field opens to
+     the button's right — into the empty middle of the bar rather than over the
+     [أنشئ الحساب] pill beside it. */
+}
+
+.nav-search .nav-search-field {
+  /* Closed: no width, no margin — the bar looks exactly as it did before the
+     field existed. Margin is animated too, so the gap appears with it. */
+  width: 0;
+  /* Flex items default to `min-width: auto`, and an input's automatic minimum
+     is its intrinsic ~20-character width — which kept the closed field wide
+     enough to push [En] away from the icon. The border goes too, or its 2px
+     would widen the gap by that much. */
+  min-width: 0;
+  margin: 0;
+  /* !important to answer style.css's `.search-input { padding-right: 35px
+     !important }` — the class the field carries so legacy-search binds Enter on
+     it. Without this the closed field kept 35px of padding in the flow and sat
+     between the icon and [En]. */
+  padding: 0 !important;
+  border-width: 0;
+  opacity: 0;
+  pointer-events: none;
+
+  flex: 0 0 auto;
+  box-sizing: border-box;
+  height: 40px;
+  border-style: solid;
+  border-color: transparent;
+  border-radius: 100px;
+  background: #f2f2f2;
+  color: #1e1e1e;
+  font-family: inherit;
+  font-size: 15px;
+  /* The page is dir="rtl" in both languages, but this sits inside the LTR
+     island, so the text direction has to be put back. */
+  direction: rtl;
+  text-align: right;
+  transition:
+    width 0.28s ease,
+    margin 0.28s ease,
+    padding 0.28s ease,
+    border-width 0.28s ease,
+    opacity 0.2s ease,
+    border-color 0.2s ease;
+}
+
+.nav-search.is-open .nav-search-field {
+  width: 240px;
+  /* Clear of the icon's disc — the field is a separate control, not a tail on
+     the button. */
+  margin-inline-end: 10px;
+  padding: 0 16px !important;
+  border-width: 1px;
+  opacity: 1;
+  pointer-events: auto;
+}
+
+/* Beats `.search-input:focus` in search.css (equal specificity, load order not
+   guaranteed) — the field says it has focus with its border, nothing else. */
+input.nav-search-field:focus {
+  border-color: rgba(76, 92, 55, 0.45);
+  box-shadow: none;
+  outline: none;
+}
+
+/* Chrome paints autofilled fields pale blue — keep the grey pill. */
+input.nav-search-field:-webkit-autofill,
+input.nav-search-field:-webkit-autofill:hover,
+input.nav-search-field:-webkit-autofill:focus {
+  -webkit-box-shadow: 0 0 0 1000px #f2f2f2 inset;
+  box-shadow: 0 0 0 1000px #f2f2f2 inset;
+  -webkit-text-fill-color: #1e1e1e;
+  caret-color: #1e1e1e;
+  transition: background-color 9999s ease-in-out 0s;
+}
+
+/* Tablet: the bar is tighter, so the field takes what is left of the gap. */
+@media (max-width: 991.98px) {
+  .nav-search.is-open .nav-search-field {
+    width: 160px;
+    padding: 0 12px !important;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .nav-search .nav-search-field {
+    transition: none;
+  }
+}

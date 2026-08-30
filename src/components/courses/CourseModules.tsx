@@ -4,8 +4,13 @@ import {
   IconChevronWide,
   IconLessonDoc,
   IconLessonPlay,
+  IconLockClosed,
 } from "@/components/ui/icons";
 import { COURSE_MODULES } from "./course-modules-data";
+
+/* The tail of the accordion is locked content: those modules carry a padlock
+   instead of the chevron and don't open until the visitor subscribes. */
+const LOCKED_MODULES = 3;
 
 /* "محاور البرنامج" — numbered accordion looked up by the course's route id;
    one module open at a time, the first open by default (as in the mock).
@@ -17,6 +22,9 @@ export default function CourseModules({ courseId }: { courseId: string }) {
   const [open, setOpen] = useState(0);
   const courseModules = COURSE_MODULES[courseId];
   if (!courseModules) return null;
+
+  /* never lock the whole list — short courses keep at least one open module */
+  const firstLocked = Math.max(1, courseModules.length - LOCKED_MODULES);
 
   return (
     <section className="crs-section crs-modules-section" id="crs-modules">
@@ -43,25 +51,41 @@ export default function CourseModules({ courseId }: { courseId: string }) {
 
       <div className="crs-modules">
         {courseModules.map((m, i) => {
-          const isOpen = open === i;
+          const isLocked = i >= firstLocked;
+          const isOpen = !isLocked && open === i;
           return (
             <div
-              className={"crs-module" + (isOpen ? " crs-module-open" : "")}
+              className={
+                "crs-module" +
+                (isOpen ? " crs-module-open" : "") +
+                (isLocked ? " crs-module-locked" : "")
+              }
               key={m.key}
             >
               <button
                 type="button"
                 className="crs-module-head"
-                aria-expanded={isOpen}
+                aria-expanded={isLocked ? undefined : isOpen}
+                disabled={isLocked}
                 onClick={() => setOpen(isOpen ? -1 : i)}
               >
                 <span className="crs-module-title">
                   {i + 1}.{" "}
                   <span data-i18n={m.titleKey}>{m.title}</span>
                 </span>
-                <span className="crs-module-chevron" aria-hidden="true">
-                  <IconChevronWide />
-                </span>
+                {isLocked ? (
+                  <span
+                    className="crs-module-lock"
+                    title="محتوى مغلق"
+                    data-i18n-title="crs_module_locked"
+                  >
+                    <IconLockClosed />
+                  </span>
+                ) : (
+                  <span className="crs-module-chevron" aria-hidden="true">
+                    <IconChevronWide />
+                  </span>
+                )}
               </button>
 
               {isOpen && m.lessons && (

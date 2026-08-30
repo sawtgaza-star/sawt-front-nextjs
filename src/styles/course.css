@@ -11,6 +11,16 @@
   background-color: #ffffff;
 }
 
+/* The sticky aside needs the viewport as its scrollport. legacy style.css sets
+   `body { overflow-x: hidden }`, and `hidden` on one axis forces the other to
+   `auto` — that turns the body into a scroll container which never actually
+   scrolls, so anything sticky inside it can never stick. `clip` keeps the same
+   "no sideways scrollbar" behaviour without creating a scroll container.
+   Scoped with :has() so it only applies while the course page is mounted. */
+body:has(.crs-page) {
+  overflow-x: clip;
+}
+
 /* ============================================================
    Hero — solid olive band with the faint shared pattern.png
    scatter; hosts the incubator navbar, the centered breadcrumb and
@@ -115,14 +125,37 @@ background:  #EDEFEB;
 }
 .crs-layout {
   display: grid;
-  grid-template-columns: 1fr 500px;
+  grid-template-columns: 1fr 440px;
   gap: 40px;
   align-items: start;
 }
+/* The aside rides along with the page: once the negative margin has carried it
+   past the hero it pins and the registration + share cards stay in view while
+   the long content column scrolls. `align-self: start` keeps the grid item its
+   own height (a stretched item can never stick).
+
+   The pinned position is vertically centered rather than glued to the top: the
+   two cards are ~634px tall and the orange tab peeks 18px above them, so
+   `(100vh - 616px) / 2` leaves the same gap above the tab as below the share
+   card. `max()` floors it at 24px on windows too short to center in. The offset
+   only applies while pinned, so the at-rest overlap with the hero is untouched.
+
+   Below lg the aside is stacked above the content, where there is nothing to
+   stick to — the media query unsets it there. */
 .crs-aside {
-  position: relative;
+  position: sticky;
+  top: max(24px, calc((100vh - 616px) / 2));
+  align-self: start;
   z-index: 2;
   margin-top: -320px;
+}
+/* On a short window the two cards are taller than the viewport, and a sticky
+   element pinned by `top` alone would park its lower half permanently out of
+   reach — let it scroll normally there. */
+@media (max-height: 660px) {
+  .crs-aside {
+    position: static;
+  }
 }
 .crs-content {
   position: relative;
@@ -167,39 +200,39 @@ background:  #EDEFEB;
 .crs-reg::before {
   content: "";
   position: absolute;
-  top: -22px;
-  right: 36px;
-  left: 36px;
-  height: 60px;
+  top: -18px;
+  right: 32px;
+  left: 32px;
+  height: 50px;
   border-radius: 130px;
   background: #ff7420;
 }
 .crs-reg-card {
   position: relative;
-border-radius: 24px;
+border-radius: 20px;
 border: 1px solid #DADADA;
 background: #FFF;
-  padding: 24px 22px;
+  padding: 20px 18px;
 }
 .crs-reg-kicker {
   text-align: center;
   color: #666;
-  font-size: 18px;
+  font-size: 16px;
   margin-bottom: 4px;
 }
 .crs-reg-title {
   text-align: center;
   color: #1E1E1E;
-  font-size: 24px;
+  font-size: 21px;
   font-weight: 800;
-  margin-bottom: 20px;
+  margin-bottom: 16px;
 }
 
 /* countdown — DOM order seconds→days, so seconds land rightmost in RTL */
 .crs-countdown {
   display: flex;
   justify-content: center;
-  margin-bottom: 24px;
+  margin-bottom: 18px;
 }
 .crs-countdown-cell {
   display: flex;
@@ -210,7 +243,7 @@ background: #FFF;
 .crs-countdown-sep {
   color: #666;
   font-weight: 700;
-  margin: 0 6px;
+  margin: 0 4px;
 }
 .crs-countdown-box {
   display: flex;
@@ -220,34 +253,34 @@ background: #FFF;
   gap: 2px;
   flex: 1;
   min-width: 0;
-  padding: 10px 4px;
+  padding: 8px 3px;
   border-radius: 10px;
   background: #fff1f2;
 }
 .crs-countdown-box b {
   color: #FF0004;
-  font-size: 24px;
+  font-size: 21px;
   font-weight: 800;
   line-height: 1;
 }
 .crs-countdown-box span {
   color: #666;
-  font-size: 16px;
+  font-size: 14px;
 }
 
 .crs-reg-meta {
   list-style: none;
   padding: 0;
-  margin: 0 0 22px;
+  margin: 0 0 16px;
 }
 .crs-reg-meta li {
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 12px;
-  padding: 9px 0;
+  padding: 6px 0;
   color: #1E1E1E;
-    font-size: 22px;
+    font-size: 18px;
 }
 
 .crs-reg-meta li b {
@@ -265,10 +298,10 @@ background: #FFF;
   width: 100%;
   background: #4c5c37;
   color: #ffffff !important;
-  font-size: 18px;
+  font-size: 16px;
   font-weight: 600;
-  border-radius: 24px;
-  padding: 11px 18px;
+  border-radius: 22px;
+  padding: 10px 16px;
   text-decoration: none;
   transition: background 0.2s ease;
 }
@@ -283,23 +316,23 @@ background: #FFF;
 
 /* ---------- Share card ---------- */
 .crs-share {
-  margin-top: 24px;
+  margin-top: 18px;
   border-radius: 16px;
   border: 0.8px solid #FF7420;
   background: rgba(255, 236, 224, 0.70);
-  padding: 22px;
+  padding: 18px;
   text-align:start;
 }
 .crs-share-title {
   color: #1c1c1c;
-  font-size: 30px;
+  font-size: 24px;
   font-weight: 800;
-  margin-bottom: 10px;
+  margin-bottom: 8px;
 }
 .crs-share-desc {
   color: #666;
-  font-size: 20px;
-  margin-bottom: 16px;
+  font-size: 16px;
+  margin-bottom: 14px;
 }
 .crs-share-actions {
   display: flex;
@@ -310,9 +343,9 @@ background: #FFF;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 52px;
-  height: 52px;
-  border-radius: 24px;
+  width: 46px;
+  height: 46px;
+  border-radius: 22px;
   border: 0;
   padding: 0;
   background: rgba(255, 255, 255, 0.8);
@@ -324,29 +357,26 @@ background: #FFF;
   transform: translateY(-2px);
 }
 .crs-share-copy svg {
-  width: 32px;
-  height: 32px;
+  width: 28px;
+  height: 28px;
 }
 .crs-share-facebook {
   color: #1877f2 !important;
-  font-size: 32px;
+  font-size: 28px;
 }
 .crs-share-telegram svg {
-  width: 32px;
-  height: 32px;
+  width: 28px;
+  height: 28px;
 }
 .crs-share-whatsapp {
   color: #25d366 !important;
-  font-size: 32px;
+  font-size: 28px;
 }
-/* the white "in" glyph gets its blue roundel from the svg's own box */
+/* the blue roundel ships inside the svg (a 28px disc inset in a 32px box), so
+   it lines up with the 28px brand glyphs beside it */
 .crs-share-linkedin svg {
-  box-sizing: content-box;
-  width: 20px;
-  height: 20px;
-  padding: 5px;
-  background: #0a66c2;
-  border-radius: 50%;
+  width: 32px;
+  height: 32px;
 }
 
 /* ============================================================
@@ -455,6 +485,19 @@ border: 1px solid  #DADADA;
 }
 .crs-module-open .crs-module-chevron {
   transform: rotate(180deg);
+}
+/* locked modules — padlock instead of the chevron, head not clickable
+   (the <button> is `disabled`; the greyed ink says so at a glance) */
+.crs-module-lock {
+  display: inline-flex;
+  flex: 0 0 auto;
+  color: #7A7A7A;
+}
+.crs-module-locked .crs-module-head {
+  cursor: not-allowed;
+}
+.crs-module-locked .crs-module-title {
+  color: #7A7A7A;
 }
 .crs-module-lessons {
   list-style: none;
@@ -798,7 +841,9 @@ position: absolute;
   .crs-layout {
     grid-template-columns: 1fr;
   }
+  /* stacked above the content — nothing to stick to, so back to normal flow */
   .crs-aside {
+    position: static;
     order: -1;
     margin-top: 0;
   }
@@ -1030,9 +1075,8 @@ position: absolute;
     font-size: 26px;
   }
   .crs-share-linkedin svg {
-    width: 17px;
-    height: 17px;
-    padding: 4px;
+    width: 30px;
+    height: 30px;
   }
 
   /* ---------- Program goals ---------- */

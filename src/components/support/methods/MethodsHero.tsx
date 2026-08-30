@@ -1,4 +1,5 @@
 import SiteNav from "@/components/site/SiteNav";
+import BreadcrumbHome from "@/components/site/BreadcrumbHome";
 
 /* Breadcrumb hero for /support/methods. Same cr-* hero shell as SupportHero,
    with the trail extended by one level (الرئيسية > ادعم صوت > طرق الدعم). */
@@ -12,9 +13,7 @@ export default function MethodsHero() {
         <SiteNav />
         <div className="container cr-hero">
           <nav className="cr-breadcrumb" aria-label="breadcrumb">
-            <a href="/" data-i18n="nav_home">
-              الرئيسية
-            </a>
+            <BreadcrumbHome />
             <i className="fa-solid fa-angle-left mx-2 cr-breadcrumb-sep arrow"></i>
             <a href="/support" data-i18n="nav_support">
               ادعم صوت

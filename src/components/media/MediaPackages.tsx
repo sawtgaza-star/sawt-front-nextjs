@@ -55,7 +55,10 @@ export default function MediaPackages() {
                   ))}
                 </ul>
 
-                <a className="sm-pkg-cta" href="#sm-consult">
+                {/* Goes to تواصل معنا, like the navbar and hero CTAs of the
+                    same name — it used to jump back up the page to the
+                    consultation block (#sm-consult), above this section. */}
+                <a className="sm-pkg-cta" href="/media/contact">
                   <span data-i18n="sm_cta_start">ابدأ مشروعك</span>
                   <IconChevronLeftSmall />
                 </a>

@@ -14,6 +14,8 @@ export type SponsorTrack = {
   /* "تكفّل دورة … لطالب واحد ب 120$" */
   cta: string;
   ctaKey: string;
+  /* every track sponsors through the same page — /support/methods, "اختر
+     طريقة الدعم التي تناسبك" */
   href: string;
 };
 
@@ -45,7 +47,7 @@ export const SPONSOR_TRACKS: SponsorTrack[] = [
     descKey: "inc_sponsor_field_desc",
     cta: "تكفّل دورة صحافة ميدانية لطالب واحد ب 120$",
     ctaKey: "inc_sponsor_field_cta",
-    href: "#",
+    href: "/support/methods",
   },
   {
     key: "podcast",
@@ -55,7 +57,7 @@ export const SPONSOR_TRACKS: SponsorTrack[] = [
     descKey: "inc_sponsor_podcast_desc",
     cta: "تكفّل دورة بودكاست وصوت لطالب واحد ب 120$",
     ctaKey: "inc_sponsor_podcast_cta",
-    href: "#",
+    href: "/support/methods",
   },
   {
     key: "creative-writing",
@@ -65,7 +67,7 @@ export const SPONSOR_TRACKS: SponsorTrack[] = [
     descKey: "inc_sponsor_writing_desc",
     cta: "تكفّل دورة كتابة إبداعية لطالب واحد ب 120$",
     ctaKey: "inc_sponsor_writing_cta",
-    href: "#",
+    href: "/support/methods",
   },
   {
     key: "video",
@@ -75,7 +77,7 @@ export const SPONSOR_TRACKS: SponsorTrack[] = [
     descKey: "inc_sponsor_video_desc",
     cta: "تكفّل دورة إنتاج مرئي لطالب واحد ب 120$",
     ctaKey: "inc_sponsor_video_cta",
-    href: "#",
+    href: "/support/methods",
   },
 ];
 

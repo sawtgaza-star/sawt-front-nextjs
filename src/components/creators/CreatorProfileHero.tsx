@@ -2,6 +2,7 @@
 "use client";
 /* eslint-disable */
 import SiteNav from "@/components/site/SiteNav";
+import BreadcrumbHome from "@/components/site/BreadcrumbHome";
 
 /* Breadcrumb hero + overlapping profile card for a single content creator
    (the /creators/[id] detail page). Mirrors CreatorsHero's header pattern,
@@ -29,9 +30,7 @@ export default function CreatorProfileHero() {
         <SiteNav />
         <div className="container cr-hero cr-detail-hero">
           <nav className="cr-breadcrumb" aria-label="breadcrumb">
-            <a href="/" data-i18n="nav_home">
-              الرئيسية
-            </a>
+            <BreadcrumbHome />
             <i className="fa-solid fa-angle-left mx-2 cr-breadcrumb-sep arrow"></i>
             <a className='Cr' href="/creators" data-i18n="nav_creators">
               صناع المحتوى
