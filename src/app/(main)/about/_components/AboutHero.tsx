@@ -1,6 +1,7 @@
 import SiteNav from "@/components/site/SiteNav";
 import { localized, type AboutHeroContent } from "@/lib/api/pages";
 import { AboutHeroSkeleton } from "./AboutSkeleton";
+import BreadcrumbHome from "@/components/site/BreadcrumbHome";
 
 /* Everything this section says comes from the API's `hero` block. There is no
    built-in copy behind it any more and no `data-i18n` key on the text: a field
@@ -43,9 +44,7 @@ export default function AboutHero({
           {" "}
           <nav className="about-breadcrumb" aria-label="breadcrumb">
             {" "}
-            <a href="/" data-i18n="nav_home">
-              الرئيسية
-            </a>{" "}
+            <BreadcrumbHome />{" "}
             <i className="fa-solid fa-angle-left mx-2 about-breadcrumb-sep arrow"></i>{" "}
             <span className="about-breadcrumb-active" data-i18n="nav_about">
               من نحن

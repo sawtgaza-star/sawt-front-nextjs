@@ -169,7 +169,7 @@ export default function CollaborationSteps() {
         </div>
 
         <div className="cr-collab-cta">
-          <a href="#">
+          <a href="/media">
             <span>
             تواصل مع فريق صوت للانضمام
             </span>

@@ -318,7 +318,7 @@ margin-top:20px !important;
 }
 
 .branch-right-top-CollaborationSteps-section{
-  top: -20%;
+  top: -5%;
   right: -188px;
   transform: scaleX(-1) rotate(175deg);
   z-index:4 !important;
@@ -354,9 +354,9 @@ margin-top:20px !important;
   gap: 20px;
 }
 .cr-stat-card {
-  background: #fbfbf9;
-  border: 1px solid #e6e8e0;
-  border-radius: 14px;
+  background: #F2F2F2;
+  border: 1px solid #C8C8C8;
+  border-radius: 16px;
   padding: 22px 18px;
   text-align: center;
 }
@@ -1915,6 +1915,21 @@ background: var(--White, #FFF);
   font-size: 18px;
   font-weight: 700;
 }
+/* the name links to the creator's profile — it keeps the 18px/700 of
+   `.cr-reel-user span` above and only says so on hover. White with
+   !important because style.css paints every <a> on the site
+   `color: black !important` — over the reel's dark frame that made the name
+   unreadable. */
+.cr-reel-user-link,
+.cr-reel-user-link:hover,
+.cr-reel-user-link:focus-visible {
+  color: #fff !important;
+}
+.cr-reel-user-link {
+  text-decoration: none;
+}
+
+
 /* outlined "follow" pill, after the creator's name — the glyph inherits the
    button's `color`, so the followed state only has to flip these three */
 .cr-reel-follow {
@@ -1950,6 +1965,37 @@ background: var(--White, #FFF);
 }
 .cr-reel-follow svg {
   display: block;
+}
+/* the seal reads smaller than the person+ glyph at the same box, so the
+   followed state gets a bigger one — still inside the 34px button */
+.cr-reel-follow.is-following svg {
+  width: 24px;
+  height: 24px;
+}
+/* "تمت المتابعة", beside the button once it is on. Selector carries
+   .cr-reel-user so it beats the 18px/700 of `.cr-reel-user span` above. */
+.cr-reel-user .cr-reel-follow-hint {
+  flex: 0 0 auto;
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 1;
+  padding: 5px 10px;
+  border-radius: 24px;
+  background: rgba(255, 255, 255, 0.16);
+  color: #fff;
+  white-space: nowrap;
+  animation: cr-reel-follow-hint-in 0.2s ease-out;
+}
+@keyframes cr-reel-follow-hint-in {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .cr-reel-user .cr-reel-follow-hint {
+    animation: none;
+  }
 }
 .cr-reel-caption {
   font-size: 16px;
@@ -2373,30 +2419,45 @@ html[dir="rtl"] .cr-reel-comment-form button i { transform: scaleX(-1); }
   display: grid;
   /* Arabic RTL: first column (intro) renders on the right, last (quote) on the left */
   direction: rtl;
-  grid-template-columns: 0.9fr 1.1fr 1.3fr 1.45fr;
-  align-items: start;
-  gap: 26px;
+  /* The intro is the widest share now: it carries the heading and its line,
+     which were breaking into short two-line fragments in the old 0.9fr. What
+     it gains comes from the reel and quote columns — the reel is capped at its
+     own max-width anyway, so that column was mostly slack. */
+  grid-template-columns: 1.35fr 1.1fr 1.2fr 1.25fr;
+  /* stretch, not start: the quote card takes the row's height so it ends level
+     with the reel beside it (the tallest column). The intro keeps its own
+     align-self: center, and the reel is pinned to the top of its column by
+     .cr-collabs-media below. */
+  align-items: stretch;
+  /* Full width of its .container — the same content box the navbar's own
+     .container has (1200px cap in style.css, minus the 12px gutters), so the
+     row lines up with the header above it. The columns no longer drift apart
+     at that width: the reel's column was the slack, and it has been trimmed. */
+  gap: 18px;
 }
 .cr-collabs-intro {
   order: 1;
   align-self: center;
   text-align: right;
 }
+/* Sized for this column, not for a full-width heading: the intro shares the
+   row with three other columns, so 35/27px crowded it and pushed the line under
+   the brush stroke onto two lines. */
 .cr-collabs-title {
-  font-size: 35px;
+  font-size: 40px;
   font-weight: 800;
   color: #1E1E1E !important;
-  margin-bottom: 18px;
+  margin-bottom: 14px;
 }
 /* Here the brush-stroke word stays black instead of the global green .cr-highlight */
 .cr-collabs-title .cr-highlight {
   color: #1E1E1E;
 }
 .cr-collabs-desc {
-  font-size: 27px;
+  font-size: 18px;
   font-weight: 700;
   color: #6D6D6D;
-  line-height: 1.9;
+  line-height: 1.8;
   margin: 0;
 }
 .cr-collabs-list {
@@ -2406,7 +2467,7 @@ html[dir="rtl"] .cr-reel-comment-form button i { transform: scaleX(-1); }
   margin: 0;
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 9px;
 }
 .cr-collab-item {
   width: 100%;
@@ -2416,15 +2477,15 @@ html[dir="rtl"] .cr-reel-comment-form button i { transform: scaleX(-1); }
   background: #fff;
   border: 1px solid #e6e8e0;
   border-radius: 14px;
-  padding: 11px 14px;
+  padding: 9px 12px;
   cursor: pointer;
   text-align: right;
   transition: background 0.2s ease, border-color 0.2s ease;
 }
 /* Company avatar / logo tile (sits on the left in RTL), holds the Sawt logo */
 .cr-collab-item-dot {
-  width: 46px;
-  height: 46px;
+  width: 40px;
+  height: 40px;
   border-radius: 14px;
   flex: 0 0 auto;
   display: flex;
@@ -2476,11 +2537,13 @@ html[dir="rtl"] .cr-reel-comment-form button i { transform: scaleX(-1); }
   order: 3;
   display: flex;
   justify-content: center;
+  /* the reel keeps its own height inside a stretched column */
+  align-items: flex-start;
 }
 /* Reel card — reuses the home Reels (.review-reels) look, sized for this grid.
    The per-company poster shows via the <video poster> attr until it's played. */
 .cr-collabs-reel {
-  max-width: 300px;
+  max-width: 270px;
 }
 .cr-reel-poster {
 display:none;  
@@ -2491,17 +2554,21 @@ display:none;
 .cr-collabs-quote {
   order: 4;
   position: relative;
+  display: flex;
 }
 .cr-collab-quote-card {
   position: relative;
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
-  min-height: 400px;
+  /* fills the stretched column — min-height only matters on the phone layout,
+     where the columns stack and there is nothing to match */
+  flex: 1;
+  min-height: 350px;
   background: #fff;
   border: 1px solid #fff;
   border-radius: 18px;
-  padding: 30px 24px 26px;
+  padding: 24px 20px 20px;
   text-align: right;
 }
 .cr-collab-quote-stars {
@@ -2529,7 +2596,7 @@ display:none;
   font-size: 14px;
   color: #484848;
   line-height: 1.9;
-  margin-bottom: 34px;
+  margin-bottom: 24px;
 }
 .cr-collab-quote-author {
   display: flex;

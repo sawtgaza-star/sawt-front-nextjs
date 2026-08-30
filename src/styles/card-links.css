@@ -1,0 +1,32 @@
+/* ============================================================
+   Whole-card links — lg and up
+   ------------------------------------------------------------
+   The creator card (.hover-arrow), the story card (.rs-arrow) and the
+   team member card (.team-member-arrow) each carry a small circular
+   arrow that links to the detail page. On the web layout the whole
+   card follows that same link: the arrow's ::after is stretched far
+   past the arrow in every direction and the card's own
+   `overflow: hidden` trims it back to the card's box, so a click
+   anywhere on the card lands on the arrow's href.
+
+   Done this way it needs no second anchor (no nested links, no
+   duplicate tab stop, no href repeated in the markup) and it follows
+   the cards to every page they appear on — home, /creators, /stories,
+   /team and /support.
+
+   Below lg it stays off: there is no hover on touch, and the creator
+   card's first tap is claimed by legacy-home.ts to open the overlay.
+   ============================================================ */
+@media (min-width: 992px) {
+  .hover-arrow::after,
+  .rs-arrow::after,
+  .team-member-arrow::after {
+    content: "";
+    position: absolute;
+    /* reaches well past the card on every side — the card clips it */
+    inset: -1200px;
+    /* the arrow already paints above the poster and the info block, so
+       this only has to sit above its own siblings inside the arrow */
+    z-index: 1;
+  }
+}

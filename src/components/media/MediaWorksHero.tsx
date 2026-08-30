@@ -1,4 +1,5 @@
 import MediaNav from "./MediaNav";
+import BreadcrumbHome from "@/components/site/BreadcrumbHome";
 
 /* Banner of /media/works — the صوت photo collage (heroSectionImg) under an
    olive veil, with صوت ميديا's own navbar on top of it, then the breadcrumb and
@@ -17,9 +18,7 @@ export default function MediaWorksHero() {
 
       <div className="container sm-wp-hero-text">
         <nav className="sm-wp-crumb" aria-label="breadcrumb">
-          <a href="/" data-i18n="nav_home">
-            الرئيسية
-          </a>
+          <BreadcrumbHome />
           <i className="fa-solid fa-angle-left sm-wp-crumb-sep"></i>
           <span className="sm-wp-crumb-active" data-i18n="sm_nav_works">
             أعمالنا

@@ -7,7 +7,7 @@ import type { Reel } from "./content-data";
 /* "الأكثر مشاهدة" row: heading + "رؤية المزيد" link, then a horizontal track
    that starts at the container's right edge (RTL) and bleeds off the left of
    the viewport. Circular arrows scroll it; a card's play button opens the
-   full-screen viewer. */
+   full-screen viewer — the same one the grid above opens. */
 export default function MostWatchedSection({ reels }: { reels: Reel[] }) {
   const trackRef = useRef<HTMLDivElement>(null);
   const [openIndex, setOpenIndex] = useState<number | null>(null);
@@ -51,13 +51,20 @@ export default function MostWatchedSection({ reels }: { reels: Reel[] }) {
       startScroll = el.scrollLeft;
       // the CSS smooth scrolling the arrow buttons rely on would lag the drag
       el.style.scrollBehavior = "auto";
-      el.setPointerCapture(e.pointerId);
     };
 
     const onPointerMove = (e: PointerEvent) => {
       if (!dragging) return;
       const dx = e.clientX - startX;
-      if (!moved && Math.abs(dx) > 4) moved = true; // ignore click jitter
+      if (!moved && Math.abs(dx) > 4) {
+        moved = true; // ignore click jitter
+        /* Captured here and not on pointerdown: capturing the pointer also
+           retargets the mouse events derived from it, so the click that ends a
+           plain press landed on the track instead of the card's play button and
+           nothing played. By the time the pointer has travelled 4px this is a
+           drag, and a drag has no click to lose. */
+        el.setPointerCapture(e.pointerId);
+      }
       if (moved) el.scrollLeft = startScroll - dx;
     };
 

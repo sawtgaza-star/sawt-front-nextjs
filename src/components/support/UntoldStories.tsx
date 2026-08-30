@@ -3,6 +3,8 @@ import { useEffect, useRef, useState } from "react";
 import { UNTOLD_STORIES } from "./untold-stories-data";
 
 const GAP = 20; // must match .sp-stories-track gap in support.css
+/* how far a press must travel before it counts as a drag rather than a click */
+const SLOP = 6;
 
 /* Cards visible per view — mirrors the .sp-story-slide flex-basis breakpoints. */
 function perViewFor(width: number) {
@@ -41,6 +43,10 @@ export default function UntoldStories() {
   // px offset of an in-progress pointer drag (null = not dragging)
   const [dragDelta, setDragDelta] = useState<number | null>(null);
   const dragStartX = useRef(0);
+  /* whether the press has travelled far enough to be a drag, and whether the
+     click it ends on has to be thrown away because of that */
+  const dragMoved = useRef(false);
+  const swallowClick = useRef(false);
   const viewportRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -61,15 +67,30 @@ export default function UntoldStories() {
   const onPointerDown = (e: React.PointerEvent) => {
     if (e.button !== 0 && e.pointerType === "mouse") return;
     dragStartX.current = e.clientX;
+    dragMoved.current = false;
+    swallowClick.current = false;
     setDragDelta(0);
-    e.currentTarget.setPointerCapture(e.pointerId);
   };
   const onPointerMove = (e: React.PointerEvent) => {
     if (dragDelta === null) return;
-    setDragDelta(e.clientX - dragStartX.current);
+    const dx = e.clientX - dragStartX.current;
+    if (!dragMoved.current) {
+      // a few pixels of slack, so a press that doesn't travel stays a click
+      if (Math.abs(dx) < SLOP) return;
+      dragMoved.current = true;
+      /* Captured only now, not on pointerdown: capturing a pointer retargets
+         the mouse events derived from it, so the click ending a plain press
+         landed on this viewport and the card's link never saw it — the card
+         looked dead. A committed drag has no click to lose. */
+      e.currentTarget.setPointerCapture(e.pointerId);
+    }
+    setDragDelta(dx);
   };
   const endDrag = () => {
     if (dragDelta === null) return;
+    // a drag that actually moved swallows the click it ends on, so releasing
+    // over a card doesn't open the story
+    if (dragMoved.current) swallowClick.current = true;
     const width = viewportRef.current?.offsetWidth ?? 0;
     const threshold = Math.min(60, width / 4);
     const rtl = document.documentElement.dir !== "ltr";
@@ -80,6 +101,12 @@ export default function UntoldStories() {
       setIndex(Math.max(0, safeIndex - 1));
     }
     setDragDelta(null);
+  };
+  const onClickCapture = (e: React.MouseEvent) => {
+    if (!swallowClick.current) return;
+    swallowClick.current = false;
+    e.preventDefault();
+    e.stopPropagation();
   };
 
   return (
@@ -117,6 +144,7 @@ export default function UntoldStories() {
             onPointerMove={onPointerMove}
             onPointerUp={endDrag}
             onPointerCancel={endDrag}
+            onClickCapture={onClickCapture}
             onDragStart={(e) => e.preventDefault()}
           >
             <div

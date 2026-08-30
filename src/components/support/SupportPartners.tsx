@@ -49,7 +49,9 @@ export default function SupportPartners() {
               الحقيقة للعالم. انضم وأبق صوت غزة حيا
             </p>
           </div>
-          <a href="/#join" className="sp-btn-green sp-btn-light sp-btn-pill">
+          {/* The contact page — /#join was a dead anchor (nothing on the home
+              page carries id="join"), so this only ever went home. */}
+          <a href="/media/contact" className="sp-btn-green sp-btn-light sp-btn-pill">
             <span data-i18n="support_contact_us">تواصل معنا</span>
           </a>
         </div>

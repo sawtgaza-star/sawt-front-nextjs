@@ -1751,6 +1751,8 @@ color:#6D6D6D;
 
 }
 .sm-works-card-go {
+  /* containing block for the whole-tile hit area below */
+  position: relative;
   flex: 0 0 auto;
   width: 40px;
   height: 40px;
@@ -1768,6 +1770,20 @@ color:#6D6D6D;
 
 .sm-works-card-go:hover {
   background: #f2f2f2;
+}
+/* The whole tile follows the arrow's link: its ::after reaches far past the
+   arrow in every direction and the tile's own `overflow: hidden`
+   (.sm-works-shot on /media, .sm-wp-tile on /media/works) trims it back to the
+   tile's box. Same trick as styles/card-links.css — no second anchor, so no
+   nested link, no duplicate tab stop and no href repeated in the markup.
+   z-index lifts it over the caption's title and line, which follow it in the
+   DOM; on the /media wall the caption is pointer-events: none until its tile is
+   hovered, so the hit area arrives with the card. */
+.sm-works-card-go::after {
+  content: "";
+  position: absolute;
+  inset: -1200px;
+  z-index: 1;
 }
 .sm-works-more {
   display: flex;

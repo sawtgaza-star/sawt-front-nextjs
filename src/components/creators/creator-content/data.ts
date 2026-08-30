@@ -24,6 +24,10 @@ export const SKIP = 10; // seconds each rewind/forward jumps
 /* metadata shown in the reel viewer (static — no backend yet) */
 export const REEL_META = {
   user: "رنا الصالح",
+  /* Where the name in the info bar leads. There is no per-creator data yet —
+     /creators/[id] renders the same mock profile for every id — so it points at
+     the same placeholder the cards' hover arrow uses. */
+  profile: "/creators/1",
   avatar: "/assets/images/محمود زعيتر 2.png",
   caption:
     "لم نبدأ من فكرة خارقة أو خطة محكمة، بل من قرار بسيط: أن نكون حاضرين، نستمع، ونُعلن صوت غزة للعالم",

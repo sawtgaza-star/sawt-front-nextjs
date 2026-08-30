@@ -17,8 +17,9 @@ import { MEDIA_SERVICES } from "./media-services-data";
    direction follows it live (transition off), then snaps on release. Touch
    pointers are left alone so a finger on the card still scrolls the page.
 
-   Autoplay stops while the pointer/focus is on the section, while dragging,
-   while the section is off-screen, and under prefers-reduced-motion. */
+   Autoplay runs as soon as the section is on screen; it stops while the mouse
+   moves over the section or something in it has focus, while dragging, while
+   the section is off-screen, and under prefers-reduced-motion. */
 const INTERVAL = 2000;
 /* how far a drag must travel to count as a page turn, and as a real drag */
 const SNAP = 70;
@@ -38,9 +39,18 @@ export default function MediaServicesSlider() {
   useEffect(() => {
     const el = viewRef.current;
     if (!el) return;
-    const io = new IntersectionObserver(([e]) => setVisible(e.isIntersecting), {
-      threshold: 0.35,
-    });
+    /* A single high threshold never fires when the deck is taller than the
+       window — its ratio can't reach 0.35 — and the section then sat still
+       forever. So: a third of the deck on screen, OR the deck filling a third
+       of the window, whichever comes first. The threshold list is only there to
+       get callbacks as it scrolls through. */
+    const io = new IntersectionObserver(
+      ([e]) => {
+        const covers = e.intersectionRect.height >= window.innerHeight * 0.33;
+        setVisible(e.isIntersecting && (e.intersectionRatio >= 0.33 || covers));
+      },
+      { threshold: [0, 0.15, 0.33, 0.6, 1] }
+    );
     io.observe(el);
     return () => io.disconnect();
   }, []);
@@ -112,10 +122,16 @@ export default function MediaServicesSlider() {
     e.stopPropagation();
   };
 
+  /* Paused by a pointer that MOVES over the section, not by one that merely
+     ends up on it: scrolling the section under a resting cursor counts as
+     mouseenter, so arriving here was enough to stop the deck before it dealt a
+     single card. Moving the mouse is the deliberate act; leaving resumes. */
   return (
     <div
       className="sm-services-body"
-      onMouseEnter={() => setPaused(true)}
+      onPointerMove={(e) => {
+        if (e.pointerType !== "touch") setPaused(true);
+      }}
       onMouseLeave={() => setPaused(false)}
       onFocusCapture={() => setPaused(true)}
       onBlurCapture={() => setPaused(false)}

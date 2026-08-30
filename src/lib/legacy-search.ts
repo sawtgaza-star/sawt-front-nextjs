@@ -185,12 +185,12 @@ export function initSearch() {
 
   // ---- Wire up the UI once the DOM is ready ----
   function init() {
-    // Reveal the slide-down search panel. Two triggers open it: the phone
-    // header icon (.mobile-nav-search) and the top-bar icon on ≥md
-    // (.nav-search-btn) — wire every one of them, not just the first.
-    var toggleBtns = document.querySelectorAll(
-      ".mobile-nav-search, .nav-search-btn"
-    );
+    // Reveal the slide-down search panel. Only the phone header icon opens it
+    // now: from 768px up the top bar's own icon expands a field beside itself
+    // instead (components/site/NavSearch.tsx), so .nav-search-btn is no longer
+    // wired here. querySelectorAll, not querySelector — there may be more than
+    // one on a page.
+    var toggleBtns = document.querySelectorAll(".mobile-nav-search");
     var panel = document.getElementById("mobileSearchPanel");
     var form = panel ? panel.querySelector(".mobile-search-form") : null;
     var input = document.getElementById("mobileSearchInput");

@@ -10,6 +10,7 @@ import { AuthMessage, fieldError, pendingProps } from "@/components/auth/AuthMes
 import { useAuthForm } from "@/components/auth/useAuthForm";
 import { login } from "@/lib/api/auth";
 import { saveSession } from "@/lib/auth-state";
+import { markLoggedIn } from "@/components/site/login-flash";
 import { useAuthFlash } from "@/components/auth/useAuthFlash";
 
 export default function Page() {
@@ -20,11 +21,15 @@ export default function Page() {
   const { flashClassName } = useAuthFlash(setSuccess);
 
   const onSubmit = submit(async (data) => {
-    const session = await login({
+    const { session, message } = await login({
       email: String(data.get("email") || "").trim(),
       password: String(data.get("password") || ""),
     });
     saveSession(session);
+    /* "تم تسجيل الدخول بنجاح." would be gone the moment this page is, so it is
+       parked for the home page, where the session toast in SiteNav shows it —
+       the same hand-off the sign-out button uses. */
+    markLoggedIn(message);
     /* Leave the auth CSS group with a full reload, not a <Link> — see the
        CSS-groups convention in CLAUDE.md. This also lets the pre-paint script
        in layout.tsx pick up the new flag and render the signed-in top bar. */
