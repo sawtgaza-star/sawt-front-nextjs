@@ -1,7 +1,6 @@
 // @ts-nocheck
 /* eslint-disable */
 import {
-  IconNavSearch,
   IconNavUserPlus,
   IconNavMic,
   IconNavAccount,
@@ -9,6 +8,7 @@ import {
 } from "@/components/ui/icons";
 import NavSocialLinks from "./NavSocialLinks";
 import NavLogoutButton from "./NavLogoutButton";
+import NavSearch from "./NavSearch";
 
 /* Top utility bar, above the main navbar.
    RTL layout — first child renders on the RIGHT:
@@ -32,14 +32,8 @@ export default function NavTopBar() {
           {/* LTR island so the pair reads [🔍] [En] left-to-right, as in the design */}
           <div className="nav-top-utils">
             {" "}
-            <button
-              type="button"
-              className="nav-search-btn"
-              aria-label="بحث"
-            >
-              {" "}
-              <IconNavSearch />{" "}
-            </button>{" "}
+            {/* Icon + the field it opens beside itself — see NavSearch. */}
+            <NavSearch />{" "}
             {/* Signed-in only, still inside the LTR island so the row reads
                 [🔍] [👤] [🔔] [En] left-to-right, as in the design. */}
             <a

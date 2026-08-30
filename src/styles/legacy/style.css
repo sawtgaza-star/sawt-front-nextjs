@@ -2759,7 +2759,7 @@ svg {
   border-radius: 22px;
   overflow-y: auto;
   scroll-snap-type: y mandatory;
-  box-shadow: 0 18px 38px rgba(0, 0, 0, 0.25);
+  /* box-shadow: 0 18px 38px rgba(0, 0, 0, 0.25); */
 }
 
 .review-reels::-webkit-scrollbar {

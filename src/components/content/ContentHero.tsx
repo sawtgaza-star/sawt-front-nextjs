@@ -1,5 +1,6 @@
 import SiteNav from "@/components/site/SiteNav";
 import HeroReelsSlider from "./HeroReelsSlider";
+import BreadcrumbHome from "@/components/site/BreadcrumbHome";
 
 /* Breadcrumb hero for the محتوانا page. Reuses the creators/team hero classes
    (cr-*) so the breadcrumb, title and description match the rest of the site;
@@ -11,9 +12,7 @@ export default function ContentHero() {
         <SiteNav />
         <div className="container cr-hero ct-hero">
           <nav className="cr-breadcrumb" aria-label="breadcrumb">
-            <a href="/" data-i18n="nav_home">
-              الرئيسية
-            </a>
+            <BreadcrumbHome />
             <i className="fa-solid fa-angle-left mx-2 cr-breadcrumb-sep arrow"></i>
             <span className="cr-breadcrumb-active" data-i18n="nav_content">
               محتوانا

@@ -1,4 +1,5 @@
 import SiteNav from "@/components/site/SiteNav";
+import BreadcrumbHome from "@/components/site/BreadcrumbHome";
 
 /* Breadcrumb hero for the Team page (الفريق). Uses the content-creators hero
    styling (cr-* classes, from creators.css) with the same collage background,
@@ -14,9 +15,7 @@ export default function TeamHero() {
         <SiteNav />
         <div className="container cr-hero">
           <nav className="cr-breadcrumb" aria-label="breadcrumb">
-            <a href="/" data-i18n="nav_home">
-              الرئيسية
-            </a>
+            <BreadcrumbHome />
             <i className="fa-solid fa-angle-left mx-2 cr-breadcrumb-sep arrow"></i>
             <span className="cr-breadcrumb-active" data-i18n="nav_team">
               الفريق

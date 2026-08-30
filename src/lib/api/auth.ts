@@ -59,7 +59,14 @@ export type RegisterInput = {
   password_confirmation: string;
 };
 
-export async function login(input: LoginInput): Promise<AuthSession> {
+/** The session, plus the API's own "تم تسجيل الدخول بنجاح." — the sign-in ends
+    in a full page load, so the caller parks the message for the page it lands
+    on rather than showing it here. Defaulted, since only `data` is guaranteed;
+    the fallback is the same sentence the server sends, so lib/api/messages.ts
+    translates it for an English visitor either way (api_login_success). */
+export async function login(
+  input: LoginInput,
+): Promise<{ session: AuthSession; message: string }> {
   const payload = await apiFetch<Envelope<AuthSession>>("/auth/login", {
     method: "POST",
     body: input,
@@ -68,7 +75,7 @@ export async function login(input: LoginInput): Promise<AuthSession> {
   if (!session?.access_token) {
     throw new ApiError("تعذر إتمام تسجيل الدخول. حاول مرة أخرى.", 500);
   }
-  return session;
+  return { session, message: payload?.message || "تم تسجيل الدخول بنجاح." };
 }
 
 /** Register. The backend may or may not hand back a token on 201 — when it

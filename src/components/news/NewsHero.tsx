@@ -1,4 +1,5 @@
 import SiteNav from "@/components/site/SiteNav";
+import BreadcrumbHome from "@/components/site/BreadcrumbHome";
 
 type Crumb = { titleKey: string; title: string };
 type Parent = { href: string; titleKey: string; title: string };
@@ -45,9 +46,7 @@ export default function NewsHero({
         <SiteNav />
         <div className="container about-hero text-center text-white">
           <nav className="about-breadcrumb" aria-label="breadcrumb">
-            <a href="/" data-i18n="nav_home">
-              الرئيسية
-            </a>
+            <BreadcrumbHome />
             <i className="fa-solid fa-angle-left mx-2 about-breadcrumb-sep arrow"></i>
             {article ? (
               <>

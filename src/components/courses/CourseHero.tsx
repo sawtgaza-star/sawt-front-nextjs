@@ -1,5 +1,6 @@
 import IncubatorNav from "@/components/incubator/IncubatorNav";
 import type { Course } from "./course-data";
+import BreadcrumbHome from "@/components/site/BreadcrumbHome";
 
 /* Olive hero of the course detail page — the incubator navbar on top (courses
    are reached from /incubator, so the page keeps that bar), centered breadcrumb,
@@ -13,9 +14,7 @@ export default function CourseHero({ course }: { course: Course }) {
 
       <div className="container">
         <nav className="crs-breadcrumb" aria-label="breadcrumb">
-          <a href="/" data-i18n="nav_home">
-            الرئيسية
-          </a>
+          <BreadcrumbHome />
           <i className="fa-solid fa-angle-left crs-breadcrumb-sep"></i>
           <span className="crs-breadcrumb-active" data-i18n={course.titleKey}>
             {course.title}
