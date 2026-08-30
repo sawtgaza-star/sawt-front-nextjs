@@ -807,6 +807,13 @@ export const IconNavBell = () => (
   </svg>
 );
 
+export const IconNavLogout = () => (
+  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
+    <path d="M14.75 2.75H15C17.8995 2.75 19.25 4.10051 19.25 7V17C19.25 19.8995 17.8995 21.25 15 21.25H14.75" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+    <path d="M14.5 12H4M4 12L7.5 8.5M4 12L7.5 15.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+  </svg>
+);
+
 /* Multi-colour brand marks — literal fills on purpose. */
 
 export const IconNavIncubator = () => (

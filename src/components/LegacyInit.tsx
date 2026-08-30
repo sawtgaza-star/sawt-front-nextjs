@@ -66,8 +66,10 @@ export default function LegacyInit({ page }: { page: string }) {
       // Replay the hero stat counters on every home visit — initMainScripts is
       // one-time-guarded, so it can't drive them on client-side navigation.
       if (page === "home") {
-        const { runCounters, replayComments } = await import("@/lib/legacy-main");
+        const { runCounters, replayComments, initReels } = await import("@/lib/legacy-main");
         runCounters();
+        // إعادة ربط عمود الريلز (السحب + التبديل) على المركّب الجديد قبل التعليقات
+        initReels();
         replayComments();
       }
       // The incubator and صوت ميديا stat strips reuse the same counters.

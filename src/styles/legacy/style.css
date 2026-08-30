@@ -370,9 +370,16 @@ a {
   display: none !important;
 }
 
-/* Plain (background-less) icon action — the account and bell buttons */
+/* Plain (background-less) icon action — the account, bell and logout buttons.
+
+   `display` has to be stated here, not left to `.nav-authed-only`: the drawer
+   copies of these sit inside a group that carries the authed class itself, so
+   they inherit no display of their own. Without it a <button> and an <a> lay
+   their 24px icon out differently inside the 40px box and the logout icon sits
+   off the row's centre line. */
 .nav-icon-btn {
   position: relative;
+  display: inline-flex;
   align-items: center;
   justify-content: center;
   width: 40px;
@@ -418,7 +425,23 @@ a {
   line-height: 1;
 }
 
-/* Collapsed (mobile) menu counterpart of the pair above */
+/* Collapsed (mobile) menu counterpart of the pair above.
+
+   It belongs to the drawer only: from 768px up the top bar shows the account
+   and bell itself, so leaving this visible put a second pair in the navbar
+   row. It paints exactly where `.nav-face` doesn't — the same arrangement
+   `.contact-info-nav` has with the guest links. The selector has to outweigh
+   `.sawt-authed .nav-authed-only`, hence the doubled class. */
+.sawt-authed .nav-mobile-account.nav-authed-only {
+  display: none !important;
+}
+
+@media (max-width: 768px) {
+  .sawt-authed .nav-mobile-account.nav-authed-only {
+    display: flex !important;
+  }
+}
+
 .nav-mobile-account {
   margin: 8px 0;
 }
@@ -2886,6 +2909,42 @@ svg {
 
 .review-reels .play-overlay {
   z-index: 5;
+}
+
+/* ‎.play-overlay‎ تغطّي الريل بالكامل (‎inset: 0‎ + ‎z-index: 5‎ + ‎pointer-events: all‎)
+   طالما الفيديو متوقّف، فكانت تبتلع النقر على أزرار الحفظ/الإعجاب/المشاركة وعلى
+   شريط التقدّم. نرفع الاثنين فوقها ليعمل الضغط على الدائرة البيضاء كاملةً. */
+.reel-actions,
+.review-reels .reel-actions,
+.reel-seekbar,
+.review-reels .reel-seekbar {
+  z-index: 6;
+}
+
+/* رسالة تأكيد صغيرة لأزرار الريل (الحفظ / نسخ رابط المشاركة) */
+.reel-toast {
+  position: fixed;
+  left: 50%;
+  bottom: 24px;
+  transform: translateX(-50%) translateY(20px);
+  background: rgba(30, 30, 30, 0.92);
+  color: #fff;
+  padding: 10px 18px;
+  border-radius: 24px;
+  font-size: 14px;
+  z-index: 3000;
+  opacity: 0;
+  pointer-events: none;
+  transition:
+    opacity 0.25s ease,
+    transform 0.25s ease;
+  max-width: 90vw;
+  text-align: center;
+}
+
+.reel-toast.show {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
 }
 
 /* Comments panel */
@@ -7383,7 +7442,8 @@ svg {
      8px radius, white, no shadow (the header's bottom corners are already
      flattened while the drawer is open, further up in this file).
      Stacking order inside the drawer, top to bottom:
-       search → links → brand pills → language / CTAs / socials. */
+       search → links → brand pills → language / CTAs / socials →
+       account / bell / logout. */
   header .navbar .navbar-collapse {
     flex-direction: column;
     align-items: stretch !important;
@@ -7403,13 +7463,15 @@ svg {
   header .navbar .navbar-collapse > .nav-pills-group {
     order: 3;
   }
-  header .navbar .navbar-collapse > .nav-mobile-account {
-    order: 4;
-    justify-content: center;
-  }
   header .navbar .navbar-collapse > .nav-mobile-extra {
-    order: 5;
+    order: 4;
     display: block;
+  }
+  /* Last row of the drawer: the account / bell / logout trio, side by side
+     under the language + CTA + socials block. */
+  header .navbar .navbar-collapse > .nav-mobile-account {
+    order: 5;
+    justify-content: start;margin-top:15px;
   }
   /* their phone counterparts live in .nav-mobile-extra instead */
   header .navbar .navbar-collapse > .searchDiv,
