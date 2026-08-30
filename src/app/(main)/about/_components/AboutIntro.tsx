@@ -1,51 +1,56 @@
-// @ts-nocheck
-/* eslint-disable */
-export default function AboutIntro() {
+import { localized, type AboutIntroContent } from "@/lib/api/pages";
+
+/* API `intro` block, and nothing else — see AboutHero for why there is no
+   built-in copy and no data-i18n key left in this file. The section, its text
+   and its image column each render only if the API actually sent them. */
+export default function AboutIntro({
+  data,
+  lang = "ar",
+}: {
+  data?: AboutIntroContent;
+  lang?: string;
+}) {
+  const title = localized(data?.title, lang);
+  const body = localized(data?.body, lang);
+  const image = data?.image_url;
+
+  if (!title && !body && !image) return null;
+
   return (
     <section>
       {" "}
       <div
         className="about-sec container"
-        style={{ marginTop: "50px", zIndex: "1" }}
+        style={{ marginTop: "50px", zIndex: 1 }}
       >
         {" "}
         <div className="row align-items-center">
           {" "}
           <div className="col-12 col-lg-6 about-sec-content" dir="rtl">
             {" "}
-            <h2 className="about-sec-title" data-i18n="about_header">
-              من نحن
-            </h2>{" "}
-            <p className="about-sec-desc" data-i18n="about_intro">
-              منصة صوت انطلقت من غزة، تؤمن بأن لكل إنسان قصة تستحق أن تُروى
-              وصوتاً يستحق أن يُسمع ، نعمل على إنتاج محتوى إنساني وإعلامي هادف
-              يوثّق الواقع وينقل قصص الناس وقضايا المجتمع بمهنية ومسؤولية ،
-              نسعى إلى تسليط الضوء على الأصوات المهمّشة والحكايات التي قد لا
-              تجد مكاناً في الإعلام التقليدي، إيماناً منا بأن الإعلام رسالة
-              وأثر قبل أن يكون خبراً ، نروي القصص بصدق، وننقل الواقع كما هو،
-              لنكون جسراً بين الإنسان وقضيته.
-            </p>{" "}
+            {title ? <h2 className="about-sec-title">{title}</h2> : null}{" "}
+            {body ? <p className="about-sec-desc">{body}</p> : null}{" "}
           </div>{" "}
-          <div className="col-12 col-lg-6 mt-4 about-sec-img-col">
-            {" "}
-            <div className="about-sec-img-wrapper">
+          {image ? (
+            <div className="col-12 col-lg-6 mt-4 about-sec-img-col">
               {" "}
-              <img
-                src="/assets/images/tree.jpg"
-                alt=""
-                className="about-sec-img"
-              />{" "}
-              <div className="member-card about-sec-leaf" dir="rtl">
+              <div className="about-sec-img-wrapper">
                 {" "}
-                <img
-                  src="/assets/images/شعار صوت اخضر.svg"
-                  alt=""
-                  width="100"
-                  height="100"
-                />{" "}
+                <img src={image} alt="" className="about-sec-img" />{" "}
+                {/* The logo badge is chrome pinned to the corner of the photo,
+                    so it goes wherever the photo goes. */}
+                <div className="member-card about-sec-leaf" dir="rtl">
+                  {" "}
+                  <img
+                    src="/assets/images/شعار صوت اخضر.svg"
+                    alt=""
+                    width="100"
+                    height="100"
+                  />{" "}
+                </div>{" "}
               </div>{" "}
-            </div>{" "}
-          </div>{" "}
+            </div>
+          ) : null}{" "}
         </div>{" "}
       </div>{" "}
     </section>

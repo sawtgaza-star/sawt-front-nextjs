@@ -1,0 +1,89 @@
+/* Placeholders for /about while GET /pages/about is in flight.
+
+   The page carries no copy of its own any more (see about/_components), so
+   without these the visitor gets a bare header and a white gap until the
+   response lands. The skeleton reuses the REAL section classes — .container,
+   .value-card, .about-sec-img-col … — and only fills them with grey bars, so
+   the layout it holds is the layout the content arrives into and nothing jumps.
+
+   Sizes here mirror style.css: 56px icon circle, 210px intro photo, 300px join
+   banner. Keep them in step if those change. */
+
+.sk-line,
+.sk-block,
+.sk-circle {
+  display: block;
+  background: linear-gradient(90deg, #e9ecef 25%, #f5f7f9 37%, #e9ecef 63%);
+  background-size: 400% 100%;
+  animation: sk-shimmer 1.4s ease-in-out infinite;
+}
+
+.sk-line {
+  height: 14px;
+  border-radius: 7px;
+  margin-bottom: 12px;
+}
+
+.sk-line-title {
+  height: 28px;
+  border-radius: 10px;
+  margin-bottom: 22px;
+}
+
+/* The three centred section heads (hero, core values, sawt story) */
+.sk-center .sk-line,
+.sk-center .sk-line-title {
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.sk-circle {
+  width: 56px;
+  height: 56px;
+  border-radius: 16px;
+  margin-bottom: 18px;
+}
+
+.sk-block {
+  width: 100%;
+  border-radius: 16px;
+}
+
+/* .about-sec-img — same rounded-corner silhouette as the real photo */
+.sk-block-intro {
+  min-height: 210px;
+  height: 260px;
+  border-radius: 150px 0 150px 0;
+}
+
+.sk-block-platform {
+  height: 320px;
+}
+
+/* .join-us-banner-about is min-height: 300px */
+.sk-block-join {
+  height: 300px;
+}
+
+/* The hero sits on the API's background image, which hasn't loaded either, so
+   these bars are on white like the rest — just taller, matching .about-hero. */
+.sk-hero {
+  padding: 10px 0 6px;
+}
+
+@keyframes sk-shimmer {
+  0% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0 50%;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sk-line,
+  .sk-block,
+  .sk-circle {
+    animation: none;
+  }
+}

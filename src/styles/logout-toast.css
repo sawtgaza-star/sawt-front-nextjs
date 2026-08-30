@@ -1,0 +1,95 @@
+/* Sign-out confirmation toast. Owned by the component rather than added to
+   style.css because <LogoutToast /> hangs off SiteNav, which also renders under
+   the `content` and (auth) route groups — those load a different stylesheet, so
+   a rule in style.css would leave the toast unstyled there. */
+
+.logout-toast {
+  position: fixed;
+  z-index: 1200;
+  top: 24px;
+  inset-inline: 16px;
+  margin-inline: auto;
+  width: fit-content;
+  max-width: calc(100% - 32px);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 18px;
+  border: 1px solid #cdd7c0;
+  border-radius: 12px;
+  background: #eef2e8;
+  box-shadow: 0 8px 24px rgba(28, 28, 28, 0.12);
+  animation: logout-toast-in 0.25s ease-out;
+}
+
+@keyframes logout-toast-in {
+  from {
+    opacity: 0;
+    transform: translateY(-12px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .logout-toast {
+    animation: none;
+  }
+}
+
+.logout-toast-icon {
+  display: inline-flex;
+  flex: 0 0 auto;
+  font-size: 22px;
+  color: rgba(76, 92, 55, 1);
+}
+
+.logout-toast-text {
+  flex: 1 1 auto;
+  margin: 0;
+  font-size: 16px;
+  font-weight: 700;
+  color: #1c1c1c;
+  text-align: start;
+}
+
+.logout-toast-close {
+  flex: 0 0 auto;
+  width: 28px;
+  height: 28px;
+  padding: 0;
+  border: 0;
+  border-radius: 100px;
+  background: transparent;
+  color: #4c5c37;
+  font-size: 20px;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.logout-toast-close:hover {
+  background: #dde5d2;
+}
+
+/* Screen-reader-only label — the × itself is aria-hidden. */
+.logout-toast-sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+@media (max-width: 575.98px) {
+  .logout-toast {
+    top: 12px;
+    inset-inline: 12px;
+    gap: 8px;
+    padding: 12px 14px;
+  }
+  .logout-toast-text {
+    font-size: 14px;
+  }
+}

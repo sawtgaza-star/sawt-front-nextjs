@@ -13,6 +13,8 @@ import NavLinks from "./NavLinks";
 import NavPills from "./NavPills";
 import NavSocialLinks from "./NavSocialLinks";
 import MobileSearchPanel from "./MobileSearchPanel";
+import NavLogoutButton from "./NavLogoutButton";
+import LogoutToast from "./LogoutToast";
 
 /* Shared top bar + navbar + mobile search (canonical version, unified across pages). */
 export default function SiteNav() {
@@ -163,6 +165,9 @@ export default function SiteNav() {
                 <IconNavBell />{" "}
                 <span className="nav-bell-badge">10</span>{" "}
               </a>{" "}
+              {/* The group itself is `.nav-authed-only`, so the button only
+                  needs the plain icon styling. */}
+              <NavLogoutButton className="nav-icon-btn" />{" "}
             </div>{" "}
             <div className="searchDiv d-flex d-lg-none align-items-center gap-2">
               {" "}
@@ -224,6 +229,9 @@ export default function SiteNav() {
       <div className="mobile-search-anchor">
         <MobileSearchPanel />
       </div>
+      {/* Renders nothing unless the visitor arrived here from the logout
+          button; position:fixed, so its place in the tree doesn't matter. */}
+      <LogoutToast />
     </>
   );
 }

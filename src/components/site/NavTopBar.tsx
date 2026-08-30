@@ -8,6 +8,7 @@ import {
   IconNavBell,
 } from "@/components/ui/icons";
 import NavSocialLinks from "./NavSocialLinks";
+import NavLogoutButton from "./NavLogoutButton";
 
 /* Top utility bar, above the main navbar.
    RTL layout — first child renders on the RIGHT:
@@ -62,6 +63,7 @@ export default function NavTopBar() {
               <IconNavBell />{" "}
               <span className="nav-bell-badge">10</span>{" "}
             </a>{" "}
+            <NavLogoutButton />{" "}
             <button
               type="button"
               className="language-btn nav-lang-btn"
