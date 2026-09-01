@@ -2,6 +2,9 @@
 
 import { useEffect, useRef, useState } from "react";
 import NavSocialLinks from "@/components/site/NavSocialLinks";
+import { resolveNavbar } from "@/components/site/navbar-data";
+import { useNavbar } from "@/lib/api/use-navbar";
+import { useLang } from "@/lib/use-lang";
 import { MEDIA_NAV_LINKS } from "./media-nav-data";
 
 /* The phone menu of صوت ميديا's navbar: the burger in the nav card plus the
@@ -17,6 +20,13 @@ import { MEDIA_NAV_LINKS } from "./media-nav-data";
 
    Only this leaf is a Client Component; MediaNav itself stays on the server. */
 export default function MediaNavMobile({ base = "" }: { base?: string }) {
+  /* The social row at the foot of the drawer is the site's, not this page's —
+     the same GET /layout/navbar row SiteNav renders. This page uses MediaNav
+     instead of SiteNav, so the request is made here. */
+  const { lang } = useLang();
+  const { data, loading } = useNavbar();
+  const nav = resolveNavbar(data, lang);
+
   const [open, setOpen] = useState(false);
   const [hash, setHash] = useState("");
   const drawerRef = useRef<HTMLDivElement>(null);
@@ -136,7 +146,11 @@ export default function MediaNavMobile({ base = "" }: { base?: string }) {
         </div>
 
         <div className="sm-drawer-social">
-          <NavSocialLinks />
+          <NavSocialLinks
+            label={nav.socialsLabel}
+            socials={nav.socials}
+            loading={loading}
+          />
         </div>
       </div>
     </>

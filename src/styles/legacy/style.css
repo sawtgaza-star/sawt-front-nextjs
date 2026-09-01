@@ -3,7 +3,13 @@
   font-family: "main";
 } */
 
-@import url("https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&display=swap");
+/* Cairo is loaded by a <link> in app/layout.tsx, NOT from here.
+   An @import is only honoured while it is the first rule in the sheet, and
+   Next.js concatenates every CSS file of a route group into one bundle — once
+   another file (footer-skeleton.css) was ordered ahead of this one the browser
+   silently dropped the import and the whole site lost its font. A <link> in
+   <head> has no such ordering rule, and is fetched a round-trip earlier.
+   Keep font URLs out of this file. */
 
 :root {
   --dark-green: #38422a;
@@ -1760,6 +1766,9 @@ svg {
   flex-direction: column;
   gap: 15px;
   justify-content: start;
+  /* the two mobile variants below already centre the rows on the cross axis;
+     without this the desktop column stretched them to full width */
+  align-items: start;
   margin: 10px 0px;
 }
 .footer-social-icon {
@@ -6491,18 +6500,52 @@ svg {
 }
 .social-links {
   margin-inline-start:10px;
+  /* Inline flow sat every mark on the text baseline, so a 20px SVG and an 18px
+     Font Awesome glyph landed at different heights, and the only spacing was
+     the `.ms-2` each link carries. A flex row centres them all on one line and
+     owns the spacing itself — the same treatment `.nav-mobile-social
+     .social-links` already gives the phone drawer's copy of this row. */
+  display: flex;
+  align-items: center;
+  gap: 5px;
 }
 
 .social-links a i {
   color: rgba(76, 92, 55, 1);
 }
+/* The brand marks are the design's own SVGs now (ui/icons), painted in
+   currentColor so the footer can take the same ones white. The link carries
+   Bootstrap's `text-white`, which the marks would otherwise inherit — this is
+   the olive the <i> rule above gives the fallback glyphs. */
+.social-links a svg {
+  color: rgba(76, 92, 55, 1);
+  /* pinned rather than left to the SVG's own attributes, so a mark added later
+     at a different intrinsic size still lands on the row's 20px rhythm */
+  display: block;
+  width: 20px;
+  height: 20px;
+}
+/* One fixed box per mark, whatever is drawn inside it: the 20px SVGs and the
+   Font Awesome fallbacks then share a centre, and the hover circle below is a
+   circle rather than a pill sized to its glyph.
+   `margin-left`, physically, because the app loads the LTR Bootstrap build —
+   the `.ms-2` these links carry is a `margin-left: .5rem !important` that
+   would otherwise add to the flex gap. */
 .social-links a {
   transition: all 0.2s ease-in-out;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  flex: none;
+  margin-left: 0 !important;
 }
 
+/* No padding here: it used to grow the link on hover alone, which nudged every
+   mark beside it sideways. The fixed box above holds the space instead. */
 .social-links a:hover {
   background-color: rgba(0, 0, 0, 0.04);
-  padding: 5px 10px;
   border-radius: 50%;
 }
 
@@ -6583,6 +6626,8 @@ svg {
   .social-links {
     /* width: 100%; */
     text-align: center;
+    /* the row is a flex container now, so centring is the flex axis's job */
+    justify-content: center;
   }
 
   .about-sec {
@@ -7631,9 +7676,14 @@ svg {
     margin-right: auto !important;
   }
 
+  /* The drawer's row is the compact one: 16px marks with the group's own 18px
+     gap, so it gives up the 32px hover box the top bar's links carry. */
   .nav-mobile-social .social-links a {
     display: inline-flex;
     align-items: center;
+    justify-content: center;
+    width: auto;
+    height: auto;
     color: rgba(76, 92, 55, 1);
     margin-left: 0 !important;
   }

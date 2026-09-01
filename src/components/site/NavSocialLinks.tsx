@@ -1,65 +1,58 @@
 // @ts-nocheck
 /* eslint-disable */
+import { socialMark } from "./social-icons";
 
-/* The "وسائل التواصل الاجتماعي" label + the five brand marks.
+/* The "وسائل التواصل الاجتماعي" label + the brand marks, from
+   GET /layout/navbar (topbar.socials_label / topbar.socials) and nothing else:
+   no built-in accounts stand behind them, so a row the editor empties renders
+   empty — see ./navbar-data.
+
    Rendered twice: on ≥lg by NavTopBar (that bar is hidden on phones) and, at
    the bottom of the collapsed phone menu, by SiteNav's `.nav-mobile-social`
-   row. Markup is identical in both places — the row styling lives in CSS. */
-export default function NavSocialLinks() {
+   row. Markup is identical in both places — the row styling lives in CSS.
+
+   WHICH accounts appear is the editor's; how each one is DRAWN is not — the
+   mark comes from the platform slug the payload sends (./social-icons, shared
+   with the footer's bottom bar). The marks paint in currentColor, and
+   `.social-links a svg` in style.css gives this row its olive. */
+
+export default function NavSocialLinks({ label, socials, loading }) {
   return (
     <div className="social-links">
       <span
         className="font-18 ms-2"
-        data-i18n="follow_us"
         style={{
           color: "rgba(127, 127, 127, 1)",
           fontWeight: "bold",
           fontSize: "16px",
         }}
       >
-        وسائل التواصل الاجتماعي :
+        {loading ? (
+          <span className="nsk-line" style={{ width: "150px" }} />
+        ) : label ? (
+          `${label} :`
+        ) : (
+          ""
+        )}
       </span>
-      <a href="#" className="text-white ms-2">
-        <i className="fab fa-linkedin-in font-18"></i>{" "}
-      </a>
-      <a href="#" className="text-white ms-2">
-        <i className="fab fa-facebook-f font-18"></i>
-      </a>{" "}
-      <a href="#" className="text-white ms-2">
-        <i className="fa-solid fa-paper-plane"></i>
-      </a>{" "}
-      <a href="#" className="text-white ms-2">
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          width="1.3em"
-          height="1.3em"
-          viewBox="0 0 24 24"
-        >
-          {" "}
-          <path d="M0 0h24v24H0z" fill="none"></path>{" "}
-          <path
-            fill="rgba(76, 92, 55, 1)"
-            d="M19.57 4.488a.75.75 0 0 0-1.14-.976l-5.368 6.274l-5.224-5.938a1.8 1.8 0 0 0-1.357-.598H5.007c-.68 0-1.264.352-1.56.885a1.55 1.55 0 0 0 .204 1.795l6.286 7.147l-5.507 6.435a.75.75 0 1 0 1.14.976l5.368-6.274l5.224 5.938c.345.392.85.598 1.357.598h1.474c.681 0 1.264-.352 1.56-.885a1.55 1.55 0 0 0-.203-1.795l-6.287-7.146z"
-          ></path>{" "}
-        </svg>{" "}
-      </a>{" "}
-      <a href="#" className="text-white ms-2">
-        {" "}
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          width="1.2em"
-          height="1.2em"
-          viewBox="0 0 24 24"
-          className="icon"
-        >
-          {" "}
-          <path d="M0 0h24v24H0z" fill="none"></path>{" "}
-          <path
-            fill="rgba(76, 92, 55, 1)"
-            d="M9.367 2.25c-1.092 0-1.958 0-2.655.057c-.714.058-1.317.18-1.868.46a4.75 4.75 0 0 0-2.076 2.077c-.281.55-.403 1.154-.461 1.868c-.057.697-.057 1.563-.057 2.655v5.266c0 1.092 0 1.958.057 2.655c.058.714.18 1.317.46 1.869a4.75 4.75 0 0 0 2.077 2.075c.55.281 1.154.403 1.868.461c.697.057 1.563.057 2.655.057h5.266c1.092 0 1.958 0 2.655-.057c.714-.058 1.317-.18 1.869-.46a4.75 4.75 0 0 0 2.075-2.076c.281-.552.403-1.155.461-1.869c.057-.697.057-1.563.057-2.655V9.367c0-1.092 0-1.958-.057-2.655c-.058-.714-.18-1.317-.46-1.868a4.75 4.75 0 0 0-2.076-2.076c-.552-.281-1.155-.403-1.869-.461c-.697-.057-1.563-.057-2.655-.057zM16.25 6.5a.75.75 0 0 1 .75-.75h.5a.75.75 0 0 1 0 1.5H17a.75.75 0 0 1-.75-.75m-6.207 1.728a4.25 4.25 0 1 1 3.914 7.544a4.25 4.25 0 0 1-3.914-7.544"
-          ></path>{" "}
-        </svg>{" "}
-      </a>{" "}
+      {loading
+        ? [0, 1, 2, 3, 4, 5].map((index) => (
+            <span className="nsk-circle" key={index} />
+          ))
+        : socials.map((social, index) => {
+            const Icon = socialMark(social.platform);
+            return (
+              <a
+                href={social.url}
+                className="text-white ms-2"
+                key={index}
+                target={social.external ? "_blank" : undefined}
+                rel={social.external ? "noopener noreferrer" : undefined}
+              >
+                {Icon ? <Icon /> : <i className={social.icon + " font-18"}></i>}
+              </a>
+            );
+          })}
     </div>
   );
 }

@@ -1,5 +1,6 @@
 // @ts-nocheck
 /* eslint-disable */
+"use client";
 import {
   IconGlobe,
   IconNavAccount,
@@ -8,6 +9,9 @@ import {
   IconNavUserPlus,
   IconNavMic,
 } from "@/components/ui/icons";
+import { useNavbar } from "@/lib/api/use-navbar";
+import { useLang } from "@/lib/use-lang";
+import { resolveNavbar } from "./navbar-data";
 import NavTopBar from "./NavTopBar";
 import NavLinks from "./NavLinks";
 import NavPills from "./NavPills";
@@ -15,12 +19,35 @@ import NavSocialLinks from "./NavSocialLinks";
 import MobileSearchPanel from "./MobileSearchPanel";
 import NavLogoutButton from "./NavLogoutButton";
 import LogoutToast from "./LogoutToast";
+import "@/styles/nav-skeleton.css";
 
-/* Shared top bar + navbar + mobile search (canonical version, unified across pages). */
+/* Shared top bar + navbar + mobile search (canonical version, unified across pages).
+
+   The client boundary is here for the same two reasons the footer's is: one
+   request for the whole bar (GET /layout/navbar) and one `lang` subscription,
+   both resolved into a plain view model by resolveNavbar() and handed down as
+   props, so the pieces below stay plain functions. The endpoint is the only
+   source of the bar's copy — nothing here shadows it, so a field the editor
+   leaves empty renders empty. See ./navbar-data.
+
+   Unlike the footer, the bar is NOT swapped for a skeleton wholesale: while
+   the request is in flight the real structure is already on screen and only
+   the text is drawn as bars (styles/nav-skeleton.css). legacy-main's
+   initHeaderPin() lifts `.nav-face` and `<nav class="navbar">` out of <header>
+   into a `.header-bar` wrapper as soon as the legacy chunk loads, which is
+   before the response can land — so those two elements must be the same DOM
+   nodes throughout and React must patch them in place rather than unmount and
+   re-insert them into a parent they have since left. Same reason the language
+   button and the search inputs are never remounted: initTranslate() and
+   initSearch() bind to them once. */
 export default function SiteNav() {
+  const { lang } = useLang();
+  const { data, loading } = useNavbar();
+  const nav = resolveNavbar(data, lang);
+
   return (
     <>
-      <NavTopBar />
+      <NavTopBar nav={nav} loading={loading} />
       <nav className="navbar navbar-expand-lg py-1">
         {" "}
         <div className="container bg-white py-1">
@@ -51,18 +78,20 @@ export default function SiteNav() {
           </button>{" "}
           {/* Plain <a>, not <Link>: SiteNav also renders under the `content`
               route group, which loads content.css instead of style.css — a
-              soft navigation home would keep the wrong stylesheet. */}
+              soft navigation home would keep the wrong stylesheet.
+              The logo is the API's `logo_url`; with none in the payload the
+              <img> is skipped rather than rendered with an empty src. */}
           <a
             className="navbar-brand"
             href="/"
             style={{ marginRight: "0 !important" }}
           >
             {" "}
-            <img
-              src="/assets/images/صوت 1.png"
-              alt="Sawt Logo"
-              height="60"
-            />{" "}
+            {loading ? (
+              <span className="nsk-logo" />
+            ) : nav.logoUrl ? (
+              <img src={nav.logoUrl} alt={nav.siteName} height="60" />
+            ) : null}{" "}
           </a>{" "}
           <button
             className="navbar-toggler"
@@ -92,7 +121,8 @@ export default function SiteNav() {
             id="mainNav"
           >
             {" "}
-            <NavLinks /> <NavPills />{" "}
+            <NavLinks links={nav.primary} loading={loading} />{" "}
+            <NavPills pills={nav.pills} loading={loading} />{" "}
             {/* The search field, the register/sign-in pair and the language
                 toggle below only serve the collapsed (mobile) menu — on ≥lg
                 their desktop counterparts live in NavTopBar. */}
@@ -118,28 +148,36 @@ export default function SiteNav() {
                     d="m17 17l4 4m-2-10a8 8 0 1 0-16 0a8 8 0 0 0 16 0"
                   ></path>{" "}
                 </svg>{" "}
+                {/* Never remounted — initSearch() binds Enter on every
+                    `.search-input` once, on the nodes that exist then. */}
                 <input
                   type="text"
                   className="form-control custom-placeholder py-2 search-input"
-                  placeholder="ابحث هنا..."
-                  data-i18n-placeholder="search_placeholder"
+                  placeholder={nav.searchPlaceholder}
                 />{" "}
               </div>{" "}
             </div>{" "}
             <div className="contact-info-nav small d-flex nav-guest-only">
               {" "}
-              <div className="register-btn">
-                {" "}
-                <a href="/register" data-i18n="register_account">
-                  أنشئ حساب
-                </a>{" "}
-              </div>{" "}
-              <div className="sign-in-btn">
-                {" "}
-                <a href="/login" data-i18n="sign_in">
-                  تسجيل الدخول
-                </a>{" "}
-              </div>{" "}
+              {loading ? (
+                <>
+                  {" "}
+                  <span className="nsk-auth-btn" style={{ width: "96px" }} />{" "}
+                  <span className="nsk-auth-btn" style={{ width: "104px" }} />{" "}
+                </>
+              ) : (
+                <>
+                  {" "}
+                  <div className="register-btn">
+                    {" "}
+                    <a href={nav.register.url}>{nav.register.label}</a>{" "}
+                  </div>{" "}
+                  <div className="sign-in-btn">
+                    {" "}
+                    <a href={nav.login.url}>{nav.login.label}</a>{" "}
+                  </div>{" "}
+                </>
+              )}{" "}
             </div>{" "}
             {/* Same pair as the desktop top bar, for the collapsed menu. */}
             <div className="nav-mobile-account align-items-center gap-2 nav-authed-only">
@@ -178,7 +216,9 @@ export default function SiteNav() {
               >
                 {" "}
                 <IconGlobe />{" "}
-                <span data-i18n="auth_lang_label">En</span>{" "}
+                <span>
+                  {loading ? <span className="nsk-lang" /> : nav.langLabel}
+                </span>{" "}
               </button>{" "}
             </div>{" "}
             {/* Phone-only tail of the drawer (<768px): language row, the CTA
@@ -188,6 +228,9 @@ export default function SiteNav() {
               {" "}
               <div className="nav-mobile-lang">
                 {" "}
+                {/* Neither of these two is in the payload, so they keep the
+                    dictionary: "اللغة" and the name of the language the toggle
+                    switches TO. */}
                 <span data-i18n="nav_language">اللغة</span>{" "}
                 <button
                   type="button"
@@ -202,22 +245,42 @@ export default function SiteNav() {
               {/* RTL: first child sits on the right, as in the design */}
               <div className="nav-mobile-cta">
                 {" "}
-                <a
-                  className="nav-cta nav-cta-register nav-guest-only"
-                  href="/register"
-                >
-                  {" "}
-                  <IconNavUserPlus />{" "}
-                  <span data-i18n="register_account">أنشئ حساب</span>{" "}
-                </a>{" "}
-                <a className="nav-cta nav-cta-support" href="/support">
-                  {" "}
-                  <IconNavMic /> <span data-i18n="nav_support">ادعم صوت</span>{" "}
-                </a>{" "}
+                {loading ? (
+                  <>
+                    {" "}
+                    <span
+                      className="nsk-cta"
+                      style={{ width: "132px" }}
+                    />{" "}
+                    <span
+                      className="nsk-cta"
+                      style={{ width: "118px" }}
+                    />{" "}
+                  </>
+                ) : (
+                  <>
+                    {" "}
+                    <a
+                      className="nav-cta nav-cta-register nav-guest-only"
+                      href={nav.register.url}
+                    >
+                      {" "}
+                      <IconNavUserPlus /> <span>{nav.register.label}</span>{" "}
+                    </a>{" "}
+                    <a className="nav-cta nav-cta-support" href={nav.support.url}>
+                      {" "}
+                      <IconNavMic /> <span>{nav.support.label}</span>{" "}
+                    </a>{" "}
+                  </>
+                )}{" "}
               </div>{" "}
               <div className="nav-mobile-social">
                 {" "}
-                <NavSocialLinks />{" "}
+                <NavSocialLinks
+                  label={nav.socialsLabel}
+                  socials={nav.socials}
+                  loading={loading}
+                />{" "}
               </div>{" "}
             </div>{" "}
           </div>{" "}
@@ -227,7 +290,7 @@ export default function SiteNav() {
           it, so opening the search overlays the hero instead of growing the
           header and pushing the page down. */}
       <div className="mobile-search-anchor">
-        <MobileSearchPanel />
+        <MobileSearchPanel placeholder={nav.searchPlaceholder} />
       </div>
       {/* Renders nothing unless the visitor arrived here from the logout
           button; position:fixed, so its place in the tree doesn't matter. */}

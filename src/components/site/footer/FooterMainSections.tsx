@@ -1,81 +1,48 @@
 // @ts-nocheck
 /* eslint-disable */
-/* Desktop "الأقسام الرئيسية" column (two link lists). */
-export default function FooterMainSections() {
+import { MAIN_LINKS_FIRST_COLUMN } from "./footer-data";
+
+/* Desktop "الأقسام الرئيسية" column (two link lists, 3 + the rest). Title and
+   labels come from GET /layout/footer; the column order is the design's, not
+   the payload's — see MAIN_LINK_ORDER in ./footer-data. */
+export default function FooterMainSections({ main }) {
+  const first = main.links.slice(0, MAIN_LINKS_FIRST_COLUMN);
+  const second = main.links.slice(MAIN_LINKS_FIRST_COLUMN);
+
+  const item = (link, index) => (
+    <li className="mb-4" key={index}>
+      {" "}
+      <a
+        href={link.url}
+        className="text-white text-decoration-none small"
+      >
+        {" "}
+        <span>{link.label}</span>
+      </a>{" "}
+    </li>
+  );
+
   return (
     <div
       className="col col-lg-3 col-md-6 text-white"
       style={{ textAlign: "start" }}
     >
       {" "}
-      <h5
-        className="fw-bold mb-4 text-white"
-        data-i18n="footer_main_sections"
-      >
-        الأقسام الرئيسية
-      </h5>{" "}
+      <h5 className="fw-bold mb-4 text-white">{main.title}</h5>{" "}
       <div className="row">
         {" "}
         <div className="col col-lg-6">
           {" "}
           <ul className="list-unstyled footer-links">
             {" "}
-            <li className="mb-4">
-              {" "}
-              <a
-                href="/"
-                className="text-white text-decoration-none small"
-              >
-                {" "}
-                <span data-i18n="nav_home">الرئيسية</span>
-              </a>{" "}
-            </li>{" "}
-            <li className="mb-4">
-              {" "}
-              <a
-                href="/about"
-                className="text-white text-decoration-none small"
-              >
-                {" "}
-                <span data-i18n="nav_about">من نحن</span>
-              </a>{" "}
-            </li>{" "}
-            <li className="mb-4">
-              {" "}
-              <a
-                href="/team"
-                className="text-white text-decoration-none small"
-              >
-                {" "}
-                <span data-i18n="nav_team">الفريق</span>
-              </a>{" "}
-            </li>{" "}
+            {first.map(item)}{" "}
           </ul>{" "}
         </div>{" "}
         <div className="col-lg-6 main-links">
           {" "}
           <ul className="list-unstyled p-0 footer-links">
             {" "}
-            <li className="mb-4">
-              {" "}
-              <a
-                href="/creators"
-                className="text-white text-decoration-none small"
-              >
-                {" "}
-                <span data-i18n="nav_creators">صناع المحتوى</span>
-              </a>{" "}
-            </li>{" "}
-            <li className="mb-4">
-              {" "}
-              <a
-                href="/content"
-                className="text-white text-decoration-none small"
-              >
-                {" "}
-                <span data-i18n="nav_content">محتوانا</span>
-              </a>{" "}
-            </li>{" "}
+            {second.map(item)}{" "}
           </ul>{" "}
         </div>{" "}
       </div>{" "}

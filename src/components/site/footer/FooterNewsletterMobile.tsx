@@ -2,17 +2,14 @@
 /* eslint-disable */
 /* Mobile-only newsletter card shown above the dark footer. Rendered by
    SiteFooter, so it opens the footer on every page of the (main) group;
-   style.css keeps it `display: none` above 767.98px. */
-export default function FooterNewsletterMobile() {
+   style.css keeps it `display: none` above 767.98px. Same copy as the desktop
+   column — one `newsletter` block from GET /layout/footer feeds both. */
+export default function FooterNewsletterMobile({ newsletter }) {
   return (
     <div className="footer-newsletter-mobile">
       {" "}
-      <h5 className="footer-nl-title" data-i18n="footer_stay_updated">
-        ابقَ على اطلاع
-      </h5>{" "}
-      <p className="footer-nl-sub" data-i18n="footer_subscribe">
-        اشترك في نشرتنا الإخبارية ..
-      </p>{" "}
+      <h5 className="footer-nl-title">{newsletter.title}</h5>{" "}
+      <p className="footer-nl-sub">{newsletter.description}</p>{" "}
       <div className="custom-newsletter-input">
         {" "}
         <div className="newsletter-input-wrapper">
@@ -20,9 +17,8 @@ export default function FooterNewsletterMobile() {
           <i className="fa-solid fa-magnifying-glass"> </i>{" "}
           <input
             type="email"
-            placeholder="ادخل بريدك الالكتروني"
+            placeholder={newsletter.placeholder}
             className="font-18 fw-bold"
-            data-i18n-placeholder="footer_email_placeholder"
           />{" "}
         </div>{" "}
         <button className="rs-send">

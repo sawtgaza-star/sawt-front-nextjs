@@ -1,0 +1,124 @@
+/* Placeholders for the footer while GET /layout/footer is in flight.
+
+   Same idea as about-skeleton.css: the bars sit inside the REAL footer
+   wrappers — .footer-custom-bg, .footer-links-mobile, .custom-newsletter-input
+   … — so the space they hold is the space the content arrives into and the page
+   doesn't jump when the response lands.
+
+   Two tones, because the footer has two grounds: the dark card
+   (rgba(54, 65, 39, 1)) takes light bars, and the mobile newsletter card
+   (#EDEFEB, style.css ~8378) takes dark ones via .fsk-on-light.
+
+   Sizes mirror style.css: 40px social circle, ~44px newsletter input,
+   100px logo. Keep them in step if those change. */
+
+.fsk-line,
+.fsk-block,
+.fsk-circle {
+  display: block;
+  background: linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0.09) 25%,
+    rgba(255, 255, 255, 0.19) 37%,
+    rgba(255, 255, 255, 0.09) 63%
+  );
+  background-size: 400% 100%;
+  animation: fsk-shimmer 1.4s ease-in-out infinite;
+}
+
+/* On the light mobile newsletter card the same bars have to darken instead. */
+.fsk-on-light .fsk-line,
+.fsk-on-light .fsk-block,
+.fsk-on-light .fsk-circle {
+  background: linear-gradient(
+    90deg,
+    rgba(30, 30, 30, 0.08) 25%,
+    rgba(30, 30, 30, 0.16) 37%,
+    rgba(30, 30, 30, 0.08) 63%
+  );
+  background-size: 400% 100%;
+}
+
+.fsk-line {
+  height: 13px;
+  border-radius: 7px;
+  margin-bottom: 12px;
+}
+
+/* the column headings (h5, fw-bold mb-4) */
+.fsk-title {
+  height: 20px;
+  width: 55%;
+  border-radius: 8px;
+  margin-bottom: 24px;
+}
+
+/* one link in a footer list — sits inside the real <li>, which owns the gap */
+.fsk-link {
+  height: 12px;
+  margin-bottom: 0;
+}
+
+.fsk-logo {
+  width: 100px;
+  height: 42px;
+  border-radius: 8px;
+}
+
+/* .newsletter-input-wrapper is 80% wide with 10px radius */
+.fsk-input {
+  width: 80%;
+  height: 44px;
+  border-radius: 10px;
+}
+
+/* the paper-plane button next to it */
+.fsk-send {
+  width: 34px;
+  height: 34px;
+  border-radius: 8px;
+  flex: none;
+}
+
+/* .footer-social-icon is a 40px circle */
+.fsk-circle {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  flex: none;
+}
+
+.fsk-copyright {
+  height: 14px;
+  width: 220px;
+  max-width: 70%;
+  margin-bottom: 24px;
+}
+
+/* the copyright line is text-md-end on desktop, centred on mobile */
+.fsk-copyright {
+  margin-inline: auto;
+}
+@media (min-width: 768px) {
+  .fsk-copyright {
+    margin-inline-start: auto;
+    margin-inline-end: 0;
+  }
+}
+
+@keyframes fsk-shimmer {
+  0% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0 50%;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .fsk-line,
+  .fsk-block,
+  .fsk-circle {
+    animation: none;
+  }
+}
