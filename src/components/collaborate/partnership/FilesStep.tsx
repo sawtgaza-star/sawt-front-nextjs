@@ -11,6 +11,8 @@ export type FilesFields = {
   fileError: "type" | "size" | null;
 };
 
+/* Nothing on this step is required: the company profile and the extra notes
+   are both optional, to the API as well. */
 export default function FilesStep({
   values,
   onChange,

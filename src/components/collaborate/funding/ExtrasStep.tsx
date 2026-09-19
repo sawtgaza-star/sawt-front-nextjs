@@ -12,12 +12,18 @@ export type ExtrasFields = {
   fileError: "type" | "size" | null;
 };
 
+/* The conditions are required; the company profile and the extra notes stay
+   optional, as they are to the API. */
+export type ExtrasErrors = { terms?: string };
+
 export default function ExtrasStep({
   values,
+  errors,
   onChange,
   onFile,
 }: {
   values: ExtrasFields;
+  errors: ExtrasErrors;
   onChange: (patch: Partial<ExtrasFields>) => void;
   onFile: (file: File | undefined) => void;
 }) {
@@ -31,7 +37,7 @@ export default function ExtrasStep({
         </label>
         <textarea
           id="collab-fu-terms"
-          className="cl-textarea"
+          className={"cl-textarea" + (errors.terms ? " is-invalid" : "")}
           maxLength={NOTE_MAX}
           placeholder="نوع الظهور المطلوب، شراكة إعلامية حصرية.."
           data-i18n-placeholder="collab_fu_f_terms_ph"
@@ -42,6 +48,7 @@ export default function ExtrasStep({
         <p className="cl-counter">
           {NOTE_MAX}/{values.terms.length}
         </p>
+        {errors.terms && <p className="cl-error">{errors.terms}</p>}
       </div>
 
       <div className="cl-field">

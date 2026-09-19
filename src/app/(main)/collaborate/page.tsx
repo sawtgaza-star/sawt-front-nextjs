@@ -2,11 +2,12 @@ import type { Metadata } from "next";
 import "@/styles/creators.css";
 import "@/styles/collaborate.css";
 import LegacyInit from "@/components/LegacyInit";
-import CollaborateHero from "@/components/collaborate/CollaborateHero";
-import CollaborateTypes from "@/components/collaborate/CollaborateTypes";
+import CollaborateContent from "@/components/collaborate/CollaborateContent";
 
 /* /collaborate — تعاون معنا. Where the home hero's "تعاون معنا" button lands.
-   Server Component; only the type picker is a client leaf.
+   Server Component around one client boundary: <CollaborateContent /> makes
+   the page's single request (GET /pages/collaborate) and renders the hero and
+   the type picker from it.
    creators.css supplies the breadcrumb hero (cr-header/cr-hero) and the shared
    section heading (cr-section-head / cr-highlight). */
 export const metadata: Metadata = {
@@ -19,10 +20,7 @@ export default function Page() {
   return (
     <div className="cl-page">
       <LegacyInit page="collaborate" />
-      <CollaborateHero />
-      <main>
-        <CollaborateTypes />
-      </main>
+      <CollaborateContent />
     </div>
   );
 }

@@ -68,7 +68,10 @@ export class ApiError extends Error {
 
 export type RequestOptions = {
   method?: "GET" | "POST" | "PUT" | "PATCH" | "DELETE";
-  /** JSON request body. */
+  /** JSON request body — or a FormData, for an endpoint that takes a file
+      upload (the collaboration applications). A FormData is passed to fetch
+      as it is and its Content-Type is left unset, so the browser writes the
+      multipart boundary itself. */
   body?: unknown;
   /** Bearer token to send, if any. */
   token?: string | null;
@@ -84,8 +87,10 @@ export async function apiFetch<T>(
   path: string,
   { method = "GET", body, token, signal }: RequestOptions = {},
 ): Promise<T> {
+  const multipart = typeof FormData !== "undefined" && body instanceof FormData;
+
   const headers: Record<string, string> = { Accept: "application/json" };
-  if (body !== undefined) headers["Content-Type"] = "application/json";
+  if (body !== undefined && !multipart) headers["Content-Type"] = "application/json";
   if (token) headers.Authorization = `Bearer ${token}`;
 
   let response: Response;
@@ -93,7 +98,8 @@ export async function apiFetch<T>(
     response = await fetch(`${API_BASE_URL}${path}`, {
       method,
       headers,
-      body: body === undefined ? undefined : JSON.stringify(body),
+      body:
+        body === undefined ? undefined : multipart ? (body as FormData) : JSON.stringify(body),
       signal,
     });
   } catch (cause) {
