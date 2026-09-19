@@ -2,8 +2,7 @@ import type { Metadata } from "next";
 import { Cairo } from "next/font/google";
 import "@/styles/media.css";
 import LegacyInit from "@/components/LegacyInit";
-import MediaWorksHero from "@/components/media/MediaWorksHero";
-import MediaWorksBrowser from "@/components/media/MediaWorksBrowser";
+import MediaWorksPageContent from "@/components/media/MediaWorksPageContent";
 
 /* Same display face as /media — headings and the banner headline are Cairo,
    scoped to the page through the variable media.css reads. */
@@ -21,16 +20,15 @@ export const metadata: Metadata = {
 };
 
 /* /media/works — the full portfolio behind "شاهد المزيد من اعمالنا". Server
-   Component; the banner brings MediaNav, the filterable grid is the one client
-   island, and SiteFooter comes from the (main) layout. */
+   Component; the banner, the filter sidebar and the grid all come from
+   GET /pages/media/works, fetched in the browser by <MediaWorksPageContent />
+   (static export: see lib/api/use-media-works). SiteFooter comes from the
+   (main) layout. */
 export default function Page() {
   return (
     <div className={"sm-page " + cairo.variable}>
       <LegacyInit page="media" />
-      <MediaWorksHero />
-      <main>
-        <MediaWorksBrowser />
-      </main>
+      <MediaWorksPageContent />
     </div>
   );
 }

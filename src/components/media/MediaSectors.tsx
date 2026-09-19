@@ -1,47 +1,52 @@
+import { localized } from "@/lib/api/pages";
+import { localizedList, sortItems, type MediaAudiencesContent } from "@/lib/api/media-page";
 import MediaSectionHead from "./MediaSectionHead";
 import { IconSectorBadge } from "./media-icons";
-import { MEDIA_SECTORS } from "./media-sectors-data";
 
-/* "من نخدم ؟" — three audience cards side by side; the middle one is drawn
-   with the orange top rule the design highlights it with. */
-export default function MediaSectors() {
+/* "من نخدم ؟" — the audience cards side by side; the middle one is drawn with
+   the orange top rule the design highlights it with. Which card that is comes
+   from the position, not the payload: with the design's three cards it is the
+   second, and the rule stays on the middle of whatever the editor lists. */
+export default function MediaSectors({
+  data,
+  lang = "ar",
+}: {
+  data?: MediaAudiencesContent;
+  lang?: string;
+}) {
+  const items = sortItems(data?.items);
+  const featured = Math.floor(items.length / 2);
+
+  if (!data || !items.length) return null;
+
   return (
     <section className="sm-sectors">
       <div className="container">
         <MediaSectionHead
-          pill="القطاعات"
-          pillKey="sm_sectors_pill"
-          title="من نخدم ؟"
-          titleKey="sm_sectors_title"
-          sub="تخصص في ثلاثة قطاعات رئيسية نفهم احتياجاتها بعمق ونُقدم حلولاً إعلامية مُصمّمة لكل منها."
-          subKey="sm_sectors_sub"
+          pill={localized(data.eyebrow, lang)}
+          title={localized(data.title, lang)}
+          sub={localized(data.subtitle, lang)}
         />
 
         <div className="sm-sectors-grid">
-          {MEDIA_SECTORS.map((s) => (
+          {items.map((item, index) => (
             <article
-              className={"sm-sector" + (s.featured ? " sm-sector-featured" : "")}
-              key={s.key}
+              className={"sm-sector" + (index === featured ? " sm-sector-featured" : "")}
+              key={index}
             >
               <span className="sm-sector-icon" aria-hidden="true">
                 <IconSectorBadge />
               </span>
 
-              <h3 className="sm-sector-title" data-i18n={s.titleKey}>
-                {s.title}
-              </h3>
-              <p className="sm-sector-tagline" data-i18n={s.taglineKey}>
-                {s.tagline}
-              </p>
-              <p className="sm-sector-desc" data-i18n={s.descKey}>
-                {s.desc}
-              </p>
+              <h3 className="sm-sector-title">{localized(item.title, lang)}</h3>
+              <p className="sm-sector-tagline">{localized(item.tagline, lang)}</p>
+              <p className="sm-sector-desc">{localized(item.description, lang)}</p>
 
               <ul className="sm-sector-points">
-                {s.points.map((p) => (
-                  <li key={p.key}>
+                {localizedList(item.bullets, lang).map((point, i) => (
+                  <li key={i}>
                     <i aria-hidden="true"></i>
-                    <span data-i18n={p.key}>{p.text}</span>
+                    <span>{point}</span>
                   </li>
                 ))}
               </ul>

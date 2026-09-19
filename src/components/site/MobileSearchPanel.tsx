@@ -1,8 +1,12 @@
 // @ts-nocheck
 /* eslint-disable */
 /* Slide-down search panel — revealed by the phone header icon and, since the
-   desktop search field moved into the top bar, by that bar's search icon too. */
-export default function MobileSearchPanel() {
+   desktop search field moved into the top bar, by that bar's search icon too.
+
+   The placeholder is the API's `topbar.search_placeholder`, handed down from
+   SiteNav — "" until the response lands — so it carries no
+   data-i18n-placeholder any more. See ./navbar-data. */
+export default function MobileSearchPanel({ placeholder }) {
   return (
     <div className="mobile-search-panel" id="mobileSearchPanel">
       {" "}
@@ -36,8 +40,7 @@ export default function MobileSearchPanel() {
           type="search"
           className="form-control mobile-search-input"
           id="mobileSearchInput"
-          placeholder="ابحث هنا..."
-          data-i18n-placeholder="search_placeholder"
+          placeholder={placeholder}
           aria-label="بحث"
         />{" "}
         <button

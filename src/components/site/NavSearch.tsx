@@ -14,14 +14,19 @@
 
    Strings come from tr(), not data-i18n: React re-renders this on every
    toggle, which would put the Arabic fallback back over what
-   applyTranslations() had written into the placeholder. See lib/use-lang.ts. */
+   applyTranslations() had written into the placeholder. See lib/use-lang.ts.
+
+   The placeholder itself is no longer one of them — it is the API's
+   `topbar.search_placeholder`, handed down from SiteNav, and is "" until the
+   response lands. Only the labels the payload does not carry still come from
+   the dictionary. */
 
 import { useEffect, useRef, useState } from "react";
 import { IconNavSearch } from "@/components/ui/icons";
 import { useLang } from "@/lib/use-lang";
 import "@/styles/nav-search.css";
 
-export default function NavSearch() {
+export default function NavSearch({ placeholder }: { placeholder: string }) {
   const [open, setOpen] = useState(false);
   const boxRef = useRef<HTMLDivElement | null>(null);
   const inputRef = useRef<HTMLInputElement | null>(null);
@@ -70,7 +75,7 @@ export default function NavSearch() {
         ref={inputRef}
         type="text"
         className="nav-search-field search-input"
-        placeholder={tr("search_placeholder")}
+        placeholder={placeholder}
         aria-label={tr("nav_search")}
         aria-hidden={!open}
         tabIndex={open ? 0 : -1}

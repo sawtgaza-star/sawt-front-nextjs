@@ -3,6 +3,7 @@
 // @ts-nocheck
 "use client";
 import { t, translations } from "./translations";
+import { apiMessage } from "./api/messages";
 
 export function initHomeInline() {
   if ((window as any).__initHomeInline) return; (window as any).__initHomeInline = true;
@@ -27,7 +28,6 @@ export function initHomeInline() {
         const overlay = document.getElementById("joinModal");
         if (!overlay) return;
 
-        const openBtn = document.getElementById("openJoinModal");
         const closeBtn = document.getElementById("joinModalClose");
         const nextBtn = document.getElementById("joinNext");
         const prevBtn = document.getElementById("joinPrev");
@@ -102,14 +102,19 @@ export function initHomeInline() {
           overlay.setAttribute("aria-hidden", "false");
           document.body.style.overflow = "hidden";
           overlay.querySelectorAll(".join-field").forEach(clearError);
+          clearSubmitError();
           current = 1;
           render();
         }
 
+        /* Dismissing the modal drops what was typed: "الغاء" on step 1 lands
+           here, and so do the ×, Escape and a click on the backdrop — the next
+           visitor to open it starts on an empty step 1 either way. */
         function closeModal() {
           overlay.classList.remove("is-open");
           overlay.setAttribute("aria-hidden", "true");
           document.body.style.overflow = "";
+          resetJoinForm();
         }
 
         // ---------- Step validation ----------
@@ -204,12 +209,300 @@ export function initHomeInline() {
             current += 1;
             render();
           } else {
-            // submit
-            showPane("done");
-            steps.forEach((s) => s.classList.add("is-done"));
-            document.querySelector(".join-modal-foot").style.display = "none";
+            submit();
           }
         }
+
+        // ---------- Submit: POST /pages/creators/join ----------
+
+        /* The chips carry the design's Arabic wording; the API wants a slug
+           per content type. Keyed on the i18n key so the map survives a copy
+           change and works in either language. */
+        const CONTENT_TYPES = {
+          jm_cat_other: "other",
+          jm_cat_culture: "culture",
+          jm_cat_politics: "politics",
+          jm_cat_art: "art",
+          jm_cat_tech: "technology",
+          jm_cat_social: "social",
+          jm_cat_comedy: "comedy",
+          jm_cat_news: "news",
+          jm_cat_health: "health",
+          jm_cat_sport: "sports",
+        };
+
+        /* Laravel's field names -> the input the modal calls that field, so a
+           rejected value is marked under its own box. The socials rows are
+           indexed (socials.0.url) and handled per row in showSubmitError. */
+        const ERROR_FIELDS = {
+          full_name: "fullname",
+          phone: "phone",
+          country_code: "phone",
+          email: "email",
+          content_types: "followers",
+          followers_count: "followers",
+          content_bio: "about",
+          notes: "notes",
+        };
+
+        /* The row's <option> for X is value="x" — the legacy JS keys the row
+           icon off it (fa-x-twitter) so it must not change — but the API's
+           platform list still calls it "twitter" and rejects "x". */
+        const PLATFORMS = { x: "twitter" };
+
+        /* What the markup ships with — read once, before anyone has touched
+           the modal, so a sent application can be cleared back to it. */
+        const INITIAL_CHIPS = Array.from(
+          overlay.querySelectorAll(".join-chip.is-selected"),
+        ).map((chip) => chip.dataset.i18n);
+        const INITIAL_SOCIAL_ROWS =
+          overlay.querySelectorAll(".join-social-row").length;
+
+        /* The rows behind the `socials` array of the last submission, in the
+           order the API sees them. */
+        let sentSocialRows = [];
+
+        function collectJoinForm() {
+          const val = function (name) {
+            const el = form.querySelector('[name="' + name + '"]');
+            return el ? el.value.trim() : "";
+          };
+
+          const contentTypes = Array.from(
+            overlay.querySelectorAll(".join-chip.is-selected"),
+          ).map((chip) => CONTENT_TYPES[chip.dataset.i18n] || chip.dataset.i18n);
+
+          const socials = [];
+          /* An empty row is not sent, so socials[0] is not necessarily the
+             first row on screen — and the API names a rejected link by its
+             index in what it received (socials.0.url). Keep the rows in the
+             same order, so showSubmitError can find the box to mark. */
+          sentSocialRows = [];
+          overlay.querySelectorAll(".join-social-row").forEach(function (row) {
+            const link = row.querySelector(".join-link-wrap input");
+            const select = row.querySelector(".join-platform-select");
+            const url = link ? link.value.trim() : "";
+            if (!url) return;
+            const platform = select ? select.value : "";
+            socials.push({ platform: PLATFORMS[platform] || platform, url: url });
+            sentSocialRows.push(row);
+          });
+
+          return {
+            full_name: val("fullname"),
+            phone: val("phone"),
+            country_code:
+              (countryCode && countryCode.textContent.trim()) ||
+              (countrySelect && countrySelect.value) ||
+              "+970",
+            email: val("email"),
+            content_types: contentTypes,
+            followers_count: Number(val("followers")) || 0,
+            content_bio: val("about"),
+            socials: socials,
+            notes: val("notes"),
+          };
+        }
+
+        let sending = false;
+        /* Set once the API has accepted the application: the footer is gone
+           and the success pane is up, so the button must not be re-labelled. */
+        let sent = false;
+
+        /* The button locks while the request is in flight — a double click was
+           two applications otherwise. Everything else about the modal stays
+           where it is: only the last step's "تسليم الطلب" now talks to the
+           API, and the success pane is shown when the API says so rather than
+           unconditionally. */
+        function submit() {
+          if (sending) return;
+          sending = true;
+          nextBtn.disabled = true;
+          nextLabel.textContent = t("jm_sending", "جاري الإرسال...");
+          clearSubmitError();
+
+          import("./api/creators")
+            .then((mod) => mod.submitCreatorJoin(collectJoinForm()))
+            .then(function (result) {
+              showJoinSuccess(result && result.message);
+            })
+            .catch(function (err) {
+              showSubmitError(err);
+            })
+            .then(function () {
+              sending = false;
+              nextBtn.disabled = false;
+              /* Re-label from the step now on screen rather than restoring
+                 what the button said before: a rejection may have walked the
+                 modal back to the step the API complained about, where it
+                 reads "التالي" and not "تسليم الطلب". */
+              if (!sent) render();
+            });
+        }
+
+        function showJoinSuccess(message) {
+          sent = true;
+          const text = overlay.querySelector(".join-success-text");
+          if (text && message) {
+            /* the server's wording wins over the built-in copy — and loses the
+               i18n key with it, so applyTranslations() can't overwrite what
+               the server just said on the next language toggle */
+            text.removeAttribute("data-i18n");
+            text.textContent = apiMessage(message) || message;
+          }
+          showPane("done");
+          steps.forEach((s) => s.classList.add("is-done"));
+          document.querySelector(".join-modal-foot").style.display = "none";
+          resetJoinForm();
+        }
+
+        /* The application is in, so the modal must not still be holding it:
+           the next visitor to open it starts on an empty step 1.
+
+           form.reset() covers every input, textarea and <select> — including
+           the ones in rows added at runtime — but not the chips (they are
+           buttons), not the rows themselves, and not the two custom dropdowns
+           built over the country and platform selects. Those are re-synced by
+           dispatching the change event they already listen for, rather than by
+           reaching into the markup they generate. */
+        function resetJoinForm() {
+          form.reset();
+
+          Array.from(socialList.querySelectorAll(".join-social-row")).forEach(
+            function (row, index) {
+              if (index >= INITIAL_SOCIAL_ROWS) {
+                row.remove();
+                return;
+              }
+              const select = row.querySelector(".join-platform-select");
+              if (select) select.dispatchEvent(new Event("change"));
+            },
+          );
+
+          overlay.querySelectorAll(".join-chip").forEach(function (chip) {
+            chip.classList.toggle(
+              "is-selected",
+              INITIAL_CHIPS.indexOf(chip.dataset.i18n) !== -1,
+            );
+          });
+
+          if (countrySelect) countrySelect.dispatchEvent(new Event("change"));
+
+          overlay.querySelectorAll(".join-field").forEach(clearError);
+          clearSubmitError();
+        }
+
+        /* Everything the last attempt left behind: the message under each box
+           it named, and the one under the list of links. */
+        function clearSubmitError() {
+          overlay.querySelectorAll(".join-field.has-error").forEach(clearError);
+          overlay
+            .querySelectorAll(".join-social-error")
+            .forEach((el) => el.remove());
+          overlay
+            .querySelectorAll(".join-social-row.has-error")
+            .forEach((row) => row.classList.remove("has-error"));
+        }
+
+        /* Whatever the API rejected, said under the box it is about — the
+           same red line the modal's own validation uses. Each message goes
+           through apiMessage(), so an Arabic server string is shown in English
+           when the site is (see lib/api/messages). */
+        function showSubmitError(err) {
+          const errors = (err && err.errors) || {};
+          clearSubmitError();
+
+          /* Every message the API returns goes under the box it is about —
+             the same place the modal's own validation puts "… مطلوب". What
+             it says about a link (socials.0.url) goes under the whole list of
+             them, below the last row, whatever the number of rows. */
+          const linkMessages = [];
+
+          Object.keys(errors).forEach(function (key) {
+            const message = apiMessage(errors[key][0]) || errors[key][0];
+
+            const social = /^socials\.(\d+)\./.exec(key);
+            if (social) {
+              /* the row that link was typed into — not the index-th row on
+                 screen, which the empty rows shift */
+              const index = Number(social[1]);
+              const row =
+                sentSocialRows[index] ||
+                overlay.querySelectorAll(".join-social-row")[index];
+              if (row && row.isConnected) row.classList.add("has-error");
+              if (linkMessages.indexOf(message) === -1) linkMessages.push(message);
+              return;
+            }
+
+            const name = ERROR_FIELDS[key];
+            const input = name && form.querySelector('[name="' + name + '"]');
+            if (input) setError(fieldOf(input), message);
+          });
+
+          /* one block under the whole list, below the last row, whatever the
+             number of rows and however many of them were rejected */
+          if (linkMessages.length) {
+            const line = document.createElement("span");
+            line.className = "join-field-error join-social-error";
+            linkMessages.forEach(function (message, index) {
+              if (index) line.appendChild(document.createElement("br"));
+              line.appendChild(document.createTextNode(message));
+            });
+            socialList.appendChild(line);
+          }
+
+          /* Nothing was marked: the failure names no field the modal shows —
+             an offline request, a 500, a rejection of the submission as a
+             whole. Say it under the last box of the step on screen, which is
+             where the reader is looking. */
+          if (!linkMessages.length && !overlay.querySelector(".join-field.has-error")) {
+            const pane = overlay.querySelector(
+              '.join-pane[data-pane="' + TOTAL + '"]',
+            );
+            const fields = pane ? pane.querySelectorAll(".join-field") : [];
+            setError(
+              fields[fields.length - 1],
+              apiMessage(err && err.message) ||
+                t("jm_err_submit", "تعذر إرسال الطلب. حاول مرة أخرى."),
+            );
+          }
+
+          /* Every message is now under the box it is about — but the panes are
+             display:none off the active step, so one about step 1 ("رقم الهاتف
+             مطلوب") was written behind step 3, which is where submitting
+             happens: the request ended and the modal said nothing.
+
+             validateStep does not make that unreachable — it only guards what
+             the modal itself checks, and the API rejects more than that (a
+             phone the format check refuses, an email already applied with).
+             So walk back to the earliest step it complained about. */
+          const errorPanes = Array.from(
+            overlay.querySelectorAll(".join-field.has-error, .join-social-error"),
+          )
+            .map(function (el) {
+              const pane = el.closest(".join-pane");
+              return pane ? Number(pane.dataset.pane) : NaN;
+            })
+            .filter(function (n) {
+              return n >= 1;
+            });
+
+          if (!errorPanes.length) return;
+
+          const firstPane = Math.min.apply(null, errorPanes);
+          if (firstPane !== current) {
+            current = firstPane;
+            render();
+          }
+
+          const selector =
+            '.join-pane[data-pane="' + current + '"] .join-field.has-error, ' +
+            '.join-pane[data-pane="' + current + '"] .join-social-error';
+          const box = overlay.querySelector(selector);
+          if (box) box.scrollIntoView({ block: "nearest", behavior: "smooth" });
+        }
+
+
 
         function goPrev() {
           if (current > 1) {
@@ -220,13 +513,19 @@ export function initHomeInline() {
           }
         }
 
-        if (openBtn) {
-          openBtn.addEventListener("click", function (e) {
-            e.preventDefault();
-            document.querySelector(".join-modal-foot").style.display = "";
-            openModal();
-          });
-        }
+        /* Delegated instead of bound to #openJoinModal directly: on the home
+           page that button lives in the JoinUs banner, which is rendered only
+           once GET /pages/home has answered — long after this one-time init
+           runs, so a direct binding would find nothing to bind to. /creators
+           and /team, where the banner is static, are unaffected. */
+        document.addEventListener("click", function (e) {
+          const target = e.target;
+          if (!target || !target.closest) return;
+          if (!target.closest("#openJoinModal")) return;
+          e.preventDefault();
+          document.querySelector(".join-modal-foot").style.display = "";
+          openModal();
+        });
         closeBtn.addEventListener("click", closeModal);
         nextBtn.addEventListener("click", goNext);
         prevBtn.addEventListener("click", goPrev);

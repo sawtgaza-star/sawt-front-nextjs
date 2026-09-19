@@ -43,6 +43,25 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       suppressHydrationWarning
     >
       <head suppressHydrationWarning>
+        {/* Cairo — the family every `font-family: "cairo"` in the legacy CSS
+            asks for. It sits here instead of as an @import at the top of
+            style.css / password.css because an @import only counts while it is
+            the first rule of its sheet: the CSS bundler concatenates a route
+            group into one file, so any stylesheet ordered ahead of style.css
+            killed the import silently and the site fell back to the browser
+            default. A <link> is immune to that, is discovered by the preload
+            scanner instead of only after style.css parses, and covers the auth
+            pages (password.css) from the same place. */}
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link
+          rel="preconnect"
+          href="https://fonts.gstatic.com"
+          crossOrigin="anonymous"
+        />
+        <link
+          rel="stylesheet"
+          href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&display=swap"
+        />
         <link
           rel="stylesheet"
           href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css"

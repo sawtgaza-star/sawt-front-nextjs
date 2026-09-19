@@ -120,11 +120,17 @@ function animateCount(el: HTMLElement, rafs: Set<number>) {
   rafs.add(requestAnimationFrame(frame));
 }
 
+/* One scan is not enough any more. This runs from <PageAnimations /> when the
+   route mounts, but the figures on the API-driven pages — /media's
+   "أرقام نفخر بها" above all — are rendered only once their payload lands, a
+   second or so later, and a scan that happened before that found nothing to
+   observe: the numbers simply sat at their final value.
+
+   So the figures are picked up as they appear. `data-sawt-counted` marks the
+   ones already claimed, so a rescan never double-counts one, and each still
+   animates exactly once, when it is scrolled into view. */
 export function initCounters(): () => void {
-  const els = Array.from(
-    document.querySelectorAll<HTMLElement>(COUNTER_SELECTOR)
-  ).filter((el) => !el.dataset.sawtCounted);
-  if (!els.length || typeof IntersectionObserver === "undefined") return () => {};
+  if (typeof IntersectionObserver === "undefined") return () => {};
 
   const rafs = new Set<number>();
   const io = new IntersectionObserver(
@@ -138,12 +144,35 @@ export function initCounters(): () => void {
     { threshold: 0.4 }
   );
 
-  for (const el of els) {
-    el.dataset.sawtCounted = "1";
-    io.observe(el);
-  }
+  const claim = () => {
+    for (const el of document.querySelectorAll<HTMLElement>(COUNTER_SELECTOR)) {
+      if (el.dataset.sawtCounted) continue;
+      el.dataset.sawtCounted = "1";
+      io.observe(el);
+    }
+  };
+  claim();
+
+  /* Coalesced to one pass per frame: the page mutates constantly (the hero
+     word alone remounts every 1.5s) and every one of those would otherwise
+     re-run the query. Only childList is watched — the sliders change classes,
+     not children, so their animations cost nothing here. */
+  let pending = 0;
+  const observer =
+    typeof MutationObserver === "undefined"
+      ? null
+      : new MutationObserver(() => {
+          if (pending) return;
+          pending = requestAnimationFrame(() => {
+            pending = 0;
+            claim();
+          });
+        });
+  observer?.observe(document.body, { childList: true, subtree: true });
 
   return () => {
+    observer?.disconnect();
+    if (pending) cancelAnimationFrame(pending);
     io.disconnect();
     rafs.forEach(cancelAnimationFrame);
   };

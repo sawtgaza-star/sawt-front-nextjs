@@ -1,7 +1,7 @@
 "use client";
 import { useEffect, useRef, useState } from "react";
 import NewsCard from "@/components/news/NewsCard";
-import { ALL_NEWS, type NewsItem } from "@/components/news/news-data";
+import type { NewsItem } from "@/components/news/news-data";
 
 /* "أخبار ذات صلة" — the strip that closes the article. Same olive band, mic
    watermarks, heading treatment and "عرض جميع الأخبار" link as the home
@@ -12,20 +12,20 @@ import { ALL_NEWS, type NewsItem } from "@/components/news/news-data";
    /stories/[id] renders the same strip with its own cards and headings — see
    the props below; every default is the news copy, so /news/[id] is
    unchanged. */
-/* six cards — three per view, so the nav buttons actually have somewhere to
-   scroll (three filled the track exactly and left both arrows disabled) */
-const RELATED = ALL_NEWS.slice(0, 6);
-
+/* The `*Key` fields are optional for the same reason NewsCard's are: copy that
+   came from the API is already in the reader's language, and a `data-i18n` on
+   text React owns is what makes applyTranslations() fight React. The built-in
+   headings below name their keys and keep the translator in charge. */
 type Heading = {
-  preKey: string;
+  preKey?: string;
   pre: string;
-  highlightKey: string;
+  highlightKey?: string;
   highlight: string;
-  subKey: string;
+  subKey?: string;
   sub: string;
 };
 
-type MoreLink = { href: string; key: string; label: string };
+type MoreLink = { href: string; key?: string; label: string };
 
 const NEWS_HEADING: Heading = {
   preKey: "nws_related_title_pre",
@@ -43,7 +43,7 @@ const NEWS_MORE: MoreLink = {
 };
 
 export default function RelatedNews({
-  items = RELATED,
+  items = [],
   heading = NEWS_HEADING,
   more = NEWS_MORE,
   children,
@@ -111,14 +111,22 @@ export default function RelatedNews({
     if (!el || e.pointerType !== "mouse" || e.button !== 0) return;
     drag.current = { startX: e.clientX, startScroll: el.scrollLeft, moved: false };
     setDragging(true);
-    el.setPointerCapture(e.pointerId);
+    /* NOT setPointerCapture(): while the track holds the capture the browser
+       retargets the compatibility mouse events — and therefore the click —
+       from the card's "اقرأ المزيد" link to the track itself, so a plain click
+       on a card opened nothing. The capture is taken below, once the pointer
+       has actually moved far enough to be a drag. */
   };
 
   const onPointerMove = (e: React.PointerEvent) => {
     const el = trackRef.current;
     if (!el || !dragging) return;
     const dx = e.clientX - drag.current.startX;
-    if (Math.abs(dx) > 6) drag.current.moved = true;
+    if (Math.abs(dx) > 6 && !drag.current.moved) {
+      drag.current.moved = true;
+      // a real drag: follow the pointer even if it leaves the track
+      el.setPointerCapture(e.pointerId);
+    }
     /* content follows the cursor — same formula in LTR and RTL */
     el.scrollLeft = drag.current.startScroll - dx;
   };

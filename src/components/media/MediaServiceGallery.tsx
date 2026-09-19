@@ -1,7 +1,6 @@
 "use client";
 import MediaProjectHead from "./MediaProjectHead";
 import SnapSliderPlacer from "./SnapSliderPlacer";
-import type { MediaServicePage } from "./media-service-page-data";
 import { useSnapSlider } from "./useSnapSlider";
 
 const TRACK_ID = "sm-sv-track";
@@ -14,19 +13,26 @@ const OPENING_SLIDE = 1;
    lives outside the container while the heading stays inside it.
 
    The track opens on the second frame, so the section is first seen with a
-   neighbour either side rather than parked at its own edge. */
+   neighbour either side rather than parked at its own edge.
+
+   Heading and stills are both the API's (`service.title`, `service.gallery`);
+   the strings arrive in the reader's language, so no `data-i18n` here. */
 export default function MediaServiceGallery({
-  service,
+  title,
+  gallery,
 }: {
-  service: MediaServicePage;
+  title: string;
+  gallery: string[];
 }) {
   const { trackRef, stops, active, activeSlide, onScroll, goTo, next, prev, dragProps } =
-    useSnapSlider(service.gallery.length, OPENING_SLIDE, true);
+    useSnapSlider(gallery.length, OPENING_SLIDE, true);
+
+  if (!gallery.length) return null;
 
   return (
     <section className="sm-sv-gallery">
       <div className="container">
-        <MediaProjectHead title={service.title} titleKey={service.titleKey} dot="orange" />
+        <MediaProjectHead title={title} dot="orange" />
       </div>
 
       <div
@@ -36,10 +42,10 @@ export default function MediaServiceGallery({
         onScroll={onScroll}
         {...dragProps}
       >
-        {service.gallery.map((src, i) => (
+        {gallery.map((src, i) => (
           <figure
             className={"sm-sv-shot" + (i === activeSlide ? " active" : "")}
-            key={src + i}
+            key={i}
           >
             <img src={src} alt="" draggable={false} />
           </figure>

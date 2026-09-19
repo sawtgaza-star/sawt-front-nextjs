@@ -1,7 +1,17 @@
 // @ts-nocheck
 /* eslint-disable */
-/* Divider + social icons + copyright row at the bottom of the dark footer. */
-export default function FooterBottomBar() {
+import { socialMark } from "../social-icons";
+
+/* Divider + social icons + copyright row at the bottom of the dark footer.
+   The icon row, the copyright line and the brand all come from
+   GET /layout/footer and nothing else — no built-in icons stand behind them
+   (see ./footer-data). A link the editor points off-site opens in a new tab.
+
+   WHICH accounts appear is the editor's; how each one is DRAWN is not — the
+   mark comes from the platform slug the payload sends (../social-icons, the
+   same marks the navbar's top bar uses). They paint in currentColor, so
+   `.footer-social-icon`'s white carries them against its olive circle. */
+export default function FooterBottomBar({ socials, copyright, brand }) {
   return (
     <>
       <hr
@@ -16,35 +26,29 @@ export default function FooterBottomBar() {
             {" "}
             <div className="d-flex gap-3 justify-content-md-end justify-content-center">
               {" "}
-              <a href="#" className="text-white footer-social-icon">
-                <i className="fab fa-instagram"></i>
-              </a>{" "}
-              <a href="#" className="text-white footer-social-icon">
-                <i className="fab fa-twitter"></i>
-              </a>{" "}
-              <a href="#" className="text-white footer-social-icon">
-                <i className="fab fa-telegram-plane"></i>
-              </a>{" "}
-              <a href="#" className="text-white footer-social-icon">
-                <i className="fab fa-facebook-f"></i>
-              </a>{" "}
-              <a href="#" className="text-white footer-social-icon">
-                <i className="fab fa-linkedin-in"></i>
-              </a>{" "}
+              {socials.map((social, index) => {
+                const Icon = socialMark(social.platform);
+                return (
+                  <a
+                    href={social.url}
+                    className="text-white footer-social-icon"
+                    key={index}
+                    target={social.external ? "_blank" : undefined}
+                    rel={social.external ? "noopener noreferrer" : undefined}
+                  >
+                    {Icon ? <Icon /> : <i className={social.icon}></i>}
+                  </a>
+                );
+              })}{" "}
             </div>{" "}
           </div>{" "}
           <div className="col-12 col-md-6 order-md-1 text-center text-md-end">
             {" "}
             <p className="mb-4 small footer-opyright">
               {" "}
-              <span data-i18n="footer_copyright">
-                © جميع الحقوق محفوظة. 2026
-              </span>{" "}
-              <span
-                className="text-white footer-brand-highlight"
-                data-i18n="footer_rights_brand"
-              >
-                SAWTGAZA
+              <span>{copyright}</span>{" "}
+              <span className="text-white footer-brand-highlight">
+                {brand}
               </span>{" "}
             </p>{" "}
           </div>{" "}

@@ -1,59 +1,84 @@
 "use client";
-import { useEffect, useState } from "react";
-import { initTranslate } from "@/lib/translations";
+import { useState } from "react";
+import { localized } from "@/lib/api/pages";
+import type { MediaWorkPage } from "@/lib/api/media-work";
 import MediaProjectAbout from "./MediaProjectAbout";
 import MediaProjectStages from "./MediaProjectStages";
 import MediaProjectReview from "./MediaProjectReview";
-import type { MediaProject } from "./media-project-data";
-
-const TABS = [
-  { id: "about", label: "عن المشروع", labelKey: "sm_pj_tab_about" },
-  { id: "stages", label: "المراحل", labelKey: "sm_pj_tab_stages" },
-  { id: "review", label: "رأي العميل", labelKey: "sm_pj_tab_review" },
-] as const;
-
-type TabId = (typeof TABS)[number]["id"];
 
 /* The segmented bar under the intro and the panel it switches. The page opens
-   on "عن المشروع", the tab the design shows selected.
+   on the first tab — "عن المشروع" in the design's order, which is the order the
+   payload lists them in.
 
-   The i18n dictionary is applied by mutating the DOM (see translations.ts), so
-   a panel React swaps in comes back in Arabic — re-run the swap over it. */
-export default function MediaProjectTabs({ project }: { project: MediaProject }) {
+   The labels are the API's `tabs` block and double as each panel's own
+   heading, so the two can never disagree. The old initTranslate() replay after
+   a switch is gone with them: a panel now renders in the reader's language
+   already, and re-running the DOM translator over React's own text is what
+   caused the removeChild crash on /about. */
+type TabId = "about" | "stages" | "client";
+
+export default function MediaProjectTabs({
+  page,
+  lang = "ar",
+}: {
+  page: MediaWorkPage;
+  lang?: string;
+}) {
+  const tabs = (
+    [
+      { id: "about" as const, tab: page.tabs?.about },
+      { id: "stages" as const, tab: page.tabs?.stages },
+      { id: "client" as const, tab: page.tabs?.client },
+    ]
+  )
+    .map((entry) => ({ id: entry.id, label: localized(entry.tab?.label, lang) }))
+    .filter((entry) => entry.label);
+
   const [active, setActive] = useState<TabId>("about");
+  const current = tabs.find((tab) => tab.id === active) ?? tabs[0];
 
-  useEffect(() => {
-    initTranslate();
-  }, [active]);
+  if (!tabs.length) return null;
 
   return (
     <section className="sm-pj-body">
       <div className="container">
         <div className="sm-pj-tabs" role="tablist">
-          {TABS.map((tab) => (
+          {tabs.map((tab) => (
             <button
               key={tab.id}
               type="button"
               role="tab"
               id={"sm-pj-tab-" + tab.id}
-              aria-selected={active === tab.id}
+              aria-selected={current?.id === tab.id}
               aria-controls={"sm-pj-panel-" + tab.id}
-              className={"sm-pj-tab" + (active === tab.id ? " active" : "")}
+              className={"sm-pj-tab" + (current?.id === tab.id ? " active" : "")}
               onClick={() => setActive(tab.id)}
             >
-              <span data-i18n={tab.labelKey}>{tab.label}</span>
+              <span>{tab.label}</span>
             </button>
           ))}
         </div>
 
         <div
           role="tabpanel"
-          id={"sm-pj-panel-" + active}
-          aria-labelledby={"sm-pj-tab-" + active}
+          id={"sm-pj-panel-" + current?.id}
+          aria-labelledby={"sm-pj-tab-" + current?.id}
         >
-          {active === "about" && <MediaProjectAbout project={project} />}
-          {active === "stages" && <MediaProjectStages project={project} />}
-          {active === "review" && <MediaProjectReview project={project} />}
+          {current?.id === "about" && (
+            <MediaProjectAbout
+              title={current.label}
+              data={page.about}
+              results={page.results}
+              gallery={page.gallery}
+              lang={lang}
+            />
+          )}
+          {current?.id === "stages" && (
+            <MediaProjectStages title={current.label} data={page.stages} lang={lang} />
+          )}
+          {current?.id === "client" && (
+            <MediaProjectReview title={current.label} data={page.client} lang={lang} />
+          )}
         </div>
       </div>
     </section>

@@ -3,12 +3,32 @@ import { useEffect, useRef, useState } from "react";
 import ContentCard from "@/components/creators/creator-content/ContentCard";
 import ReelViewer from "./ReelViewer";
 import type { Reel } from "./content-data";
+import { splitHeading } from "./content-text";
+import { MostWatchedTitleSkeleton } from "./ContentSkeleton";
 
 /* "الأكثر مشاهدة" row: heading + "رؤية المزيد" link, then a horizontal track
    that starts at the container's right edge (RTL) and bleeds off the left of
    the viewport. Circular arrows scroll it; a card's play button opens the
-   full-screen viewer — the same one the grid above opens. */
-export default function MostWatchedSection({ reels }: { reels: Reel[] }) {
+   full-screen viewer — the same one the grid above opens.
+
+   The heading and the link's label come from the API's `reels` block (one
+   block, so every row is titled with it — as the design has them). The accent
+   falls on the heading's last word; see splitHeading in ./content-text. The
+   reels themselves are still the bundled demo ones until the API serves its
+   own — see the note in content-data. */
+export default function MostWatchedSection({
+  reels,
+  title = "",
+  viewMore = "",
+  loading = false,
+}: {
+  reels: Reel[];
+  title?: string;
+  viewMore?: string;
+  /** The payload is still on its way — hold the heading's height with a bar. */
+  loading?: boolean;
+}) {
+  const [titleHead, titleTail] = splitHeading(title, 1);
   const trackRef = useRef<HTMLDivElement>(null);
   const [openIndex, setOpenIndex] = useState<number | null>(null);
   // grey out an arrow once the track can't scroll any further that way
@@ -110,15 +130,21 @@ export default function MostWatchedSection({ reels }: { reels: Reel[] }) {
     <section className="ct-mw-section">
       <div className="container">
         <div className="ct-mw-head">
-          <h2 className="ct-mw-title">
-            <span data-i18n="content_most_watched_pre">الأكثر</span>{" "}
-            <span className="cr-highlight" data-i18n="content_most_watched_hl">
-              مشاهدة
-            </span>
-          </h2>
-          <a className="ct-mw-more" href="#" data-i18n="content_view_more">
-            رؤية المزيد
-          </a>
+          {loading ? (
+            <MostWatchedTitleSkeleton />
+          ) : (
+            title && (
+              <h2 className="ct-mw-title">
+                <span>{titleHead}</span>{" "}
+                <span className="cr-highlight">{titleTail}</span>
+              </h2>
+            )
+          )}
+          {viewMore ? (
+            <a className="ct-mw-more" href="#">
+              {viewMore}
+            </a>
+          ) : null}
         </div>
       </div>
 

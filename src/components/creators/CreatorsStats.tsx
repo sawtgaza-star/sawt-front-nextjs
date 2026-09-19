@@ -1,71 +1,54 @@
-// @ts-nocheck
-"use client";
+import { localized } from "@/lib/api/pages";
+import type { CreatorsStatsContent } from "@/lib/api/creators-page";
+import { CreatorStatIcon } from "./creator-stat-icons";
+import { splitEnds, statFigure } from "./creators-text";
 
-import { IconTwoUsers,IconMoney, IconNews, IconUser, } from "../ui/icons";
+/* "إنجازات صناع محتوى صوت" — the API's `stats` block: four figures, each with
+   the icon its `key` picks (see ./creator-stat-icons).
 
+   The number is the editor's raw `value`, compacted the way the design writes
+   it (250000 → "250K"), with their own `prefix`/`suffix` around it — see
+   statFigure in ./creators-text. The heading's accents are the legacy
+   markup's: first word orange, the brand at the end in green. */
+export default function CreatorsStats({
+  data,
+  lang = "ar",
+}: {
+  data?: CreatorsStatsContent;
+  lang?: string;
+}) {
+  const title = localized(data?.title, lang);
+  const [lead, titleMid, brand] = splitEnds(title, 1, 1);
+  const subtitle = localized(data?.subtitle, lang);
+  const items = Array.isArray(data?.items) ? data.items : [];
 
-const STATS = [
+  if (!title && !subtitle && !items.length) return null;
 
-    {
-    icon: IconUser,
-    num: "+45",
-    label: "صانع محتوى نشط",
-    key: "creators_stat_active",
-  },
-    {
-    icon: IconNews,
-    num: "+500",
-    label: "إعلان تعاوني نُفّذ",
-    key: "creators_stat_ads",
-  }, 
-   {
-    icon: IconMoney,
-    num: "250K$+",
-    label: "دعم مالي وُزّع",
-    key: "creators_stat_funding",
-  },
-  {
-    icon: IconTwoUsers,
-    num: "+4M",
-    label: "شخص وصلهم المحتوى",
-    key: "creators_stat_reach",
-  },
-
-
-
-];
-
-export default function CreatorsStats() {
   return (
     <section className="cr-stats-section">
       <div className="container">
         <div className="cr-section-head">
-          <h2 className="cr-section-title">
-            <span
-              className="cr-title-orange"
-              data-i18n="creators_stats_title_pre"
-            >
-              انجازات
-            </span>{" "}
-            <span data-i18n="creators_stats_title_mid">صناع محتوى</span>{" "}
-            <span className="cr-highlight" data-i18n="brand_sawt">
-              صوت
-            </span>
-          </h2>
-          <p className="cr-section-sub" data-i18n="creators_stats_sub">
-            أرقام حقيقية تعكس قوة مجتمعنا
-          </p>
+          {title ? (
+            <h2 className="cr-section-title">
+              <span className="cr-title-orange">{lead}</span>{" "}
+              <span>{titleMid}</span>{" "}
+              <span className="cr-highlight">{brand}</span>
+            </h2>
+          ) : null}
+          {subtitle ? <p className="cr-section-sub">{subtitle}</p> : null}
         </div>
         <div className="cr-stats-grid">
-          {STATS.map((s) => (
-            <div className="cr-stat-card" key={s.key}>
+          {items.map((stat, index) => (
+            <div className="cr-stat-card" key={stat.key || index}>
               <div className="cr-stat-icon">
-                <i className='icon'>{s.icon()}</i>
+                <i className="icon">
+                  <CreatorStatIcon statKey={stat.key} />
+                </i>
               </div>
-              <div className="cr-stat-num">{s.num}</div>
-              <p className="cr-stat-label" data-i18n={s.key}>
-                {s.label}
-              </p>
+              <div className="cr-stat-num">
+                {statFigure(stat.value, stat.prefix, stat.suffix)}
+              </div>
+              <p className="cr-stat-label">{localized(stat.label, lang)}</p>
             </div>
           ))}
         </div>

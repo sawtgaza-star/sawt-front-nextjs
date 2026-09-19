@@ -13,12 +13,24 @@ export default function NewsArticleHead({ article }: { article: NewsArticle }) {
   return (
     <header className="nws-head">
       <div className="nws-tags">
-        <span className="nws-tag" data-i18n={article.categoryKey}>
-          {article.category}
-        </span>
-        <span className="nws-tag" data-i18n={article.sectionKey}>
-          {article.section}
-        </span>
+        {/* the API sends the article's categories as a list; the static
+            article has exactly the mock's two pills */}
+        {article.tags ? (
+          article.tags.map((tag, i) => (
+            <span className="nws-tag" key={tag + i}>
+              {tag}
+            </span>
+          ))
+        ) : (
+          <>
+            <span className="nws-tag" data-i18n={article.categoryKey}>
+              {article.category}
+            </span>
+            <span className="nws-tag" data-i18n={article.sectionKey}>
+              {article.section}
+            </span>
+          </>
+        )}
       </div>
 
       <h1 className="nws-title" data-i18n={article.titleKey}>

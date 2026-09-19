@@ -1,0 +1,102 @@
+/* Placeholders for the navbar while GET /layout/navbar is in flight.
+
+   Same idea as footer-skeleton.css, mirrored for a light ground: the bar sits
+   on white, so these bars darken instead of lightening.
+
+   The difference from the footer is that NOTHING here replaces a wrapper. The
+   bar's own structure — .nav-face, <nav class="navbar">, #mainNav, the pill
+   groups — is rendered from the first paint and only its TEXT is swapped for a
+   bar. That is not just cosmetic: legacy-main's initHeaderPin() lifts
+   .nav-face and .navbar out of <header> into a .header-bar wrapper, so those
+   two elements must be the same DOM nodes before and after the response lands
+   — React must patch them in place, never unmount and re-insert them.
+
+   Sizes mirror style.css: 60px logo, ~37px .nav-cta, ~34px .nav-pill.
+   Keep them in step if those change. */
+
+.nsk-line,
+.nsk-block,
+.nsk-circle,
+.nsk-logo,
+.nsk-cta,
+.nsk-navpill,
+.nsk-auth-btn,
+.nsk-lang {
+  display: inline-block;
+  vertical-align: middle;
+  background: linear-gradient(
+    90deg,
+    rgba(30, 30, 30, 0.07) 25%,
+    rgba(30, 30, 30, 0.15) 37%,
+    rgba(30, 30, 30, 0.07) 63%
+  );
+  background-size: 400% 100%;
+  animation: nsk-shimmer 1.4s ease-in-out infinite;
+  border-radius: 7px;
+}
+
+/* one line of bar text — a nav link, the social row's label, the copyright… */
+.nsk-line {
+  height: 13px;
+}
+
+/* the brand logo, <img height="60"> */
+.nsk-logo {
+  width: 108px;
+  height: 60px;
+  border-radius: 10px;
+}
+
+/* .nav-cta: 8px 18px padding around 16px text, fully rounded */
+.nsk-cta {
+  height: 37px;
+  border-radius: 100px;
+}
+
+/* .nav-pill: 7px 14px padding around 16px text */
+.nsk-navpill {
+  height: 34px;
+  border-radius: 100px;
+}
+
+/* the brand marks in the top bar's social row (.font-18) */
+.nsk-circle {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  margin-inline-start: 8px; /* matches the .ms-2 on the real links */
+}
+
+/* .register-btn a / .sign-in-btn a in the collapsed drawer: 6px 20px, r=25px */
+.nsk-auth-btn {
+  height: 31px;
+  border-radius: 25px;
+}
+
+/* the language toggle's label — "En" at 20px/600 */
+.nsk-lang {
+  width: 26px;
+  height: 16px;
+}
+
+@keyframes nsk-shimmer {
+  0% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0 50%;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .nsk-line,
+  .nsk-block,
+  .nsk-circle,
+  .nsk-logo,
+  .nsk-cta,
+  .nsk-navpill,
+  .nsk-auth-btn,
+  .nsk-lang {
+    animation: none;
+  }
+}

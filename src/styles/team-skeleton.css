@@ -1,0 +1,106 @@
+/* Placeholders for /team and /team/{id} while GET /pages/team is in flight.
+
+   Neither page carries a roster of its own any more (see components/team), so
+   without these the visitor gets the breadcrumb header and an empty section
+   until the response lands. The bars sit inside the REAL wrappers —
+   .team-filter, .team-grid, .team-members-row — so the layout they hold is the
+   layout the content arrives into and nothing jumps.
+
+   Same base classes as home-skeleton.css / about-skeleton.css / news-skeleton
+   .css / content-skeleton.css; only one of the five ever loads on a page.
+   Sizes mirror team.css: 1 / 1.12 card portrait, 14px radius, 44px pill. */
+
+/* `.sk-line-title` is in this group, not only in its own rule below: most of
+   the skeleton components pass it as the ONLY class (<Line className=
+   "sk-line-title" />), so without display + background here a title bar is an
+   inline span with a height that does nothing — invisible. */
+.sk-line-title,
+.sk-line,
+.sk-block {
+  display: block;
+  background: linear-gradient(90deg, #e9ecef 25%, #f5f7f9 37%, #e9ecef 63%);
+  background-size: 400% 100%;
+  animation: sk-shimmer 1.4s ease-in-out infinite;
+}
+
+.sk-line {
+  height: 14px;
+  border-radius: 7px;
+  margin-bottom: 12px;
+}
+
+.sk-line-title {
+  height: 28px;
+  border-radius: 10px;
+  margin-bottom: 22px;
+}
+
+/* The hero sits on the dark collage, where the light grey above would glare —
+   the same shimmer, dimmed into it. */
+.team-sk-hero .sk-line,
+.team-sk-hero .sk-line-title {
+  background: linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0.1) 25%,
+    rgba(255, 255, 255, 0.2) 37%,
+    rgba(255, 255, 255, 0.1) 63%
+  );
+  background-size: 400% 100%;
+}
+
+
+/* Centred, because the copy it stands in for is: `.cr-hero` / the hero
+   container is `text-align: center`, but a block with a max-width and no auto
+   margins still sits at the inline start — which in RTL is the right edge, not
+   where the title is. The bars inside need it too: they are blocks, not text,
+   so `text-align` does nothing for them. */
+.team-sk-hero {
+  max-width: 700px;
+  margin-inline: auto;
+}
+
+/* The bar lands on the title itself: `.cr-hero-title` is 24px/800 with an 18px
+   margin under it (creators.css), so the block the skeleton occupies is the
+   block the headline arrives into and nothing shifts on load. */
+.team-sk-hero .sk-line-title {
+  margin-inline: auto;
+  height: 29px;
+  margin-bottom: 18px;
+}
+
+/* One filter pill, the height .team-tab draws at (12px padding + 16px text). */
+.team-sk-pill {
+  height: 44px;
+  border-radius: 8px;
+  margin: 0;
+}
+
+/* One card of the roster grid: the portrait box of team.css, nothing else —
+   the name/role badge is painted over the photo, not under it. */
+.team-sk-card {
+  width: 100%;
+  aspect-ratio: 1 / 1.12;
+  border-radius: 14px;
+}
+
+/* The profile's portrait column — the photo is 110% wide and free-height, so
+   the placeholder takes a portrait box in its place. */
+.team-sk-portrait {
+  width: 100%;
+  aspect-ratio: 1 / 1.15;
+  border-radius: 18px;
+}
+
+/* Air between the profile's blocks (name/role → bio → button). */
+.team-sk-gap {
+  margin-top: 28px;
+}
+
+@keyframes sk-shimmer {
+  0% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0 50%;
+  }
+}

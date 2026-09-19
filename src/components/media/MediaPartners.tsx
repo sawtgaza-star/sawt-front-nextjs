@@ -1,34 +1,71 @@
+import { localized } from "@/lib/api/pages";
+import { sortItems, type MediaPartnersContent } from "@/lib/api/media-page";
 import MediaSectionHead from "./MediaSectionHead";
-import { GRADUATE_LOGOS } from "@/components/incubator/graduates-logos-data";
 
-/* "شركاء النجاح" — the same client logos the incubator strip carries, on the
-   site-wide automatic .marquee (its animation lives in style.css, which the
-   (main) layout already loads). */
-export default function MediaPartners() {
+/* "شركاء النجاح" — the client logos on the site-wide automatic .marquee (its
+   animation lives in style.css, which the (main) layout already loads). The
+   set is rendered twice so the CSS translate loops without a seam; the second
+   group is hidden from assistive tech.
+
+   The logos are the API's now, uploads and all, so a partner can carry a link
+   (`url`) — with none, the logo is just an image. */
+function Logos({
+  items,
+  hidden = false,
+}: {
+  items: { name?: string | null; logo_url?: string | null; url?: string | null }[];
+  hidden?: boolean;
+}) {
+  return (
+    <div className="marquee-group" aria-hidden={hidden || undefined}>
+      {items.map((partner, index) => {
+        const logo = <img src={partner.logo_url!} alt={partner.name || ""} />;
+        /* An unlinked partner stays a bare <img>, which is what
+           `.sm-partners-marquee .marquee-group img` sizes as a flex item; the
+           anchor around a linked one takes that role instead (media.css). */
+        return partner.url ? (
+          <a
+            href={partner.url}
+            key={index}
+            target="_blank"
+            rel="noreferrer"
+            tabIndex={hidden ? -1 : undefined}
+          >
+            {logo}
+          </a>
+        ) : (
+          <span key={index} style={{ display: "contents" }}>
+            {logo}
+          </span>
+        );
+      })}
+    </div>
+  );
+}
+
+export default function MediaPartners({
+  data,
+  lang = "ar",
+}: {
+  data?: MediaPartnersContent;
+  lang?: string;
+}) {
+  const items = sortItems(data?.items).filter((partner) => partner.logo_url);
+  if (!data || !items.length) return null;
+
   return (
     <section className="sm-partners">
       <div className="container">
         <MediaSectionHead
-          pill="صوت ميديا  في ارقام"
-          pillKey="sm_stats_pill"
-          title="شركاء النجاح"
-          titleKey="sm_partners_title"
-          sub="أرقام تعكس ثقة عملائنا وجودة عملنا"
-          subKey="sm_stats_sub"
+          pill={localized(data.eyebrow, lang)}
+          title={localized(data.title, lang)}
+          sub={localized(data.subtitle, lang)}
         />
       </div>
 
       <div className="marquee sm-partners-marquee">
-        <div className="marquee-group">
-          {GRADUATE_LOGOS.map((logo) => (
-            <img src={logo.src} alt={logo.alt} key={logo.src} />
-          ))}
-        </div>
-        <div className="marquee-group" aria-hidden="true">
-          {GRADUATE_LOGOS.map((logo) => (
-            <img src={logo.src} alt={logo.alt} key={logo.src} />
-          ))}
-        </div>
+        <Logos items={items} />
+        <Logos items={items} hidden />
       </div>
     </section>
   );

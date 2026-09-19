@@ -1,7 +1,10 @@
 // @ts-nocheck
 /* eslint-disable */
-/* Desktop newsletter form + phone/email contact column. */
-export default function FooterNewsletterContact() {
+/* Desktop newsletter form + phone/email contact column. Both the newsletter
+   copy and the contact row come from GET /layout/footer and nothing else (see
+   ./footer-data). The form itself is still a no-op, as in the legacy site (see
+   the Roadmap in CLAUDE.md). */
+export default function FooterNewsletterContact({ newsletter, contact }) {
   return (
     <div
       className="col-lg-3 col-md-6 text-white"
@@ -10,17 +13,11 @@ export default function FooterNewsletterContact() {
       {" "}
       <div className="footer-newsletter-desktop">
         {" "}
-        <h5
-          className="fw-bold mb-4 text-white footer-stay-updated"
-          data-i18n="footer_stay_updated"
-        >
-          ابقَ على اطلاع
+        <h5 className="fw-bold mb-4 text-white footer-stay-updated">
+          {newsletter.title}
         </h5>{" "}
-        <p
-          className="mb-3 text-white font-16 footer-subscribe"
-          data-i18n="footer_subscribe"
-        >
-          اشترك في نشرتنا الإخبارية ..
+        <p className="mb-3 text-white font-16 footer-subscribe">
+          {newsletter.description}
         </p>{" "}
         <div className="custom-newsletter-input mb-4">
           {" "}
@@ -29,9 +26,8 @@ export default function FooterNewsletterContact() {
             <i className="fa-solid fa-magnifying-glass"> </i>{" "}
             <input
               type="email"
-              placeholder="ادخل بريدك الالكتروني"
+              placeholder={newsletter.placeholder}
               className="font-18 fw-bold"
-              data-i18n-placeholder="footer_email_placeholder"
             />{" "}
           </div>{" "}
           <button className="rs-send">
@@ -79,7 +75,18 @@ export default function FooterNewsletterContact() {
               ></path>{" "}
             </svg>{" "}
           </i>
-          +972567247177
+          {contact.phoneUrl ? (
+            <a
+              href={contact.phoneUrl}
+              className="text-white text-decoration-none"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              {contact.phone}
+            </a>
+          ) : (
+            contact.phone
+          )}
         </p>{" "}
         <p className="mb-0 font-16 d-flex align-items-center justify-content-start">
           {" "}
@@ -108,7 +115,18 @@ export default function FooterNewsletterContact() {
               </g>{" "}
             </svg>{" "}
           </i>
-          info@sawtgaza.com
+          {contact.emailUrl ? (
+            <a
+              href={contact.emailUrl}
+              className="text-white text-decoration-none"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              {contact.email}
+            </a>
+          ) : (
+            contact.email
+          )}
         </p>{" "}
       </div>{" "}
     </div>

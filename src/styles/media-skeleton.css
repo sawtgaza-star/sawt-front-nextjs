@@ -1,0 +1,97 @@
+/* Placeholders for /media while GET /pages/media is in flight.
+
+   Same idea as nav-skeleton.css: the page's own section wrappers are rendered
+   from the first paint (so the washes, the olive ground and the section
+   rhythm are already right) and only the content inside them is drawn as bars.
+   Sizes follow media.css — keep them in step if the sections change.
+
+   Server-rendered as well as client-rendered: `loading` starts true on both
+   sides, so this is what ships in media.html and what hydration expects. */
+
+.smk-line,
+.smk-title,
+.smk-pill,
+.smk-block,
+.smk-circle {
+  display: block;
+  background: linear-gradient(
+    90deg,
+    rgba(30, 30, 30, 0.06) 25%,
+    rgba(30, 30, 30, 0.13) 37%,
+    rgba(30, 30, 30, 0.06) 63%
+  );
+  background-size: 400% 100%;
+  animation: smk-shimmer 1.4s ease-in-out infinite;
+  border-radius: 8px;
+}
+
+@keyframes smk-shimmer {
+  0% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0 50%;
+  }
+}
+
+/* one line of body copy — .sm-head-sub, a card paragraph */
+.smk-line {
+  height: 14px;
+  margin-bottom: 12px;
+}
+
+/* a heading — .sm-head-title is 40px, the card titles 24px */
+.smk-title {
+  height: 30px;
+  margin-bottom: 18px;
+}
+
+/* .sm-pill: 8px 18px padding around 15px text, fully rounded */
+.smk-pill {
+  height: 34px;
+  width: 132px;
+  border-radius: 100px;
+  margin-bottom: 16px;
+}
+
+/* a photo, a card, a panel — .sm-svc and friends are 22px-rounded */
+.smk-block {
+  width: 100%;
+  border-radius: 22px;
+}
+
+.smk-circle {
+  border-radius: 50%;
+}
+
+/* A centred head (the default) centres its bars; `.sm-head-start` sections
+   keep theirs against the start edge, as the real heading sits. */
+.smk-head {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 32px;
+}
+.smk-head-start {
+  align-items: flex-start;
+}
+
+/* the section bodies: one row of cards, sized to what replaces them */
+.smk-row {
+  display: flex;
+  gap: 24px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+.smk-row > * {
+  flex: 1 1 260px;
+}
+
+@media (max-width: 991.98px) {
+  .smk-title {
+    height: 24px;
+  }
+  .smk-row {
+    gap: 16px;
+  }
+}

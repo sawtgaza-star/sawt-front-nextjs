@@ -6,10 +6,10 @@ export const metadata: Metadata = {
     "صناع الأثر.. تعرّف على الفريق خلف منصة صوت — التصميم والتسويق والإدارة والمونتاج.",
 };
 
-/* Metadata-only layout. page.tsx is a Client Component (it holds the active
-   filter), and Next.js reads `metadata` from Server Components only — so the
-   listing's tab title lives here. /team/[id] overrides it with its own
-   generateMetadata. Renders children untouched. */
+/* Metadata-only layout, kept from when page.tsx was a Client Component. It is
+   a Server Component again now (the filter state moved into <TeamListing />),
+   so this could move back — left here so /team and /team/[id] keep declaring
+   their titles in the same two places. Renders children untouched. */
 export default function TeamLayout({
   children,
 }: {

@@ -1,21 +1,25 @@
 import SiteNav from "@/components/site/SiteNav";
 import BreadcrumbHome from "@/components/site/BreadcrumbHome";
+import { NewsHeroSkeleton } from "./NewsSkeleton";
 
-type Crumb = { titleKey: string; title: string };
-type Parent = { href: string; titleKey: string; title: string };
-type Hero = { titleKey: string; title: string; descKey: string; desc: string };
+/* The key fields are optional: copy that comes from the API (GET /pages/blogs,
+   GET /pages/stories) is already in the reader's language, and a `data-i18n`
+   on text React owns is what makes applyTranslations() fight React — same rule
+   as NewsCard. */
+type Crumb = { titleKey?: string; title: string };
+type Parent = { href: string; titleKey?: string; title: string };
+type Hero = { titleKey?: string; title?: string; descKey?: string; desc?: string };
 
+/* The breadcrumb tail of the listing pages. This is the ONE piece of copy the
+   header still carries: neither payload sends a crumb for its own listing, so
+   it stays site chrome with a `data-i18n` key, exactly as the creators header
+   keeps "صناع المحتوى". Everything else below — the title and the standfirst —
+   comes from the API, and until it lands the hero shows bars rather than copy
+   that would be replaced a moment later. */
 const NEWS_PARENT: Parent = {
   href: "/news",
   titleKey: "news_breadcrumb",
   title: "أخر الأخبار",
-};
-
-const NEWS_HERO: Hero = {
-  titleKey: "news_hero_title",
-  title: "صناع الأثر..الفريق خلف منصة صوت",
-  descKey: "news_hero_desc",
-  desc: "صوت منصة إعلامية مستقلة تُوثّق الواقع وتحكي قصص الناس، لتكون صوتاً لمن لا صوت له.",
 };
 
 /* Breadcrumb hero for the news listing (/news). Reuses the about-page hero
@@ -25,23 +29,35 @@ const NEWS_HERO: Hero = {
    /news/[id] renders the same hero with `article` set: the listing crumb then
    becomes a link and the article's headline is the active tail.
 
-   `parent` / `hero` default to the news copy, so /news and /news/[id] are
-   untouched; /stories/[slug] passes its own (and `parent: null`, since the
-   stories live in a home-page section, not on a listing page of their own). */
+   `parent` defaults to the news crumb; /stories passes its own. `hero` has no
+   default — the pages pass the API's own title, description and collage, and
+   `loading` puts bars in their place until it lands.
+
+   The <header> shell is NOT conditional, for the same reason CreatorsHero's is
+   not: <SiteNav /> lives inside it and initHeaderPin() (lib/legacy-main) wraps
+   `.nav-face` + `.navbar` right after mount, so a header that appeared only
+   once the payload landed would bring its nav up too late to be wrapped. */
+const HERO_IMAGE = "/assets/images/WhoUs.jpg";
+
 export default function NewsHero({
   article,
   parent = NEWS_PARENT,
-  hero = NEWS_HERO,
+  hero,
+  image,
+  loading = false,
 }: {
   article?: Crumb;
   parent?: Parent | null;
   hero?: Hero;
+  image?: string | null;
+  /** The payload is still on its way — hold the hero's height with bars. */
+  loading?: boolean;
 }) {
   return (
     <header>
       <div
         className="about-header py-1"
-        style={{ background: 'url("/assets/images/WhoUs.jpg")' }}
+        style={{ background: `url("${image || HERO_IMAGE}")` }}
       >
         <SiteNav />
         <div className="container about-hero text-center text-white">
@@ -76,12 +92,22 @@ export default function NewsHero({
               )
             )}
           </nav>
-          <h1 className="about-hero-title" data-i18n={hero.titleKey}>
-            {hero.title}
-          </h1>
-          <p className="about-hero-desc" data-i18n={hero.descKey}>
-            {hero.desc}
-          </p>
+          {loading ? (
+            <NewsHeroSkeleton />
+          ) : (
+            <>
+              {hero?.title ? (
+                <h1 className="about-hero-title" data-i18n={hero.titleKey}>
+                  {hero.title}
+                </h1>
+              ) : null}
+              {hero?.desc ? (
+                <p className="about-hero-desc" data-i18n={hero.descKey}>
+                  {hero.desc}
+                </p>
+              ) : null}
+            </>
+          )}
         </div>
       </div>
     </header>

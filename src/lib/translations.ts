@@ -94,6 +94,8 @@ export const translations: any = {
     api_password_changed: "تم تغيير كلمة المرور بنجاح. يمكنك تسجيل الدخول الآن.",
     api_login_success: "تم تسجيل الدخول بنجاح.",
     api_resend_failed: "تعذر إعادة إرسال الرمز.",
+    api_join_received: "تم استلام طلب الانضمام، سنتواصل معك قريباً.",
+    api_consult_received: "تم استلام طلب الاستشارة، سنتواصل معك قريباً.",
     api_network: "تعذر الاتصال بالخادم. تحقق من اتصالك بالإنترنت.",
     api_unexpected: "حدث خطأ غير متوقع. حاول مرة أخرى.",
 
@@ -761,6 +763,8 @@ export const translations: any = {
     jm_prev: "السابق",
     jm_cancel: "الغاء",
     jm_submit: "تسليم الطلب",
+    jm_sending: "جاري الإرسال...",
+    jm_err_submit: "تعذر إرسال الطلب. حاول مرة أخرى.",
     jm_success_title: "تم إرسال طلبك بنجاح",
     jm_success_text: "شكراً لك! سنراجع طلبك ونتواصل معك قريباً.",
     leaders: "قادة",
@@ -1800,6 +1804,8 @@ export const translations: any = {
     sm_form_service: "الخدمة المطلوبة",
     sm_form_service_ph: "اختر الخدمة المطلوبة",
     sm_form_submit: "احجز استشارتك",
+    sm_form_sending: "جاري الإرسال...",
+    sm_form_toast_close: "إغلاق",
 
     sm_pkg_pill: "الباقات",
     sm_pkg_title: "جمعنا لك الخدمات المناسبة في باقة واحدة ,",
@@ -2129,6 +2135,8 @@ export const translations: any = {
     api_password_changed: "Your password has been changed. You can sign in now.",
     api_login_success: "You have been signed in successfully.",
     api_resend_failed: "Could not resend the code.",
+    api_join_received: "Your application has been received. We will be in touch soon.",
+    api_consult_received: "Your consultation request has been received. We will be in touch soon.",
     api_network: "Could not reach the server. Check your internet connection.",
     api_unexpected: "Something went wrong. Please try again.",
 
@@ -2805,6 +2813,8 @@ export const translations: any = {
     jm_prev: "Previous",
     jm_cancel: "Cancel",
     jm_submit: "Submit request",
+    jm_sending: "Sending...",
+    jm_err_submit: "The request could not be sent. Please try again.",
     jm_success_title: "Your request has been sent successfully",
     jm_success_text: "Thank you! We'll review your request and contact you soon.",
     story_title: "Our Story",
@@ -3857,6 +3867,8 @@ export const translations: any = {
     sm_form_service: "Service needed",
     sm_form_service_ph: "Choose the service you need",
     sm_form_submit: "Book your consultation",
+    sm_form_sending: "Sending…",
+    sm_form_toast_close: "Close",
 
     sm_pkg_pill: "Packages",
     sm_pkg_title: "We bundled the right services into one package,",

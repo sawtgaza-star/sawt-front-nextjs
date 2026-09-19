@@ -1,35 +1,19 @@
-// @ts-nocheck
-"use client";
-/* eslint-disable */
 import LegacyInit from "@/components/LegacyInit";
-import HeroHeader from "@/components/home/HeroHeader";
-import SoutSection from "@/components/home/SoutSection";
-import LatestNews from "@/components/home/LatestNews";
-import ContentCreators from "@/components/home/ContentCreators";
-import PlatformSections from "@/components/home/PlatformSections";
-import MidBanner from "@/components/home/MidBanner";
-import RealStories from "@/components/home/RealStories";
-import TeamSection from "@/components/home/TeamSection";
-import JoinUs from "@/components/home/JoinUs";
-import Reviews from "@/components/home/Reviews";
+import HomeContent from "@/components/home/HomeContent";
 import JoinModal from "@/components/site/JoinModal";
 
+/* Server Component — every section's content comes from GET /pages/home,
+   fetched in the browser by <HomeContent /> (static export: see
+   lib/api/use-home-page). Nothing on this page is hard-coded any more.
+
+   <JoinModal /> stays outside that boundary: it is the dialog legacy-home's
+   stepper drives, it carries no API copy, and it has to exist in the DOM
+   before initHomeInline() looks for `#joinModal` on mount. */
 export default function Page() {
   return (
     <>
       <LegacyInit page="home" />
-      <HeroHeader />
-      <main className="my-5">
-       <SoutSection />
-        <LatestNews />
-        <ContentCreators />
-        <PlatformSections />
-        <MidBanner />
-        <RealStories />
-        <TeamSection />
-        <JoinUs />
-        <Reviews />
-      </main>
+      <HomeContent />
       <JoinModal />
     </>
   );

@@ -1,34 +1,41 @@
+import { localized } from "@/lib/api/pages";
+import { localizedList } from "@/lib/api/media-page";
+import type { MediaServiceIncludesContent } from "@/lib/api/media-service";
 import { IconCircleCheck } from "@/components/ui/icons";
 import MediaProjectHead from "./MediaProjectHead";
-import type { MediaServicePage } from "./media-service-page-data";
 
-/* "ماذا تشمل الخدمة" — the service's own description as the paragraph (the
-   design reuses it here rather than writing a second one), then the three
-   points of the scope, each a chip with the design's olive circle-check. */
+/* "ماذا تشمل الخدمة" — the paragraph the design reuses from the service's own
+   description, then the points of the scope, each a chip with the design's
+   olive circle-check. Heading, paragraph and points are all the API's
+   `includes` block, so the section is skipped entirely when it is empty. */
 export default function MediaServiceIncludes({
-  service,
+  data,
+  lang = "ar",
 }: {
-  service: MediaServicePage;
+  data?: MediaServiceIncludesContent;
+  lang?: string;
 }) {
+  const title = localized(data?.title, lang);
+  const body = localized(data?.body, lang);
+  const items = localizedList(data?.items, lang);
+
+  if (!title && !body && !items.length) return null;
+
   return (
     <section className="sm-sv-includes">
-      <MediaProjectHead
-        title="ماذا تشمل الخدمة"
-        titleKey="sm_sv_includes"
-        dot="orange"
-      />
-      <p className="sm-sv-text" data-i18n={service.descKey}>
-        {service.desc}
-      </p>
+      {title ? <MediaProjectHead title={title} dot="orange" /> : null}
+      {body ? <p className="sm-sv-text">{body}</p> : null}
 
-      <div className="sm-sv-features">
-        {service.features.map((f) => (
-          <span className="sm-sv-feature" key={f.key}>
-            <IconCircleCheck />
-            <span data-i18n={f.key}>{f.text}</span>
-          </span>
-        ))}
-      </div>
+      {items.length ? (
+        <div className="sm-sv-features">
+          {items.map((item, index) => (
+            <span className="sm-sv-feature" key={index}>
+              <IconCircleCheck />
+              <span>{item}</span>
+            </span>
+          ))}
+        </div>
+      ) : null}
     </section>
   );
 }

@@ -1,5 +1,14 @@
 import { IconCalendarDays, IconChevronLeftSmall } from "@/components/ui/icons";
-import type { MediaWork } from "./media-works-data";
+
+/** One project of the works wall, already resolved to the current language. */
+export type WorkTile = {
+  imageUrl: string | null;
+  tag: string;
+  date: string;
+  title: string;
+  category: string;
+  href: string;
+};
 
 /* A project caption, laid over the bottom of its own tile in the works wall.
    It lives inside `.sm-works-shot`, so it drifts with the column instead of
@@ -11,33 +20,35 @@ export default function MediaWorksCard({
   work,
   duplicate,
 }: {
-  work: MediaWork;
+  work: WorkTile;
   duplicate?: boolean;
 }) {
   return (
     <article className="sm-works-card" aria-hidden={duplicate || undefined}>
       <div className="sm-works-card-tags">
-        <span className="sm-works-chip sm-works-chip-tag" data-i18n={work.tagKey}>
-          {work.tag}
-        </span>
-        <span className="sm-works-chip sm-works-chip-date">
-          <IconCalendarDays />
-          <span data-i18n={work.dateKey}>{work.date}</span>
-        </span>
+        {work.tag ? (
+          <span className="sm-works-chip sm-works-chip-tag">{work.tag}</span>
+        ) : null}
+        {work.date ? (
+          <span className="sm-works-chip sm-works-chip-date">
+            <IconCalendarDays />
+            <span>{work.date}</span>
+          </span>
+        ) : null}
       </div>
 
       <div className="sm-works-card-body">
         <a
           className="sm-works-card-go"
-          href={"/media/works/" + work.key}
+          href={work.href}
           aria-label="عرض المشروع"
           tabIndex={duplicate ? -1 : undefined}
         >
           <IconChevronLeftSmall />
         </a>
         <div className="sm-works-card-text">
-          <h3 data-i18n={work.titleKey}>{work.title}</h3>
-          <p data-i18n={work.subKey}>{work.sub}</p>
+          <h3>{work.title}</h3>
+          <p>{work.category}</p>
         </div>
       </div>
     </article>
