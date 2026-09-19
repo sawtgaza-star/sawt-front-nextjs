@@ -2,7 +2,7 @@
 import { useEffect, useRef, useState } from "react";
 import MediaServiceCard from "./MediaServiceCard";
 import MediaServicesRail from "./MediaServicesRail";
-import { MEDIA_SERVICES } from "./media-services-data";
+import type { ServiceCard } from "./MediaServiceCard";
 
 /* The five service cards as a dealt deck: one card on screen at a time, the
    next one rising from below and coming to rest on top of the one it replaces,
@@ -25,8 +25,8 @@ const INTERVAL = 2000;
 const SNAP = 70;
 const SLOP = 6;
 
-export default function MediaServicesSlider() {
-  const count = MEDIA_SERVICES.length;
+export default function MediaServicesSlider({ cards }: { cards: ServiceCard[] }) {
+  const count = cards.length;
   const [active, setActive] = useState(0);
   const [paused, setPaused] = useState(false);
   const [visible, setVisible] = useState(false);
@@ -35,6 +35,9 @@ export default function MediaServicesSlider() {
   const viewRef = useRef<HTMLDivElement>(null);
   const drag = useRef<{ id: number; y: number; moved: boolean } | null>(null);
   const swallowClick = useRef(false);
+  /* where the cursor was the last time it was seen over the section — see
+     onSectionPointerMove */
+  const pointer = useRef<{ x: number; y: number } | null>(null);
 
   useEffect(() => {
     const el = viewRef.current;
@@ -114,6 +117,25 @@ export default function MediaServicesSlider() {
     else if (dy >= SNAP) setActive((i) => Math.max(0, i - 1));
   };
 
+  /* Scrolling the page under a RESTING cursor fires pointermove all the same —
+     the element under the pointer changes, so the browser reports one at the
+     very same coordinates. That was enough to pause the deck the moment it
+     came into view, and nothing resumed it: mouseleave can't fire for a cursor
+     that never entered deliberately and never leaves. So a move only counts as
+     interaction once the coordinates actually change. */
+  const onSectionPointerMove = (e: React.PointerEvent<HTMLDivElement>) => {
+    if (e.pointerType === "touch") return;
+    const last = pointer.current;
+    pointer.current = { x: e.clientX, y: e.clientY };
+    if (!last || (last.x === e.clientX && last.y === e.clientY)) return;
+    setPaused(true);
+  };
+
+  const onSectionLeave = () => {
+    pointer.current = null;
+    setPaused(false);
+  };
+
   /* a drag that ended on a link/button must not also trigger it */
   const onClickCapture = (e: React.MouseEvent<HTMLDivElement>) => {
     if (!swallowClick.current) return;
@@ -123,20 +145,21 @@ export default function MediaServicesSlider() {
   };
 
   /* Paused by a pointer that MOVES over the section, not by one that merely
-     ends up on it: scrolling the section under a resting cursor counts as
-     mouseenter, so arriving here was enough to stop the deck before it dealt a
-     single card. Moving the mouse is the deliberate act; leaving resumes. */
+     ends up on it — see onSectionPointerMove for what "moves" has to mean for
+     that to hold. Moving the mouse is the deliberate act; leaving resumes. */
   return (
     <div
       className="sm-services-body"
-      onPointerMove={(e) => {
-        if (e.pointerType !== "touch") setPaused(true);
-      }}
-      onMouseLeave={() => setPaused(false)}
+      onPointerMove={onSectionPointerMove}
+      onMouseLeave={onSectionLeave}
       onFocusCapture={() => setPaused(true)}
       onBlurCapture={() => setPaused(false)}
     >
-      <MediaServicesRail active={active} onSelect={setActive} />
+      <MediaServicesRail
+        titles={cards.map((card) => card.title)}
+        active={active}
+        onSelect={setActive}
+      />
 
       <div
         className={
@@ -151,10 +174,10 @@ export default function MediaServicesSlider() {
         onPointerCancel={endDrag}
         onClickCapture={onClickCapture}
       >
-        {MEDIA_SERVICES.map((s, i) => (
+        {cards.map((card, i) => (
           <div
             className="sm-svc-slide"
-            key={s.key}
+            key={i}
             data-state={i === active ? "current" : i < active ? "prev" : "next"}
             data-adj={Math.abs(i - active) === 1 ? "1" : undefined}
             /* later cards stack over earlier ones: that is the deal order */
@@ -162,7 +185,7 @@ export default function MediaServicesSlider() {
             aria-hidden={i === active ? undefined : true}
             inert={i === active ? undefined : true}
           >
-            <MediaServiceCard service={s} reverse={i % 2 === 1} />
+            <MediaServiceCard service={card} reverse={i % 2 === 1} />
           </div>
         ))}
       </div>

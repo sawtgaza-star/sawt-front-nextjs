@@ -1,22 +1,24 @@
 "use client";
-import { HERO_FAN } from "./media-photos";
 import { useHeroRotation } from "./MediaHeroRotation";
 
 /* The orange half of "…صوت ميديا تقدم". It doesn't run a cycle of its own: it
-   names whichever card of the fan is in the focus seat, so the word and the
-   photo under it always change on the same tick (see MediaHeroRotation).
+   names the next of the hero's service phrases on every tick of the shared
+   clock, so the word and the deck under it always change together (see
+   MediaHeroRotation).
 
-   Each word carries its own data-i18n key, so a language switch mid-cycle
-   still translates: initTranslate() runs on the node that happens to be
-   mounted, and the next tick remounts an already-correct one. */
-export default function MediaHeroWord() {
-  const { focus } = useHeroRotation();
-  const w = HERO_FAN[focus];
+   The phrases come from GET /pages/media already in the current language, so
+   there is no `data-i18n` key here — a language switch re-renders the section
+   with the other half of the payload. */
+export default function MediaHeroWord({ phrases }: { phrases: string[] }) {
+  const { step } = useHeroRotation();
+
+  if (!phrases.length) return null;
+  const index = step % phrases.length;
 
   return (
     /* keyed so React swaps the node and the fade-up animation replays */
-    <span className="sm-hero-word" key={w.key} data-i18n={w.key}>
-      {w.text}
+    <span className="sm-hero-word" key={index}>
+      {phrases[index]}
     </span>
   );
 }

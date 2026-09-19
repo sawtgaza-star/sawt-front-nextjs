@@ -135,3 +135,55 @@ export async function fetchNavbar(signal?: AbortSignal): Promise<NavbarContent |
   if (!payload?.data) return null;
   return { ...payload.data, logo_url: assetUrl(payload.data.logo_url) };
 }
+
+/* =========================================================
+   GET /layout/media/navbar → { data: { site_name, logo_url, back_to_platform,
+                                        topbar, nav, actions } }
+
+   صوت ميديا's own bar — the reduced agency navbar /media renders instead of
+   SiteNav — on exactly the terms of the two endpoints above: every text field
+   is an { ar, en } pair, and the endpoint is the only source of the bar's
+   copy, so a field the editor empties renders empty.
+
+   What it does NOT carry is the site bar's furniture: no socials, no search,
+   no auth pair. The drawer's social row is the site's own and still comes
+   from /layout/navbar — see MediaNavMobile.
+   ========================================================= */
+
+/** The bar's one CTA (ابدأ مشروعك). It carries `path` where the site bar's
+    items carry `url`; neither is used — destinations are resolved from `key`
+    against the routes this app serves, see ROUTE_BY_KEY in
+    components/media/media-nav-data.ts. */
+export type MediaNavbarAction = {
+  key?: string;
+  label?: Localized;
+  path?: string | null;
+};
+
+export type MediaNavbarContent = {
+  site_name?: string | null;
+  logo_url?: string | null;
+  /** "العودة لمنصة صوت", the line above the nav card. */
+  back_to_platform?: NavbarItem;
+  topbar?: {
+    /** The label the toggle SHOWS — "En" while the site is Arabic, and back. */
+    language?: { label?: Localized };
+  };
+  nav?: {
+    /** The four section links: عن صوت ميديا / أعمالنا / خدماتنا / منهجيتنا.
+        They are anchors into /media and arrive with no url of their own. */
+    primary?: NavbarItem[];
+  };
+  actions?: { start_project?: MediaNavbarAction };
+};
+
+export async function fetchMediaNavbar(
+  signal?: AbortSignal,
+): Promise<MediaNavbarContent | null> {
+  const payload = await apiFetch<Envelope<MediaNavbarContent>>(
+    "/layout/media/navbar",
+    { signal },
+  );
+  if (!payload?.data) return null;
+  return { ...payload.data, logo_url: assetUrl(payload.data.logo_url) };
+}

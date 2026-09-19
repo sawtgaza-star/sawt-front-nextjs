@@ -1,0 +1,144 @@
+/* Placeholders for /creators while GET /pages/creators is in flight.
+
+   The page carries no copy of its own any more (see components/creators), so
+   without these the visitor gets the breadcrumb header and an empty page until
+   the response lands. The bars sit inside the REAL wrappers —
+   .cr-creators-grid, .cr-stats-grid, .cr-companies-grid, .cr-steps-grid,
+   .cr-faq-row — so the layout they hold is the layout the content arrives
+   into and nothing jumps.
+
+   Same base classes as home-skeleton.css / team-skeleton.css / news-skeleton
+   .css; only one of them ever loads on a page. Sizes mirror creators.css:
+   300px card, 16px stat radius, 14px company radius, 20px flow panel. */
+
+/* `.sk-line-title` is in this group, not only in its own rule below: most of
+   the skeleton components pass it as the ONLY class (<Line className=
+   "sk-line-title" />), so without display + background here a title bar is an
+   inline span with a height that does nothing — invisible. */
+.sk-line-title,
+.sk-line,
+.sk-block {
+  display: block;
+  background: linear-gradient(90deg, #e9ecef 25%, #f5f7f9 37%, #e9ecef 63%);
+  background-size: 400% 100%;
+  animation: sk-shimmer 1.4s ease-in-out infinite;
+}
+
+.sk-line {
+  height: 14px;
+  border-radius: 7px;
+  margin-bottom: 12px;
+}
+
+.sk-line-title {
+  height: 28px;
+  border-radius: 10px;
+  margin-bottom: 22px;
+}
+
+/* A section head: the title bar and its subtitle, centred like .cr-section-head. */
+.cr-sk-head {
+  text-align: center;
+  margin-bottom: 40px;
+}
+
+.cr-sk-head .sk-line,
+.cr-sk-head .sk-line-title {
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* The hero sits on the dark collage, where the light grey above would glare —
+   the same shimmer, dimmed into it. */
+
+/* Centred, because the copy it stands in for is: `.cr-hero` / the hero
+   container is `text-align: center`, but a block with a max-width and no auto
+   margins still sits at the inline start — which in RTL is the right edge, not
+   where the title is. The bars inside need it too: they are blocks, not text,
+   so `text-align` does nothing for them. */
+.cr-sk-hero {
+  max-width: 1020px;
+  margin-inline: auto;
+}
+
+.cr-sk-hero .sk-line,
+.cr-sk-hero .sk-line-title {
+  margin-inline: auto;
+}
+
+.cr-sk-hero .sk-line,
+.cr-sk-hero .sk-line-title {
+  background: linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0.1) 25%,
+    rgba(255, 255, 255, 0.2) 37%,
+    rgba(255, 255, 255, 0.1) 63%
+  );
+  background-size: 400% 100%;
+}
+
+/* One creator card — the 300px box .cr-creators-grid .main-container draws. */
+.cr-sk-card {
+  width: 100%;
+  height: 300px;
+  border-radius: 18px;
+}
+
+/* One stat card: icon + figure + label, at the height .cr-stat-card lands on. */
+.cr-sk-stat {
+  width: 100%;
+  height: 186px;
+  border-radius: 16px;
+}
+
+/* The join banner, at the height the real one holds. */
+.cr-sk-join {
+  width: 100%;
+  height: 300px;
+  border-radius: 20px;
+}
+
+/* One partner company card: logo + name + avatar row. */
+.cr-sk-company {
+  width: 100%;
+  height: 212px;
+  border-radius: 14px;
+}
+
+/* The collaboration diagram panel and the three step cards under it. */
+.cr-sk-flow {
+  width: 100%;
+  height: 260px;
+  border-radius: 20px;
+  margin-bottom: 34px;
+}
+
+.cr-sk-step {
+  width: 100%;
+  height: 150px;
+  border-radius: 16px;
+}
+
+/* The FAQ: a stack of closed question rows beside the image panel. */
+.cr-sk-faq-q {
+  width: 100%;
+  height: 64px;
+  border-radius: 12px;
+  margin-bottom: 14px;
+}
+
+.cr-sk-faq-visual {
+  width: 100%;
+  height: 100%;
+  min-height: 420px;
+  border-radius: 20px 20px 90px 20px;
+}
+
+@keyframes sk-shimmer {
+  0% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0 50%;
+  }
+}

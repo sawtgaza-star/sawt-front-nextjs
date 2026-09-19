@@ -1,31 +1,14 @@
-/* Page chrome shared by /stories and /stories/[id] — the breadcrumb parent,
-   the hero copy, and the headings of the "قصص ذات صلة" strip. Kept here so the
-   listing and the article page cannot drift apart. */
+/* The one piece of page chrome /stories and /stories/{uuid} still carry.
+
+   Everything else the two pages used to keep here — the hero copy, the "قصص
+   ذات صلة" headings and the "عرض جميع القصص" label — now comes from
+   GET /pages/stories, so holding a second copy of it here would only be
+   something to go stale. The breadcrumb tail stays because no payload sends a
+   crumb for the listing itself; it is site chrome, and keeps its `data-i18n`
+   key so the DOM translator owns it. */
 
 export const STORIES_PARENT = {
   href: "/stories",
   titleKey: "story_breadcrumb",
   title: "قصص النجاح",
-};
-
-export const STORIES_HERO = {
-  titleKey: "story_hero_title",
-  title: "قصص نجاح.. أصوات من غزة وصلت إلى العالم",
-  descKey: "story_hero_desc",
-  desc: "قصص حقيقية وثّقتها منصة صوت ونقلتها إلى العالم، لتكون صوتاً لمن لا صوت له.",
-};
-
-export const STORIES_RELATED_HEADING = {
-  preKey: "story_related_title_pre",
-  pre: "قصص ذات",
-  highlightKey: "story_related_title_highlight",
-  highlight: "صلة",
-  subKey: "story_related_sub",
-  sub: "قصص حقيقية من غزة نقلتها منصة صوت إلى العالم",
-};
-
-export const STORIES_RELATED_MORE = {
-  href: "/stories",
-  key: "view_all_stories",
-  label: "عرض جميع القصص",
 };

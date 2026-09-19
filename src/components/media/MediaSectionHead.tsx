@@ -1,48 +1,42 @@
 /* Every section on /media opens the same way: an orange outline pill, a bold
    heading and a muted one-liner. `titleHl` renders the trailing half of the
-   heading in olive green (the packages section is the only one that uses it). */
+   heading in olive green (the packages section is the only one that uses it —
+   see splitHighlight in ./media-page-view).
+
+   The strings arrive already resolved from GET /pages/media, so there are no
+   `data-i18n` keys here any more: the language toggle is served by `lang` at
+   the section above, not by the DOM translator. Anything the editor leaves
+   empty is not rendered rather than rendered blank. */
 export default function MediaSectionHead({
   pill,
-  pillKey,
   title,
-  titleKey,
   titleHl,
-  titleHlKey,
   sub,
-  subKey,
   align = "center",
 }: {
-  pill: string;
-  pillKey: string;
-  title: string;
-  titleKey: string;
+  pill?: string;
+  title?: string;
   titleHl?: string;
-  titleHlKey?: string;
   sub?: string;
-  subKey?: string;
   align?: "center" | "start";
 }) {
+  if (!pill && !title && !sub) return null;
+
   return (
     <div className={"sm-head" + (align === "start" ? " sm-head-start" : "")}>
-      <span className="sm-pill" data-i18n={pillKey}>
-        {pill}
-      </span>
-      <h2 className="sm-head-title">
-        <span data-i18n={titleKey}>{title}</span>
-        {titleHl ? (
-          <>
-            {" "}
-            <span className="sm-head-hl" data-i18n={titleHlKey}>
-              {titleHl}
-            </span>
-          </>
-        ) : null}
-      </h2>
-      {sub ? (
-        <p className="sm-head-sub" data-i18n={subKey}>
-          {sub}
-        </p>
+      {pill ? <span className="sm-pill">{pill}</span> : null}
+      {title ? (
+        <h2 className="sm-head-title">
+          <span>{title}</span>
+          {titleHl ? (
+            <>
+              {" "}
+              <span className="sm-head-hl">{titleHl}</span>
+            </>
+          ) : null}
+        </h2>
       ) : null}
+      {sub ? <p className="sm-head-sub">{sub}</p> : null}
     </div>
   );
 }

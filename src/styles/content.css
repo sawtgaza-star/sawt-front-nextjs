@@ -13,9 +13,18 @@
 
 /* ---------- Hero ---------- */
 /* the backdrop already carries the mock's decorations (the light curve, the
-   sound wave and the faint camera / phone glyphs) */
+   sound wave and the faint camera / phone glyphs).
+
+   It is read from `--ct-hero-bg` so the API's own backdrop can replace it:
+   this rule has to stay `!important` to beat creators.css's collage, and an
+   inline style cannot outrank that — but it can set the property the rule
+   reads. ContentHero sets it when `hero.image_url` arrives; the fallback below
+   is what the header shows until then. */
 .ct-header {
-  background-image: url("/assets/images/Hero background container.png") !important;
+  background-image: var(
+    --ct-hero-bg,
+    url("/assets/images/Hero background container.png")
+  ) !important;
   background-size: cover !important;
   background-position: center !important;
   background-repeat: no-repeat !important;
@@ -329,7 +338,10 @@ filter: drop-shadow(4px 4px 10px #FF7420) drop-shadow(0 4px 10px #000);
   /* creators.css whitens its hero and hides the title/desc on mobile — that is
      the creators LIST mock, not this page: keep the dark hero of the mockup */
   .ct-header.cr-header:not(.cr-detail-header) {
-    background-image: url("/assets/images/Hero background container.png") !important;
+    background-image: var(
+      --ct-hero-bg,
+      url("/assets/images/Hero background container.png")
+    ) !important;
     background-size: cover !important;
     background-position: center !important;
   }

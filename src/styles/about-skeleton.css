@@ -9,6 +9,11 @@
    Sizes here mirror style.css: 56px icon circle, 210px intro photo, 300px join
    banner. Keep them in step if those change. */
 
+/* `.sk-line-title` is in this group, not only in its own rule below: most of
+   the skeleton components pass it as the ONLY class (<Line className=
+   "sk-line-title" />), so without display + background here a title bar is an
+   inline span with a height that does nothing — invisible. */
+.sk-line-title,
 .sk-line,
 .sk-block,
 .sk-circle {

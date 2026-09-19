@@ -1,11 +1,25 @@
+import { localized } from "@/lib/api/pages";
+import { sortItems, type MediaMethodologyContent } from "@/lib/api/media-page";
 import MediaSectionHead from "./MediaSectionHead";
-import { MEDIA_PROCESS } from "./media-process-data";
 
-/* "رحلتنا معك" — the six-step timeline. One horizontal rail with a node per
+/* "رحلتنا معك" — the methodology timeline. One horizontal rail with a node per
    step; odd steps hang their card above the rail, even steps below, and each
    card carries its step number as a big translucent watermark. The track
-   scrolls sideways, so the run stays reachable on narrow screens. */
-export default function MediaProcess() {
+   scrolls sideways, so the run stays reachable on narrow screens.
+
+   The steps are the API's `methodology.steps`, in the editor's order — which
+   side of the rail a card hangs on follows from its position, as in the
+   design, so adding a seventh step keeps the zigzag going. */
+export default function MediaProcess({
+  data,
+  lang = "ar",
+}: {
+  data?: MediaMethodologyContent;
+  lang?: string;
+}) {
+  const steps = sortItems(data?.steps);
+  if (!data || !steps.length) return null;
+
   return (
     <section className="sm-process" id="sm-process">
       {/* the two radial washes the design lays over the olive-50 ground */}
@@ -14,12 +28,9 @@ export default function MediaProcess() {
 
       <div className="container">
         <MediaSectionHead
-          pill="منهجيتنا"
-          pillKey="sm_process_pill"
-          title="رحلتنا معك"
-          titleKey="sm_process_title"
-          sub="ست خطوات واضحة تضمن لك نتيجة استثنائية في كل مرة"
-          subKey="sm_process_sub"
+          pill={localized(data.eyebrow, lang)}
+          title={localized(data.title, lang)}
+          sub={localized(data.subtitle, lang)}
         />
       </div>
 
@@ -27,23 +38,19 @@ export default function MediaProcess() {
         <div className="sm-process-track">
           <span className="sm-process-line" aria-hidden="true"></span>
 
-          {MEDIA_PROCESS.map((s, i) => (
+          {steps.map((step, i) => (
             <div
               className={
                 "sm-process-step " + (i % 2 === 0 ? "sm-step-up" : "sm-step-down")
               }
-              key={s.key}
+              key={i}
             >
               <article className="sm-step-card">
                 <span className="sm-step-watermark" aria-hidden="true">
-                  {s.num}
+                  {step.number}
                 </span>
-                <h3 className="sm-step-title" data-i18n={s.titleKey}>
-                  {s.title}
-                </h3>
-                <p className="sm-step-desc" data-i18n={s.descKey}>
-                  {s.desc}
-                </p>
+                <h3 className="sm-step-title">{localized(step.title, lang)}</h3>
+                <p className="sm-step-desc">{localized(step.description, lang)}</p>
               </article>
 
               <span className="sm-step-node" aria-hidden="true"></span>

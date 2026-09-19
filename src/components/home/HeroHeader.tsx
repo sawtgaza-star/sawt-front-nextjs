@@ -1,38 +1,233 @@
 // @ts-nocheck
-"use client";
 /* eslint-disable */
 import SiteNav from "@/components/site/SiteNav";
+import { localized } from "@/lib/api/pages";
+import type { HomeHero, HomeStats } from "@/lib/api/home";
+import { bySortOrder } from "./home-text";
+import { StatIcon, STAT_KEYS_WITH_THOUSANDS } from "./stat-icons";
+import { HeroSlideSkeleton, StatsBarSkeleton } from "./HomeSkeleton";
 
-export default function HeroHeader() {
+/* Slides, copy and figures all come from the API's `hero` + `stats` blocks;
+   nothing here carries built-in text any more, and the `data-i18n` keys went
+   with it — the payload holds ar + en at once, so `lang` alone decides which
+   is shown. Leaving those keys on React-rendered copy is what made
+   applyTranslations() fight React on /about; see the note in AboutHero.
+
+   The <header> shell is NOT conditional, for the same reason it isn't there:
+   <SiteNav /> lives inside it and initHeaderPin() (lib/legacy-main) wraps
+   `.nav-face` + `.navbar` into `.header-bar` right after mount. A header that
+   appeared only once the payload landed would bring its nav up too late to be
+   wrapped. The carousel and the stats bar hold their height with bars until
+   then — and HomeContent re-starts the Bootstrap carousel afterwards, because
+   an empty `.carousel-inner` is nothing for it to cycle. */
+
+/** The four filled stars + one empty one, ahead of the trust line. */
+function HeroStars() {
   return (
     <>
-<header> <div className="main-header-wrapper py-1"> <SiteNav />  {/*  Mobile search panel (revealed by the mobile search icon)  */}  <div id="heroCarousel" className="carousel slide" data-bs-ride="carousel"> <div className="carousel-indicators"> <div> <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="0" className="active"></button> </div> <div> <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="1"></button> </div> <div> <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="2"></button> </div> </div> <div className="carousel-inner"> <div className="carousel-item position-relative active"> <div className="overlay"></div> <img src="/assets/images/heroSectionImg.jpeg" className="d-block w-100 carousel-img" alt="منصة صوت 1" /> <div className="carousel-caption-custom text-center"> <div className="container"> <div className="d-md-flex justify-content-center gap-1 mb-4 align-items-center"> <i className="fa-solid fa-star yellow-stars"></i> <i className="fa-solid fa-star yellow-stars"></i> <i className="fa-solid fa-star yellow-stars"></i> <i className="fa-solid fa-star yellow-stars"></i> <i className="fa-regular fa-star gray-star"></i> <p className="text-white hero-subtitle mb-0" data-i18n="hero_trust">
-                      ثقة آلاف المتابعين في منصة صوت غزة بصدق وتأثير
-                    </p> </div> <h1 className="fw-bold text-white font-60" data-i18n="hero_title">
-                    منصة صوت
-                  </h1> <p className="mb-4 text-white font-24" data-i18n="hero_subtitle">
-                    نروي قصص غزة بكرامة... ونبني جيلاً جديداً من صناع المحتوى
-                  </p> <div className="d-flex justify-content-center gap-3 heroOptionsBtn"> <a href="/support" className="btn rounded-pill px-4 py-2 text-white fw-bold hero-btn-watch" style={{backgroundColor: "rgba(76, 92, 55, 1)"}}> <span className="ms-2" data-i18n="hero_btn_watch">ادعم صوت</span> <i className="fa-solid fa-angle-left"></i> </a> <a href="/collaborate" className="btn rounded-pill px-4 py-2 text-white fw-bold hero-btn-support" data-i18n="hero_btn_collab">
-                      تعاون معنا
-                    </a> </div> </div> </div> </div> <div className="carousel-item position-relative"> <div className="overlay"></div> <img src="/assets/images/background.PNG" className="d-block w-100 carousel-img" alt="منصة صوت 1" /> <div className="carousel-caption-custom text-center"> <div className="container"> <div className="d-md-flex justify-content-center gap-1 mb-4 align-items-center"> <i className="fa-solid fa-star yellow-stars"></i> <i className="fa-solid fa-star yellow-stars"></i> <i className="fa-solid fa-star yellow-stars"></i> <i className="fa-solid fa-star yellow-stars"></i> <i className="fa-regular fa-star gray-star"></i> <p className="text-white hero-subtitle mb-0" data-i18n="hero_trust">
-                      ثقة آلاف المتابعين في منصة صوت غزة بصدق وتأثير
-                    </p> </div> <h1 className="fw-bold text-white font-60" data-i18n="hero_title">
-                    منصة صوت
-                  </h1> <p className="mb-4 text-white font-24" data-i18n="hero_subtitle">
-                    نروي قصص غزة بكرامة... ونبني جيلاً جديداً من صناع المحتوى
-                  </p> <div className="d-flex justify-content-center gap-3 heroOptionsBtn"> <a href="/support" className="btn rounded-pill px-4 py-2 text-white fw-bold hero-btn-watch" style={{backgroundColor: "rgba(76, 92, 55, 1)"}}> <span className="ms-2" data-i18n="hero_btn_watch">مشاهدة الأعمال</span> <i className="fa-solid fa-angle-left"></i> </a> <a href="/collaborate" className="btn rounded-pill px-4 py-2 text-white fw-bold hero-btn-support" data-i18n="hero_btn_collab">
-                      تعاون معنا
-                    </a> </div> </div> </div> </div> <div className="carousel-item position-relative"> <div className="overlay"></div> <img src="/assets/images/heroSectionImg.jpeg" className="d-block w-100 carousel-img" alt="منصة صوت 1" /> <div className="carousel-caption-custom text-center"> <div className="container"> <div className="d-md-flex justify-content-center gap-1 mb-4 align-items-center"> <i className="fa-solid fa-star yellow-stars"></i> <i className="fa-solid fa-star yellow-stars"></i> <i className="fa-solid fa-star yellow-stars"></i> <i className="fa-solid fa-star yellow-stars"></i> <i className="fa-regular fa-star gray-star"></i> <p className="text-white hero-subtitle mb-0" data-i18n="hero_trust">
-                      ثقة آلاف المتابعين في منصة صوت غزة بصدق وتأثير
-                    </p> </div> <h1 className="fw-bold text-white font-60" data-i18n="hero_title">
-                    منصة صوت
-                  </h1> <p className="mb-4 text-white font-24" data-i18n="hero_subtitle">
-                    نروي قصص غزة بكرامة... ونبني جيلاً جديداً من صناع المحتوى
-                  </p> <div className="d-flex justify-content-center gap-3 heroOptionsBtn"> <a href="/support" className="btn rounded-pill px-4 py-2 text-white fw-bold hero-btn-watch" style={{backgroundColor: "rgba(76, 92, 55, 1)"}}> <span className="ms-2" data-i18n="hero_btn_watch">مشاهدة الأعمال</span> <i className="fa-solid fa-angle-left"></i> </a> <a href="/collaborate" className="btn rounded-pill px-4 py-2 text-white fw-bold hero-btn-support" data-i18n="hero_btn_collab">
-                      تعاون معنا
-                    </a> </div> </div> </div> </div> </div> <button className="carousel-control-prev hero-arrow" type="button" data-bs-target="#heroCarousel" data-bs-slide="prev"> <span className="hero-arrow-icon" aria-hidden="true"> <i className="fa-solid fa-chevron-left"></i> </span> <span className="visually-hidden">Previous</span> </button> <button className="carousel-control-next hero-arrow" type="button" data-bs-target="#heroCarousel" data-bs-slide="next"> <span className="hero-arrow-icon" aria-hidden="true"> <i className="fa-solid fa-chevron-right"></i> </span> <span className="visually-hidden">Next</span> </button> </div> </div> <div className="stats-bar"> <div className="box-element container front-face text-white rounded-4 py-4"> <div className="row d-flex justify-content-center align-items-center text-center g-0"> <div className="col count"> <i> <svg xmlns="http://www.w3.org/2000/svg" width="3em" height="3em" viewBox="0 0 24 24"> <path d="M0 0h24v24H0z" fill="none"></path> <g fill="none" stroke="rgba(255, 116, 32, 1)" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5"> <path d="M16.5 20v-2.03c0-1.242-.56-2.46-1.69-2.975C13.431 14.366 11.778 14 10 14s-3.431.366-4.81.995c-1.13.515-1.69 1.733-1.69 2.975V20m17 .001v-2.03c0-1.242-.56-2.46-1.69-2.975q-.39-.18-.81-.328"></path> <circle cx="10" cy="7.5" r="3.5"></circle> <path d="M15 4.145a3.502 3.502 0 0 1 0 6.71"></path> </g> </svg> </i> <h3 className="counter font-mob-22">20+</h3> <p className="mb-0" data-i18n="stat_team">أعضاء الفريق</p> </div> <div className="col count"> {/*  <i class="fa-solid fa-book-open"></i>  */} <i> <svg xmlns="http://www.w3.org/2000/svg" width="3em" height="3em" viewBox="0 0 24 24"> <path d="M0 0h24v24H0z" fill="none"></path> <path fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M5.333 3c2.46-.003 4.836.887 6.667 2.5V21a10.07 10.07 0 0 0-6.667-2.5c-1.562 0-2.343 0-2.688-.22a1.16 1.16 0 0 1-.424-.425C2 17.51 2 16.895 2 15.663v-9.26c0-1.428 0-2.141.549-2.72c.548-.579 1.11-.609 2.234-.668Q5.056 3 5.333 3m13.334 0A10.07 10.07 0 0 0 12 5.5V21a10.07 10.07 0 0 1 6.667-2.5c1.562 0 2.343 0 2.688-.22c.207-.133.291-.218.424-.425c.221-.345.221-.96.221-2.192v-9.26c0-1.428 0-2.141-.549-2.72s-1.11-.609-2.234-.668Q18.944 3 18.667 3"></path> </svg> </i> <h3 className="font-mob-22 counter">100+</h3> <p className="mb-0" data-i18n="stat_stories">قصة</p> </div> <div className="col count"> <i> <svg xmlns="http://www.w3.org/2000/svg" width="3em" height="3em" viewBox="0 0 24 24"> <path d="M0 0h24v24H0z" fill="none"></path> <g fill="none" stroke="currentColor" strokeWidth="1.5"> <path d="M21.544 11.045c.304.426.456.64.456.955c0 .316-.152.529-.456.955C20.178 14.871 16.689 19 12 19c-4.69 0-8.178-4.13-9.544-6.045C2.152 12.529 2 12.315 2 12c0-.316.152-.529.456-.955C3.822 9.129 7.311 5 12 5c4.69 0 8.178 4.13 9.544 6.045Z"></path> <path d="M15 12a3 3 0 1 0-6 0a3 3 0 0 0 6 0Z"></path> </g> </svg> </i> <h3 className="counter font-mob-22">
-                +30 <span data-i18n="one_thousand"></span> </h3> <p className="mb-0" data-i18n="stat_views">مشاهدة</p> </div> <div className="col count"> <i> <svg xmlns="http://www.w3.org/2000/svg" width="3em" height="3em" viewBox="0 0 24 24"> <path d="M0 0h24v24H0z" fill="none"></path> <g fill="none" stroke="currentColor" strokeLinejoin="round" strokeWidth="1.5"> <path strokeLinecap="round" d="M17.7 21.335c-1.172.165-2.7.165-4.75.165h-1.9c-4.03 0-6.046 0-7.298-1.252S2.5 16.98 2.5 12.95v-1.9c0-4.03 0-6.046 1.252-7.298S7.02 2.5 11.05 2.5h1.9c4.03 0 6.046 0 7.298 1.252S21.5 7.019 21.5 11.05v1.9c0 1.208 0 2.235-.034 3.115c-.027.705-.04 1.057-.307 1.19c-.267.13-.566-.08-1.163-.503L18.65 15.8"></path> <path d="M14.945 12.395c-.176.627-1.012 1.07-2.682 1.955c-1.615.856-2.422 1.285-3.073 1.113a1.66 1.66 0 0 1-.712-.393C8 14.62 8 13.746 8 12s0-2.62.478-3.07c.198-.186.443-.321.712-.392c.65-.173 1.458.256 3.073 1.112c1.67.886 2.506 1.329 2.682 1.955c.073.259.073.531 0 .79Z"></path> </g> </svg> </i> <h3 className="counter font-mob-22">30+</h3> <p className="mb-0" data-i18n="stat_videos">فيديو</p> </div> <div className="col count"> <i> <svg xmlns="http://www.w3.org/2000/svg" width="3em" height="3em" viewBox="0 0 24 24"> <path d="M0 0h24v24H0z" fill="none"></path> <g fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5"> <path d="M7.5 19.5c0-.966.329-1.942 1.13-2.48A6.04 6.04 0 0 1 12 16c1.248 0 2.407.376 3.37 1.02c.802.538 1.13 1.514 1.13 2.48"></path> <circle cx="12" cy="11" r="2.5"></circle> <path d="M17.5 11c1.11 0 2.142.377 2.997 1.022c.726.548 1.003 1.473 1.003 2.382v.096"></path> <circle cx="17.5" cy="6.5" r="2"></circle> <path d="M6.5 11c-1.11 0-2.142.377-2.997 1.022c-.726.548-1.003 1.473-1.003 2.382v.096"></path> <circle cx="6.5" cy="6.5" r="2"></circle> </g> </svg> </i> <h3 className="counter font-mob-22">
-                +10 <span data-i18n="one_thousand"></span> </h3> <p className="mb-0" data-i18n="stat_followers">متابع</p> </div> </div> </div> </div> </header>
+      <i className="fa-solid fa-star yellow-stars"></i>{" "}
+      <i className="fa-solid fa-star yellow-stars"></i>{" "}
+      <i className="fa-solid fa-star yellow-stars"></i>{" "}
+      <i className="fa-solid fa-star yellow-stars"></i>{" "}
+      <i className="fa-regular fa-star gray-star"></i>{" "}
+    </>
+  );
+}
+
+function HeroSlide({ slide, index, trust, support, collaborate, lang }) {
+  const title = localized(slide.title, lang);
+  const subtitle = localized(slide.subtitle, lang);
+
+  return (
+    <div
+      className={"carousel-item position-relative" + (index === 0 ? " active" : "")}
+    >
+      {" "}
+      <div className="overlay"></div>{" "}
+      {slide.image_url ? (
+        <img
+          src={slide.image_url}
+          className="d-block w-100 carousel-img"
+          alt={title}
+        />
+      ) : null}{" "}
+      <div className="carousel-caption-custom text-center">
+        {" "}
+        <div className="container">
+          {" "}
+          <div className="d-md-flex justify-content-center gap-1 mb-4 align-items-center">
+            {" "}
+            <HeroStars />{" "}
+            {trust ? (
+              <p className="text-white hero-subtitle mb-0">{trust}</p>
+            ) : null}{" "}
+          </div>{" "}
+          {title ? (
+            <h1 className="fw-bold text-white font-60">{title}</h1>
+          ) : null}{" "}
+          {subtitle ? (
+            <p className="mb-4 text-white font-24">{subtitle}</p>
+          ) : null}{" "}
+          <div className="d-flex justify-content-center gap-3 heroOptionsBtn">
+            {" "}
+            {support ? (
+              <a
+                href="/support"
+                className="btn rounded-pill px-4 py-2 text-white fw-bold hero-btn-watch"
+                style={{ backgroundColor: "rgba(76, 92, 55, 1)" }}
+              >
+                {" "}
+                <span className="ms-2">{support}</span>{" "}
+                <i className="fa-solid fa-angle-left"></i>{" "}
+              </a>
+            ) : null}{" "}
+            {collaborate ? (
+              <a
+                href="/collaborate"
+                className="btn rounded-pill px-4 py-2 text-white fw-bold hero-btn-support"
+              >
+                {collaborate}
+              </a>
+            ) : null}{" "}
+          </div>{" "}
+        </div>{" "}
+      </div>{" "}
+    </div>
+  );
+}
+
+/** One figure of the bar. `.counter` is what runCounters() animates, and it
+    reads the number straight out of this text node — so the value stays a
+    bare string here, with the "ألف"/"K" unit in its own translated span. */
+function StatColumn({ stat, lang }) {
+  const label = localized(stat.label, lang);
+  const showThousands = STAT_KEYS_WITH_THOUSANDS.includes(stat.key);
+
+  return (
+    <div className="col count">
+      {" "}
+      <i>
+        <StatIcon statKey={stat.key} />
+      </i>{" "}
+      <h3 className="counter font-mob-22">
+        {stat.value || ""}
+        {showThousands ? (
+          <>
+            {" "}
+            <span data-i18n="one_thousand"></span>
+          </>
+        ) : null}
+      </h3>{" "}
+      <p className="mb-0">{label}</p>{" "}
+    </div>
+  );
+}
+
+export default function HeroHeader({
+  hero,
+  stats,
+  lang = "ar",
+  loading = false,
+}: {
+  hero?: HomeHero;
+  stats?: HomeStats;
+  lang?: string;
+  /** The payload is still on its way — hold the hero's height with bars. */
+  loading?: boolean;
+}) {
+  const slides = bySortOrder(hero?.slides);
+  const trust = localized(hero?.trust, lang);
+  const support = localized(hero?.buttons?.support?.label, lang);
+  const collaborate = localized(hero?.buttons?.collaborate?.label, lang);
+  const statItems = Array.isArray(stats?.items) ? stats.items : [];
+
+  return (
+    <>
+      <header>
+        {" "}
+        <div className="main-header-wrapper py-1">
+          {" "}
+          <SiteNav />{" "}
+          {/*  Mobile search panel (revealed by the mobile search icon)  */}{" "}
+          <div id="heroCarousel" className="carousel slide" data-bs-ride="carousel">
+            {" "}
+            <div className="carousel-indicators">
+              {" "}
+              {slides.map((_, index) => (
+                <div key={index}>
+                  {" "}
+                  <button
+                    type="button"
+                    data-bs-target="#heroCarousel"
+                    data-bs-slide-to={String(index)}
+                    className={index === 0 ? "active" : undefined}
+                  ></button>{" "}
+                </div>
+              ))}{" "}
+            </div>{" "}
+            <div className="carousel-inner">
+              {" "}
+              {loading ? (
+                <HeroSlideSkeleton />
+              ) : (
+                slides.map((slide, index) => (
+                  <HeroSlide
+                    key={index}
+                    slide={slide}
+                    index={index}
+                    trust={trust}
+                    support={support}
+                    collaborate={collaborate}
+                    lang={lang}
+                  />
+                ))
+              )}{" "}
+            </div>{" "}
+            <button
+              className="carousel-control-prev hero-arrow"
+              type="button"
+              data-bs-target="#heroCarousel"
+              data-bs-slide="prev"
+            >
+              {" "}
+              <span className="hero-arrow-icon" aria-hidden="true">
+                {" "}
+                <i className="fa-solid fa-chevron-left"></i>{" "}
+              </span>{" "}
+              <span className="visually-hidden">Previous</span>{" "}
+            </button>{" "}
+            <button
+              className="carousel-control-next hero-arrow"
+              type="button"
+              data-bs-target="#heroCarousel"
+              data-bs-slide="next"
+            >
+              {" "}
+              <span className="hero-arrow-icon" aria-hidden="true">
+                {" "}
+                <i className="fa-solid fa-chevron-right"></i>{" "}
+              </span>{" "}
+              <span className="visually-hidden">Next</span>{" "}
+            </button>{" "}
+          </div>{" "}
+        </div>{" "}
+        <div className="stats-bar">
+          {" "}
+          <div className="box-element container front-face text-white rounded-4 py-4">
+            {" "}
+            <div className="row d-flex justify-content-center align-items-center text-center g-0">
+              {" "}
+              {loading ? (
+                <StatsBarSkeleton />
+              ) : (
+                statItems.map((stat, index) => (
+                  <StatColumn key={stat.key || index} stat={stat} lang={lang} />
+                ))
+              )}{" "}
+            </div>{" "}
+          </div>{" "}
+        </div>{" "}
+      </header>
     </>
   );
 }

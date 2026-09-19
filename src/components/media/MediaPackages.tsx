@@ -1,55 +1,69 @@
 "use client";
+import { localized } from "@/lib/api/pages";
+import {
+  localizedFeatures,
+  sortItems,
+  type MediaPackagesContent,
+} from "@/lib/api/media-page";
 import MediaSectionHead from "./MediaSectionHead";
 import { IconChevronLeftSmall } from "@/components/ui/icons";
-import { MEDIA_PACKAGES } from "./media-packages-data";
+import { PACKAGE_TONES, ctaHref, cycle, splitHighlight } from "./media-page-view";
 import { useSnapSlider } from "./useSnapSlider";
 
 /* "اختر باقتك" — the bundle cards on a snap track with the arrow+dot pager
    under them. Three cards fit at desktop width and the rest are paged in, so
    the dots come from the slider's measured stops rather than one per package
-   (see useSnapSlider). Client component because of the pager; the cards
-   themselves are plain markup driven by media-packages-data. */
-export default function MediaPackages() {
+   (see useSnapSlider). Client component because of the pager.
+
+   Everything the cards say is GET /pages/media's `packages` block; the tab
+   colour walks the design's three tones down the list, and the heading's olive
+   tail is split off the one string the API sends (see ./media-page-view). */
+export default function MediaPackages({
+  data,
+  lang = "ar",
+}: {
+  data?: MediaPackagesContent;
+  lang?: string;
+}) {
+  const items = sortItems(data?.items);
   const { trackRef, stops, active, onScroll, goTo, next, prev, dragProps } =
-    useSnapSlider(MEDIA_PACKAGES.length);
+    useSnapSlider(items.length);
+
+  if (!data || !items.length) return null;
+
+  const [title, titleHl] = splitHighlight(localized(data.title, lang));
+  const ctaLabel = localized(data.cta?.label, lang);
 
   return (
     <section className="sm-packages">
       <div className="container">
         <MediaSectionHead
-          pill="الباقات"
-          pillKey="sm_pkg_pill"
-          title="جمعنا لك الخدمات المناسبة في باقة واحدة ,"
-          titleKey="sm_pkg_title"
-          titleHl="اختر باقتك"
-          titleHlKey="sm_pkg_title_hl"
-          sub="باقات متخصصة حسب نوع الخدمة — كل باقة مصممة لتلبية احتياجات محددة بدقة."
-          subKey="sm_pkg_sub"
+          pill={localized(data.eyebrow, lang)}
+          title={title}
+          titleHl={titleHl}
+          sub={localized(data.subtitle, lang)}
         />
 
         <div className="sm-pkg-track" ref={trackRef} onScroll={onScroll} {...dragProps}>
-          {MEDIA_PACKAGES.map((p) => (
-            <article className={"sm-pkg sm-pkg-" + p.tone} key={p.key}>
+          {items.map((item, index) => (
+            <article
+              className={"sm-pkg sm-pkg-" + cycle(PACKAGE_TONES, index)}
+              key={index}
+            >
               <span className="sm-pkg-tab" aria-hidden="true"></span>
 
               <div className="sm-pkg-body">
-                <h3 className="sm-pkg-title" data-i18n={p.titleKey}>
-                  {p.title}
-                </h3>
-                <p className="sm-pkg-tagline" data-i18n={p.taglineKey}>
-                  {p.tagline}
-                </p>
-                <p className="sm-pkg-desc" data-i18n={p.descKey}>
-                  {p.desc}
-                </p>
+                <h3 className="sm-pkg-title">{localized(item.title, lang)}</h3>
+                <p className="sm-pkg-tagline">{localized(item.tagline, lang)}</p>
+                <p className="sm-pkg-desc">{localized(item.description, lang)}</p>
 
                 <ul className="sm-pkg-features">
-                  {p.features.map((f) => (
-                    <li key={f.key}>
+                  {localizedFeatures(item.features, lang).map((feature, i) => (
+                    <li key={i}>
                       <i aria-hidden="true"></i>
                       <span className="sm-pkg-feature-text">
-                        <b data-i18n={"sm_pkg_f_" + f.key}>{f.name}</b>
-                        <small data-i18n={f.noteKey}>{f.note}</small>
+                        <b>{feature.title}</b>
+                        <small>{feature.description}</small>
                       </span>
                     </li>
                   ))}
@@ -58,10 +72,12 @@ export default function MediaPackages() {
                 {/* Goes to تواصل معنا, like the navbar and hero CTAs of the
                     same name — it used to jump back up the page to the
                     consultation block (#sm-consult), above this section. */}
-                <a className="sm-pkg-cta" href="/media/contact">
-                  <span data-i18n="sm_cta_start">ابدأ مشروعك</span>
-                  <IconChevronLeftSmall />
-                </a>
+                {ctaLabel ? (
+                  <a className="sm-pkg-cta" href={ctaHref(data.cta, "/media/contact")}>
+                    <span>{ctaLabel}</span>
+                    <IconChevronLeftSmall />
+                  </a>
+                ) : null}
               </div>
             </article>
           ))}
@@ -80,7 +96,7 @@ export default function MediaPackages() {
           <span className="sm-pager-dots">
             {stops.map((stop, i) => (
               <button
-                key={MEDIA_PACKAGES[stop.slide].key}
+                key={i}
                 type="button"
                 className={"sm-pager-dot" + (i === active ? " active" : "")}
                 aria-label={`الباقة ${stop.slide + 1}`}

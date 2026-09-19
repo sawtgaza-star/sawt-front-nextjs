@@ -1,29 +1,31 @@
-// @ts-nocheck
 "use client";
-/* eslint-disable */
 import "@/styles/creators.css";
 import { useState } from "react";
 import LegacyInit from "@/components/LegacyInit";
 import CreatorsHero from "@/components/creators/CreatorsHero";
 import CreatorCard from "@/components/creators/CreatorCard";
+import { CreatorsGridSkeleton } from "@/components/creators/CreatorsSkeleton";
+import { creatorCards } from "@/components/creators/creator-cards";
 import JoinModal from "@/components/site/JoinModal";
+import { useAllCreators } from "@/lib/api/use-creators-page";
+import { useLang } from "@/lib/use-lang";
+import { localized } from "@/lib/api/pages";
 
 /* Full, paginated listing of every content creator — the "عرض الكل" target
-   from CreatorsGrid. Reuses the breadcrumb hero + the shared CreatorCard. */
+   from CreatorsGrid. Reuses the breadcrumb hero + the shared CreatorCard.
+
+   The roster comes from GET /pages/creators/all, one request per page of
+   fifteen. The pager is the API's: `meta.last_page` decides how many pages
+   there are, so a click fetches rather than slices. The header renders
+   throughout — SiteNav lives inside it — and paints the payload's own hero,
+   which that endpoint answers alongside the cards. */
 const PER_PAGE = 15;
-const ALL_CREATORS = Array.from({ length: 150 }, (_, i) => ({
-  id: i,
-  photo: "/assets/images/محمود زعيتر 2.png",
-  name: "محمود عبد الله زعيتر",
-  role: "ممثل مسرحية",
-  followers: "31.4K متابع",
-}));
 
 /* Build the visible page list: first page, last page, and a window around the
    current page, with "…" filling any gaps (e.g. 1 2 3 … 10). */
-function buildPages(current, total) {
+function buildPages(current: number, total: number): (number | string)[] {
   const delta = 1;
-  const pages = [];
+  const pages: (number | string)[] = [];
   let prev = 0;
   for (let i = 1; i <= total; i++) {
     if (
@@ -40,13 +42,17 @@ function buildPages(current, total) {
 }
 
 export default function Page() {
-  const totalPages = Math.ceil(ALL_CREATORS.length / PER_PAGE);
   const [page, setPage] = useState(1);
+  const { lang } = useLang();
+  const { page: data, meta, loading } = useAllCreators(page, PER_PAGE);
 
-  const start = (page - 1) * PER_PAGE;
-  const pageItems = ALL_CREATORS.slice(start, start + PER_PAGE);
+  const totalPages = meta.last_page ?? 1;
+  const pageItems = creatorCards(data?.creators, lang, {
+    experienceTitle: localized(data?.labels?.experience_title, lang),
+    followersSuffix: localized(data?.labels?.followers_suffix, lang),
+  });
 
-  const goTo = (p) => {
+  const goTo = (p: number) => {
     if (p < 1 || p > totalPages || p === page) return;
     setPage(p);
     if (typeof window !== "undefined")
@@ -59,7 +65,7 @@ export default function Page() {
   return (
     <div className="cr-page">
       <LegacyInit page="creators" />
-      <CreatorsHero />
+      <CreatorsHero data={data?.hero} lang={lang} loading={!data && loading} />
       <main>
         <section className="content-section cr-grid-section position-relative">
           <img
@@ -74,70 +80,76 @@ export default function Page() {
           />
 
           <div className="container">
-            <div className="cr-creators-grid">
-              {pageItems.map((c) => (
-                <CreatorCard key={c.id} item={c} />
-              ))}
-            </div>
+            {loading ? (
+              <CreatorsGridSkeleton count={PER_PAGE} />
+            ) : (
+              <div className="cr-creators-grid">
+                {pageItems.map((c) => (
+                  <CreatorCard key={c.key} item={c} translated />
+                ))}
+              </div>
+            )}
 
-            <nav className="cr-pagination" aria-label="pagination">
-              {/* laid out LTR to match the RTL mock: « ‹ 10 … 3 2 1 › » */}
-              <button
-                type="button"
-                className="cr-page-btn cr-page-nav"
-                onClick={() => goTo(totalPages)}
-                disabled={page === totalPages}
-                aria-label="last page"
-              >
-                <i className="fa-solid fa-angles-left"></i>
-              </button>
-              <button
-                type="button"
-                className="cr-page-btn cr-page-nav"
-                onClick={() => goTo(page + 1)}
-                disabled={page === totalPages}
-                aria-label="next page"
-              >
-                <i className="fa-solid fa-angle-left"></i>
-              </button>
+            {totalPages > 1 ? (
+              <nav className="cr-pagination" aria-label="pagination">
+                {/* laid out LTR to match the RTL mock: « ‹ 10 … 3 2 1 › » */}
+                <button
+                  type="button"
+                  className="cr-page-btn cr-page-nav"
+                  onClick={() => goTo(totalPages)}
+                  disabled={page === totalPages}
+                  aria-label="last page"
+                >
+                  <i className="fa-solid fa-angles-left"></i>
+                </button>
+                <button
+                  type="button"
+                  className="cr-page-btn cr-page-nav"
+                  onClick={() => goTo(page + 1)}
+                  disabled={page === totalPages}
+                  aria-label="next page"
+                >
+                  <i className="fa-solid fa-angle-left"></i>
+                </button>
 
-              {pages.map((p) =>
-                typeof p === "number" ? (
-                  <button
-                    key={p}
-                    type="button"
-                    className={"cr-page-btn" + (p === page ? " active" : "")}
-                    onClick={() => goTo(p)}
-                    aria-current={p === page ? "page" : undefined}
-                  >
-                    {p}
-                  </button>
-                ) : (
-                  <span key={p} className="cr-page-dots">
-                    ..
-                  </span>
-                ),
-              )}
+                {pages.map((p) =>
+                  typeof p === "number" ? (
+                    <button
+                      key={p}
+                      type="button"
+                      className={"cr-page-btn" + (p === page ? " active" : "")}
+                      onClick={() => goTo(p)}
+                      aria-current={p === page ? "page" : undefined}
+                    >
+                      {p}
+                    </button>
+                  ) : (
+                    <span key={p} className="cr-page-dots">
+                      ..
+                    </span>
+                  ),
+                )}
 
-              <button
-                type="button"
-                className="cr-page-btn cr-page-nav"
-                onClick={() => goTo(page - 1)}
-                disabled={page === 1}
-                aria-label="previous page"
-              >
-                <i className="fa-solid fa-angle-right"></i>
-              </button>
-              <button
-                type="button"
-                className="cr-page-btn cr-page-nav"
-                onClick={() => goTo(1)}
-                disabled={page === 1}
-                aria-label="first page"
-              >
-                <i className="fa-solid fa-angles-right"></i>
-              </button>
-            </nav>
+                <button
+                  type="button"
+                  className="cr-page-btn cr-page-nav"
+                  onClick={() => goTo(page - 1)}
+                  disabled={page === 1}
+                  aria-label="previous page"
+                >
+                  <i className="fa-solid fa-angle-right"></i>
+                </button>
+                <button
+                  type="button"
+                  className="cr-page-btn cr-page-nav"
+                  onClick={() => goTo(1)}
+                  disabled={page === 1}
+                  aria-label="first page"
+                >
+                  <i className="fa-solid fa-angles-right"></i>
+                </button>
+              </nav>
+            ) : null}
           </div>
         </section>
       </main>

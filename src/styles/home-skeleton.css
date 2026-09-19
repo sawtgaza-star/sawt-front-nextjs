@@ -1,0 +1,163 @@
+/* Placeholders for / while GET /pages/home is in flight.
+
+   The home page carries no copy of its own any more (see components/home), so
+   without these the visitor gets a bare header and a white page until the
+   response lands. The skeleton renders inside the REAL section wrappers —
+   .sout-section, .latest-news, .team-section … — and only fills them with grey
+   bars, so the layout it holds is the layout the content arrives into.
+
+   What it must NOT render is an `.owl-carousel`: Owl's CSS keeps that class
+   display:none until it adds `.owl-loaded`, and initialising a carousel on an
+   empty stage would mark it loaded before its items exist. The card rows below
+   are plain flex rows for exactly that reason — HomeContent starts the real
+   carousels once the payload has landed. Same base classes as
+   about-skeleton.css; only one of the two ever loads on a page.
+
+   Sizes mirror style.css: 100vh hero slide, 60px feature circle, 300px join
+   banner. Keep them in step if those change. */
+
+/* `.sk-line-title` is in this group, not only in its own rule below: most of
+   the skeleton components pass it as the ONLY class (<Line className=
+   "sk-line-title" />), so without display + background here a title bar is an
+   inline span with a height that does nothing — invisible. */
+.sk-line-title,
+.sk-line,
+.sk-block,
+.sk-circle {
+  display: block;
+  background: linear-gradient(90deg, #e9ecef 25%, #f5f7f9 37%, #e9ecef 63%);
+  background-size: 400% 100%;
+  animation: sk-shimmer 1.4s ease-in-out infinite;
+}
+
+.sk-line {
+  height: 14px;
+  border-radius: 7px;
+  margin-bottom: 12px;
+}
+
+.sk-line-title {
+  height: 28px;
+  border-radius: 10px;
+  margin-bottom: 22px;
+}
+
+.sk-center .sk-line,
+.sk-center .sk-line-title {
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.sk-circle {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  margin-bottom: 18px;
+}
+
+.sk-block {
+  width: 100%;
+  border-radius: 16px;
+}
+
+/* The hero slide sits under the pinned header, on the dark ground the real
+   photo would cover, so its bars are dimmed rather than page-grey.
+
+   Selected through #heroCarousel .carousel-item so the centring actually
+   lands: Bootstrap's own `.carousel-item.active { display: block }` is two
+   classes and outranks a bare `.sk-hero-slide`, which left the bars stacked at
+   the top of the slide — and `#heroCarousel` is pulled up by -160px
+   (style.css), so that put them behind the navbar. */
+#heroCarousel .carousel-item.sk-hero-slide {
+  min-height: 100vh;
+  background: rgba(30, 34, 26, 1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* The bars keep their shimmer over the dark ground — dimmed into it rather
+   than flattened to a static fill, which read as "nothing is happening" on a
+   full 100vh block. Same treatment as creators-skeleton.css's hero. */
+.sk-hero-slide .sk-line,
+.sk-hero-slide .sk-line-title {
+  background: linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0.1) 25%,
+    rgba(255, 255, 255, 0.22) 37%,
+    rgba(255, 255, 255, 0.1) 63%
+  );
+  background-size: 400% 100%;
+}
+
+.sk-hero-copy {
+  width: min(680px, 80%);
+}
+
+/* One column of the stats bar: circle + figure + label, centred. */
+.sk-stat {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.sk-stat .sk-circle {
+  width: 48px;
+  height: 48px;
+  margin-bottom: 12px;
+}
+
+/* A news / creator / platform card silhouette in the rows that replace the
+   four carousels while they cannot be initialised yet. */
+.sk-card {
+  height: 320px;
+}
+
+.sk-card-creator {
+  height: 300px;
+  border-radius: 24px;
+}
+
+.sk-card-story {
+  height: 380px;
+}
+
+.sk-card-team {
+  height: 300px;
+}
+
+.sk-logo {
+  height: 90px;
+  border-radius: 12px;
+}
+
+/* .join-us-banner is min-height: 300px; the reviews panel is taller. */
+.sk-block-join {
+  height: 300px;
+}
+
+.sk-block-reviews {
+  height: 420px;
+  border-radius: 20px;
+}
+
+.sk-block-sout {
+  height: 320px;
+}
+
+@keyframes sk-shimmer {
+  0% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0 50%;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sk-line,
+  .sk-block,
+  .sk-circle {
+    animation: none;
+  }
+}

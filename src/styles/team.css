@@ -55,13 +55,34 @@
 .team-member-card {
   position: relative;
 }
+/* The portrait box carries the loading shimmer UNDER the <img>, not instead of
+   it: by the time a card exists the JSON has landed — the grid, the pills and
+   the names are all on screen and TeamGridSkeleton is gone — but the JPEG
+   itself is still downloading, and the box sat as a flat grey until it
+   painted. The photo covers this as it arrives, card by card, with no state to
+   track and no layout change.
+
+   `sk-shimmer` is also defined in team-skeleton.css, identically; it is
+   repeated here so the rule does not depend on that file being in the bundle
+   or on which of the two the loader puts last. */
 .team-member-photo {
   position: relative;
   width: 100%;
   aspect-ratio: 1 / 1.12;
   border-radius: 14px;
   overflow: hidden;
-  background: #949494;
+  background: linear-gradient(90deg, #e2e5e8 25%, #eef1f3 37%, #e2e5e8 63%);
+  background-size: 400% 100%;
+  animation: sk-shimmer 1.4s ease-in-out infinite;
+}
+
+@keyframes sk-shimmer {
+  0% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0 50%;
+  }
 }
 .team-member-photo img {
   width: 100%;
@@ -198,6 +219,22 @@ left: 12px;
 }
 .team-detail-photo {
   order: 2; /* image sits on the left (visual start) in RTL */
+}
+
+/* Only while the photo is still downloading (see TeamDetailPhoto): the column
+   has no height of its own until the image arrives, so it borrows the ratio
+   TeamProfileSkeleton already uses for this box and shimmers in its place.
+   The class comes off on load, and with it the ratio — the loaded portrait is
+   laid out exactly as before, by its own proportions at 110% width.
+
+   No radius of its own: the box is square-cornered on desktop and 32px under
+   the mobile breakpoint, and naming one here would win over that rule (two
+   classes to one) and square the corners on mobile too. */
+.team-detail-photo.is-loading {
+  aspect-ratio: 1 / 1.15;
+  background: linear-gradient(90deg, #e2e5e8 25%, #eef1f3 37%, #e2e5e8 63%);
+  background-size: 400% 100%;
+  animation: sk-shimmer 1.4s ease-in-out infinite;
 }
 .team-detail-photo img {
   width: 110%;

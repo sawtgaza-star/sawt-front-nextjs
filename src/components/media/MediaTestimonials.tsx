@@ -1,8 +1,9 @@
 "use client";
+import { localized } from "@/lib/api/pages";
+import { sortItems, type MediaTestimonialsContent } from "@/lib/api/media-page";
 import MediaSectionHead from "./MediaSectionHead";
 import { IconRatingStar } from "@/components/ui/icons";
 import { IconReviewQuote } from "./media-icons";
-import { MEDIA_TESTIMONIALS } from "./media-testimonials-data";
 import { useSnapSlider } from "./useSnapSlider";
 
 /* "ماذا يقول عنّا عملاؤنا" — a centre-focused slider: the active card is
@@ -10,8 +11,22 @@ import { useSnapSlider } from "./useSnapSlider";
    design's 0.4 opacity + 2px blur). The centring comes from the track's side
    padding, so the first and last cards can still reach the middle — and the
    track opens on the second card, so the section is first seen with a card
-   flanked on both sides rather than parked at its own edge. */
-export default function MediaTestimonials() {
+   flanked on both sides rather than parked at its own edge.
+
+   The quotes are GET /pages/media's `testimonials` block. The star count is
+   not in the payload — every card in the design shows four — so it stays a
+   design constant here. */
+const STARS = 5;
+const FILLED = 4;
+
+export default function MediaTestimonials({
+  data,
+  lang = "ar",
+}: {
+  data?: MediaTestimonialsContent;
+  lang?: string;
+}) {
+  const items = sortItems(data?.items);
   const {
     trackRef,
     stops,
@@ -22,23 +37,22 @@ export default function MediaTestimonials() {
     next,
     prev,
     dragProps,
-  } = useSnapSlider(MEDIA_TESTIMONIALS.length, 1);
+  } = useSnapSlider(items.length, 1);
+
+  if (!data || !items.length) return null;
 
   return (
     <section className="sm-testi">
       <div className="container">
         <MediaSectionHead
-          pill="اراء العملاء"
-          pillKey="sm_testi_pill"
-          title="ماذا يقول عنّا عملاؤنا"
-          titleKey="sm_testi_title"
-          sub="باقات متخصصة حسب نوع الخدمة — كل باقة مصممة لتلبية احتياجات محددة بدقة."
-          subKey="sm_pkg_sub"
+          pill={localized(data.eyebrow, lang)}
+          title={localized(data.title, lang)}
+          sub={localized(data.subtitle, lang)}
         />
       </div>
 
       <div className="sm-testi-track" ref={trackRef} onScroll={onScroll} {...dragProps}>
-        {MEDIA_TESTIMONIALS.map((t, i) => (
+        {items.map((item, i) => (
           <article
             className={
               "sm-testi-card" +
@@ -48,10 +62,12 @@ export default function MediaTestimonials() {
                  away, so no fourth card creeps in at the edges */
               (Math.abs(i - activeSlide) > 1 ? " is-far" : "")
             }
-            key={t.key}
+            key={i}
           >
             <span className="sm-testi-avatar">
-              <img src={t.photo} alt="" draggable={false} />
+              {item.avatar_url ? (
+                <img src={item.avatar_url} alt="" draggable={false} />
+              ) : null}
               {/* the peach disc the design tucks under the avatar's inner corner */}
               <span className="sm-testi-quote-badge" aria-hidden="true">
                 <IconReviewQuote />
@@ -59,21 +75,15 @@ export default function MediaTestimonials() {
             </span>
 
             <div className="sm-testi-stars" aria-hidden="true">
-              {Array.from({ length: 5 }, (_, s) => (
-                <IconRatingStar key={s} filled={s < t.rating} />
+              {Array.from({ length: STARS }, (_, s) => (
+                <IconRatingStar key={s} filled={s < FILLED} />
               ))}
             </div>
 
-            <p className="sm-testi-quote" data-i18n={t.quoteKey}>
-              {t.quote}
-            </p>
+            <p className="sm-testi-quote">{localized(item.quote, lang)}</p>
 
-            <b className="sm-testi-name" data-i18n={t.nameKey}>
-              {t.name}
-            </b>
-            <span className="sm-testi-meta" data-i18n={t.metaKey}>
-              {t.meta}
-            </span>
+            <b className="sm-testi-name">{item.name}</b>
+            <span className="sm-testi-meta">{localized(item.role, lang)}</span>
           </article>
         ))}
       </div>
@@ -86,7 +96,7 @@ export default function MediaTestimonials() {
         <span className="sm-pager-dots">
           {stops.map((stop, i) => (
             <button
-              key={MEDIA_TESTIMONIALS[stop.slide].key}
+              key={i}
               type="button"
               className={"sm-pager-dot" + (i === active ? " active" : "")}
               aria-label={`الرأي ${stop.slide + 1}`}

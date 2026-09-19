@@ -5,7 +5,7 @@ import NavSocialLinks from "@/components/site/NavSocialLinks";
 import { resolveNavbar } from "@/components/site/navbar-data";
 import { useNavbar } from "@/lib/api/use-navbar";
 import { useLang } from "@/lib/use-lang";
-import { MEDIA_NAV_LINKS } from "./media-nav-data";
+import type { MediaNavView } from "./media-nav-data";
 
 /* The phone menu of صوت ميديا's navbar: the burger in the nav card plus the
    panel it opens. The panel reads as the bottom half of the bar's own card —
@@ -18,14 +18,25 @@ import { MEDIA_NAV_LINKS } from "./media-nav-data";
    button inside carries the legacy `.language-btn` class, which initTranslate()
    wires once on page load — a panel mounted later would never be wired.
 
-   Only this leaf is a Client Component; MediaNav itself stays on the server. */
-export default function MediaNavMobile({ base = "" }: { base?: string }) {
+   The section links, the language label and the green CTA are the same
+   resolved GET /layout/media/navbar view MediaNav renders, handed down as a
+   prop so the request is made once for the whole bar. */
+export default function MediaNavMobile({
+  base = "",
+  nav,
+  loading,
+}: {
+  base?: string;
+  nav: MediaNavView;
+  loading: boolean;
+}) {
   /* The social row at the foot of the drawer is the site's, not this page's —
-     the same GET /layout/navbar row SiteNav renders. This page uses MediaNav
-     instead of SiteNav, so the request is made here. */
+     the same GET /layout/navbar row SiteNav renders, which the media endpoint
+     does not carry. This page uses MediaNav instead of SiteNav, so the request
+     is made here. */
   const { lang } = useLang();
-  const { data, loading } = useNavbar();
-  const nav = resolveNavbar(data, lang);
+  const { data, loading: socialsLoading } = useNavbar();
+  const site = resolveNavbar(data, lang);
 
   const [open, setOpen] = useState(false);
   const [hash, setHash] = useState("");
@@ -96,26 +107,36 @@ export default function MediaNavMobile({ base = "" }: { base?: string }) {
         className={"sm-drawer" + (open ? " is-open" : "")}
         aria-label="القائمة"
       >
-        {/* the design stacks منهجيتنا first, so the shared list is walked
+        {/* the design stacks منهجيتنا first, so the bar's list is walked
             bottom-up (CSS column-reverse would break keyboard order) */}
         <ul className="sm-drawer-links">
-          {[...MEDIA_NAV_LINKS].reverse().map((l) => (
-            <li key={l.key}>
-              <a
-                className={
-                  "sm-drawer-link" + (hash === l.href ? " is-active" : "")
-                }
-                href={base + l.href}
-                data-i18n={l.key}
-                onClick={() => setOpen(false)}
-              >
-                {l.text}
-              </a>
-            </li>
-          ))}
+          {loading
+            ? ["62px", "58px", "54px", "90px"].map((width, index) => (
+                <li key={index}>
+                  <span className="sm-drawer-link">
+                    <span className="nsk-line" style={{ width }} />
+                  </span>
+                </li>
+              ))
+            : [...nav.links].reverse().map((link) => (
+                <li key={link.key}>
+                  <a
+                    className={
+                      "sm-drawer-link" + (hash === link.href ? " is-active" : "")
+                    }
+                    href={base + link.href}
+                    onClick={() => setOpen(false)}
+                  >
+                    {link.label}
+                  </a>
+                </li>
+              ))}
         </ul>
 
         <div className="sm-drawer-lang">
+          {/* Neither of these two is in the payload, so they keep the
+              dictionary: "اللغة" and the name of the language the toggle
+              switches TO. */}
           <span data-i18n="sm_lang_label">اللغة</span>
           {/* `.language-btn` is what initTranslate() binds the AR/EN toggle to */}
           <button
@@ -129,13 +150,24 @@ export default function MediaNavMobile({ base = "" }: { base?: string }) {
         </div>
 
         <div className="sm-drawer-cta">
-          <a
-            className="sm-btn-green"
-            href="/media/contact"
-            onClick={() => setOpen(false)}
-          >
-            <span data-i18n="sm_cta_start">ابدأ مشروعك</span>
-          </a>
+          {loading ? (
+            /* `.sm-drawer-cta > a` is what shares the row, so the
+               placeholder has to claim its half itself — 12px/15px/1 is the
+               button's own 39px box, at its own 24px rounding. */
+            <span
+              className="nsk-cta"
+              style={{ flex: "1 1 0", height: "39px", borderRadius: "24px" }}
+            />
+          ) : (
+            <a
+              className="sm-btn-green"
+              href={nav.cta.href}
+              onClick={() => setOpen(false)}
+            >
+              <span>{nav.cta.label}</span>
+            </a>
+          )}
+          {/* Not in the payload either — the second CTA is this drawer's own. */}
           <a
             className="sm-btn-outline"
             href="/media/contact"
@@ -147,9 +179,9 @@ export default function MediaNavMobile({ base = "" }: { base?: string }) {
 
         <div className="sm-drawer-social">
           <NavSocialLinks
-            label={nav.socialsLabel}
-            socials={nav.socials}
-            loading={loading}
+            label={site.socialsLabel}
+            socials={site.socials}
+            loading={socialsLoading}
           />
         </div>
       </div>
