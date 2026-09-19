@@ -11,12 +11,18 @@ export type IdeaFields = {
   fileError: "type" | "size" | null;
 };
 
+/* The idea is required; the file and the extra notes stay optional, as they
+   are to the API. */
+export type IdeaErrors = { idea?: string };
+
 export default function IdeaStep({
   values,
+  errors,
   onChange,
   onFile,
 }: {
   values: IdeaFields;
+  errors: IdeaErrors;
   onChange: (patch: Partial<IdeaFields>) => void;
   onFile: (file: File | undefined) => void;
 }) {
@@ -30,7 +36,7 @@ export default function IdeaStep({
         </label>
         <textarea
           id="collab-ot-idea"
-          className="cl-textarea"
+          className={"cl-textarea" + (errors.idea ? " is-invalid" : "")}
           maxLength={NOTE_MAX}
           placeholder="نوع التعاون الذي تريده وكيف يمكن أن يفيد الطرفين"
           data-i18n-placeholder="collab_ot_f_idea_ph"
@@ -41,6 +47,7 @@ export default function IdeaStep({
         <p className="cl-counter">
           {NOTE_MAX}/{values.idea.length}
         </p>
+        {errors.idea && <p className="cl-error">{errors.idea}</p>}
       </div>
 
       <div className="cl-field">

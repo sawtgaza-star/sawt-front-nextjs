@@ -23,8 +23,14 @@ export type SocialFields = {
   agree: boolean;
 };
 
+/* Every row needs a link, so the rows are flagged as one group — the message
+   sits under the list rather than under one box of it. The notes and the video
+   are what stays optional here. */
+export type SocialErrors = { rows?: string };
+
 export default function SocialStep({
   values,
+  errors,
   agreeError,
   onChange,
   onAddRow,
@@ -33,6 +39,7 @@ export default function SocialStep({
   onVideo,
 }: {
   values: SocialFields;
+  errors: SocialErrors;
   agreeError: boolean;
   onChange: (patch: Partial<SocialFields>) => void;
   onAddRow: () => void;
@@ -89,6 +96,7 @@ export default function SocialStep({
           <span data-i18n="collab_f_add_platform">اضافة منصة</span>
           <i className="fa-solid fa-plus" aria-hidden="true"></i>
         </button>
+        {errors.rows && <p className="cl-error">{errors.rows}</p>}
       </div>
 
       <div className="cl-field">

@@ -1,18 +1,23 @@
 import { NOTE_MAX, PARTNER_TYPES } from "./partnership-form-data";
 
 /* Step 2 — "طبيعة الشراكة": what the company is proposing (multi-pick tick
-   boxes) and the free-text pitch underneath. Nothing here is required — the
-   mock shows no error state on this step. */
+   boxes) and the free-text pitch underneath. Both are required;
+   PartnershipWizard checks them on "التالي" and hands back the notes to
+   print. */
 export type NatureFields = {
   types: string[];
   about: string;
 };
 
+export type NatureErrors = Partial<Record<keyof NatureFields, string>>;
+
 export default function NatureStep({
   values,
+  errors,
   onChange,
 }: {
   values: NatureFields;
+  errors: NatureErrors;
   onChange: (patch: Partial<NatureFields>) => void;
 }) {
   const toggle = (value: string) =>
@@ -45,6 +50,7 @@ export default function NatureStep({
             </label>
           ))}
         </div>
+        {errors.types && <p className="cl-error">{errors.types}</p>}
       </div>
 
       <div className="cl-field">
@@ -55,7 +61,7 @@ export default function NatureStep({
         </label>
         <textarea
           id="collab-pa-about"
-          className="cl-textarea"
+          className={"cl-textarea" + (errors.about ? " is-invalid" : "")}
           maxLength={NOTE_MAX}
           placeholder="نوع الظهور المطلوب، شراكة إعلامية حصرية.."
           data-i18n-placeholder="collab_pa_f_about_ph"
@@ -66,6 +72,7 @@ export default function NatureStep({
         <p className="cl-counter">
           {NOTE_MAX}/{values.about.length}
         </p>
+        {errors.about && <p className="cl-error">{errors.about}</p>}
       </div>
     </div>
   );

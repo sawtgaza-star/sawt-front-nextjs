@@ -1,18 +1,22 @@
 import { NOTE_MAX, SUPPORT_TYPES } from "./funding-form-data";
 
 /* Step 2 — "تفاصيل عرض الدعم": what the organisation is offering (multi-pick
-   tick boxes) and the free-text pitch underneath. Nothing here is required —
-   the mock shows no error state on this step. */
+   tick boxes) and the free-text pitch underneath. Both are required;
+   FundingWizard checks them on "التالي" and hands back the notes to print. */
 export type SupportFields = {
   types: string[];
   about: string;
 };
 
+export type SupportErrors = Partial<Record<keyof SupportFields, string>>;
+
 export default function SupportStep({
   values,
+  errors,
   onChange,
 }: {
   values: SupportFields;
+  errors: SupportErrors;
   onChange: (patch: Partial<SupportFields>) => void;
 }) {
   const toggle = (value: string) =>
@@ -45,6 +49,7 @@ export default function SupportStep({
             </label>
           ))}
         </div>
+        {errors.types && <p className="cl-error">{errors.types}</p>}
       </div>
 
       <div className="cl-field">
@@ -55,7 +60,7 @@ export default function SupportStep({
         </label>
         <textarea
           id="collab-fu-about"
-          className="cl-textarea"
+          className={"cl-textarea" + (errors.about ? " is-invalid" : "")}
           maxLength={NOTE_MAX}
           placeholder="نوع الظهور المطلوب، شراكة إعلامية حصرية.."
           data-i18n-placeholder="collab_fu_f_about_ph"
@@ -66,6 +71,7 @@ export default function SupportStep({
         <p className="cl-counter">
           {NOTE_MAX}/{values.about.length}
         </p>
+        {errors.about && <p className="cl-error">{errors.about}</p>}
       </div>
     </div>
   );

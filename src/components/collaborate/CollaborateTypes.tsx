@@ -2,30 +2,31 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import CollaborateTypeCard from "./CollaborateTypeCard";
-import { COLLABORATE_TYPES } from "./collaborate-types-data";
+import type { CollaborateType } from "./collaborate-types-data";
+import { CollaborateTypesSkeleton } from "./CollaborateSkeleton";
 
-/* Where each type's own flow lives — all four have one. */
-const TYPE_HREF: Record<string, string> = {
-  creator: "/collaborate/creator",
-  funding: "/collaborate/funding",
-  partnership: "/collaborate/partnership",
-  other: "/collaborate/other",
-};
-
-/* "اختر نوع التعاون" — the four collaboration types as one radio group.
-   Client leaf because the group owns the pick; nothing starts selected, which
-   is the state the mock shows. Picking a type that has a flow marks the card
-   and then moves on to that flow's own page.
+/* "اختر نوع التعاون" — the collaboration types the API lists, as one radio
+   group. Client leaf because the group owns the pick; nothing starts selected,
+   which is the state the mock shows. Picking a type marks the card and then
+   moves on to that type's own flow — `href`, which collaborate-types-data
+   matched to the API's key.
    Reuses cr-section-head / cr-highlight from creators.css like the rest of the
-   secondary pages. */
-export default function CollaborateTypes() {
+   secondary pages. The heading is the page's own chrome, not the payload's, so
+   it keeps its `data-i18n` keys. */
+export default function CollaborateTypes({
+  types,
+  loading = false,
+}: {
+  types: CollaborateType[];
+  /** The payload is still on its way — hold the row's height with bars. */
+  loading?: boolean;
+}) {
   const [selected, setSelected] = useState("");
   const router = useRouter();
 
-  function select(value: string) {
-    setSelected(value);
-    const href = TYPE_HREF[value];
-    if (href) router.push(href);
+  function select(type: CollaborateType) {
+    setSelected(type.value);
+    if (type.href) router.push(type.href);
   }
 
   return (
@@ -40,16 +41,20 @@ export default function CollaborateTypes() {
           </h2>
         </div>
 
-        <div className="cl-types-row">
-          {COLLABORATE_TYPES.map((type) => (
-            <CollaborateTypeCard
-              key={type.value}
-              type={type}
-              checked={type.value === selected}
-              onSelect={() => select(type.value)}
-            />
-          ))}
-        </div>
+        {loading ? (
+          <CollaborateTypesSkeleton />
+        ) : (
+          <div className="cl-types-row">
+            {types.map((type) => (
+              <CollaborateTypeCard
+                key={type.value}
+                type={type}
+                checked={type.value === selected}
+                onSelect={() => select(type)}
+              />
+            ))}
+          </div>
+        )}
       </div>
     </section>
   );

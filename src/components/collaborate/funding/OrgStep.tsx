@@ -81,7 +81,7 @@ export default function OrgStep({
             موقع الشركة / المؤسسة الإلكتروني
           </span>
         </label>
-        <div className="cl-input-wrap">
+        <div className={"cl-input-wrap" + (errors.site ? " is-invalid" : "")}>
           <span className="cl-input-icon" aria-hidden="true">
             <IconFieldLink />
           </span>
@@ -95,6 +95,7 @@ export default function OrgStep({
             onChange={(e) => onChange({ site: e.target.value })}
           />
         </div>
+        {errors.site && <p className="cl-error">{errors.site}</p>}
       </div>
 
       <div className="cl-field">

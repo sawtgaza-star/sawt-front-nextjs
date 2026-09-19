@@ -82,7 +82,7 @@ export default function CompanyStep({
         <label className="cl-label" htmlFor="collab-pa-site">
           <span data-i18n="collab_pa_f_site">موقع الشركة الإلكتروني</span>
         </label>
-        <div className="cl-input-wrap">
+        <div className={"cl-input-wrap" + (errors.site ? " is-invalid" : "")}>
           <span className="cl-input-icon" aria-hidden="true">
             <IconFieldMail />
           </span>
@@ -96,6 +96,7 @@ export default function CompanyStep({
             onChange={(e) => onChange({ site: e.target.value })}
           />
         </div>
+        {errors.site && <p className="cl-error">{errors.site}</p>}
       </div>
 
       <div className="cl-field">

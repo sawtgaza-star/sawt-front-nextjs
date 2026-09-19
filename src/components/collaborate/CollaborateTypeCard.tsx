@@ -14,7 +14,9 @@ const COLLAB_ICON = {
 };
 
 /* One option of "اختر نوع التعاون". Presentational — the pick lives in
-   CollaborateTypes. The card is a <label>, so the whole panel is the radio's
+   CollaborateTypes, and the copy comes resolved from collaborate-types-data:
+   the API's own, which carries no `data-i18n` key because it arrives in both
+   languages, or the built-in four behind it, which do. The card is a <label>, so the whole panel is the radio's
    hit area; the native input stays in the DOM for keyboard + a11y and is
    visually replaced by .cl-type-dot, which CSS fills on :checked. */
 export default function CollaborateTypeCard({
@@ -39,8 +41,9 @@ export default function CollaborateTypeCard({
         onChange={onSelect}
       />
       <span className="cl-type-head">
+        {/* the design's glyph unless an editor uploaded one for this type */}
         <span className="cl-type-icon" aria-hidden="true">
-          <Icon />
+          {type.iconUrl ? <img src={type.iconUrl} alt="" /> : <Icon />}
         </span>
         <span className="cl-type-dot" aria-hidden="true"></span>
       </span>
