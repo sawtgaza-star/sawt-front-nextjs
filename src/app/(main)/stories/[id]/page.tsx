@@ -5,48 +5,52 @@ import type { Metadata } from "next";
 import "@/styles/creators.css";
 import "@/styles/news.css";
 import LegacyInit from "@/components/LegacyInit";
-import NewsHero from "@/components/news/NewsHero";
-import NewsShareCard from "@/components/news/detail/NewsShareCard";
-import NewsArticleHead from "@/components/news/detail/NewsArticleHead";
-import NewsGallery from "@/components/news/detail/NewsGallery";
-import NewsBody from "@/components/news/detail/NewsBody";
-import RelatedNews from "@/components/news/detail/RelatedNews";
-import StoryCard from "@/components/stories/StoryCard";
-import {
-  RELATED_STORIES,
-  STORY_PARAMS,
-  getStory,
-} from "@/components/stories/story-data";
-import {
-  STORIES_PARENT,
-  STORIES_HERO,
-  STORIES_RELATED_HEADING,
-  STORIES_RELATED_MORE,
-} from "@/components/stories/story-chrome";
+import StoryArticleContent from "@/components/stories/StoryArticleContent";
+import { fetchAllStoryUuids, fetchStory } from "@/lib/api/stories";
+import { localized } from "@/lib/api/pages";
 
-/* /stories/[id] — the page behind the arrow on a `.rs-card` and behind
-   "اقرأ المزيد" on the /stories listing. It is the news article page with
-   story copy: identical components, identical layout ([content | aside] grid
-   with the narrow share/donate column on the outside), identical stylesheet. */
+/* /stories/[id] — the page behind the arrow on a `.rs-card` and behind the
+   listing's cards. The segment is the story's `uuid`: GET /pages/stories/{uuid}
+   resolves that identifier only, so every link into a story uses it too.
 
-/* `output: 'export'` needs every dynamic segment pre-listed — the two named
-   slugs the sliders link to, plus every listing id. */
-export function generateStaticParams() {
-  return STORY_PARAMS.map((id) => ({ id }));
+   The story itself is fetched in the browser — see StoryArticleContent — so an
+   edit is live without a deploy. The build only reads the feed to learn which
+   pages exist, because `output: 'export'` pre-lists every dynamic segment; a
+   story added after the deploy therefore needs a rebuild before its URL
+   exists. */
+
+export async function generateStaticParams() {
+  try {
+    const uuids = await fetchAllStoryUuids();
+    return uuids.map((id) => ({ id }));
+  } catch (caught) {
+    // The API being unreachable must not fail the build: the rest of the site
+    // still exports, and this route simply has no pages this time round.
+    console.warn("[stories] could not list stories for the export:", caught);
+    return [];
+  }
 }
 
+/* Tab title = the story's headline. This is the one place the build reads a
+   story's content, and only for <head>; the page's own copy still comes from
+   the browser's request, in the reader's language. */
 export async function generateMetadata({
   params,
 }: {
   params: Promise<{ id: string }>;
 }): Promise<Metadata> {
   const { id } = await params;
-  const { article } = getStory(id);
 
-  return {
-    title: `${article.title} | Sawt`,
-    description: article.desc,
-  };
+  try {
+    const data = await fetchStory(id);
+    const title = localized(data?.story?.title, "ar");
+    const description = localized(data?.story?.excerpt, "ar");
+    if (title) return { title: `${title} | Sawt`, description };
+  } catch {
+    // fall through to the listing's own title
+  }
+
+  return { title: "قصص النجاح | Sawt" };
 }
 
 export default async function Page({
@@ -55,40 +59,11 @@ export default async function Page({
   params: Promise<{ id: string }>;
 }) {
   const { id } = await params;
-  const story = getStory(id);
-  const { article } = story;
 
   return (
     <div className="news-page nws-detail">
       <LegacyInit page="news" />
-      <NewsHero
-        article={{ titleKey: story.titleKey, title: story.title }}
-        parent={STORIES_PARENT}
-        hero={STORIES_HERO}
-      />
-      <main className="nws-main">
-        <div className="container">
-          <div className="nws-layout">
-            <div className="nws-content">
-              <NewsArticleHead article={article} />
-              <NewsGallery images={article.gallery} />
-              <NewsBody article={article} />
-            </div>
-            <aside className="nws-aside">
-              <NewsShareCard />
-            </aside>
-          </div>
-        </div>
-      </main>
-      {/* same strip as /news/[id] — "قصص ذات صلة" + "عرض جميع القصص" →
-          /stories — carrying the home slider's poster cards */}
-      <RelatedNews heading={STORIES_RELATED_HEADING} more={STORIES_RELATED_MORE}>
-        {RELATED_STORIES.map((story) => (
-          <div className="item" key={story.id}>
-            <StoryCard story={story} />
-          </div>
-        ))}
-      </RelatedNews>
+      <StoryArticleContent uuid={id} />
     </div>
   );
 }

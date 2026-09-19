@@ -173,8 +173,12 @@ export default function UntoldStories() {
                           {s.full}
                         </p>
                       </div>
+                      {/* The cards here are still the mock: they name a slug
+                          ("tea"), and /stories/{id} now resolves the API's
+                          uuid only — so the arrow opens the listing until
+                          this section has a feed of its own. */}
                       <a
-                        href={`/stories/${s.slug}`}
+                        href="/stories"
                         className="rs-arrow"
                         aria-label="عرض القصة"
                         data-i18n-title="rs_view_story"

@@ -1,75 +1,61 @@
-/* Static data for the Team page (الفريق): the member roster + the filter pills.
-   Placeholder content mirrors the mock (repeated "سمير البطل / UI/UX Designer")
-   while spreading members across the four teams so the filter is meaningful. */
+/* What the team pages still carry themselves, now that the roster, the filter
+   pills and every profile come from GET /pages/team (see lib/api/team).
 
-export type TeamCategory = "design" | "marketing" | "management" | "montage";
+   Only two things are left, both because no payload has a field for them: the
+   fallback portrait for a member an editor hasn't uploaded a photo for, and
+   the icon class each social platform draws with. The detail page's "شاهد
+   اعمالي في صوت ميديا" button is in the same position — it is written into
+   TeamMemberProfile with its `data-i18n` key, exactly as before. */
 
-export type TeamMember = {
-  id: number;
-  photo: string;
-  /** Portrait framed inside the microphone on the member detail page. */
-  micPhoto: string;
-  nameKey: string;
-  name: string;
-  roleKey: string;
-  role: string;
-  category: TeamCategory;
-};
+import { localized } from "@/lib/api/pages";
+import type { TeamMember, TeamSocials } from "@/lib/api/team";
 
-const PLACEHOLDER_PHOTO = "/assets/images/team.png";
-const PLACEHOLDER_MIC_PHOTO = "/assets/images/team-member.png";
+/** Shown when a member has no uploaded photo. */
+export const PLACEHOLDER_PHOTO = "/assets/images/team.png";
 
-/* Social links shown on the member detail page ("تابعنا على :"). Placeholder
-   hrefs mirror the mock while the real profiles don't exist yet. */
-export type TeamSocial = { icon: string; label: string; href: string };
-
-export const TEAM_SOCIALS: TeamSocial[] = [
-  { icon: "fa-instagram", label: "Instagram", href: "#" },
-  { icon: "fa-twitter", label: "Twitter", href: "#" },
-  { icon: "fa-linkedin-in", label: "LinkedIn", href: "#" },
-  { icon: "fa-facebook-f", label: "Facebook", href: "#" },
+/* The social row of the profile. The payload is an object keyed by platform;
+   this is the order the mock draws them in and the Font Awesome class each
+   one uses — a platform the member left empty is simply skipped. */
+const SOCIAL_ICONS: { key: keyof TeamSocials; icon: string; label: string }[] = [
+  { key: "instagram", icon: "fa-instagram", label: "Instagram" },
+  { key: "twitter", icon: "fa-twitter", label: "Twitter" },
+  { key: "linkedin", icon: "fa-linkedin-in", label: "LinkedIn" },
+  { key: "facebook", icon: "fa-facebook-f", label: "Facebook" },
 ];
 
-const CATEGORY_LAYOUT: TeamCategory[] = [
-  "design",
-  "design",
-  "design",
-  "marketing",
-  "marketing",
-  "management",
-  "montage",
-];
+export type TeamSocialLink = { icon: string; label: string; href: string };
 
-export const TEAM_MEMBERS: TeamMember[] = CATEGORY_LAYOUT.map(
-  (category, i) => ({
-    id: i,
-    photo: PLACEHOLDER_PHOTO,
-    micPhoto: PLACEHOLDER_MIC_PHOTO,
-    nameKey: "team_card_name",
-    name: "سمير البطل",
-    roleKey: "team_card_role",
-    role: "UI/UX Designer",
-    category,
-  }),
-);
-
-/** Look up a member by its `id` (from the /team/[id] route param). */
-export function getTeamMember(id: number): TeamMember | undefined {
-  return TEAM_MEMBERS.find((m) => m.id === id);
+/** The member's links, in the mock's order, without the ones they don't use. */
+export function toSocialLinks(socials: TeamSocials | undefined): TeamSocialLink[] {
+  if (!socials) return [];
+  return SOCIAL_ICONS.filter((entry) => socials[entry.key]).map((entry) => ({
+    icon: entry.icon,
+    label: entry.label,
+    href: socials[entry.key] as string,
+  }));
 }
 
-export type TeamFilterValue = "all" | TeamCategory;
-
-export type TeamFilter = {
-  value: TeamFilterValue;
-  key: string; // i18n key
-  label: string; // Arabic fallback text
+/** One member as the card draws it: already in the reader's language, so it
+    carries no `data-i18n` key any more. `uuid` is the identifier — the detail
+    endpoint resolves that alone (see lib/api/team). */
+export type TeamCardMember = {
+  uuid: string;
+  photo: string;
+  name: string;
+  role: string;
 };
 
-export const TEAM_FILTERS: TeamFilter[] = [
-  { value: "all", key: "team_cat_all", label: "الكل" },
-  { value: "design", key: "team_cat_design", label: "فريق التصميم" },
-  { value: "marketing", key: "team_cat_marketing", label: "فريق التسويق" },
-  { value: "management", key: "team_cat_management", label: "فريق الإدارة" },
-  { value: "montage", key: "team_cat_montage", label: "فريق المونتاج" },
-];
+/** The API's `members` as cards. A member the payload gave no uuid keeps its
+    position but links nowhere, rather than to somebody else's profile. */
+export function toCards(
+  members: TeamMember[] | undefined,
+  lang: string,
+): TeamCardMember[] {
+  if (!Array.isArray(members)) return [];
+  return members.map((member) => ({
+    uuid: member.uuid || "",
+    photo: member.image || PLACEHOLDER_PHOTO,
+    name: localized(member.name, lang),
+    role: localized(member.role, lang),
+  }));
+}

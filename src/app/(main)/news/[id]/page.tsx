@@ -4,40 +4,53 @@ import type { Metadata } from "next";
 import "@/styles/creators.css";
 import "@/styles/news.css";
 import LegacyInit from "@/components/LegacyInit";
-import NewsHero from "@/components/news/NewsHero";
-import NewsShareCard from "@/components/news/detail/NewsShareCard";
-import NewsArticleHead from "@/components/news/detail/NewsArticleHead";
-import NewsGallery from "@/components/news/detail/NewsGallery";
-import NewsBody from "@/components/news/detail/NewsBody";
-import RelatedNews from "@/components/news/detail/RelatedNews";
-import { getArticle } from "@/components/news/detail/news-article-data";
-import { ALL_NEWS } from "@/components/news/news-data";
+import NewsArticleContent from "@/components/news/detail/NewsArticleContent";
+import { fetchAllBlogUuids, fetchBlog } from "@/lib/api/blogs";
+import { localized } from "@/lib/api/pages";
 
-/* /news/[id] — the article behind a card's "اقرأ المزيد". Server Component;
-   the share card, gallery and reel are the client leaves. Layout is the same
-   [content | aside] grid the course page uses, only the other way round in
-   size: the aside is the narrow share/donate column on the outside. */
+/* /news/[id] — the article behind a card's "اقرأ المزيد". The segment is the
+   blog's `uuid`: GET /pages/blogs/{uuid} resolves that identifier only (a
+   numeric id or the slug both answer 404), so every link into an article uses
+   it too.
 
-/* `output: 'export'` needs every dynamic segment pre-listed. */
-export function generateStaticParams() {
-  return ALL_NEWS.map((item) => ({ id: String(item.id) }));
+   The article itself is fetched in the browser — see NewsArticleContent — so
+   an edit is live without a deploy. The build only reads the feed to learn
+   which pages exist, because `output: 'export'` pre-lists every dynamic
+   segment; a post added after the deploy therefore needs a rebuild before its
+   URL exists. */
+
+export async function generateStaticParams() {
+  try {
+    const uuids = await fetchAllBlogUuids();
+    return uuids.map((id) => ({ id }));
+  } catch (caught) {
+    // The API being unreachable must not fail the build: the rest of the site
+    // still exports, and this route simply has no pages this time round.
+    console.warn("[news] could not list articles for the export:", caught);
+    return [];
+  }
 }
 
-/* Tab title = the article headline. getArticle() still returns the one mock
-   article for every id (see news-article-data.ts), so every article page shows
-   the same headline until a real feed lands — the wiring is already correct. */
+/* Tab title = the article headline. This is the one place the build reads an
+   article's content, and only for <head>; the page's own copy still comes from
+   the browser's request, in the reader's language. */
 export async function generateMetadata({
   params,
 }: {
   params: Promise<{ id: string }>;
 }): Promise<Metadata> {
   const { id } = await params;
-  const article = getArticle(id);
 
-  return {
-    title: `${article.title} | Sawt News`,
-    description: article.desc,
-  };
+  try {
+    const data = await fetchBlog(id);
+    const title = localized(data?.blog?.title, "ar");
+    const description = localized(data?.blog?.excerpt, "ar");
+    if (title) return { title: `${title} | Sawt News`, description };
+  } catch {
+    // fall through to the listing's own title
+  }
+
+  return { title: "آخر أخبارنا | Sawt News" };
 }
 
 export default async function Page({
@@ -46,34 +59,11 @@ export default async function Page({
   params: Promise<{ id: string }>;
 }) {
   const { id } = await params;
-  const article = getArticle(id);
 
   return (
     <div className="news-page nws-detail">
       <LegacyInit page="news" />
-      {/* The mock's last crumb is a fixed "اسم الخبر الأخير" label, not the
-          article headline — keep it in sync with the design, not with `article`. */}
-      <NewsHero
-        article={{
-          titleKey: "news_breadcrumb_article",
-          title: "اسم الخبر الأخير",
-        }}
-      />
-      <main className="nws-main">
-        <div className="container">
-          <div className="nws-layout">
-            <div className="nws-content">
-              <NewsArticleHead article={article} />
-              <NewsGallery images={article.gallery} />
-              <NewsBody article={article} />
-            </div>
-            <aside className="nws-aside">
-              <NewsShareCard />
-            </aside>
-          </div>
-        </div>
-      </main>
-      <RelatedNews />
+      <NewsArticleContent uuid={id} />
     </div>
   );
 }

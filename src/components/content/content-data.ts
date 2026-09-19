@@ -1,17 +1,40 @@
-/* Static data for the "محتوانا" page: the hero coverflow thumbnails, the
-   category pills, the sort options and the reel cards that feed the grid and
-   the two "الأكثر مشاهدة" rows. No backend yet — every card points at the same
-   demo reel, as the rest of the site does. */
+/* Local data for the "محتوانا" page.
+
+   The hero's copy, its backdrop and its poster strip now come from
+   GET /pages/content (see lib/api/content) — HERO_SLIDES below is only the
+   fallback the strip shows when the payload carries no posters.
+
+   Everything else here is still local, for two different reasons:
+
+   - the category pills, their counts and the sort options have no field in the
+     payload at all, so they stay chrome with their `data-i18n` keys;
+   - the reel cards are the bundled demo reel, because the API answers
+     `reels.items: []` with `status: "token_expired"`. `reelsFromApi` below is
+     what takes over the moment real ones arrive. */
+
+import type { ContentReel } from "@/lib/api/content";
 
 export const VIDEO =
   "/assets/videos/WhatsApp Video 2026-03-23 at 11.59.11 AM.mp4";
 
-/* hero coverflow — cycles the five reel posters 1.png … 5.png, repeated enough
-   times that the carousel can loop with nine of them on screen */
-export const HERO_SLIDES = Array.from({ length: 20 }, (_, i) => ({
-  id: i,
-  img: `/assets/images/1.png`,
-}));
+/* hero coverflow fallback — the bundled poster, repeated enough times that the
+   carousel can loop with nine of them on screen */
+export const HERO_SLIDES = Array.from({ length: 20 }, () => "/assets/images/1.png");
+
+/* Swiper's loop needs more slides than it shows at once, and the widest
+   breakpoint shows nine; the API sends nine posters. So the strip repeats the
+   payload until it is at least this long — the same trick HERO_SLIDES uses,
+   and what keeps the fan turning instead of snapping back at the last poster. */
+const MIN_HERO_SLIDES = 20;
+
+/** The poster URLs the hero strip cycles, padded out for the loop. */
+export function heroSlides(images: string[]): string[] {
+  const posters = images.filter(Boolean);
+  if (posters.length === 0) return HERO_SLIDES;
+  const padded: string[] = [];
+  while (padded.length < MIN_HERO_SLIDES) padded.push(...posters);
+  return padded;
+}
 
 export const CATEGORIES = [
   { value: "all", key: "content_cat_all", label: "الكل" },
@@ -33,12 +56,14 @@ export const SORT_OPTIONS = [
 export type SortValue = (typeof SORT_OPTIONS)[number]["value"];
 
 export type Reel = {
-  id: number;
+  id: number | string;
   video: string;
-  category: ReelCategory;
-  views: number;
+  /* the three below are optional because an API reel carries no category, and
+     may carry neither a view count nor a date — only the demo rows always do */
+  category?: ReelCategory;
+  views?: number;
   /* ISO date — only used to order the grid, never rendered */
-  publishedAt: string;
+  publishedAt?: string;
 };
 
 const CYCLE: ReelCategory[] = ["economy", "war", "business", "news", "war"];
@@ -68,10 +93,29 @@ export const MOST_WATCHED_ROWS = [
 
 export function sortReels(list: Reel[], sort: SortValue): Reel[] {
   const copy = [...list];
-  if (sort === "views") return copy.sort((a, b) => b.views - a.views);
+  if (sort === "views") return copy.sort((a, b) => (b.views ?? 0) - (a.views ?? 0));
   return copy.sort((a, b) =>
     sort === "newest"
-      ? b.publishedAt.localeCompare(a.publishedAt)
-      : a.publishedAt.localeCompare(b.publishedAt),
+      ? (b.publishedAt ?? "").localeCompare(a.publishedAt ?? "")
+      : (a.publishedAt ?? "").localeCompare(b.publishedAt ?? ""),
   );
+}
+
+/* The API's `reels.items` as cards this page can draw.
+
+   `items` is empty today (`status: "token_expired"`), so this returns nothing
+   and the caller keeps MOST_WATCHED_ROWS on screen. It reads whichever of the
+   URL fields the payload turns out to use — see the note on ContentReel in
+   lib/api/content — and drops an item with no playable file, which would
+   otherwise render as a black card with a play button that does nothing. */
+export function reelsFromApi(items: ContentReel[] | undefined): Reel[] {
+  if (!Array.isArray(items)) return [];
+  return items
+    .map((item, index) => ({
+      id: item.uuid ?? item.id ?? index,
+      video: item.video_url || item.media_url || "",
+      views: typeof item.views === "number" ? item.views : undefined,
+      publishedAt: item.published_at ?? undefined,
+    }))
+    .filter((reel) => reel.video);
 }

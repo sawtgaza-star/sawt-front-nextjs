@@ -4,9 +4,15 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
-/* Main navbar link list. Client leaf: reads the current path to set the active
-   class (the only reason SiteNav needs the client boundary). */
-export default function NavLinks() {
+/* Main navbar link list — `nav.primary` of GET /layout/navbar with the support
+   CTA spliced in for the collapsed menu, resolved by ./navbar-data. The labels
+   are the API's; the destinations are this site's own (ROUTE_BY_KEY there), and
+   so is the choice of <Link> vs <a>: only / and /about share a stylesheet with
+   every page that renders this bar, so everything else must reload — see
+   CLAUDE.md, "CSS groups".
+
+   Still a client leaf: it reads the current path to set the active class. */
+export default function NavLinks({ links, loading }) {
   const pathname = usePathname();
   // Static export (output: 'export') serves every route as /team/index.html, so
   // in production usePathname() returns "/team/" and a strict === "/team" test
@@ -14,77 +20,57 @@ export default function NavLinks() {
   // trailing slash ("/" itself must keep it).
   const path = pathname?.replace(/\/+$/, "") || "/";
   const isActive = (href) => (path === href ? " active" : "");
+
+  // Six rows, the length of the list the API sends once the support entry is in
+  // — so the collapsed menu doesn't grow when the response lands.
+  if (loading) {
+    return (
+      <ul
+        className="navbar-nav mb-2 mb-lg-0 fw-bold"
+        style={{ textAlign: "start" }}
+      >
+        {" "}
+        {["44px", "48px", "52px", "40px", "56px", "78px"].map((width, index) => (
+          <li className="nav-item ms-lg-3" key={index}>
+            {" "}
+            <span className="nav-link font-16">
+              <span className="nsk-line" style={{ width }} />
+            </span>{" "}
+          </li>
+        ))}{" "}
+      </ul>
+    );
+  }
+
   return (
     <ul
       className="navbar-nav mb-2 mb-lg-0 fw-bold"
       style={{ textAlign: "start" }}
     >
       {" "}
-      <li className="nav-item ms-lg-3">
-        {" "}
-        <Link
-          className={"nav-link font-16" + isActive("/")}
-          href="/"
-          data-i18n="nav_home"
+      {links.map((link, index) => (
+        <li
+          className={"nav-item ms-lg-3" + (link.mobileOnly ? " d-lg-none" : "")}
+          key={index}
         >
-          الرئيسية
-        </Link>{" "}
-      </li>{" "}
-      <li className="nav-item ms-lg-3">
-        {" "}
-        <Link
-          className={"nav-link font-16" + isActive("/about")}
-          href="/about"
-          target="_self"
-          data-i18n="nav_about"
-        >
-          من نحن
-        </Link>{" "}
-      </li>{" "}
-      <li className="nav-item ms-lg-3">
-        {" "}
-        <a
-          className={"nav-link font-16" + isActive("/content")}
-          href="/content"
-          data-i18n="nav_content"
-        >
-          محتوانا
-        </a>{" "}
-      </li>{" "}
-      <li className="nav-item ms-lg-3">
-        {" "}
-        <a
-          className={"nav-link font-16" + isActive("/team")}
-          href="/team"
-          data-i18n="nav_team"
-        >
-          الفريق
-        </a>{" "}
-      </li>{" "}
-      {/* ادعم صوت is a top-bar CTA on desktop (NavTopBar) — this entry only
-          serves the collapsed menu, which is also why it sits above صناع
-          المحتوى: that's the order the phone design lists them in.
-          حاضنة صوت / صوت ميديا moved to NavPills. */}
-      <li className="nav-item ms-lg-3 d-lg-none">
-        {" "}
-        <a
-          className={"nav-link font-16" + isActive("/support")}
-          href="/support"
-          data-i18n="nav_support"
-        >
-          ادعم صوت
-        </a>{" "}
-      </li>{" "}
-      <li className="nav-item ms-lg-3">
-        {" "}
-        <a
-          className={"nav-link font-16" + isActive("/creators")}
-          href="/creators"
-          data-i18n="nav_creators"
-        >
-          صناع المحتوى
-        </a>{" "}
-      </li>{" "}
+          {" "}
+          {link.soft ? (
+            <Link
+              className={"nav-link font-16" + isActive(link.url)}
+              href={link.url}
+            >
+              {link.label}
+            </Link>
+          ) : (
+            <a
+              className={"nav-link font-16" + isActive(link.url)}
+              href={link.url}
+            >
+              {link.label}
+            </a>
+          )}{" "}
+        </li>
+      ))}{" "}
     </ul>
   );
 }

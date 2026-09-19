@@ -3,7 +3,13 @@
   font-family: "main";
 } */
 
-@import url("https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&display=swap");
+/* Cairo is loaded by a <link> in app/layout.tsx, NOT from here.
+   An @import is only honoured while it is the first rule in the sheet, and
+   Next.js concatenates every CSS file of a route group into one bundle — once
+   another file (footer-skeleton.css) was ordered ahead of this one the browser
+   silently dropped the import and the whole site lost its font. A <link> in
+   <head> has no such ordering rule, and is fetched a round-trip earlier.
+   Keep font URLs out of this file. */
 
 :root {
   --dark-green: #38422a;
@@ -1279,17 +1285,31 @@ svg {
   transition: all 0.3s ease-in-out;
 }
 
+/* الشعار داخل دائرة البطاقة. كان مثبّتاً بـ ‎position:absolute; bottom:7px‎،
+   فيهبط عن مركز الدائرة (80px) بمقدار 6px. ‎.up-center-icon‎ أصلاً ‎flex‎
+   بمحاذاة وسطية، فيكفي تركُ العنصر في السياق الطبيعي ليتوسّط أفقياً ورأسياً. */
 .center-img {
-  position: absolute;
-  bottom: 7px;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 60px;
-  height: 60px;
+  position: relative;
+  width: 44px;
+  height: 44px;
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
+}
+
+/* ‎.image-container img‎ أعلاه يفرض ‎width:100%; height:200px‎ وزوايا مستديرة
+   على كل صورة داخل الحاوية — والشعار منها — فكان يُمطّ على غلاف البطاقة كله.
+   هنا يستعيد الشعار قياسه الذاتي (سواء كان ‎<img>‎ أو ‎<svg>‎) محدوداً بحجم
+   الدائرة، من غير المساس بصورة الغلاف. */
+.center-img img,
+.center-img svg {
+  width: auto;
+  height: auto;
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+  border-radius: 0;
 }
 
 .platform-card {
@@ -1475,6 +1495,21 @@ svg {
 
 .creators-carousel2 {
   position: relative;
+}
+
+/* أزرار تنقّل كاروسيل صنّاع المحتوى: أيقونة chevron (SVG) بدل الرمز النصي ‹ ›.
+   الزر يحتفظ بمقاسه وإطاره ولونه — الأيقونة ترث اللون عبر ‎currentColor‎
+   وتُوسَّط داخله بدل الإزاحة المطلقة التي كانت مضبوطة على حجم الحرف. */
+.creators-carousel2 .owl-nav button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+}
+
+.creators-carousel2 .owl-nav button svg {
+  width: auto;
+  height: 14px;
 }
 
 .owl-nav2 {
@@ -1760,6 +1795,9 @@ svg {
   flex-direction: column;
   gap: 15px;
   justify-content: start;
+  /* the two mobile variants below already centre the rows on the cross axis;
+     without this the desktop column stretched them to full width */
+  align-items: start;
   margin: 10px 0px;
 }
 .footer-social-icon {
@@ -4445,14 +4483,20 @@ svg {
   margin: 0 auto;
 }
 
+/* الصورة تملأ فتحة رأس المايك بالكامل بدل الدائرة الصغيرة في المنتصف.
+   النِسَب مأخوذة من صورة الإطار نفسها (‎مايك عوض 6.png‎ بمقاس 310×587):
+   الفتحة تبدأ عند 63×49 بكسل وقياسها 190×257، أي 20.32% / 8.35% بعرض
+   61.29% وارتفاع 43.78%. كلها نِسَب، فتتبع الصورةُ المايكَ عند أي عرض
+   للبطاقة ولا تحتاج ضبطاً في استعلامات الوسائط.
+   ‎border-radius‎ كبير يقصّ الصورة إلى شكل الكبسولة: المتصفح يحدّه عند نصف
+   البُعد الأصغر (نصف العرض) فتصير النهايتان نصف دائرة تماماً كالفتحة. */
 .member-photo-box {
   position: absolute;
-  top: 50px;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 150px;
-  height: 150px;
-  border-radius: 50%;
+  top: 8.35%;
+  left: 20.32%;
+  width: 61.29%;
+  height: 43.78%;
+  border-radius: 999px;
   overflow: hidden;
   z-index: 22;
 }
@@ -4852,13 +4896,7 @@ svg {
     width: 200px;
   }
 
-  .member-photo-box {
-    width: 115px;
-    /* تصغير دائرة الصورة */
-    height: 115px;
-    top: 38px;
-    /* إعادة ضبط مكان الصورة داخل المايك الصغير */
-  }
+  /* لا حاجة لضبط ‎.member-photo-box‎ هنا: قياسها بالنِسَب فتتبع المايك */
 
   .member-name-tag {
     font-size: 0.8rem;
@@ -6491,18 +6529,52 @@ svg {
 }
 .social-links {
   margin-inline-start:10px;
+  /* Inline flow sat every mark on the text baseline, so a 20px SVG and an 18px
+     Font Awesome glyph landed at different heights, and the only spacing was
+     the `.ms-2` each link carries. A flex row centres them all on one line and
+     owns the spacing itself — the same treatment `.nav-mobile-social
+     .social-links` already gives the phone drawer's copy of this row. */
+  display: flex;
+  align-items: center;
+  gap: 5px;
 }
 
 .social-links a i {
   color: rgba(76, 92, 55, 1);
 }
+/* The brand marks are the design's own SVGs now (ui/icons), painted in
+   currentColor so the footer can take the same ones white. The link carries
+   Bootstrap's `text-white`, which the marks would otherwise inherit — this is
+   the olive the <i> rule above gives the fallback glyphs. */
+.social-links a svg {
+  color: rgba(76, 92, 55, 1);
+  /* pinned rather than left to the SVG's own attributes, so a mark added later
+     at a different intrinsic size still lands on the row's 20px rhythm */
+  display: block;
+  width: 20px;
+  height: 20px;
+}
+/* One fixed box per mark, whatever is drawn inside it: the 20px SVGs and the
+   Font Awesome fallbacks then share a centre, and the hover circle below is a
+   circle rather than a pill sized to its glyph.
+   `margin-left`, physically, because the app loads the LTR Bootstrap build —
+   the `.ms-2` these links carry is a `margin-left: .5rem !important` that
+   would otherwise add to the flex gap. */
 .social-links a {
   transition: all 0.2s ease-in-out;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  flex: none;
+  margin-left: 0 !important;
 }
 
+/* No padding here: it used to grow the link on hover alone, which nudged every
+   mark beside it sideways. The fixed box above holds the space instead. */
 .social-links a:hover {
   background-color: rgba(0, 0, 0, 0.04);
-  padding: 5px 10px;
   border-radius: 50%;
 }
 
@@ -6583,6 +6655,8 @@ svg {
   .social-links {
     /* width: 100%; */
     text-align: center;
+    /* the row is a flex container now, so centring is the flex axis's job */
+    justify-content: center;
   }
 
   .about-sec {
@@ -6974,6 +7048,9 @@ svg {
   object-position: center top;
 }
 
+.rs-card-text {
+  text-align: start;
+}
 .rs-card::after {
   content: "";
   position: absolute;
@@ -7050,6 +7127,19 @@ svg {
 .rs-arrow:hover {
   background: rgba(255, 255, 255, 0.32);
   color: #fff;
+}
+
+/* --- English (LTR): the story card sits inside an Owl carousel that is always
+   built with `rtl: true`, so `.owl-rtl` forces direction:rtl on everything
+   inside it — the English copy stayed right-aligned with its full stop on the
+   wrong side, and the arrow pointed away from the reading direction. Flip the
+   card itself (text left, arrow on the right) and mirror the arrow. --- */
+[dir="ltr"] .real-stories-carousel .rs-card {
+  direction: ltr;
+}
+
+[dir="ltr"] .rs-arrow i {
+  transform: rotate(-40deg) scaleX(-1);
 }
 
 /* --- Carousel: hide prev/next nav arrows --- */
@@ -7631,9 +7721,14 @@ svg {
     margin-right: auto !important;
   }
 
+  /* The drawer's row is the compact one: 16px marks with the group's own 18px
+     gap, so it gives up the 32px hover box the top bar's links carry. */
   .nav-mobile-social .social-links a {
     display: inline-flex;
     align-items: center;
+    justify-content: center;
+    width: auto;
+    height: auto;
     color: rgba(76, 92, 55, 1);
     margin-left: 0 !important;
   }
@@ -8206,14 +8301,6 @@ svg {
     max-width: 200px;
   }
 
-  /* نِسَب فتحة الصورة مأخوذة من الضبط السابق (صورة 115px داخل مايك 225px،
-     وإطار المايك 310×587) حتى تبقى محاذاتها صحيحة مع أي عرض للبطاقة */
-  .member-photo-box {
-    width: 51.11%;
-    height: 26.99%;
-    top: 8.92%;
-  }
-
   .member-name-tag {
     font-size: 18px;
   }
@@ -8766,9 +8853,12 @@ svg {
   color: #b9b9b9;
 }
 
+/* No focus treatment on the stepper's boxes: the green border + halo were
+   removed on request, so a focused field looks exactly like a resting one.
+   The error state below keeps its red border. */
 .join-input:focus {
-  border-color: #7f9257;
-  box-shadow: 0 0 0 3px rgba(76, 92, 55, 0.12);
+  border-color: #e4e4e4;
+  box-shadow: none;
 }
 
 .join-textarea {
@@ -8793,8 +8883,8 @@ svg {
 }
 
 .join-textarea:focus {
-  border-color: #7f9257;
-  box-shadow: 0 0 0 3px rgba(76, 92, 55, 0.12);
+  border-color: #e4e4e4;
+  box-shadow: none;
 }
 
 /* ---------- Validation errors ---------- */
@@ -8812,7 +8902,8 @@ svg {
 
 .join-field.has-error .join-input:focus,
 .join-field.has-error .join-textarea:focus {
-  box-shadow: 0 0 0 3px rgba(224, 82, 82, 0.12);
+  border-color: #e05252;
+  box-shadow: none;
 }
 
 .join-field.has-error .join-country-box {
@@ -8970,7 +9061,7 @@ svg {
 }
 
 .join-country-search input:focus {
-  border-color: #7f9257;
+  border-color: #e4e4e4;
 }
 
 .join-country-list {
@@ -9080,6 +9171,21 @@ svg {
   display: flex;
   align-items: center;
   gap: 8px;
+}
+
+/* Whatever the API said about the links (socials.N.url), under ALL of the rows
+   — the last child of the list, however many rows there are. Indented past the
+   platform select on the leading edge and the delete button on the trailing
+   one, so it lines up with the boxes above it. */
+.join-social-error {
+  flex: 0 0 auto;
+  margin: -2px 0 0;
+  margin-inline-start: 156px;
+  margin-inline-end: 48px;
+}
+
+.join-social-row.has-error .join-input {
+  border-color: #e05252;
 }
 
 .join-platform {
@@ -9480,6 +9586,12 @@ svg {
 
   .join-social-row {
     gap: 6px;
+  }
+
+  /* the platform select and the delete button both shrink here */
+  .join-social-error {
+    margin-inline-start: 128px;
+    margin-inline-end: 40px;
   }
 
   .join-platform {

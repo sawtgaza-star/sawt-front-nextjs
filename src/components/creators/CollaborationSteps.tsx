@@ -2,8 +2,21 @@
 "use client";
 /* eslint-disable */
 import { IconArrowUpLeft } from "@/components/ui/icons";
+import { localized } from "@/lib/api/pages";
+import type { CreatorsCollaborationContent } from "@/lib/api/creators-page";
+import { splitTail, stepNumber } from "./creators-text";
 
-/* "كيف يبدأ التعاون مع صناع محتوى صوت؟" — flow diagram + steps + CTA. */
+/* "كيف يبدأ التعاون مع صناع محتوى صوت؟" — flow diagram + steps + CTA.
+
+   /creators fills this from the API's `collaboration` block; /creators/{id}
+   renders the same section with no payload behind it, so the built-in copy is
+   kept as the fallback for that page — and with it the `data-i18n` keys, which
+   are only ever attached when the API did NOT supply the text.
+
+   THE STEP TITLES ("ابحث واختر"…) ARE CHROME, not content: `steps` sends a
+   number and a body, no title, so the three titles stay in the markup and keep
+   their keys even when the bodies come from the payload. A fourth step the
+   editor adds therefore shows its number and text with no title. */
 const STEPS = [
   {
     num: "01",
@@ -64,7 +77,42 @@ function FlowArrow({ dir }: { dir: "left" | "right" }) {
   return <div className={`cr-flow-arrow cr-flow-arrow-${dir}`}>{children}</div>;
 }
 
-export default function CollaborationSteps() {
+export default function CollaborationSteps({
+  data,
+  lang = "ar",
+}: {
+  data?: CreatorsCollaborationContent;
+  lang?: string;
+}) {
+  const title = localized(data?.title, lang);
+  const [titlePre, titleHl] = splitTail(title, 3);
+  const description = localized(data?.description, lang);
+
+  const diagram = data?.diagram;
+  const brandsTitle = localized(diagram?.brands?.title, lang);
+  const brandsSub = localized(diagram?.brands?.subtitle, lang);
+  const mediaTitle = localized(diagram?.media?.title, lang);
+  const mediaSub = localized(diagram?.media?.subtitle, lang);
+  const mediaImage =
+    diagram?.media?.image_url ||
+    "/assets/images/شعار الحاضنة 2 [Vectorized].png";
+  const creatorsTitle = localized(diagram?.creators?.title, lang);
+  const creatorsSub = localized(diagram?.creators?.subtitle, lang);
+
+  const stepsTitle = localized(data?.steps_title, lang);
+  const ctaLabel = localized(data?.cta?.label, lang);
+
+  const apiSteps = Array.isArray(data?.steps) ? data.steps : [];
+  const steps = apiSteps.length
+    ? apiSteps.map((step, i) => ({
+        num: stepNumber(step.number, i),
+        title: STEPS[i]?.title,
+        titleKey: STEPS[i]?.titleKey,
+        text: localized(step.text, lang),
+        key: undefined,
+      }))
+    : STEPS;
+
   return (
     <section className="cr-collab-section">
       <div className="container position-relative ">
@@ -77,17 +125,24 @@ export default function CollaborationSteps() {
           />
 
         <div className="cr-section-head">
-          <h2 className="cr-section-title">
-            <span data-i18n="creators_collab_title_pre">
-              كيف يبدأ التعاون مع
-            </span>{" "}
-            <span className="cr-highlight" data-i18n="creators_collab_title_hl">
-              صناع محتوى صوت؟
-            </span>
-          </h2>
-          <p className="cr-section-sub" data-i18n="creators_collab_sub">
-            وصلنا شركات من حول العالم بصنّاع المحتوى في غزة — صوت ميديا هي الجسر
-            الذي يوصلك
+          {title ? (
+            <h2 className="cr-section-title">
+              <span>{titlePre}</span>{" "}
+              <span className="cr-highlight">{titleHl}</span>
+            </h2>
+          ) : (
+            <h2 className="cr-section-title">
+              <span data-i18n="creators_collab_title_pre">
+                كيف يبدأ التعاون مع
+              </span>{" "}
+              <span className="cr-highlight" data-i18n="creators_collab_title_hl">
+                صناع محتوى صوت؟
+              </span>
+            </h2>
+          )}
+          <p className="cr-section-sub" data-i18n={description ? undefined : "creators_collab_sub"}>
+            {description ||
+              "وصلنا شركات من حول العالم بصنّاع المحتوى في غزة — صوت ميديا هي الجسر الذي يوصلك"}
           </p>
         </div>
 
@@ -101,15 +156,15 @@ export default function CollaborationSteps() {
               </div>
               <h3
                 className="cr-flow-node-title"
-                data-i18n="creators_flow_brands"
+                data-i18n={brandsTitle ? undefined : "creators_flow_brands"}
               >
-                الشركات والعلامات
+                {brandsTitle || "الشركات والعلامات"}
               </h3>
               <p
                 className="cr-flow-node-sub"
-                data-i18n="creators_flow_brands_sub"
+                data-i18n={brandsSub ? undefined : "creators_flow_brands_sub"}
               >
-                التجارية حول العالم
+                {brandsSub || "التجارية حول العالم"}
               </p>
             </div>
 
@@ -117,11 +172,16 @@ export default function CollaborationSteps() {
 
             <div className="cr-flow-center">
               <div className="cr-flow-center-circle">
-                <img src="/assets/images/شعار الحاضنة 2 [Vectorized].png" alt="" />
-                <span data-i18n="creators_flow_media">ميديا صوت</span>
+                <img src={mediaImage} alt="" />
+                <span data-i18n={mediaTitle ? undefined : "creators_flow_media"}>
+                  {mediaTitle || "ميديا صوت"}
+                </span>
               </div>
-              <span className="cr-flow-badge" data-i18n="creators_flow_trusted">
-                الوسيط الرسمي الموثوق
+              <span
+                className="cr-flow-badge"
+                data-i18n={mediaSub ? undefined : "creators_flow_trusted"}
+              >
+                {mediaSub || "الوسيط الرسمي الموثوق"}
               </span>
             </div>
 
@@ -136,31 +196,35 @@ export default function CollaborationSteps() {
               </div>
               <h3
                 className="cr-flow-node-title"
-                data-i18n="creators_flow_creators"
+                data-i18n={creatorsTitle ? undefined : "creators_flow_creators"}
               >
-                صناع المحتوى
+                {creatorsTitle || "صناع المحتوى"}
               </h3>
               <p
                 className="cr-flow-node-sub"
-                data-i18n="creators_flow_creators_sub"
+                data-i18n={creatorsSub ? undefined : "creators_flow_creators_sub"}
               >
-                مبدعو غزة وفلسطين
+                {creatorsSub || "مبدعو غزة وفلسطين"}
               </p>
             </div>
           </div>
         </div>
 
         <div className="cr-steps-divider">
-          <span data-i18n="creators_steps_title">خطوات التعاون</span>
+          <span data-i18n={stepsTitle ? undefined : "creators_steps_title"}>
+            {stepsTitle || "خطوات التعاون"}
+          </span>
         </div>
 
         <div className="cr-steps-grid">
-          {STEPS.map((s) => (
-            <div className="cr-step-card" key={s.key}>
+          {steps.map((s, i) => (
+            <div className="cr-step-card" key={s.key || `step-${i}`}>
               <span className="cr-step-num">{s.num}</span>
-              <span className="cr-step-title" data-i18n={s.titleKey}>
-                {s.title}
-              </span>
+              {s.title ? (
+                <span className="cr-step-title" data-i18n={s.titleKey}>
+                  {s.title}
+                </span>
+              ) : null}
               <span className="cr-step-text" data-i18n={s.key}>
                 {s.text}
               </span>
@@ -171,7 +235,7 @@ export default function CollaborationSteps() {
         <div className="cr-collab-cta">
           <a href="/media">
             <span>
-            تواصل مع فريق صوت للانضمام
+            {ctaLabel || "تواصل مع فريق صوت للانضمام"}
             </span>
             <IconArrowUpLeft />
           </a>

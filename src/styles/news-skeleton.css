@@ -1,0 +1,121 @@
+/* Placeholders for /news and /news/{uuid} while GET /pages/blogs is in flight.
+
+   Neither page carries copy of its own any more (see components/news), so
+   without these the visitor gets the breadcrumb header and a white page until
+   the response lands. The bars sit inside the REAL wrappers — .news-grid,
+   .nws-content — so the layout they hold is the layout the content arrives
+   into and nothing jumps.
+
+   Same base classes as home-skeleton.css / about-skeleton.css; only one of the
+   three ever loads on a page. Sizes mirror news.css: 230px card image, 16/9
+   gallery stage, 67px thumbnails. Keep them in step if those change. */
+
+/* `.sk-line-title` is in this group, not only in its own rule below: most of
+   the skeleton components pass it as the ONLY class (<Line className=
+   "sk-line-title" />), so without display + background here a title bar is an
+   inline span with a height that does nothing — invisible. */
+.sk-line-title,
+.sk-line,
+.sk-block {
+  display: block;
+  background: linear-gradient(90deg, #e9ecef 25%, #f5f7f9 37%, #e9ecef 63%);
+  background-size: 400% 100%;
+  animation: sk-shimmer 1.4s ease-in-out infinite;
+}
+
+.sk-line {
+  height: 14px;
+  border-radius: 7px;
+  margin-bottom: 12px;
+}
+
+.sk-line-title {
+  height: 28px;
+  border-radius: 10px;
+  margin-bottom: 22px;
+}
+
+.sk-block {
+  width: 100%;
+  border-radius: 16px;
+}
+
+/* --- breadcrumb hero ---
+   The hero sits on the dark collage, where the light grey above would glare —
+   the same shimmer, dimmed into it (same treatment as creators-skeleton.css).
+   Centred, because the copy it stands in for is. */
+.sk-nws-hero {
+  max-width: 900px;
+  margin-inline: auto;
+}
+
+.sk-nws-hero .sk-line,
+.sk-nws-hero .sk-line-title {
+  margin-inline: auto;
+  background: linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0.1) 25%,
+    rgba(255, 255, 255, 0.2) 37%,
+    rgba(255, 255, 255, 0.1) 63%
+  );
+  background-size: 400% 100%;
+}
+
+/* the title bar carries the height .about-hero-title lands on */
+.sk-nws-hero .sk-line-title {
+  height: 34px;
+}
+
+/* One card of the listing grid: the image box of news.css, then the two body
+   lines and the footer row the card shows under it. */
+.sk-news-card {
+  border-radius: 16px;
+  overflow: hidden;
+}
+
+.sk-news-card .sk-news-cover {
+  height: 230px;
+  border-radius: 16px;
+  margin-bottom: 16px;
+}
+
+/* --- article --- */
+.sk-nws-tags {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 18px;
+}
+
+.sk-nws-tag {
+  height: 30px;
+  width: 120px;
+  border-radius: 999px;
+}
+
+.sk-nws-stage {
+  aspect-ratio: 16 / 9;
+  border-radius: 12px;
+  margin: 26px 0 18px;
+}
+
+.sk-nws-thumbs {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 30px;
+}
+
+.sk-nws-thumb {
+  width: 100px;
+  height: 67px;
+  flex: 0 0 100px;
+  border-radius: 12px;
+}
+
+@keyframes sk-shimmer {
+  0% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0 50%;
+  }
+}

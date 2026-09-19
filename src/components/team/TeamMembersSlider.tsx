@@ -1,6 +1,6 @@
 "use client";
 import TeamMemberCard from "./TeamMemberCard";
-import type { TeamMember } from "./team-data";
+import type { TeamCardMember } from "./team-data";
 import { useSnapSlider } from "@/components/media/useSnapSlider";
 
 /* The "اعضاء الفريق" row. Desktop keeps the five-column grid; on phones the CSS
@@ -15,7 +15,7 @@ import { useSnapSlider } from "@/components/media/useSnapSlider";
 export default function TeamMembersSlider({
   members,
 }: {
-  members: TeamMember[];
+  members: TeamCardMember[];
 }) {
   const { trackRef, activeSlide, onScroll } = useSnapSlider(members.length, 1);
 
@@ -23,7 +23,7 @@ export default function TeamMembersSlider({
     <div className="team-members-row" ref={trackRef} onScroll={onScroll}>
       {members.map((m, i) => (
         <TeamMemberCard
-          key={m.id}
+          key={m.uuid || i}
           member={m}
           className={i === activeSlide ? "active" : undefined}
         />

@@ -1,20 +1,68 @@
 // @ts-nocheck
-"use client";
 /* eslint-disable */
-export default function MidBanner() {
+import { localized } from "@/lib/api/pages";
+import type { HomePartners } from "@/lib/api/home";
+import { splitHeading, bySortOrder } from "./home-text";
+
+/* The API's `partners` block. The marquee scrolls one group of logos twice —
+   the second copy is what makes the loop seamless, so it is rendered from the
+   same list and kept `aria-hidden`, exactly as the legacy markup did with its
+   five repeated images.
+
+   `name` comes through empty from the API today; it is used as the alt text
+   when an editor fills it in, and falls back to nothing rather than to a
+   made-up label. */
+function PartnerLogos({ partners, hidden }) {
+  return (
+    <div className="marquee-group" aria-hidden={hidden ? "true" : undefined}>
+      {" "}
+      {partners.map((partner, index) => (
+        <img key={index} src={partner.logo} alt={partner.name} />
+      ))}{" "}
+    </div>
+  );
+}
+
+export default function MidBanner({
+  data,
+  lang = "ar",
+}: {
+  data?: HomePartners;
+  lang?: string;
+}) {
+  const title = localized(data?.title, lang);
+  const [titleHead, titleTail] = splitHeading(title, 2);
+  const subtitle = localized(data?.subtitle, lang);
+
+  const partners = bySortOrder(data?.items)
+    .map((item) => ({ logo: item.logo_url, name: item.name || "" }))
+    .filter((partner) => partner.logo);
+
+  if (!title && !subtitle && !partners.length) return null;
+
   return (
     <>
-<section className="mt-3"> <div className="partners-section text-center mb-4"> <h1 className="partners-title fw-bold" style={{fontSize: "40px"}}> <span data-i18n="partners_title_main">شركاؤنا</span> <span className="partners-highlight who-us" data-i18n="at_sawt">في صوت</span> </h1> <p className="partners-description font-24" data-i18n="partners_subtitle2">
-            شركاء يشاركوننا رحلة التأثير وصناعة التغيير.
-          </p> </div> <div className="marquee"> <div className="marquee-group"> <img src="/assets/images/صوت 8.png" alt="sout" /> <img src="/assets/images/صوت 8.png" alt="sout" /> <img src="/assets/images/صوت 8.png" alt="sout" /> <img src="/assets/images/صوت 8.png" alt="sout" /> <img src="/assets/images/صوت 8.png" alt="sout" /> </div> <div className="marquee-group" aria-hidden="true"> <img src="/assets/images/صوت 8.png" alt="sout" /> <img src="/assets/images/صوت 8.png" alt="sout" /> <img src="/assets/images/صوت 8.png" alt="sout" /> <img src="/assets/images/صوت 8.png" alt="sout" /> <img src="/assets/images/صوت 8.png" alt="sout" /> </div> </div> {/*  <div class="text-center mt-3" style="color: white">
-          <a
-            href="#"
-            class="btn btn-dark rounded-pill px-4 py-2 text-white fw-bold"
-          >
-            <span data-i18n="be_partner">كن شريكاً لصوت</span>
-            <i class="fa-solid fa-arrow-left me-2"></i>
-          </a>
-        </div>  */} </section>
+      <section className="mt-3">
+        {" "}
+        <div className="partners-section text-center mb-4">
+          {" "}
+          {title ? (
+            <h1 className="partners-title fw-bold" style={{ fontSize: "40px" }}>
+              {" "}
+              <span>{titleHead}</span>{" "}
+              <span className="partners-highlight who-us">{titleTail}</span>{" "}
+            </h1>
+          ) : null}{" "}
+          {subtitle ? (
+            <p className="partners-description font-24">{subtitle}</p>
+          ) : null}{" "}
+        </div>{" "}
+        <div className="marquee">
+          {" "}
+          <PartnerLogos partners={partners} hidden={false} />{" "}
+          <PartnerLogos partners={partners} hidden={true} />{" "}
+        </div>{" "}
+      </section>
     </>
   );
 }

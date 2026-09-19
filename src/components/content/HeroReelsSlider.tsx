@@ -4,7 +4,6 @@ import { Autoplay } from "swiper/modules";
 import type { Swiper as SwiperClass } from "swiper";
 import "swiper/css";
 import "swiper/css/autoplay";
-import { HERO_SLIDES } from "./content-data";
 
 /* The fan is a fixed table, not a formula: one exact transform per position
    away from the focused poster. Key = steps from the focused slide; the page is
@@ -35,8 +34,11 @@ type FanSlide = HTMLElement & { progress?: number };
 
    Sign note: the page is dir="rtl", so a POSITIVE progress puts a slide to the
    LEFT of the focused one. rotateY of the same sign sends that slide's right
-   (inner) edge backwards — which is the recede we want on both sides. */
-export default function HeroReelsSlider() {
+   (inner) edge backwards — which is the recede we want on both sides.
+
+   `slides` are the poster URLs the API's `hero.items` sent, already padded out
+   for the loop by heroSlides() — see content-data. */
+export default function HeroReelsSlider({ slides }: { slides: string[] }) {
   const fan = (swiper: SwiperClass) => {
     (swiper.slides as FanSlide[]).forEach((slide) => {
       /* round to the nearest position so a slide always wears one of the exact
@@ -79,10 +81,10 @@ export default function HeroReelsSlider() {
         onSetTranslate={fan}
         onResize={fan}
       >
-        {HERO_SLIDES.map((slide) => (
-          <SwiperSlide key={slide.id} className="ct-hero-slide">
+        {slides.map((src, index) => (
+          <SwiperSlide key={index} className="ct-hero-slide">
             <div className="ct-hero-thumb">
-              <img src={slide.img} alt="" />
+              <img src={src} alt="" />
             </div>
           </SwiperSlide>
         ))}

@@ -1,77 +1,122 @@
+import { localized } from "@/lib/api/pages";
+import { localizedList, sortItems } from "@/lib/api/media-page";
+import type {
+  MediaWorkAboutContent,
+  MediaWorkGallery,
+  MediaWorkNote,
+  MediaWorkResults,
+} from "@/lib/api/media-work";
 import MediaProjectHead from "./MediaProjectHead";
-import type { MediaProject } from "./media-project-data";
+import { galleryLayout } from "./media-page-view";
 
 /* "عن المشروع" panel — the brief, the challenges/solutions pair (orange card on
    the right, olive on the left, each with the design's quarter-circle notch in
-   its top-left corner), the three result figures and the frames of the project. */
-export default function MediaProjectAbout({ project }: { project: MediaProject }) {
+   its top-left corner), the result figures and the frames of the project.
+
+   All three headings are the API's: the tab's own label opens the panel, then
+   `results.title` and `gallery.title`. */
+function Note({
+  note,
+  lang,
+  tone,
+}: {
+  note?: MediaWorkNote;
+  lang: string;
+  tone: "orange" | "olive";
+}) {
+  const title = localized(note?.title, lang);
+  const items = localizedList(note?.items, lang);
+  if (!title && !items.length) return null;
+
+  return (
+    <section className={"sm-pj-note sm-pj-note-" + tone}>
+      <span className="sm-pj-note-notch" aria-hidden="true" />
+      <h3 className="sm-pj-note-head">
+        <span
+          className={"sm-pj-dot" + (tone === "olive" ? " sm-pj-dot-olive" : "")}
+          aria-hidden="true"
+        />
+        <span>{title}</span>
+      </h3>
+      <ul className="sm-pj-note-list">
+        {items.map((item, index) => (
+          <li key={index}>{item}</li>
+        ))}
+      </ul>
+    </section>
+  );
+}
+
+export default function MediaProjectAbout({
+  title,
+  data,
+  results,
+  gallery,
+  lang = "ar",
+}: {
+  /** The tab's own label — the heading the panel opens with. */
+  title: string;
+  data?: MediaWorkAboutContent;
+  results?: MediaWorkResults;
+  gallery?: MediaWorkGallery;
+  lang?: string;
+}) {
+  const body = localized(data?.body, lang);
+  const figures = sortItems(results?.items);
+  const shots = sortItems(gallery?.items)
+    .map((shot) => shot.url)
+    .filter((url): url is string => Boolean(url));
+  /* the artboard's block of five, repeated to cover however many frames the
+     payload carries — see galleryLayout */
+  const frames = galleryLayout(shots.length);
+
   return (
     <div className="sm-pj-panel">
-      <MediaProjectHead title="عن المشروع" titleKey="sm_pj_tab_about" />
-      <p className="sm-pj-text" data-i18n={project.aboutKey}>
-        {project.about}
-      </p>
+      {title ? <MediaProjectHead title={title} /> : null}
+      {body ? <p className="sm-pj-text">{body}</p> : null}
 
       <div className="sm-pj-duo">
-        <section className="sm-pj-note sm-pj-note-orange">
-          <span className="sm-pj-note-notch" aria-hidden="true" />
-          <h3 className="sm-pj-note-head">
-            <span className="sm-pj-dot" aria-hidden="true" />
-            <span data-i18n="sm_pj_challenges">التحديات</span>
-          </h3>
-          <ul className="sm-pj-note-list">
-            {project.challenges.map((c) => (
-              <li key={c.key} data-i18n={c.key}>
-                {c.text}
-              </li>
-            ))}
-          </ul>
-        </section>
-
-        <section className="sm-pj-note sm-pj-note-olive">
-          <span className="sm-pj-note-notch" aria-hidden="true" />
-          <h3 className="sm-pj-note-head">
-            <span className="sm-pj-dot sm-pj-dot-olive" aria-hidden="true" />
-            <span data-i18n="sm_pj_solutions">الحلول</span>
-          </h3>
-          <ul className="sm-pj-note-list">
-            {project.solutions.map((s) => (
-              <li key={s.key} data-i18n={s.key}>
-                {s.text}
-              </li>
-            ))}
-          </ul>
-        </section>
+        <Note note={data?.challenges} lang={lang} tone="orange" />
+        <Note note={data?.solutions} lang={lang} tone="olive" />
       </div>
 
-      <MediaProjectHead title="النتائج" titleKey="sm_pj_results" />
-      <div className="sm-pj-results">
-        {project.results.map((r) => (
-          <div className="sm-pj-result" key={r.key}>
-            {/* counted up on scroll, so no data-i18n — see MediaProjectIntro */}
-            <b className="sm-pj-result-value">{r.value}</b>
-            <span className="sm-pj-result-label" data-i18n={r.labelKey}>
-              {r.label}
-            </span>
+      {figures.length ? (
+        <>
+          <MediaProjectHead title={localized(results?.title, lang)} />
+          <div className="sm-pj-results">
+            {figures.map((figure, index) => (
+              <div className="sm-pj-result" key={index}>
+                {/* counted up on scroll — see MediaProjectIntro */}
+                <b className="sm-pj-result-value">{figure.value}</b>
+                <span className="sm-pj-result-label">
+                  {localized(figure.label, lang)}
+                </span>
+              </div>
+            ))}
           </div>
-        ))}
-      </div>
+        </>
+      ) : null}
 
-      <MediaProjectHead title="صور من المشروع" titleKey="sm_pj_gallery" />
-      <div className="sm-pj-gallery">
-        {project.gallery.map((src, i) => (
-          <figure
-            className={
-              "sm-pj-frame" +
-              /* the design closes the block with one wide frame */
-              (i === project.gallery.length - 1 ? " sm-pj-frame-wide" : "")
-            }
-            key={i}
-          >
-            <img src={src} alt="" />
-          </figure>
-        ))}
-      </div>
+      {shots.length ? (
+        <>
+          <MediaProjectHead title={localized(gallery?.title, lang)} />
+          <div className="sm-pj-gallery">
+            {shots.map((src, i) => (
+              <figure
+                className={
+                  "sm-pj-frame " +
+                  (frames[i] === "full"
+                    ? "sm-pj-frame-wide"
+                    : "sm-pj-frame-" + frames[i])
+                }
+                key={i}
+              >
+                <img src={src} alt="" />
+              </figure>
+            ))}
+          </div>
+        </>
+      ) : null}
     </div>
   );
 }

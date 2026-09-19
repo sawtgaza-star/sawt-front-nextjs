@@ -9,7 +9,9 @@ export type UntoldStory = {
   titleKey: string;
   full: string;
   fullKey: string;
-  /* the card's arrow opens /stories/{slug} — see components/stories/story-data */
+  /* Names the mock story this card repeats. NOT a link any more: /stories/{id}
+     resolves the API's uuid only, so the arrow opens the listing instead —
+     see UntoldStories. */
   slug: string;
 };
 

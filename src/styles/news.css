@@ -399,14 +399,25 @@
 }
 
 /* ---------- article body ---------- */
-.nws-p {
+/* `.nws-html` is the CMS's own markup (GET /pages/blogs/{uuid} -> content), so
+   its bare tags are given the same type as the authored .nws-* blocks.
+
+   A <blockquote> among them reads as a PARAGRAPH, not as the olive pull-quote
+   box: the editor's rich text uses it for ordinary prose (the platform
+   paragraph arrives wrapped in one), and the article's real pull quote is a
+   field of its own that NewsBody renders as .nws-quote. */
+.nws-p,
+.nws-html p,
+.nws-html blockquote {
   font-size: 20px;
   line-height: 2.1;
   color: #1E1E1E;
   margin: 0 0 22px;
 }
 
-.nws-h2 {
+.nws-h2,
+.nws-html h2,
+.nws-html h3 {
   font-size: 24px;
   font-weight: 800;
   color: #000;
@@ -453,6 +464,29 @@
   object-fit: cover;
   border-radius: 16px;
   display: block;
+}
+
+/* Anything else the editor can produce inside .nws-html. */
+.nws-html ul,
+.nws-html ol {
+  font-size: 20px;
+  line-height: 2.1;
+  color: #1E1E1E;
+  margin: 0 0 22px;
+  padding-inline-start: 24px;
+}
+
+.nws-html img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 16px;
+  display: block;
+  margin: 0 0 22px;
+}
+
+.nws-html a {
+  color: #4C5C37;
+  text-decoration: underline;
 }
 
 /* ---------- "أخبار ذات صلة" ---------- */
@@ -639,7 +673,9 @@
     line-height: 1.9;
     margin-bottom: 14px;
   }
-  .nws-p {
+  .nws-p,
+  .nws-html p,
+  .nws-html blockquote {
     font-size: 18px;
   }
   .nws-meta {
@@ -668,7 +704,9 @@
     flex-basis: 100%;
     margin-inline-start: 0;
   }
-  .nws-h2 {
+  .nws-h2,
+  .nws-html h2,
+  .nws-html h3 {
     font-size: 19px;
   }
   .nws-body-images {

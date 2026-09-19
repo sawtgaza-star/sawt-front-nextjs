@@ -2,22 +2,21 @@
 
 import { createContext, useContext, useEffect, useMemo, useState } from "react";
 import type { ReactNode } from "react";
-import { HERO_FAN } from "./media-photos";
 
 /* The hero's single clock. The fanned deck and the orange half of the headline
-   are siblings in the markup but show the same thing — the card sitting in the
-   focus seat and the service it stands for — so the tick lives here and both
-   read it. Hovering the deck pauses both. */
+   are siblings in the markup but move together — one tick advances the cards a
+   seat and the word to the next service — so the tick lives here and both read
+   it. Hovering the deck pauses both.
+
+   The two lists are no longer the same length: GET /pages/media sends the
+   stills and the service phrases separately (five and six as the content
+   stands), so each side takes `step` and walks its own list with it instead of
+   sharing one index. */
 const ROTATE_MS = 1500;
-const SEATS = HERO_FAN.length;
-/* seat 3 is the upright middle card (see `.sm-fan-3` in media.css) */
-const FOCUS_SEAT = 3;
 
 type Rotation = {
-  /* how many seats every card has advanced so far */
+  /* how many ticks have passed — one seat, and one word, each */
   step: number;
-  /* index into HERO_FAN of the card currently in the focus seat */
-  focus: number;
   setPaused: (paused: boolean) => void;
 };
 
@@ -42,16 +41,7 @@ export default function MediaHeroRotation({ children }: { children: ReactNode })
     return () => window.clearInterval(id);
   }, [paused]);
 
-  /* card i sits at seat (i + step) % SEATS, so the card in the focus seat is
-     the one FOCUS_SEAT - step seats back round the loop */
-  const value = useMemo<Rotation>(
-    () => ({
-      step,
-      focus: (((FOCUS_SEAT - step) % SEATS) + SEATS) % SEATS,
-      setPaused,
-    }),
-    [step]
-  );
+  const value = useMemo<Rotation>(() => ({ step, setPaused }), [step]);
 
   return <RotationContext.Provider value={value}>{children}</RotationContext.Provider>;
 }
