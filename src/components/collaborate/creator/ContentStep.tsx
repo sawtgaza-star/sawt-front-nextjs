@@ -2,18 +2,24 @@ import { IconFieldUser } from "@/components/collaborate/collaborate-icons";
 import { CONTENT_CATEGORIES, NOTE_MAX } from "./creator-form-data";
 
 /* Step 2 — "تفاصيل المحتوى": the content-type chips (multi-pick), the rough
-   follower count on the creator's biggest platform, and the free-text pitch. */
+   follower count on the creator's biggest platform, and the free-text pitch.
+   All three are required; CreatorWizard checks them on "التالي" and hands back
+   the notes to print under each. */
 export type ContentFields = {
   categories: string[];
   followers: string;
   about: string;
 };
 
+export type ContentErrors = Partial<Record<keyof ContentFields, string>>;
+
 export default function ContentStep({
   values,
+  errors,
   onChange,
 }: {
   values: ContentFields;
+  errors: ContentErrors;
   onChange: (patch: Partial<ContentFields>) => void;
 }) {
   const toggle = (value: string) =>
@@ -49,6 +55,7 @@ export default function ContentStep({
         <p className="cl-hint" data-i18n="collab_f_categories_hint">
           *بإمكانك اختيار اكثر من خيار
         </p>
+        {errors.categories && <p className="cl-error">{errors.categories}</p>}
       </div>
 
       <div className="cl-field">
@@ -57,7 +64,7 @@ export default function ContentStep({
             عدد المتابعين التقريبي في المنصة الواحدة (الاعلى شهرة )
           </span>
         </label>
-        <div className="cl-input-wrap">
+        <div className={"cl-input-wrap" + (errors.followers ? " is-invalid" : "")}>
           <span className="cl-input-icon" aria-hidden="true">
             <IconFieldUser />
           </span>
@@ -72,6 +79,7 @@ export default function ContentStep({
             onChange={(e) => onChange({ followers: e.target.value })}
           />
         </div>
+        {errors.followers && <p className="cl-error">{errors.followers}</p>}
       </div>
 
       <div className="cl-field">
@@ -80,7 +88,7 @@ export default function ContentStep({
         </label>
         <textarea
           id="collab-about"
-          className="cl-textarea"
+          className={"cl-textarea" + (errors.about ? " is-invalid" : "")}
           maxLength={NOTE_MAX}
           placeholder="اشرح ما تقدمه، لماذا تريد الانضمام، وما يميزك."
           data-i18n-placeholder="collab_f_about_ph"
@@ -91,6 +99,7 @@ export default function ContentStep({
         <p className="cl-counter">
           {NOTE_MAX}/{values.about.length}
         </p>
+        {errors.about && <p className="cl-error">{errors.about}</p>}
       </div>
     </div>
   );

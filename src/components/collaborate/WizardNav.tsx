@@ -3,7 +3,8 @@ import { IconArrowUpLeftThin, IconChevronLeftSmall } from "@/components/ui/icons
 /* Footer of a wizard step: rule, then the back control on the start side, the
    step dots in the middle and the green forward button on the end side.
    Step 1's back control cancels the whole thing ("الغاء") instead of stepping
-   back, and the last step's forward button submits ("تسليم الطلب").
+   back, and the last step's forward button submits ("تسليم الطلب") — which
+   reads "جاري الإرسال..." while the application is with the API.
    `total` is the flow's step count — three for /collaborate/creator, /funding
    and /partnership, two for /collaborate/other. */
 export default function WizardNav({
@@ -11,18 +12,26 @@ export default function WizardNav({
   total,
   onBack,
   onNext,
+  pending = false,
 }: {
   index: number;
   total: number;
   onBack: () => void;
   onNext: () => void;
+  /** The application is on its way — both controls are held while it is. */
+  pending?: boolean;
 }) {
   const first = index === 0;
   const last = index === total - 1;
 
   return (
     <div className="cl-nav">
-      <button type="button" className="cl-nav-back" onClick={onBack}>
+      <button
+        type="button"
+        className="cl-nav-back"
+        onClick={onBack}
+        disabled={pending}
+      >
         {first ? (
           <span data-i18n="collab_cancel">الغاء</span>
         ) : (
@@ -44,8 +53,16 @@ export default function WizardNav({
         ))}
       </span>
 
-      <button type="button" className="cl-nav-next" onClick={onNext}>
-        {last ? (
+      <button
+        type="button"
+        className="cl-nav-next"
+        onClick={onNext}
+        disabled={pending}
+        aria-busy={pending}
+      >
+        {pending ? (
+          <span data-i18n="collab_sending">جاري الإرسال...</span>
+        ) : last ? (
           <>
             <span data-i18n="collab_submit">تسليم الطلب</span>
             {/* diagonal, not a chevron — English mirrors it instead of turning

@@ -929,6 +929,24 @@ svg {
   font-size: 14px;
 }
 
+/* …and the two of them stay on ONE row, whatever else is loaded.
+
+   creators.css styles `.readmore` globally, 50px of top margin included — the
+   creators cards need it, the news card doesn't, and news.css cancels it under
+   `.news-page`. But a stylesheet stays loaded once a client-side navigation has
+   pulled it in, so the creators rule reaches the home slider's cards, which
+   have no `.news-page` around them: the link drops a line below the date, as
+   it also would on any page that loads creators.css and renders this card.
+   Cancelled here instead, in the sheet every page has, and with !important so
+   the order the two arrived in can't decide it. */
+.news-card .card-footer {
+  flex-wrap: nowrap !important;
+}
+.news-card .card-footer > span {
+  margin-top: 0 !important;
+  white-space: nowrap;
+}
+
 .count i {
   background-image: url("/assets/images/stroke_gray_top.png");
   background-size: cover;

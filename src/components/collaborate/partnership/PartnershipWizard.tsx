@@ -1,32 +1,67 @@
 "use client";
 import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
-import { IconCircleCheck } from "@/components/ui/icons";
+import WizardAlert from "@/components/collaborate/WizardAlert";
+import WizardDone from "@/components/collaborate/WizardDone";
 import WizardNav from "@/components/collaborate/WizardNav";
+import {
+  clearTouched,
+  passes,
+  rejectedFields,
+  rejectedStep,
+  useCollaborateForm,
+} from "@/components/collaborate/use-collaborate-form";
 import { applyTranslations, getCurrentLang } from "@/lib/translations";
+import { submitPartnershipApplication } from "@/lib/api/collaborate-forms";
+import type { FieldErrors } from "@/lib/api/client";
 import CompanyStep, { type CompanyErrors, type CompanyFields } from "./CompanyStep";
 import FilesStep, { type FilesFields } from "./FilesStep";
-import NatureStep, { type NatureFields } from "./NatureStep";
+import NatureStep, {
+  type NatureErrors,
+  type NatureFields,
+} from "./NatureStep";
 import PartnershipSteps from "./PartnershipSteps";
 import {
   FILE_MAX_BYTES,
   FILE_TYPES,
   PARTNERSHIP_STEPS,
 } from "./partnership-form-data";
+import { checkCompany, checkNature } from "./partnership-checks";
 
-/* Same shape the browser uses for <input type="email">: something, an @, then
-   a dotted domain. Kept deliberately loose — the address is only checked for
-   typos here, never verified. */
-const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+/* Which step owns each box the API can flag, so a rejection puts the visitor
+   back where the box it names actually is. Everything unlisted — the contact
+   boxes the flow opens with — belongs to step 1, which is also the right place
+   to land when the API rejects without naming a field at all. */
+const STEP_BY_FIELD: Record<string, number> = {
+  partnership_types: 1,
+  partnership_goal: 1,
+  additional_notes: 2,
+  attachment: 2,
+};
+
+/** The step-1 box a flagged field belongs to, for the note under it. */
+const COMPANY_FIELD: Record<string, keyof CompanyErrors> = {
+  company_name: "company",
+  email: "email",
+  phone: "phone",
+  country_code: "phone",
+  website: "site",
+};
 
 /* The "شراكة استراتيجية" application: "التالي" swaps the step in place instead
    of navigating, "السابق" walks back, and step 1's "الغاء" leaves for
    /collaborate — the type picker this flow was opened from.
-   All three steps' values live here so they survive the step changes; nothing
-   is submitted to a backend yet, same as every other form on the site. */
+   All three steps' values live here so they survive the step changes, and the
+   last step's "تسليم الطلب" POSTs the lot to /pages/collaborate/partnership
+   (lib/api/collaborate-forms). Nothing is checked against the API's rules
+   first: it validates every field and answers in Arabic, and what it says is
+   what the wizard shows — the boxes on step 1 under themselves, everything
+   else in the panel above the footer, with the step moved to the first one
+   flagged. */
 export default function PartnershipWizard() {
   const [index, setIndex] = useState(0);
-  const [done, setDone] = useState(false);
+  const form = useCollaborateForm();
+  const done = form.done !== null;
   const wizard = useRef<HTMLDivElement>(null);
   const router = useRouter();
 
@@ -43,6 +78,7 @@ export default function PartnershipWizard() {
     types: [],
     about: "",
   });
+  const [natureErrors, setNatureErrors] = useState<NatureErrors>({});
 
   const [files, setFiles] = useState<FilesFields>({
     notes: "",
@@ -62,28 +98,47 @@ export default function PartnershipWizard() {
     }
   }, [index, done]);
 
-  /* Step 1 is the only one with required fields — the partnership types and
-     the attachments are both optional in the mock. */
-  function validateCompany() {
-    const errors: CompanyErrors = {};
-    if (!company.company.trim())
-      errors.company = "الرجاء إدخال اسم الشركة / المؤسسة.";
-    const email = company.email.trim();
-    if (!email) errors.email = "الرجاء إدخال البريد الالكتروني.";
-    else if (!EMAIL_RE.test(email))
-      errors.email = "الرجاء إدخال بريد الكتروني صحيح.";
-    if (!company.phone.trim()) errors.phone = "الرجاء إدخال رقم الهاتف.";
-    setCompanyErrors(errors);
-    return Object.keys(errors).length === 0;
+  /* Every box of the first two steps is required (partnership-checks), so the
+     step is checked before it is left. Step 3 has nothing required on it — the
+     company profile and the extra notes are both optional — so "تسليم الطلب"
+     goes straight out. */
+  function validateStep() {
+    if (index === 0) return passes(checkCompany(company), setCompanyErrors);
+    if (index === 1) return passes(checkNature(nature), setNatureErrors);
+    return true;
   }
 
   function next() {
-    if (index === 0 && !validateCompany()) return;
+    if (!validateStep()) return;
     if (index < PARTNERSHIP_STEPS.length - 1) {
       setIndex((i) => i + 1);
       return;
     }
-    setDone(true);
+    void send();
+  }
+
+  async function send() {
+    const flagged = await form.submit(() =>
+      submitPartnershipApplication({
+        companyName: company.company,
+        email: company.email,
+        phone: company.phone,
+        countryCode: company.dial,
+        website: company.site,
+        partnershipTypes: nature.types,
+        partnershipGoal: nature.about,
+        additionalNotes: files.notes,
+        attachment: files.file,
+      }),
+    );
+    if (flagged) showRejection(flagged);
+  }
+
+  /** Put the notes the API sent under the step-1 boxes they name, and move to
+      the earliest step it flagged so the visitor is looking at one of them. */
+  function showRejection(flagged: FieldErrors) {
+    setCompanyErrors(rejectedFields(flagged, COMPANY_FIELD));
+    setIndex(rejectedStep(flagged, STEP_BY_FIELD));
   }
 
   /* Reject anything outside the rules printed under the drop zone, otherwise
@@ -104,17 +159,7 @@ export default function PartnershipWizard() {
   if (done) {
     return (
       <div className="cl-wizard" ref={wizard}>
-        <div className="cl-done">
-          <span className="cl-done-icon" aria-hidden="true">
-            <IconCircleCheck />
-          </span>
-          <h3 className="cl-done-title" data-i18n="collab_done_title">
-            تم استلام طلبك بنجاح
-          </h3>
-          <p className="cl-done-desc" data-i18n="collab_done_desc">
-            سيتم التواصل معك خلال 3-5 أيام عمل بعد استلام الطلب.
-          </p>
-        </div>
+        <WizardDone message={form.done} />
       </div>
     );
   }
@@ -130,13 +175,7 @@ export default function PartnershipWizard() {
           onChange={(patch) => {
             setCompany((v) => ({ ...v, ...patch }));
             // the message goes as soon as they retype
-            setCompanyErrors((e) => {
-              const next = { ...e };
-              for (const key of Object.keys(patch)) {
-                delete next[key as keyof CompanyErrors];
-              }
-              return next;
-            });
+            setCompanyErrors((e) => clearTouched(e, patch));
           }}
         />
       )}
@@ -144,7 +183,12 @@ export default function PartnershipWizard() {
       {index === 1 && (
         <NatureStep
           values={nature}
-          onChange={(patch) => setNature((v) => ({ ...v, ...patch }))}
+          errors={natureErrors}
+          onChange={(patch) => {
+            setNature((v) => ({ ...v, ...patch }));
+            // the message goes as soon as they answer the box
+            setNatureErrors((e) => clearTouched(e, patch));
+          }}
         />
       )}
 
@@ -156,9 +200,12 @@ export default function PartnershipWizard() {
         />
       )}
 
+      <WizardAlert messages={form.messages} />
+
       <WizardNav
         index={index}
         total={PARTNERSHIP_STEPS.length}
+        pending={form.pending}
         onBack={
           index === 0
             ? () => router.push("/collaborate")

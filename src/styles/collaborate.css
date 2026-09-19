@@ -99,6 +99,22 @@
   height: 32px;
   fill: #364127;
 }
+/* an uploaded glyph stands in the same 32px square as the design's */
+.cl-type-icon img {
+  display: block;
+  width: 32px;
+  height: 32px;
+  object-fit: contain;
+}
+
+/* One option card while the payload is in flight — the box .cl-type draws,
+   held at the height its copy fills (components/collaborate/
+   CollaborateSkeleton; the shimmer itself is creators-skeleton.css). */
+.cl-sk-type {
+  height: 100%;
+  min-height: 232px;
+  border-radius: 20px;
+}
 
 .cl-type-dot {
   display: inline-flex;
@@ -307,7 +323,8 @@
   /* border-color: #4c5c37; */
 }
 
-.cl-input-wrap.is-invalid {
+.cl-input-wrap.is-invalid,
+.cl-textarea.is-invalid {
   border-color: #d64545;
 }
 .cl-input-icon {
@@ -348,6 +365,27 @@
   font-size: 13px;
   color: #d64545;
   text-align: start;
+}
+
+/* What the API rejected the application with, above the wizard's footer — one
+   panel for every message at once, since a 422 flags boxes that are spread
+   over steps (components/collaborate/WizardAlert). */
+.cl-alert {
+  margin: 24px 0 0;
+  padding: 14px 16px;
+  border: 1px solid #f3c9c9;
+  border-radius: 12px;
+  background: #fdecea;
+  text-align: start;
+}
+.cl-alert p {
+  margin: 0;
+  font-size: 14px;
+  line-height: 22px;
+  color: #b42318;
+}
+.cl-alert p + p {
+  margin-top: 6px;
 }
 .cl-hint {
   margin: 10px 0 0;

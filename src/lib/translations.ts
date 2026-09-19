@@ -96,6 +96,7 @@ export const translations: any = {
     api_resend_failed: "تعذر إعادة إرسال الرمز.",
     api_join_received: "تم استلام طلب الانضمام، سنتواصل معك قريباً.",
     api_consult_received: "تم استلام طلب الاستشارة، سنتواصل معك قريباً.",
+    api_collab_received: "تم استلام طلب التعاون، سنتواصل معك خلال 3–5 أيام عمل.",
     api_network: "تعذر الاتصال بالخادم. تحقق من اتصالك بالإنترنت.",
     api_unexpected: "حدث خطأ غير متوقع. حاول مرة أخرى.",
 
@@ -1981,6 +1982,7 @@ export const translations: any = {
     collab_prev: "السابق",
     collab_next: "التالي",
     collab_submit: "تسليم الطلب",
+    collab_sending: "جاري الإرسال...",
     collab_done_title: "تم استلام طلبك بنجاح",
     collab_done_desc: "سيتم التواصل معك خلال 3-5 أيام عمل بعد استلام الطلب.",
 
@@ -2137,6 +2139,7 @@ export const translations: any = {
     api_resend_failed: "Could not resend the code.",
     api_join_received: "Your application has been received. We will be in touch soon.",
     api_consult_received: "Your consultation request has been received. We will be in touch soon.",
+    api_collab_received: "Your collaboration request has been received. We will be in touch within 3–5 business days.",
     api_network: "Could not reach the server. Check your internet connection.",
     api_unexpected: "Something went wrong. Please try again.",
 
@@ -4048,6 +4051,7 @@ export const translations: any = {
     collab_prev: "Previous",
     collab_next: "Next",
     collab_submit: "Submit application",
+    collab_sending: "Sending…",
     collab_done_title: "Your application has been received",
     collab_done_desc:
       "We will get in touch within 3-5 working days of receiving your application.",
