@@ -7,12 +7,11 @@ import ContentHero from "@/components/content/ContentHero";
 import ContentFilterBar from "@/components/content/ContentFilterBar";
 import ContentGrid from "@/components/content/ContentGrid";
 import MostWatchedSection from "@/components/content/MostWatchedSection";
+import { ContentGridSkeleton } from "@/components/content/ContentSkeleton";
 import { useContentPage } from "@/lib/api/use-content-page";
 import { useLang } from "@/lib/use-lang";
 import { localized } from "@/lib/api/pages";
 import {
-  GRID_REELS,
-  MOST_WATCHED_ROWS,
   reelsFromApi,
   sortReels,
   type CategoryValue,
@@ -23,34 +22,27 @@ import {
    returns both blocks in a single payload), one `lang` subscription, and the
    category / sort state the filter bar drives.
 
-   WHAT COMES FROM THE API AND WHAT DOESN'T
+   EVERYTHING ON THIS PAGE IS THE PAYLOAD'S
    ----------------------------------------
-   The hero is entirely the payload's: backdrop, headline, lead and the fanned
-   poster strip. The "الأكثر مشاهدة" rows take their heading and their
-   "رؤية المزيد" label from it too.
+   The hero — backdrop, headline, lead and the fanned poster strip — and the
+   reels: `reels.items` is the one list the API sends, so the grid under the
+   filter bar and the "الأكثر مشاهدة" row below it are both drawn from it, the
+   row also taking its heading and its "رؤية المزيد" label from that block.
+   Nothing is bundled any more; while the request is in flight the grid is a
+   skeleton, and if it comes back with no reels the page is hero + filter bar.
 
-   The reel cards do not, yet: the API answers `reels.items: []` with
-   `status: "token_expired"`, so the bundled demo reels stay on screen — the
-   grid, which the payload has no field for at all, and the two rows below it.
-   `reelsFromApi` takes over the rows the moment real reels arrive, as one row
-   (the payload carries one list). See lib/api/content and content-data. */
+   The category pills are the exception: the payload has no category on a reel
+   and no field for the pills at all, so they are chrome — the active one is
+   styled, and the grid it sits above is the whole list either way. Filtering
+   starts working the day a reel arrives carrying a category. */
 export default function Page() {
   const { page, loading } = useContentPage();
   const { lang } = useLang();
   const [category, setCategory] = useState<CategoryValue>("all");
   const [sort, setSort] = useState<SortValue>("newest");
 
-  const visible = sortReels(
-    category === "all"
-      ? GRID_REELS
-      : GRID_REELS.filter((r) => r.category === category),
-    sort,
-  );
-
-  const apiReels = reelsFromApi(page?.reels?.items);
-  const rows = apiReels.length
-    ? [{ id: "most-watched", reels: apiReels }]
-    : MOST_WATCHED_ROWS;
+  const reels = reelsFromApi(page?.reels?.items);
+  const visible = sortReels(reels, sort);
 
   const rowTitle = localized(page?.reels?.title, lang);
   const rowViewMore = localized(page?.reels?.view_more, lang);
@@ -68,19 +60,18 @@ export default function Page() {
               sort={sort}
               onSortChange={setSort}
             />
-            <ContentGrid reels={visible} />
+            {loading ? <ContentGridSkeleton /> : <ContentGrid reels={visible} />}
           </div>
         </section>
 
-        {rows.map((row) => (
+        {(loading || reels.length > 0) && (
           <MostWatchedSection
-            key={row.id}
-            reels={row.reels}
+            reels={reels}
             title={rowTitle}
             viewMore={rowViewMore}
             loading={loading}
           />
-        ))}
+        )}
       </main>
     </div>
   );

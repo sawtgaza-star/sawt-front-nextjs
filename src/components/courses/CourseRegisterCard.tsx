@@ -1,9 +1,14 @@
 import CourseCountdown from "./CourseCountdown";
+import CourseSubscribeButton from "./course-register/CourseSubscribeButton";
 import type { Course } from "./course-data";
 
 /* The white floating registration card — countdown, course facts and the
    subscribe CTA. An orange rounded tab (::before on .crs-reg) peeks out
-   behind the card's top edge, as in the mock. */
+   behind the card's top edge, as in the mock.
+
+   Stays a Server Component: the two interactive bits are their own leaves —
+   the countdown, and the subscribe button with the enrollment modal behind
+   it (see course-register/). */
 export default function CourseRegisterCard({ course }: { course: Course }) {
   return (
     <div className="crs-reg">
@@ -26,10 +31,7 @@ export default function CourseRegisterCard({ course }: { course: Course }) {
           ))}
         </ul>
 
-        <a className="crs-btn-green" href="#">
-          <span data-i18n="crs_subscribe">اشترك الآن</span>
-          <i className="fa-solid fa-angle-left"></i>
-        </a>
+        <CourseSubscribeButton courseTitle={course.title} />
       </div>
     </div>
   );

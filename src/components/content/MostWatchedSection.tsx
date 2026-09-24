@@ -4,18 +4,19 @@ import ContentCard from "@/components/creators/creator-content/ContentCard";
 import ReelViewer from "./ReelViewer";
 import type { Reel } from "./content-data";
 import { splitHeading } from "./content-text";
-import { MostWatchedTitleSkeleton } from "./ContentSkeleton";
+import {
+  MostWatchedCardsSkeleton,
+  MostWatchedTitleSkeleton,
+} from "./ContentSkeleton";
 
 /* "الأكثر مشاهدة" row: heading + "رؤية المزيد" link, then a horizontal track
    that starts at the container's right edge (RTL) and bleeds off the left of
    the viewport. Circular arrows scroll it; a card's play button opens the
    full-screen viewer — the same one the grid above opens.
 
-   The heading and the link's label come from the API's `reels` block (one
-   block, so every row is titled with it — as the design has them). The accent
-   falls on the heading's last word; see splitHeading in ./content-text. The
-   reels themselves are still the bundled demo ones until the API serves its
-   own — see the note in content-data. */
+   The heading, the link's label and the reels all come from the API's `reels`
+   block — the same list the grid above draws. The accent falls on the
+   heading's last word; see splitHeading in ./content-text. */
 export default function MostWatchedSection({
   reels,
   title = "",
@@ -25,7 +26,7 @@ export default function MostWatchedSection({
   reels: Reel[];
   title?: string;
   viewMore?: string;
-  /** The payload is still on its way — hold the heading's height with a bar. */
+  /** The payload is still on its way — hold the row with bars in its place. */
   loading?: boolean;
 }) {
   const [titleHead, titleTail] = splitHeading(title, 1);
@@ -169,14 +170,18 @@ export default function MostWatchedSection({
         </button>
 
         <div className="ct-mw-track" ref={trackRef}>
-          {reels.map((reel, i) => (
-            <ContentCard
-              key={reel.id}
-              card={reel}
-              index={i}
-              onOpen={setOpenIndex}
-            />
-          ))}
+          {loading ? (
+            <MostWatchedCardsSkeleton />
+          ) : (
+            reels.map((reel, i) => (
+              <ContentCard
+                key={reel.id}
+                card={reel}
+                index={i}
+                onOpen={setOpenIndex}
+              />
+            ))
+          )}
         </div>
       </div>
 

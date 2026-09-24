@@ -2610,6 +2610,23 @@ svg {
   gap: 8px;
 }
 
+/* The list holds its full height even with nothing in it. An empty thread used
+   to be impossible — the comments were bundled into the script — but they come
+   from the API now, and without this the whole card shrinks to its header plus
+   the input box. Same number as the max-height above; keep the two in step. */
+.comments-list {
+  min-height: 288px;
+}
+
+/* "لا توجد تعليقات بعد" — centred in that space (the list is a flex column,
+   so `margin: auto` centres it on both axes). */
+.rv-empty {
+  margin: auto;
+  color: #9a9a9a;
+  font-size: 14px;
+  text-align: center;
+}
+
 .comments-list::-webkit-scrollbar {
   width: 4px;
 }

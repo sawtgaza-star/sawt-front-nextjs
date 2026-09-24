@@ -55,6 +55,12 @@ export function formatFollowers(count: number | null | undefined): string {
   return `${trimZero(thousands)}K`;
 }
 
+/* A reel's view count is compacted the same way — "200k مشاهدة" is how the
+   design writes it, and the API sends the raw number. */
+export function formatViews(count: number | null | undefined): string {
+  return formatFollowers(count);
+}
+
 /** One decimal place, and none at all when it would be a trailing zero. */
 function trimZero(value: number): string {
   const fixed = value.toFixed(1);

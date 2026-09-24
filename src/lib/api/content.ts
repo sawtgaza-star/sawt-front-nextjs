@@ -13,11 +13,16 @@
    `hero` is complete: the header backdrop (`image_url`), the headline, the
    lead paragraph and the fanned poster strip (`items`).
 
-   `reels` carries the "الأكثر مشاهدة" heading and its "رؤية المزيد" label,
-   plus the reels themselves — but `items` is empty today and `status` says why
-   ("token_expired": the row is fed from a social account whose access token
-   the backend has to refresh). The page keeps its bundled demo reels on screen
-   until real ones arrive; see `reelsFromApi` in components/content/content-data.
+   `reels` carries the "الأكثر مشاهدة" heading, its "رؤية المزيد" label and the
+   reels themselves — one list, mirrored from the platform's Instagram account,
+   which is why an item reads like a post rather than an upload: `caption`,
+   `permalink`, `username`, `likes`, `collaborators`. `status` says whether the
+   backend could reach that account at all ("ok"; "token_expired" when its
+   access token needs refreshing, and then `items` comes back empty).
+
+   That single list is everything the page draws: the grid under the filter bar
+   and the "الأكثر مشاهدة" row below it both render it — the payload has no
+   second list, and the page keeps no bundled reels of its own any more.
 
    The category pills, their counts and the sort dropdown have NO field in this
    payload at all — they stay local chrome with their `data-i18n` keys.
@@ -46,22 +51,29 @@ export type ContentHeroContent = {
 
 /* --------------------------------------------------------------- reels */
 
-/** A reel of the "الأكثر مشاهدة" row.
+/** A reel of the "الأكثر مشاهدة" list, as the API mirrors it from Instagram.
 
-    The API has not served one yet (see the note at the top), so the field
-    names it will use aren't settled. The handful below are the ones the rest
-    of the API already uses for the same things — `uuid`/`id`, a `*_url` for
-    the file, `views`, `published_at` — and `reelsFromApi` reads whichever of
-    them turns up. An item with no playable URL is dropped rather than rendered
-    as a black card. */
+    `views` and `reach` are the account's insights and come back null unless
+    the backend's token is scoped for them — `likes` is the number that is
+    always there. `video_url` is a CDN link with an expiry baked into its query
+    string, and it is empty on an item Instagram served no file for; such an
+    item is dropped rather than drawn as a black card (see `reelsFromApi` in
+    components/content/content-data). */
 export type ContentReel = {
-  uuid?: string;
   id?: number | string;
+  caption?: string | null;
+  thumbnail?: string | null;
   video_url?: string | null;
-  media_url?: string | null;
-  thumbnail_url?: string | null;
+  permalink?: string | null;
+  username?: string | null;
+  likes?: number | null;
+  comments_count?: number | null;
   views?: number | null;
-  published_at?: string | null;
+  reach?: number | null;
+  collaborators?: string[];
+  /** ISO 8601, e.g. "2026-09-11T11:07:11+0000". */
+  posted_at?: string | null;
+  sort_order?: number;
 };
 
 export type ContentReels = {
@@ -86,7 +98,9 @@ function mapList<T>(list: T[] | undefined, fn: (item: T) => T): T[] | undefined 
 }
 
 /** Same payload with every upload URL pointed at the host that actually serves
-    it. Applied once, on the way out of the fetch, so no section has to know. */
+    it. Applied once, on the way out of the fetch, so no section has to know.
+    A reel's files are Instagram CDN links, which `assetUrl` passes through
+    untouched — it only rewrites the API's own /storage/ paths. */
 function withAssetUrls(page: ContentPage): ContentPage {
   return {
     ...page,
@@ -103,8 +117,7 @@ function withAssetUrls(page: ContentPage): ContentPage {
       items: mapList(page.reels.items, (reel) => ({
         ...reel,
         video_url: assetUrl(reel.video_url),
-        media_url: assetUrl(reel.media_url),
-        thumbnail_url: assetUrl(reel.thumbnail_url),
+        thumbnail: assetUrl(reel.thumbnail),
       })),
     },
   };

@@ -67,10 +67,11 @@ export function initReels() {
 
 export function replayComments() {
   if (!document.getElementById("commentsList")) return;
-  // الحاوية تعود إلى أعلى عند إعادة التركيب، فنعيد الريل النشط إلى الأول
-  const setReel = (window as any).setActiveReel;
-  if (typeof setReel === "function") {
-    setReel(0, true);
+  /* القائمة تعود فارغة مع كل تركيب جديد للصفحة، وقد يكون ردّ الـ API وصل
+     قبلها — فنعيد القراءة من النسخة المتروكة على window لا من حالة قديمة. */
+  const load = (window as any).__loadReviewComments;
+  if (typeof load === "function") {
+    load();
     return;
   }
   const render = (window as any).renderComments;
@@ -251,214 +252,58 @@ __ready(() => {
 
 // ====== البيانات ======
 
-/* لكل ريل تعليقاته الخاصة: الفهرس هنا = data-index على .reel-item.
-   commentsData يشير دائماً إلى تعليقات الريل الظاهر حالياً، حتى تبقى بقية
-   الدوال (renderComments / addComment / addReply) كما هي. */
-const reelsData = [
-  {
-    count: 341,
-    comments: [
-      {
-        id: 1,
-        av: "av-green",
-        letter: "ر",
-        name: "رنا الصالح",
-        text: "قصة ملهمة رغم كل التحديات 💚",
-        time: "منذ ساعة",
-        likes: 13,
-        liked: false,
-        replies: [
-          {
-            av: "av-orange",
-            letter: "م",
-            name: "مها العبد",
-            text: "فعلاً، كلامك صح 🌷",
-          },
-        ],
-      },
-      {
-        id: 2,
-        av: "av-orange",
-        letter: "م",
-        name: "مها العبد",
-        text: "إصرار بيستحق الاحترام 👏",
-        time: "منذ ساعتين",
-        likes: 13,
-        liked: true,
-        replies: [],
-      },
-      {
-        id: 3,
-        av: "av-blue",
-        letter: "أ",
-        name: "أحمد باسم",
-        text: "حكاية بتعطي دافع للاستمرار",
-        time: "22 فبراير",
-        likes: 5,
-        liked: false,
-        replies: [],
-      },
-    ],
-  },
-  {
-    count: 187,
-    comments: [
-      {
-        id: 11,
-        av: "av-blue",
-        letter: "س",
-        name: "سامي درويش",
-        text: "التصوير والمونتاج بمستوى احترافي 🎬",
-        time: "منذ 20 دقيقة",
-        likes: 9,
-        liked: false,
-        replies: [],
-      },
-      {
-        id: 12,
-        av: "av-gray",
-        letter: "ه",
-        name: "هبة النجار",
-        text: "الصوت واضح والرسالة وصلت من أول ثانية",
-        time: "منذ 3 ساعات",
-        likes: 21,
-        liked: true,
-        replies: [
-          {
-            av: "av-green",
-            letter: "س",
-            name: "سامي درويش",
-            text: "تماماً، الإخراج مدروس 👌",
-          },
-        ],
-      },
-      {
-        id: 13,
-        av: "av-orange",
-        letter: "و",
-        name: "وسام أبو ندى",
-        text: "بانتظار الجزء الثاني من هذه الحكاية",
-        time: "أمس",
-        likes: 6,
-        liked: false,
-        replies: [],
-      },
-    ],
-  },
-  {
-    count: 96,
-    comments: [
-      {
-        id: 21,
-        av: "av-orange",
-        letter: "ل",
-        name: "لينا مطر",
-        text: "أصدق ما شاهدت هذا الأسبوع 🌿",
-        time: "منذ 45 دقيقة",
-        likes: 15,
-        liked: false,
-        replies: [],
-      },
-      {
-        id: 22,
-        av: "av-green",
-        letter: "خ",
-        name: "خالد شاهين",
-        text: "شكراً لأنكم تنقلون الصورة كما هي",
-        time: "منذ 5 ساعات",
-        likes: 11,
-        liked: false,
-        replies: [],
-      },
-      {
-        id: 23,
-        av: "av-blue",
-        letter: "د",
-        name: "دعاء الأغا",
-        text: "محتوى يستحق المشاركة مع الجميع 🔁",
-        time: "3 مارس",
-        likes: 8,
-        liked: true,
-        replies: [
-          {
-            av: "av-gray",
-            letter: "ل",
-            name: "لينا مطر",
-            text: "شاركته فعلاً 💚",
-          },
-        ],
-      },
-    ],
-  },
-];
+/* لم تعد هنا بيانات مدمجة: ريلز قسم "آراؤكم في المحتوى" وخيط تعليقاته
+   يصلان من GET /pages/home (reviews) — الريلز يرسمها مكوّن Reviews
+   نفسه، والتعليقات يمرّرها إلى هنا عبر __setReviewsComments بعد وصول الردّ.
 
+   الخيط واحد لكل العمود وليس لكل ريل خيطه كما كان: الـ API يرسل قائمة
+   تعليقات واحدة للقسم كلّه (reviews.comments)، فلم يعد للتبديل مصدر يستند إليه. */
 let activeReel = 0;
-let commentsData = reelsData[0].comments;
+let commentsData = [];
+let commentsCount = 0;
 
-const extraComments = [
-  {
-    id: 4,
-    av: "av-gray",
-    letter: "ي",
-    name: "يوسف خالد",
-    text: "ما توقعت أشوف قصة بهالمستوى",
-    time: "3 مارس",
-    likes: 4,
-    liked: false,
-    replies: [],
-  },
-  {
-    id: 5,
-    av: "av-green",
-    letter: "ن",
-    name: "نور حسن",
-    text: "شكراً على هالمحتوى الرائع 🌿",
-    time: "5 مارس",
-    likes: 7,
-    liked: false,
-    replies: [],
-  },
-  {
-    id: 6,
-    av: "av-orange",
-    letter: "ر",
-    name: "رامي سمير",
-    text: "بتمنى أشوف المزيد من هيك قصص",
-    time: "8 مارس",
-    likes: 2,
-    liked: false,
-    replies: [],
-  },
-];
+/* يستدعيها مكوّن Reviews بعد وصول الردّ، وقد يسبق ذلك تحميل هذا الملف
+   (الاستيراد ديناميكي في LegacyInit)، لذلك يترك المكوّن نسخة على window
+   يقرأها loadReviewComments أدناه عند أول رسم. */
+function setReviewsComments(payload) {
+  const items = payload && Array.isArray(payload.items) ? payload.items : [];
+  commentsData = items.slice();
+  commentsCount =
+    payload && typeof payload.count === "number" ? payload.count : items.length;
+  // تعليق يكتبه الزائر يأخذ رقماً بعد آخر ما جاء من الـ API
+  commentIdSeq = commentsData.reduce(
+    (max, c) => Math.max(max, Number(c && c.id) || 0),
+    0,
+  ) + 1;
+  renderComments();
+  updateCommentsCount();
+}
 
-let commentIdSeq = 7;
+function loadReviewComments() {
+  setReviewsComments((window as any).__sawtReviewComments);
+}
+
+let commentIdSeq = 1;
 let showing = false;
 let currentOrder = "newest";
 
 function findComment(id) {
-  for (const reel of reelsData) {
-    const found = reel.comments.find((c) => c.id === id);
-    if (found) return found;
-  }
-  return extraComments.find((c) => c.id === id);
+  return commentsData.find((c) => c.id === id);
 }
 
-/* عدّاد الترويسة "التعليقات (n)" — يُكتب من هنا لأن كل ريل له عدده الخاص،
-   ولذلك أُزيل data-i18n من .comments-count حتى لا تعيده الترجمة إلى 341. */
+/* عدّاد الترويسة "التعليقات (n)" — يُكتب من هنا لأن العدد يأتي من الـ API
+   ويزيد مع كل تعليق جديد، ولذلك أُزيل data-i18n من .comments-count حتى لا تعيده
+   الترجمة إلى نصّ ثابت. */
 function updateCommentsCount() {
   const counter = document.querySelector(".comments-count");
   if (!counter) return;
-  counter.textContent = `${t("comments_word")} (${reelsData[activeReel].count})`;
+  counter.textContent = `${t("comments_word")} (${commentsCount})`;
 }
 
-/* تبديل التعليقات عند الوصول إلى ريل آخر */
-function setActiveReel(index, force) {
-  if (!reelsData[index]) return;
-  if (index === activeReel && !force) return;
+/* خيط التعليقات واحد لكل العمود الآن، فالوصول إلى ريل آخر لم يعد يبدّل شيئاً
+   — نكتفي بتذكّر الريل الظاهر (تستدعيها detectActiveReel عند كل تمرير). */
+function setActiveReel(index) {
   activeReel = index;
-  commentsData = reelsData[index].comments;
-  renderComments();
-  updateCommentsCount();
 }
 
 function replyMarkup(r) {
@@ -575,6 +420,21 @@ function addReply(el) {
   box.classList.remove("open");
 }
 
+/* القائمة قد تعود فارغة الآن (التعليقات تأتي من الـ API ولم تعد مدمجة)،
+   فنكتب في مكانها سطراً بدل ترك البطاقة فارغة. يحمل data-i18n حتى يترجمه
+   initTranslate مع كل تبديل للغة كبقية النصوص. */
+function renderEmptyComments(list) {
+  const empty = document.createElement("div");
+  empty.className = "rv-empty";
+  empty.setAttribute("data-i18n", "comments_empty");
+  empty.textContent = t("comments_empty");
+  list.appendChild(empty);
+}
+
+function clearEmptyComments(list) {
+  list.querySelectorAll(".rv-empty").forEach((el) => el.remove());
+}
+
 function renderComments() {
   const list = document.getElementById("commentsList");
   if (!list) return;
@@ -589,6 +449,7 @@ function renderComments() {
     list
       .querySelectorAll(".rv-comment:not(.extra-comment)")
       .forEach((el) => el.remove());
+    clearEmptyComments(list);
 
     sorted.forEach((c) => {
       const d = document.createElement("div");
@@ -597,6 +458,8 @@ function renderComments() {
       d.innerHTML = commentMarkup(c);
       list.appendChild(d);
     });
+
+    if (!sorted.length) renderEmptyComments(list);
 
     list.style.opacity = "1";
     list.scrollTop = currentOrder === "newest" ? 0 : list.scrollHeight;
@@ -654,6 +517,7 @@ function addComment() {
 
   // ارسمه مباشرة
   const list = document.getElementById("commentsList");
+  clearEmptyComments(list);
   const d = document.createElement("div");
   d.className = "rv-comment";
   d.dataset.id = newC.id;
@@ -681,8 +545,8 @@ function addComment() {
     });
   });
 
-  // حدّث العداد (لكل ريل عدّاده الخاص)
-  reelsData[activeReel].count++;
+  // حدّث العداد الواحد للقسم
+  commentsCount++;
   updateCommentsCount();
 
   input.value = "";
@@ -693,8 +557,7 @@ __ready(() => {
   const newComment = document.getElementById("newComment");
   if (!newComment) return;
 
-  renderComments();
-  updateCommentsCount();
+  loadReviewComments();
 
   // العدّاد لم يعد يحمل data-i18n، فنعيد كتابته بعد كل تبديل للغة
   document.addEventListener("langchange", updateCommentsCount);
@@ -1403,6 +1266,8 @@ __ready(function () {
   (window as any).skipReel = typeof skipReel !== 'undefined' ? skipReel : (window as any).skipReel;
   (window as any).renderComments = typeof renderComments !== 'undefined' ? renderComments : (window as any).renderComments;
   (window as any).setActiveReel = typeof setActiveReel !== 'undefined' ? setActiveReel : (window as any).setActiveReel;
+  (window as any).__setReviewsComments = typeof setReviewsComments !== 'undefined' ? setReviewsComments : (window as any).__setReviewsComments;
+  (window as any).__loadReviewComments = typeof loadReviewComments !== 'undefined' ? loadReviewComments : (window as any).__loadReviewComments;
   (window as any).__setupReels = typeof setupReels !== 'undefined' ? setupReels : (window as any).__setupReels;
   (window as any).initReelActions = typeof initReelActions !== 'undefined' ? initReelActions : (window as any).initReelActions;
 
