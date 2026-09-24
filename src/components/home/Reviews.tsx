@@ -1,17 +1,30 @@
 // @ts-nocheck
 "use client";
 /* eslint-disable */
+import { useEffect } from "react";
 import { localized } from "@/lib/api/pages";
-import type { HomeReviews } from "@/lib/api/home";
-import { splitHeading } from "./home-text";
+import type { HomeReviews, HomeReviewReel } from "@/lib/api/home";
+import { bySortOrder, formatViews, splitHeading } from "./home-text";
+import { reviewComments } from "./reviews-data";
 
-/* Only the section's heading and its lead paragraph are wired to the API's
-   `reviews` block. The reels column and the comment thread below are NOT:
-   both are still driven by lib/legacy-main's own `reelsData` — the reel
-   player, the like/save/share actions, the per-reel comment list and its
-   counter are one legacy DOM machine, and porting it to React state is its
-   own job (roadmap item 5). The API has nothing to put there yet either: it
-   answers `reels: []` with `reels_status: "token_expired"`.
+/* "آراؤكم في المحتوى" — the whole section is the API's `reviews` block now:
+   the heading and the lead, the reel column beside them, and the comment
+   thread. The bundled demo reel (one file repeated three times, titled
+   "قصة أمل من غزة" with a hard-coded "200k مشاهدة") and the invented comments
+   in lib/legacy-main are gone.
+
+   WHAT STILL BELONGS TO THE LEGACY SCRIPT
+   ---------------------------------------
+   The player, the like / save / share buttons, the comment list and its
+   counter are one DOM machine in lib/legacy-main (roadmap item 5 is porting it
+   to React state). Only its DATA moved: the reels are rendered here from the
+   payload — the script finds them by the same `.reel-item` / `data-index`
+   markup it always did — and the thread is handed over by the effect below.
+
+   ONE THREAD, NOT THREE. The script used to swap the comment list as you
+   scrolled from reel to reel, because it carried a list per reel. The API
+   sends ONE list for the section (`reviews.comments`), so scrolling no longer
+   changes the thread and the counter is that list's count.
 
    The lead loses one flourish in the move: the legacy copy painted its second
    word in the accent colour through an inline <span class="hl"> carried in the
@@ -28,19 +41,205 @@ export default function Reviews({
   const [titleHead, titleTail] = splitHeading(title, 1);
   const description = localized(data?.description, lang);
 
+  /* `reels_enabled: false` is an editor switching the column off; an item with
+     no playable file is one Instagram served nothing for, and would be a black
+     rectangle with a play button that does nothing. */
+  const reels: HomeReviewReel[] =
+    data?.reels_enabled === false
+      ? []
+      : bySortOrder(data?.reels).filter((reel) => reel.video_url);
+
+  /* Hand the thread to lib/legacy-main. The copy on `window` is for ordering:
+     LegacyInit imports that module dynamically, so on the first paint the
+     setter may not exist yet — its own boot (and replayComments, on a repeat
+     visit) reads this back through __loadReviewComments. */
+  useEffect(() => {
+    const payload = {
+      count: data?.comments?.count ?? 0,
+      items: reviewComments(data?.comments?.items, lang),
+    };
+    (window as any).__sawtReviewComments = payload;
+    (window as any).__setReviewsComments?.(payload);
+  }, [data, lang]);
+
   return (
     <>
-<section className="stories-section reviews-section"> <div className="reviews-inner"> <div className="row g-4 align-items-center justify-content-center" style={{backgroundColor: "rgba(237, 239, 235, 1)", padding: "0px 30px 30px 30px", borderRadius: "20px", marginTop: "10px"}}> <div className="col-lg-3 col-md-12"> <div className="reviews-intro"> {title ? (<h2 className="reviews-title fw-bold"> <span>{titleHead}</span> <span className="reviews-highlight">{titleTail}</span> </h2>) : null} {description ? (<p className="reviews-desc">{description}</p>) : null} </div> </div> <div className="col-lg-3 col-md-6"> <div className="review-reels reels-container" id="reelsContainer"> <div className="reel-item" data-index="0"> <div className="reel-media"> <video src="/assets/videos/WhatsApp Video 2026-03-23 at 11.59.11 AM.mp4" loop playsInline onClick={(e) => { (window as any).toggleVideoPlay(e.currentTarget); }}></video> <div className="reel-overlay"></div> <div className="reel-actions"> <span onClick={(e) => { (window as any).toggleSave(e.currentTarget); }}> <i><svg xmlns="http://www.w3.org/2000/svg" width="1.5em" height="1.2em" viewBox="0 0 24 24"> <path d="M0 0h24v24H0z" fill="none"></path> <path fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M4 17.98V9.709c0-3.634 0-5.45 1.172-6.58S8.229 2 12 2s5.657 0 6.828 1.129C20 4.257 20 6.074 20 9.708v8.273c0 2.306 0 3.459-.773 3.871c-1.497.8-4.304-1.867-5.637-2.67c-.773-.465-1.16-.698-1.59-.698s-.817.233-1.59.698c-1.333.803-4.14 3.47-5.637 2.67C4 21.44 4 20.287 4 17.981"></path> </svg> </i> </span> <span onClick={(e) => { (window as any).toggleLike(e.currentTarget); }}> <i><svg xmlns="http://www.w3.org/2000/svg" width="1.5em" height="1.2em" viewBox="0 0 24 24"> <path d="M0 0h24v24H0z" fill="none"></path> <path fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M10.41 19.968C7.59 17.858 2 13.035 2 8.694C2 5.826 4.105 3.5 7 3.5c1.5 0 3 .5 5 2.5c2-2 3.5-2.5 5-2.5c2.895 0 5 2.326 5 5.194c0 4.34-5.59 9.164-8.41 11.274c-.95.71-2.23.71-3.18 0"></path> </svg> </i> </span> <span onClick={(e) => { (window as any).shareVideo(e.currentTarget); }}> <i><svg xmlns="http://www.w3.org/2000/svg" width="1.5em" height="1.5em" viewBox="0 0 24 24"> <path d="M0 0h24v24H0z" fill="none"></path> <path fill="currentColor" d="M6.616 21q-.691 0-1.153-.462T5 19.385v-8.77q0-.69.463-1.152T6.616 9H8.23q.213 0 .357.143t.143.357t-.143.357T8.23 10H6.616q-.231 0-.424.192T6 10.616v8.769q0 .23.192.423t.423.192h10.77q.23 0 .423-.192t.192-.423v-8.77q0-.23-.192-.423T17.384 10H15.77q-.213 0-.357-.143T15.27 9.5t.143-.357T15.77 9h1.615q.691 0 1.153.463T19 10.616v8.769q0 .69-.463 1.153T17.385 21zm5.027-5.643Q11.5 15.214 11.5 15V4.614L9.754 6.36q-.146.146-.344.153q-.199.006-.364-.16q-.16-.164-.162-.353t.162-.354l2.388-2.388q.132-.131.268-.184q.137-.053.298-.053t.298.053t.268.184l2.388 2.388q.14.14.15.342q.01.2-.15.366q-.166.165-.357.165t-.357-.165l-1.74-1.74V15q0 .214-.143.357T12 15.5t-.357-.143"></path></svg></i> </span> </div> <div className="reel-seekbar"> <span className="reel-time">0:00</span> <div className="reel-progress"> <div className="reel-progress-fill"></div> </div> </div> <div className="play-overlay" onClick={(e) => { (window as any).togglePlay(e.currentTarget); }}> <i className="fa-solid fa-play"></i> </div> </div> <div className="reel-caption"> <p className="reel-title" data-i18n="reel_title">
-                      قصة أمل من غزة: كيف تحدى الحصار
-                    </p> <span className="reel-views" data-i18n="reel_views">200k مشاهدة</span> </div> </div> <div className="reel-item" data-index="1"> <div className="reel-media"> <video src="/assets/videos/WhatsApp Video 2026-03-23 at 11.59.11 AM.mp4" loop playsInline onClick={(e) => { (window as any).toggleVideoPlay(e.currentTarget); }}></video> <div className="reel-overlay"></div> <div className="reel-actions"> <span onClick={(e) => { (window as any).toggleSave(e.currentTarget); }}> <i><svg xmlns="http://www.w3.org/2000/svg" width="1.5em" height="1.2em" viewBox="0 0 24 24"> <path d="M0 0h24v24H0z" fill="none"></path> <path fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M4 17.98V9.709c0-3.634 0-5.45 1.172-6.58S8.229 2 12 2s5.657 0 6.828 1.129C20 4.257 20 6.074 20 9.708v8.273c0 2.306 0 3.459-.773 3.871c-1.497.8-4.304-1.867-5.637-2.67c-.773-.465-1.16-.698-1.59-.698s-.817.233-1.59.698c-1.333.803-4.14 3.47-5.637 2.67C4 21.44 4 20.287 4 17.981"></path> </svg> </i> </span> <span onClick={(e) => { (window as any).toggleLike(e.currentTarget); }}> <i><svg xmlns="http://www.w3.org/2000/svg" width="1.5em" height="1.2em" viewBox="0 0 24 24"> <path d="M0 0h24v24H0z" fill="none"></path> <path fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M10.41 19.968C7.59 17.858 2 13.035 2 8.694C2 5.826 4.105 3.5 7 3.5c1.5 0 3 .5 5 2.5c2-2 3.5-2.5 5-2.5c2.895 0 5 2.326 5 5.194c0 4.34-5.59 9.164-8.41 11.274c-.95.71-2.23.71-3.18 0"></path> </svg> </i> </span> <span onClick={(e) => { (window as any).shareVideo(e.currentTarget); }}> <i><svg xmlns="http://www.w3.org/2000/svg" width="1.5em" height="1.5em" viewBox="0 0 24 24"> <path d="M0 0h24v24H0z" fill="none"></path> <path fill="currentColor" d="M6.616 21q-.691 0-1.153-.462T5 19.385v-8.77q0-.69.463-1.152T6.616 9H8.23q.213 0 .357.143t.143.357t-.143.357T8.23 10H6.616q-.231 0-.424.192T6 10.616v8.769q0 .23.192.423t.423.192h10.77q.23 0 .423-.192t.192-.423v-8.77q0-.23-.192-.423T17.384 10H15.77q-.213 0-.357-.143T15.27 9.5t.143-.357T15.77 9h1.615q.691 0 1.153.463T19 10.616v8.769q0 .69-.463 1.153T17.385 21zm5.027-5.643Q11.5 15.214 11.5 15V4.614L9.754 6.36q-.146.146-.344.153q-.199.006-.364-.16q-.16-.164-.162-.353t.162-.354l2.388-2.388q.132-.131.268-.184q.137-.053.298-.053t.298.053t.268.184l2.388 2.388q.14.14.15.342q.01.2-.15.366q-.166.165-.357.165t-.357-.165l-1.74-1.74V15q0 .214-.143.357T12 15.5t-.357-.143"></path></svg></i> </span> </div> <div className="reel-seekbar"> <span className="reel-time">0:00</span> <div className="reel-progress"> <div className="reel-progress-fill"></div> </div> </div> <div className="play-overlay" onClick={(e) => { (window as any).togglePlay(e.currentTarget); }}> <i className="fa-solid fa-play"></i> </div> </div> <div className="reel-caption"> <p className="reel-title" data-i18n="reel_title">
-                      قصة أمل من غزة: كيف تحدى الحصار
-                    </p> <span className="reel-views" data-i18n="reel_views">200k مشاهدة</span> </div> </div> <div className="reel-item" data-index="2"> <div className="reel-media"> <video src="/assets/videos/WhatsApp Video 2026-03-23 at 11.59.11 AM.mp4" loop playsInline onClick={(e) => { (window as any).toggleVideoPlay(e.currentTarget); }}></video> <div className="reel-overlay"></div> <div className="reel-actions"> <span onClick={(e) => { (window as any).toggleSave(e.currentTarget); }}> <i><svg xmlns="http://www.w3.org/2000/svg" width="1.5em" height="1.2em" viewBox="0 0 24 24"> <path d="M0 0h24v24H0z" fill="none"></path> <path fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M4 17.98V9.709c0-3.634 0-5.45 1.172-6.58S8.229 2 12 2s5.657 0 6.828 1.129C20 4.257 20 6.074 20 9.708v8.273c0 2.306 0 3.459-.773 3.871c-1.497.8-4.304-1.867-5.637-2.67c-.773-.465-1.16-.698-1.59-.698s-.817.233-1.59.698c-1.333.803-4.14 3.47-5.637 2.67C4 21.44 4 20.287 4 17.981"></path> </svg> </i> </span> <span onClick={(e) => { (window as any).toggleLike(e.currentTarget); }}> <i><svg xmlns="http://www.w3.org/2000/svg" width="1.5em" height="1.2em" viewBox="0 0 24 24"> <path d="M0 0h24v24H0z" fill="none"></path> <path fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M10.41 19.968C7.59 17.858 2 13.035 2 8.694C2 5.826 4.105 3.5 7 3.5c1.5 0 3 .5 5 2.5c2-2 3.5-2.5 5-2.5c2.895 0 5 2.326 5 5.194c0 4.34-5.59 9.164-8.41 11.274c-.95.71-2.23.71-3.18 0"></path> </svg> </i> </span> <span onClick={(e) => { (window as any).shareVideo(e.currentTarget); }}> <i><svg xmlns="http://www.w3.org/2000/svg" width="1.5em" height="1.5em" viewBox="0 0 24 24"> <path d="M0 0h24v24H0z" fill="none"></path> <path fill="currentColor" d="M6.616 21q-.691 0-1.153-.462T5 19.385v-8.77q0-.69.463-1.152T6.616 9H8.23q.213 0 .357.143t.143.357t-.143.357T8.23 10H6.616q-.231 0-.424.192T6 10.616v8.769q0 .23.192.423t.423.192h10.77q.23 0 .423-.192t.192-.423v-8.77q0-.23-.192-.423T17.384 10H15.77q-.213 0-.357-.143T15.27 9.5t.143-.357T15.77 9h1.615q.691 0 1.153.463T19 10.616v8.769q0 .69-.463 1.153T17.385 21zm5.027-5.643Q11.5 15.214 11.5 15V4.614L9.754 6.36q-.146.146-.344.153q-.199.006-.364-.16q-.16-.164-.162-.353t.162-.354l2.388-2.388q.132-.131.268-.184q.137-.053.298-.053t.298.053t.268.184l2.388 2.388q.14.14.15.342q.01.2-.15.366q-.166.165-.357.165t-.357-.165l-1.74-1.74V15q0 .214-.143.357T12 15.5t-.357-.143"></path></svg></i> </span> </div> <div className="reel-seekbar"> <span className="reel-time">0:00</span> <div className="reel-progress"> <div className="reel-progress-fill"></div> </div> </div> <div className="play-overlay" onClick={(e) => { (window as any).togglePlay(e.currentTarget); }}> <i className="fa-solid fa-play"></i> </div> </div> <div className="reel-caption"> <p className="reel-title" data-i18n="reel_title">
-                      قصة أمل من غزة: كيف تحدى الحصار
-                    </p> <span className="reel-views" data-i18n="reel_views">200k مشاهدة</span> </div> </div> </div> </div> <div className="col-lg-6 col-md-6"> <div className="comments-card reviews-comments"> <div className="reviews-comments-head p-4"> <div className="comments-count-group"> <span className="comments-head-icon"> <i><svg xmlns="http://www.w3.org/2000/svg" width="1.5em" height="1.5em" viewBox="0 0 24 24"> <path d="M0 0h24v24H0z" fill="none"></path> <g fill="none" stroke="currentColor" strokeLinecap="round" strokeWidth="1.5"> <path strokeLinejoin="round" d="M8 13.5h8m-8-5h4"></path> <path d="M6.099 19q-1.949-.192-2.927-1.172C2 16.657 2 14.771 2 11v-.5c0-3.771 0-5.657 1.172-6.828S6.229 2.5 10 2.5h4c3.771 0 5.657 0 6.828 1.172S22 6.729 22 10.5v.5c0 3.771 0 5.657-1.172 6.828S17.771 19 14 19c-.56.012-1.007.055-1.445.155c-1.199.276-2.309.89-3.405 1.424c-1.563.762-2.344 1.143-2.834.786c-.938-.698-.021-2.863.184-3.865"></path> </g> </svg> </i> </span> <span className="comments-count">التعليقات (341)</span> </div> <div className="tab-row"> <button className="tab" onClick={(e) => { (window as any).setTab(e.currentTarget, 'الأقدم'); }} data-i18n="tab_oldest">
+      <section className="stories-section reviews-section">
+        <div className="reviews-inner">
+          <div
+            className="row g-4 align-items-center justify-content-center"
+            style={{
+              backgroundColor: "rgba(237, 239, 235, 1)",
+              padding: "0px 30px 30px 30px",
+              borderRadius: "20px",
+              marginTop: "10px",
+            }}
+          >
+            <div className="col-lg-3 col-md-12">
+              <div className="reviews-intro">
+                {title ? (
+                  <h2 className="reviews-title fw-bold">
+                    <span>{titleHead}</span>{" "}
+                    <span className="reviews-highlight">{titleTail}</span>
+                  </h2>
+                ) : null}
+                {description ? <p className="reviews-desc">{description}</p> : null}
+              </div>
+            </div>
+
+            <div className="col-lg-3 col-md-6">
+              <div className="review-reels reels-container" id="reelsContainer">
+                {reels.map((reel, index) => (
+                  <div className="reel-item" data-index={index} key={reel.id ?? index}>
+                    <div className="reel-media">
+                      <video
+                        src={reel.video_url}
+                        poster={reel.thumbnail || undefined}
+                        loop
+                        playsInline
+                        onClick={(e) => {
+                          (window as any).toggleVideoPlay(e.currentTarget);
+                        }}
+                      ></video>
+                      <div className="reel-overlay"></div>
+                      <div className="reel-actions">
+                        <span
+                          onClick={(e) => {
+                            (window as any).toggleSave(e.currentTarget);
+                          }}
+                        >
+                          <i>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="1.5em" height="1.2em" viewBox="0 0 24 24">
+                              <path d="M0 0h24v24H0z" fill="none"></path>
+                              <path fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M4 17.98V9.709c0-3.634 0-5.45 1.172-6.58S8.229 2 12 2s5.657 0 6.828 1.129C20 4.257 20 6.074 20 9.708v8.273c0 2.306 0 3.459-.773 3.871c-1.497.8-4.304-1.867-5.637-2.67c-.773-.465-1.16-.698-1.59-.698s-.817.233-1.59.698c-1.333.803-4.14 3.47-5.637 2.67C4 21.44 4 20.287 4 17.981"></path>
+                            </svg>
+                          </i>
+                        </span>
+                        <span
+                          onClick={(e) => {
+                            (window as any).toggleLike(e.currentTarget);
+                          }}
+                        >
+                          <i>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="1.5em" height="1.2em" viewBox="0 0 24 24">
+                              <path d="M0 0h24v24H0z" fill="none"></path>
+                              <path fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M10.41 19.968C7.59 17.858 2 13.035 2 8.694C2 5.826 4.105 3.5 7 3.5c1.5 0 3 .5 5 2.5c2-2 3.5-2.5 5-2.5c2.895 0 5 2.326 5 5.194c0 4.34-5.59 9.164-8.41 11.274c-.95.71-2.23.71-3.18 0"></path>
+                            </svg>
+                          </i>
+                        </span>
+                        <span
+                          onClick={(e) => {
+                            (window as any).shareVideo(e.currentTarget);
+                          }}
+                        >
+                          <i>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="1.5em" height="1.5em" viewBox="0 0 24 24">
+                              <path d="M0 0h24v24H0z" fill="none"></path>
+                              <path fill="currentColor" d="M6.616 21q-.691 0-1.153-.462T5 19.385v-8.77q0-.69.463-1.152T6.616 9H8.23q.213 0 .357.143t.143.357t-.143.357T8.23 10H6.616q-.231 0-.424.192T6 10.616v8.769q0 .23.192.423t.423.192h10.77q.23 0 .423-.192t.192-.423v-8.77q0-.23-.192-.423T17.384 10H15.77q-.213 0-.357-.143T15.27 9.5t.143-.357T15.77 9h1.615q.691 0 1.153.463T19 10.616v8.769q0 .69-.463 1.153T17.385 21zm5.027-5.643Q11.5 15.214 11.5 15V4.614L9.754 6.36q-.146.146-.344.153q-.199.006-.364-.16q-.16-.164-.162-.353t.162-.354l2.388-2.388q.132-.131.268-.184q.137-.053.298-.053t.298.053t.268.184l2.388 2.388q.14.14.15.342q.01.2-.15.366q-.166.165-.357.165t-.357-.165l-1.74-1.74V15q0 .214-.143.357T12 15.5t-.357-.143"></path>
+                            </svg>
+                          </i>
+                        </span>
+                      </div>
+                      <div className="reel-seekbar">
+                        <span className="reel-time">0:00</span>
+                        <div className="reel-progress">
+                          <div className="reel-progress-fill"></div>
+                        </div>
+                      </div>
+                      <div
+                        className="play-overlay"
+                        onClick={(e) => {
+                          (window as any).togglePlay(e.currentTarget);
+                        }}
+                      >
+                        <i className="fa-solid fa-play"></i>
+                      </div>
+                    </div>
+                    <div className="reel-caption">
+                      <p className="reel-title">{reel.caption || ""}</p>{" "}
+                      {typeof reel.views === "number" ? (
+                        <span className="reel-views">
+                          {formatViews(reel.views)}{" "}
+                          <span data-i18n="reel_views_word">مشاهدة</span>
+                        </span>
+                      ) : null}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            <div className="col-lg-6 col-md-6">
+              <div className="comments-card reviews-comments">
+                <div className="reviews-comments-head p-4">
+                  <div className="comments-count-group">
+                    <span className="comments-head-icon">
+                      <i>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="1.5em" height="1.5em" viewBox="0 0 24 24">
+                          <path d="M0 0h24v24H0z" fill="none"></path>
+                          <g fill="none" stroke="currentColor" strokeLinecap="round" strokeWidth="1.5">
+                            <path strokeLinejoin="round" d="M8 13.5h8m-8-5h4"></path>
+                            <path d="M6.099 19q-1.949-.192-2.927-1.172C2 16.657 2 14.771 2 11v-.5c0-3.771 0-5.657 1.172-6.828S6.229 2.5 10 2.5h4c3.771 0 5.657 0 6.828 1.172S22 6.729 22 10.5v.5c0 3.771 0 5.657-1.172 6.828S17.771 19 14 19c-.56.012-1.007.055-1.445.155c-1.199.276-2.309.89-3.405 1.424c-1.563.762-2.344 1.143-2.834.786c-.938-.698-.021-2.863.184-3.865"></path>
+                          </g>
+                        </svg>
+                      </i>
+                    </span>
+                    {/* the legacy script rewrites this on mount and after every
+                        language toggle — it carries no data-i18n for that reason */}
+                    <span className="comments-count">
+                      التعليقات ({data?.comments?.count ?? 0})
+                    </span>
+                  </div>
+                  <div className="tab-row">
+                    <button
+                      className="tab"
+                      onClick={(e) => {
+                        (window as any).setTab(e.currentTarget, "الأقدم");
+                      }}
+                      data-i18n="tab_oldest"
+                    >
                       الأقدم
-                    </button> <button className="tab active" onClick={(e) => { (window as any).setTab(e.currentTarget, 'الأحدث'); }} data-i18n="tab_newest">
+                    </button>{" "}
+                    <button
+                      className="tab active"
+                      onClick={(e) => {
+                        (window as any).setTab(e.currentTarget, "الأحدث");
+                      }}
+                      data-i18n="tab_newest"
+                    >
                       الأحدث
-                    </button> </div> </div> <div className="comments-list" id="commentsList"></div> <div className="comment-input-row p-4"> <textarea className="comment-input" id="newComment" rows={1} placeholder="اترك تعليقك هنا..." data-i18n-placeholder="comment_placeholder" style={{textAlign: "start"}}></textarea> <button className="rs-send" onClick={() => { (window as any).addComment(); }}> <i> <svg xmlns="http://www.w3.org/2000/svg" width="1.4em" height="1.2em" viewBox="0 0 24 24"> <path d="M0 0h24v24H0z" fill="none"></path> <path fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="m9.498 15l7.5-7.5m-8.992.179l7.321-3.46c3.042-1.438 4.563-2.157 5.533-1.436s.693 2.365.138 5.652l-.954 5.662c-.363 2.149-.544 3.223-1.345 3.692s-1.842.109-3.923-.611l-6.365-2.202c-3.892-1.346-5.838-2.019-5.91-3.34c-.074-1.32 1.786-2.2 5.505-3.957M9.498 15.5v2.227c0 2.374 0 3.56.71 3.75s1.458-.798 2.954-2.773l.836-1.204"></path> </svg> </i> </button> </div> </div> </div> </div> </div> </section>
+                    </button>
+                  </div>
+                </div>
+                <div className="comments-list" id="commentsList"></div>
+                <div className="comment-input-row p-4">
+                  <textarea
+                    className="comment-input"
+                    id="newComment"
+                    rows={1}
+                    placeholder="اترك تعليقك هنا..."
+                    data-i18n-placeholder="comment_placeholder"
+                    style={{ textAlign: "start" }}
+                  ></textarea>
+                  <button
+                    className="rs-send"
+                    onClick={() => {
+                      (window as any).addComment();
+                    }}
+                  >
+                    <i>
+                      <svg xmlns="http://www.w3.org/2000/svg" width="1.4em" height="1.2em" viewBox="0 0 24 24">
+                        <path d="M0 0h24v24H0z" fill="none"></path>
+                        <path fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="m9.498 15l7.5-7.5m-8.992.179l7.321-3.46c3.042-1.438 4.563-2.157 5.533-1.436s.693 2.365.138 5.652l-.954 5.662c-.363 2.149-.544 3.223-1.345 3.692s-1.842.109-3.923-.611l-6.365-2.202c-3.892-1.346-5.838-2.019-5.91-3.34c-.074-1.32 1.786-2.2 5.505-3.957M9.498 15.5v2.227c0 2.374 0 3.56.71 3.75s1.458-.798 2.954-2.773l.836-1.204"></path>
+                      </svg>
+                    </i>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
     </>
   );
 }

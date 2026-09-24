@@ -304,6 +304,11 @@ background: #FFF;
   padding: 10px 16px;
   text-decoration: none;
   transition: background 0.2s ease;
+  /* it opens the enrollment modal, so it is a <button> now rather than the
+     <a href="#"> it was — these undo the UA button defaults */
+  border: none;
+  font-family: inherit;
+  cursor: pointer;
 }
 [dir='ltr'] .crs-btn-green i {
     transform: rotate(180deg);
@@ -1288,5 +1293,266 @@ position: absolute;
   .crs-trainer-social {
     width: 36px;
     height: 36px;
+  }
+}
+
+/* =========================================================
+   Enrollment modal — "أكمل تسجيلك في الدورة"
+   =========================================================
+   Opened by the registration card's "اشترك الآن" button; the markup lives in
+   components/courses/course-register.
+
+   It wears the join modal's classes (`join-modal`, `join-stepper`,
+   `join-field`, `join-modal-foot` … in legacy/style.css, which this route
+   loads) because the two are the same control set. Everything below is only
+   what THIS design adds on top, so nothing here restates a rule that file
+   already has. Selectors are doubled with `.crs-en-*` so they outrank the
+   `join-*` ones without `!important`.
+   ========================================================= */
+
+/* ---------- Shell ---------- */
+/* Wider than the join modal's 700px: this stepper's three labels are long
+   ("البيانات الأكاديمية والمهنية"), and the design keeps each on one line. */
+.join-modal.crs-en-modal {
+  max-width: 880px;
+}
+
+/* ---------- Stepper ---------- */
+/* The join modal's steps are a fixed 96px, which wraps these labels onto
+   three lines. Here each step is as wide as its own label needs. */
+.crs-en-modal .join-step {
+  width: auto;
+  max-width: 220px;
+  padding-inline: 8px;
+}
+
+.crs-en-modal .join-step-label {
+  white-space: nowrap;
+}
+
+.crs-en-modal .join-step-line {
+  max-width: 80px;
+}
+
+/* ---------- Fields ---------- */
+/* The design's boxes are taller than the join modal's 46px. */
+.crs-en-modal .join-input {
+  height: 52px;
+}
+
+.crs-en-modal .join-country-box {
+  height: 52px;
+}
+
+.crs-en-modal .join-label {
+  font-size: 15px;
+  font-weight: 600;
+}
+
+/* ---------- Header ---------- */
+/* The four-corner gradient from the design: each layer is a quarter of the
+   box, fading from the orange in its own corner into the olive. */
+.join-modal-head.crs-en-head {
+  border-radius: 16px 16px 0 0;
+  color: #fff;
+  background:
+    linear-gradient(to bottom right, #ff7420 0%, #476830 32%, #476830 46%) bottom right / 50% 50% no-repeat,
+    linear-gradient(to bottom left, #ff7420 0%, #476830 32%, #476830 46%) bottom left / 50% 50% no-repeat,
+    linear-gradient(to top left, #ff7420 0%, #476830 32%, #476830 46%) top left / 50% 50% no-repeat,
+    linear-gradient(to top right, #ff7420 0%, #476830 32%, #476830 46%) top right / 50% 50% no-repeat;
+}
+
+.join-modal-close.crs-en-close {
+  color: #fff;
+  /* the glyph is a fixed 24px SVG, so the box is sized to it */
+  width: 26px;
+  height: 26px;
+}
+
+.join-modal-close.crs-en-close svg {
+  width: 24px;
+  height: 24px;
+}
+
+.join-modal-close.crs-en-close:hover {
+  background: rgba(255, 255, 255, 0.18);
+}
+
+/* ---------- Body ---------- */
+/* The panes are React-mounted one at a time, so the join modal's
+   `.join-pane { display: none }` — which only the is-active one escapes —
+   would hide a pane that is already the only one there. */
+.crs-en-modal .join-pane {
+  display: block;
+}
+
+/* ---------- Dropdowns ---------- */
+.crs-en-select-wrap {
+  position: relative;
+}
+
+/* A native select, so the options are the platform's own list; the arrow is
+   drawn beside it instead. Room at the end is for that arrow. */
+.join-input.crs-en-select {
+  height: 52px;
+  padding-inline-end: 38px;
+  appearance: none;
+  -webkit-appearance: none;
+  font-family: inherit;
+  cursor: pointer;
+}
+
+/* nothing chosen yet — the first option reads as a placeholder */
+.join-input.crs-en-select.is-empty {
+  color: #b9b9b9;
+}
+
+/* …but the list itself is never grey */
+.join-input.crs-en-select option {
+  color: #333;
+}
+
+.crs-en-select-caret {
+  position: absolute;
+  inset-inline-end: 14px;
+  font-size: 12px;
+  color: #8a8a8a;
+  pointer-events: none;
+}
+
+/* ---------- The yes / no pair ---------- */
+.crs-en-choices {
+  display: flex;
+  gap: 14px;
+}
+
+.crs-en-choice {
+  flex: 1 1 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  min-height: 52px;
+  padding: 10px 16px;
+  border: 1px solid #e4e4e4;
+  border-radius: 12px;
+  background: #fff;
+  cursor: pointer;
+  transition:
+    border-color 0.2s ease,
+    background 0.2s ease;
+}
+
+.crs-en-choice-label {
+  font-size: 15px;
+  font-weight: 500;
+  color: #2f2f2f;
+}
+
+/* the real radio, kept for the keyboard and for assistive tech */
+.crs-en-choice-input {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.crs-en-choice-mark {
+  flex: 0 0 auto;
+  position: relative;
+  width: 18px;
+  height: 18px;
+  border: 1px solid #c8c8c8;
+  border-radius: 50%;
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.crs-en-choice.is-selected {
+  border-color: #4c5c37;
+}
+
+.crs-en-choice.is-selected .crs-en-choice-mark {
+  border-color: #4c5c37;
+  /* the filled dot, drawn with a ring rather than a second element */
+  box-shadow: inset 0 0 0 4px #4c5c37;
+}
+
+.crs-en-choice-input:focus-visible ~ .crs-en-choice-mark {
+  box-shadow: 0 0 0 3px rgba(76, 92, 55, 0.25);
+}
+
+/* ---------- Character counter ---------- */
+.crs-en-counter {
+  display: block;
+  margin-top: 6px;
+  /* under the far end of the textarea, as in the design */
+  text-align: end;
+  font-size: 13px;
+  color: #9a9a9a;
+}
+
+/* ---------- Phone field ---------- */
+/* The dial-code box is a <button> here, not the legacy <div> + hidden
+   <select>, so it carries the box's own padding and resets. */
+.join-country-box.crs-en-country {
+  padding: 0;
+  overflow: visible;
+}
+
+.crs-en-country-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  padding-inline-start: 28px;
+  padding-inline-end: 40px;
+  border: none;
+  border-radius: 12px;
+  background: transparent;
+  font-family: inherit;
+  cursor: pointer;
+}
+
+/* ---------- Responsive ---------- */
+@media (max-width: 575.98px) {
+  .join-modal.crs-en-modal {
+    border-radius: 20px 20px 0 0;
+  }
+
+  .join-modal-head.crs-en-head {
+    border-radius: 20px 20px 0 0;
+  }
+
+  /* back to the join modal's wrapping stepper: three nowrap labels cannot
+     fit side by side on a phone */
+  .crs-en-modal .join-step {
+    width: 96px;
+    padding-inline: 0;
+  }
+
+  .crs-en-modal .join-step-label {
+    white-space: normal;
+  }
+
+  .crs-en-modal .join-input,
+  .crs-en-modal .join-country-box {
+    height: 46px;
+  }
+
+  .crs-en-choices {
+    gap: 10px;
+  }
+
+  .crs-en-choice {
+    min-height: 46px;
+    padding: 8px 12px;
+  }
+
+  .join-input.crs-en-select {
+    height: 46px;
   }
 }

@@ -4,9 +4,10 @@ import "@/styles/content-skeleton.css";
    as well as client-rendered: `loading` starts true on both sides, so this is
    what ships in content.html and what hydration expects.
 
-   Only the hero and the row headings are here. The reel grid below draws the
-   bundled demo reels — the API has no field for it yet (see content-data) — so
-   it is on screen from the first paint and needs no placeholder. */
+   The reel grid and the "الأكثر مشاهدة" row are in here too, now that their
+   cards come from the payload rather than from a bundled demo reel — without
+   them the page below the hero would be an empty white stretch until the
+   request lands. */
 
 function Line({ width, className = "sk-line" }: { width: string; className?: string }) {
   return <span className={className} style={{ width }} />;
@@ -31,6 +32,29 @@ export function ContentPostersSkeleton() {
         <span key={i} className="sk-block" />
       ))}
     </div>
+  );
+}
+
+/** Reel-shaped boxes inside the REAL .ct-grid, so the columns the cards will
+    land in are already the ones on screen. */
+export function ContentGridSkeleton({ count = 10 }: { count?: number }) {
+  return (
+    <div className="ct-grid" aria-busy="true" aria-hidden="true">
+      {Array.from({ length: count }, (_, i) => (
+        <span key={i} className="sk-block ct-sk-card" />
+      ))}
+    </div>
+  );
+}
+
+/** The same boxes for the horizontal row — rendered inside its real track. */
+export function MostWatchedCardsSkeleton({ count = 8 }: { count?: number }) {
+  return (
+    <>
+      {Array.from({ length: count }, (_, i) => (
+        <span key={i} className="sk-block ct-sk-card" aria-hidden="true" />
+      ))}
+    </>
   );
 }
 

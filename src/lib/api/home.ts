@@ -15,11 +15,12 @@
    empty, and an outage leaves the page as its skeleton gave way to — see
    components/home/HomeContent.
 
-   NOT covered here: the reels column and the comment thread under
-   "آراؤكم في المحتوى". `reviews.reels` / `reviews.comments` are read for their
-   title and description only — the reel player and the comment list are still
-   driven by lib/legacy-main's own `reelsData` (roadmap item 5). The API is
-   currently answering `reels: []` with `reels_status: "token_expired"` anyway.
+   The reels column and the comment thread under "آراؤكم في المحتوى" are
+   the payload's too, now that it serves them: `reviews.reels` are the
+   platform's Instagram reels and `reviews.comments` is the thread beside them.
+   Nothing in that section is bundled any more — lib/legacy-main keeps the
+   player and the comment machinery, but its data arrives from here (see the
+   note on HomeReviewComment, and roadmap item 5 for the React port).
    ========================================================= */
 
 import { apiFetch } from "./client";
@@ -217,15 +218,67 @@ export type HomeJoinCta = {
 
 /* ------------------------------------------------------------- reviews */
 
-/** Only `title` and `description` are rendered — see the note at the top. */
+/** One reel of the column beside the thread — the same shape /pages/content
+    serves (see ContentReel there): the API mirrors them from the platform's
+    Instagram account, so an item reads like a post rather than an upload.
+    `video_url` is a CDN link with an expiry in its query string, and it is
+    empty on an item Instagram served no file for. */
+export type HomeReviewReel = {
+  id?: number | string;
+  caption?: string | null;
+  thumbnail?: string | null;
+  video_url?: string | null;
+  permalink?: string | null;
+  username?: string | null;
+  likes?: number | null;
+  comments_count?: number | null;
+  views?: number | null;
+  reach?: number | null;
+  collaborators?: string[];
+  posted_at?: string | null;
+  sort_order?: number;
+};
+
+/** A reply under a comment. Same provisional-names caveat as the comment. */
+export type HomeReviewReply = {
+  id?: number | string;
+  name?: string | null;
+  body?: string | null;
+  text?: string | null;
+  created_at?: string | null;
+};
+
+/** One comment of the thread.
+
+    CAVEAT: the API answers `comments: { count: 0, items: [] }` — it has never
+    served an item, so the field names below are the ones the rest of this API
+    uses for the same things rather than names anyone has seen. The reader in
+    components/home/Reviews accepts either spelling of the two that matter
+    (`body`/`text`, `name`/`author`) and treats everything else as optional, so
+    a first real item renders instead of throwing. Confirm the shape against
+    the backend before relying on it. */
+export type HomeReviewComment = {
+  id?: number | string;
+  name?: string | null;
+  author?: string | null;
+  body?: string | null;
+  text?: string | null;
+  likes?: number | null;
+  liked?: boolean;
+  created_at?: string | null;
+  replies?: HomeReviewReply[];
+};
+
 export type HomeReviews = {
   title?: Localized;
   description?: Localized;
+  /** false when an editor turned the reel column off entirely. */
   reels_enabled?: boolean;
+  /** "ok" / "token_expired" … — why `reels` is empty, when it is. */
   reels_status?: string | null;
   reels_message?: string | null;
-  reels?: unknown[];
-  comments?: { count?: number; items?: unknown[] };
+  reels?: HomeReviewReel[];
+  comments?: { count?: number; items?: HomeReviewComment[] };
 };
 
 export type HomePage = {
@@ -314,6 +367,16 @@ function withAssetUrls(page: HomePage): HomePage {
     join_cta: page.join_cta && {
       ...page.join_cta,
       image_url: assetUrl(page.join_cta.image_url),
+    },
+    /* a reel's files are Instagram CDN links, which `assetUrl` passes through
+       untouched — it only rewrites the API's own /storage/ paths */
+    reviews: page.reviews && {
+      ...page.reviews,
+      reels: mapList(page.reviews.reels, (reel) => ({
+        ...reel,
+        video_url: assetUrl(reel.video_url),
+        thumbnail: assetUrl(reel.thumbnail),
+      })),
     },
   };
 }

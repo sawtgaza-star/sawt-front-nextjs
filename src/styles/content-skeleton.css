@@ -81,6 +81,24 @@
   border-radius: 14px;
 }
 
+/* A reel card, in the grid and in the row alike: the shared card is sized by
+   .ct-grid / .ct-mw-track in content.css, and these mirror exactly those two
+   rules — keep them in step. The grid wrapper is the real .ct-grid, so the
+   column count (5 / 4 / 3 / 2) follows along on its own. */
+.ct-sk-card {
+  aspect-ratio: 9 / 16;
+  border-radius: 18px;
+}
+
+.ct-grid .ct-sk-card {
+  width: 100%;
+  height: auto;
+}
+
+.ct-mw-track .ct-sk-card {
+  flex: 0 0 clamp(160px, 18vw, 265px);
+}
+
 /* The row heading above "الأكثر مشاهدة" — one short bar in its place. */
 .ct-sk-mw-title {
   height: 26px;
@@ -111,6 +129,10 @@
 }
 
 @media (max-width: 767.98px) {
+  /* mirrors `.ct-mw-track .cr-content-card` at this breakpoint */
+  .ct-mw-track .ct-sk-card {
+    flex: 0 0 calc((100vw - 32px) / 2);
+  }
   .ct-sk-posters .sk-block {
     width: calc((100% - 12px) / 2.2);
     height: clamp(310px, 98vw, 420px);
