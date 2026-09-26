@@ -1,24 +1,36 @@
-/* "ابدأ رحلتك مع حاضنة صوت" — tenth section of /incubator. Reuses the home
-   page's JoinUs banner (join-us-* classes + join-img.jpg collage from
-   style.css, which the (main) layout loads) with the incubator copy; the
-   mock's flat olive overlay is layered by .inc-join in incubator.css. */
-export default function IncubatorJoin() {
+import { localized } from "@/lib/api/pages";
+import type { IncubatorJoinContent } from "@/lib/api/incubator-page";
+import { PLACEHOLDER } from "./incubator-page-view";
+
+/* "ابدأ رحلتك مع حاضنة صوت" — the API's `join_cta` block on the home page's
+   JoinUs banner (join-us-* classes from style.css, which the (main) layout
+   loads); the mock's flat olive overlay is layered by .inc-join in
+   incubator.css. #inc-join is where the navbar's "انضم للحاضنة" lands. */
+export default function IncubatorJoin({
+  data,
+  lang,
+}: {
+  data?: IncubatorJoinContent;
+  lang: string;
+}) {
+  const title = localized(data?.title, lang);
+  const desc = localized(data?.description, lang);
+  const button = localized(data?.button?.label, lang);
+  if (!title && !desc && !button) return null;
+
   return (
     <section className="inc-join join-us-section position-relative" id="inc-join">
       <div className="join-us-banner">
-        <img src="/assets/images/join-img.jpg" alt="" className="join-us-bg" />
+        <img src={data?.image_url || PLACEHOLDER.join} alt="" className="join-us-bg" />
         <div className="join-us-content text-center">
-          <h2 className="join-us-title" data-i18n="inc_join_title">
-            ابدأ رحلتك مع حاضنة صوت
-          </h2>
-          <p className="join-us-desc" data-i18n="inc_join_desc">
-            حوّل فكرتك إلى محتوى مؤثر، وطوّر مهاراتك من خلال التدريب العملي
-            والإرشاد المتخصص، واصنع مشروعًا يعكس صوتك ويصل إلى الآخرين.
-          </p>
-          <a className="btn btn-dark-green join-us-btn" href="#">
-            <span data-i18n="inc_join_btn">انضم إلى الحاضنة</span>
-            <i className="fa-solid fa-angle-left arrow"></i>
-          </a>
+          {title ? <h2 className="join-us-title">{title}</h2> : null}
+          {desc ? <p className="join-us-desc">{desc}</p> : null}
+          {button ? (
+            <a className="btn btn-dark-green join-us-btn" href="#">
+              <span>{button}</span>
+              <i className="fa-solid fa-angle-left arrow"></i>
+            </a>
+          ) : null}
         </div>
       </div>
     </section>

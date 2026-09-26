@@ -1355,11 +1355,16 @@ position: absolute;
 .join-modal-head.crs-en-head {
   border-radius: 16px 16px 0 0;
   color: #fff;
+  /* flat olive with a muted amber glow at the top-left corner (behind the
+     close button), fading out by mid-width — colours sampled from the design */
   background:
-    linear-gradient(to bottom right, #ff7420 0%, #476830 32%, #476830 46%) bottom right / 50% 50% no-repeat,
-    linear-gradient(to bottom left, #ff7420 0%, #476830 32%, #476830 46%) bottom left / 50% 50% no-repeat,
-    linear-gradient(to top left, #ff7420 0%, #476830 32%, #476830 46%) top left / 50% 50% no-repeat,
-    linear-gradient(to top right, #ff7420 0%, #476830 32%, #476830 46%) top right / 50% 50% no-repeat;
+    radial-gradient(
+      ellipse 45% 75% at 12% 0%,
+      rgba(142, 109, 44, 1) 0%,
+      rgba(142, 109, 44, 0.55) 35%,
+      rgba(79, 104, 48, 0) 100%
+    ),
+    #4f6830;
 }
 
 .join-modal-close.crs-en-close {
@@ -1420,6 +1425,14 @@ position: absolute;
   pointer-events: none;
 }
 
+/* the design's SVG caret (IconCaretDown) inside both carets' <i> — a box
+   the size of the glyph, so the absolute positioning above centres it */
+.crs-en-caret {
+  display: inline-flex;
+  align-items: center;
+  line-height: 0;
+}
+
 /* ---------- The yes / no pair ---------- */
 .crs-en-choices {
   display: flex;
@@ -1461,9 +1474,9 @@ position: absolute;
 .crs-en-choice-mark {
   flex: 0 0 auto;
   position: relative;
-  width: 18px;
-  height: 18px;
-  border: 1px solid #c8c8c8;
+  width: 14px;
+  height: 14px;
+  border: 1px solid #000;
   border-radius: 50%;
   transition:
     border-color 0.2s ease,
@@ -1482,6 +1495,51 @@ position: absolute;
 
 .crs-en-choice-input:focus-visible ~ .crs-en-choice-mark {
   box-shadow: 0 0 0 3px rgba(76, 92, 55, 0.25);
+}
+
+/* ---------- Submit error + confirmation facts ---------- */
+/* a message no field carries (401, 500, offline) — under the last pane */
+.crs-en-error {
+  margin-top: 4px;
+  text-align: center;
+}
+
+.crs-en-done-facts {
+  display: inline-flex;
+  flex-direction: column;
+  gap: 6px;
+  margin: 16px 0 0;
+  padding: 12px 18px;
+  list-style: none;
+  border-radius: 12px;
+  background: #edefeb;
+  font-size: 14px;
+  color: #484848;
+  text-align: start;
+}
+
+/* the "already subscribed" pane — orange, not the success green */
+.join-success-icon.crs-en-notice-icon {
+  background: rgba(255, 116, 32, 0.12);
+  color: #ff7420;
+}
+
+.crs-en-done-status {
+  color: #ff7420;
+}
+
+.join-success-text.crs-en-done-notice {
+  margin-top: 14px;
+}
+
+/* ---------- Uploaded section icons ---------- */
+/* an `icon_url` from the course payload, in place of the design's glyph */
+.crs-goal-icon img,
+.crs-perk-icon img,
+.crs-sel-icon img {
+  width: 24px;
+  height: 24px;
+  object-fit: contain;
 }
 
 /* ---------- Character counter ---------- */

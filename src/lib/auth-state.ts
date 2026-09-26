@@ -120,3 +120,24 @@ export async function logout(): Promise<void> {
     /* already expired or offline — nothing left to do */
   }
 }
+
+/* --- back to where you were ---------------------------------------------- */
+
+/** /login, remembering the page to come back to after signing in. */
+export function loginHref(next?: string): string {
+  const back =
+    next ??
+    (typeof window === "undefined"
+      ? ""
+      : window.location.pathname + window.location.search + window.location.hash);
+  return back ? `/login?next=${encodeURIComponent(back)}` : "/login";
+}
+
+/** Where /login should send the visitor: its `?next=` when that is a path on
+    this site ("/courses/…"), never another origin ("//evil.com", "https:…"). */
+export function safeNext(value: string | null | undefined, fallback = "/"): string {
+  const next = (value || "").trim();
+  return next.startsWith("/") && !next.startsWith("//") && !next.startsWith("/\\")
+    ? next
+    : fallback;
+}

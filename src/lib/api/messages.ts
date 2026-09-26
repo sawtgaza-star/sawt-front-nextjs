@@ -37,6 +37,12 @@ const KEY_BY_TEXT: Record<string, string> = (() => {
   return table;
 })();
 
+/** The i18n key a server message matches, if any — for a caller that has to
+    tell one particular answer apart (the course "already subscribed" 422). */
+export function apiMessageKey(message?: string | null): string | undefined {
+  return message ? KEY_BY_TEXT[normalize(message)] : undefined;
+}
+
 /** The message to show for a server (or locally raised) Arabic message. */
 export function apiMessage(message?: string | null): string | undefined {
   if (!message) return undefined;

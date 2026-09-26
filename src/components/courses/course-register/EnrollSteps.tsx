@@ -24,17 +24,29 @@ import { GOALS, LEVELS, NOTES_MAX, type EnrollForm } from "./register-data";
    page, so the DOM translator would never visit it. That is the case
    lib/use-lang exists for. */
 
+/** The phone box keeps digits only — typed or pasted, and with Arabic-Indic
+    (٠-٩) and Persian (۰-۹) digits turned into 0-9, which is what the API
+    expects next to `phone_country_code`. */
+function digitsOnly(value: string): string {
+  return value
+    .replace(/[٠-٩]/g, (d) => String(d.charCodeAt(0) - 0x0660))
+    .replace(/[۰-۹]/g, (d) => String(d.charCodeAt(0) - 0x06f0))
+    .replace(/\D/g, "");
+}
+
 type PaneProps = {
   form: EnrollForm;
   set: <K extends keyof EnrollForm>(key: K, value: EnrollForm[K]) => void;
   tr: (key: string) => string;
+  /** The API's note for a field, by the API's field name. */
+  error: (name: string) => string | undefined;
 };
 
 /** Step 1 — المعلومات الشخصية. */
-export function StepPersonal({ form, set, tr }: PaneProps) {
+export function StepPersonal({ form, set, tr, error }: PaneProps) {
   return (
     <div className="join-pane is-active">
-      <Field label={tr("crs_en_fullname")}>
+      <Field label={tr("crs_en_fullname")} error={error("full_name")}>
         <IconField
           icon={<IconUser />}
           type="text"
@@ -45,7 +57,10 @@ export function StepPersonal({ form, set, tr }: PaneProps) {
         />
       </Field>
 
-      <Field label={tr("crs_en_phone")}>
+      <Field
+        label={tr("crs_en_phone")}
+        error={error("phone") || error("phone_country_code")}
+      >
         <div className="join-phone-wrap">
           <EnrollCountrySelect
             value={form.dialCode}
@@ -57,18 +72,21 @@ export function StepPersonal({ form, set, tr }: PaneProps) {
             </i>
             <input
               type="tel"
+              inputMode="numeric"
+              pattern="[0-9]*"
+              autoComplete="tel-national"
               className="join-input"
               name="phone"
               dir="rtl"
               value={form.phone}
               placeholder={tr("crs_en_phone_ph")}
-              onChange={(e) => set("phone", e.target.value)}
+              onChange={(e) => set("phone", digitsOnly(e.target.value))}
             />
           </div>
         </div>
       </Field>
 
-      <Field label={tr("crs_en_email")}>
+      <Field label={tr("crs_en_email")} error={error("email")}>
         <IconField
           icon={<IconMail />}
           type="email"
@@ -83,10 +101,10 @@ export function StepPersonal({ form, set, tr }: PaneProps) {
 }
 
 /** Step 2 — البيانات الأكاديمية والمهنية. */
-export function StepAcademic({ form, set, tr }: PaneProps) {
+export function StepAcademic({ form, set, tr, error }: PaneProps) {
   return (
     <div className="join-pane is-active">
-      <Field label={tr("crs_en_level")}>
+      <Field label={tr("crs_en_level")} error={error("academic_level")}>
         <SelectField
           icon={<IconIdCard />}
           placeholder={tr("crs_en_level_ph")}
@@ -98,7 +116,7 @@ export function StepAcademic({ form, set, tr }: PaneProps) {
         />
       </Field>
 
-      <Field label={tr("crs_en_attended")}>
+      <Field label={tr("crs_en_attended")} error={error("attended_similar_course")}>
         <ChoiceRow
           name="attended_before"
           value={form.attendedBefore}
@@ -112,7 +130,7 @@ export function StepAcademic({ form, set, tr }: PaneProps) {
         />
       </Field>
 
-      <Field label={tr("crs_en_interests")}>
+      <Field label={tr("crs_en_interests")} error={error("goals_interests")}>
         <TextareaField
           name="interests"
           value={form.interests}
@@ -125,10 +143,10 @@ export function StepAcademic({ form, set, tr }: PaneProps) {
 }
 
 /** Step 3 — أهدافك واهتماماتك. */
-export function StepGoals({ form, set, tr }: PaneProps) {
+export function StepGoals({ form, set, tr, error }: PaneProps) {
   return (
     <div className="join-pane is-active">
-      <Field label={tr("crs_en_goal")}>
+      <Field label={tr("crs_en_goal")} error={error("join_goal")}>
         <SelectField
           icon={<IconIdCard />}
           placeholder={tr("crs_en_goal_ph")}
@@ -140,7 +158,7 @@ export function StepGoals({ form, set, tr }: PaneProps) {
         />
       </Field>
 
-      <Field label={tr("crs_en_notes")}>
+      <Field label={tr("crs_en_notes")} error={error("additional_notes")}>
         <TextareaField
           name="notes"
           value={form.notes}

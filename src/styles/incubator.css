@@ -341,6 +341,16 @@
 
 
 }
+/* the API's foreground upload arrives already framed (border + drop shadow
+   baked into a transparent PNG), so it is shown whole and unframed */
+.inc-hero-img.inc-hero-img--composite {
+  aspect-ratio: auto;
+  height: auto;
+  border: 0;
+  border-radius: 0;
+  box-shadow: none;
+  object-fit: contain;
+}
 .inc-hero-badge {
   position: absolute;
   display: flex;
@@ -511,6 +521,14 @@ border: 1px solid  #DADADA;
   background: #eff0ec;
   color: #e1723b;
   font-size: 28px;
+}
+/* the API's icons are uploaded SVGs that draw their own round plate, so the
+   image fills the whole circle rather than sitting inside it */
+.inc-why-feature-icon img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
 }
 .inc-why-feature-body {
   min-width: 0;
@@ -787,6 +805,18 @@ border: 1px solid  #DADADA;
   text-decoration: none;
   transition: background-color 0.25s ease;
 }
+/* the waiting-list CTA is a <button> (it posts, it doesn't navigate) — same
+   pill as the link */
+button.inc-course-cta {
+  width: 100%;
+  font-family: inherit;
+  cursor: pointer;
+}
+button.inc-course-cta:disabled {
+  cursor: progress;
+  opacity: 0.7;
+}
+
 .inc-course-card:not(.is-featured) .inc-course-cta {
   margin-top: 18px;
 }
@@ -1763,6 +1793,26 @@ border: 1px solid  #4C5C37;
   width: 150px;
   height: 56px;
   object-fit: contain;
+}
+/* an employer the editor hasn't uploaded a logo for yet — its name, set in
+   the same 150×56 slot and the same muted grey the logos are filtered to */
+.inc-grads .marquee-group > a {
+  flex: 0 0 auto;
+  display: inline-flex;
+  align-items: center;
+}
+.inc-grads-name {
+  flex: 0 0 auto;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 150px;
+  height: 56px;
+  font-size: 22px;
+  font-weight: 800;
+  color: #1c1c1c;
+  opacity: 0.45;
+  white-space: nowrap;
 }
 
 /* ============================================================

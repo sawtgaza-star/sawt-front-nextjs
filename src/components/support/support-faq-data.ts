@@ -1,10 +1,14 @@
 /* "الأسئلة المتكررة" — support page FAQ. */
 
+import { localized } from "@/lib/api/pages";
+import type { SupportFaqContent } from "@/lib/api/support";
+
 export type SupportFaq = {
   q: string;
-  qKey: string;
+  /** Only the built-in copy carries i18n keys. */
+  qKey?: string;
   a: string;
-  aKey: string;
+  aKey?: string;
 };
 
 export const SUPPORT_FAQS: SupportFaq[] = [
@@ -39,3 +43,15 @@ export const SUPPORT_FAQS: SupportFaq[] = [
     aKey: "support_faq_a5",
   },
 ];
+
+/* GET /pages/support's `faq.items`, resolved for one language; the built-in
+   five stand in when the API sent none. */
+export function resolveSupportFaqs(
+  items: SupportFaqContent["items"],
+  lang: string,
+): SupportFaq[] {
+  const resolved = (items || [])
+    .map((item) => ({ q: localized(item.question, lang), a: localized(item.answer, lang) }))
+    .filter((f) => f.q);
+  return resolved.length ? resolved : SUPPORT_FAQS;
+}

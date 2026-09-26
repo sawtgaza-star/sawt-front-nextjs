@@ -9,7 +9,7 @@ import { IconMail, IconPassword, IconGoogle, IconFacebook, IconApple } from "@/c
 import { AuthMessage, fieldError, pendingProps } from "@/components/auth/AuthMessage";
 import { useAuthForm } from "@/components/auth/useAuthForm";
 import { login } from "@/lib/api/auth";
-import { saveSession } from "@/lib/auth-state";
+import { safeNext, saveSession } from "@/lib/auth-state";
 import { markLoggedIn } from "@/components/site/login-flash";
 import { useAuthFlash } from "@/components/auth/useAuthFlash";
 
@@ -33,7 +33,8 @@ export default function Page() {
     /* Leave the auth CSS group with a full reload, not a <Link> — see the
        CSS-groups convention in CLAUDE.md. This also lets the pre-paint script
        in layout.tsx pick up the new flag and render the signed-in top bar. */
-    window.location.href = "/";
+    // back to the page that sent the visitor here (a course's waiting list…)
+    window.location.href = safeNext(new URLSearchParams(window.location.search).get("next"));
   });
 
   return (

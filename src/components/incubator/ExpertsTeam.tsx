@@ -1,27 +1,35 @@
+import { localized } from "@/lib/api/pages";
+import type { IncubatorExpertsContent } from "@/lib/api/incubator-page";
 import ExpertCard from "./ExpertCard";
-import { EXPERTS } from "./experts-data";
+import IncubatorSectionHead from "./IncubatorSectionHead";
+import { toExpert } from "./experts-data";
+import { sortItems } from "./incubator-page-view";
 
-/* "فريق خبراء متخصص" — five-up expert cards on a white band. */
-export default function ExpertsTeam() {
+/* "فريق خبراء متخصص" — expert cards on a white band, from the API's
+   `experts` block. */
+export default function ExpertsTeam({
+  data,
+  lang,
+}: {
+  data?: IncubatorExpertsContent;
+  lang: string;
+}) {
+  const items = sortItems(data?.items);
+  if (!data || !items.length) return null;
+
   return (
     <section className="inc-experts" id="inc-experts">
       <div className="container">
-        <div className="inc-section-head">
-          <h2 className="inc-section-title">
-            <span data-i18n="inc_experts_title_pre">فريق خبراء</span>{" "}
-            <span className="inc-highlight" data-i18n="inc_experts_title_hl">
-              متخصص
-            </span>
-          </h2>
-          <p className="inc-section-sub" data-i18n="inc_experts_sub">
-            أرقام حقيقية تعكس قوة مجتمعنا
-          </p>
-        </div>
+        <IncubatorSectionHead
+          title={localized(data.title, lang)}
+          sub={localized(data.subtitle, lang)}
+        />
 
         <div className="inc-expert-row">
-          {EXPERTS.map((e) => (
-            <ExpertCard expert={e} key={e.key} />
-          ))}
+          {items.map((item, index) => {
+            const expert = toExpert(item, lang, index);
+            return <ExpertCard expert={expert} key={expert.key} />;
+          })}
         </div>
       </div>
     </section>

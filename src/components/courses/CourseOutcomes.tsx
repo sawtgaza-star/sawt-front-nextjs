@@ -1,12 +1,51 @@
-import { COURSE_OUTCOMES } from "./course-outcomes-data";
+import type { ReactNode } from "react";
+import { localized, type Localized } from "@/lib/api/pages";
+import { t } from "@/lib/translations";
+import { IconOutcomeDoc, IconOutcomeDocCheck } from "@/components/ui/icons";
+
+type OutcomeCard = {
+  key: string;
+  theme: "gray" | "olive";
+  icon: ReactNode;
+  title: string;
+  items: string[];
+};
 
 /* "مخرجات البرنامج" — orange-bar section head + the قبل/بعد البرنامج card
-   pair, looked up by the course's route id. Each card has a colored rounded
+   pair, from the course's `outcomes`. Card order is the mock's reading order:
+   "قبل" first (right in RTL, gray theme), then "بعد" (left, olive theme); a
+   side the payload leaves empty is dropped. Each card has a colored rounded
    tab peeking behind its top edge (same trick as the registration card's
    orange tab) and a pale branch decorates the section's top-right corner. */
-export default function CourseOutcomes({ courseId }: { courseId: string }) {
-  const outcomes = COURSE_OUTCOMES[courseId];
-  if (!outcomes) return null;
+export default function CourseOutcomes({
+  before,
+  after,
+  lang,
+}: {
+  before?: Localized[];
+  after?: Localized[];
+  lang: string;
+}) {
+  const texts = (list?: Localized[]) =>
+    (Array.isArray(list) ? list : []).map((item) => localized(item, lang)).filter(Boolean);
+
+  const outcomes: OutcomeCard[] = [
+    {
+      key: "before",
+      theme: "gray" as const,
+      icon: <IconOutcomeDoc />,
+      title: t("crs_outcome_before_title"),
+      items: texts(before),
+    },
+    {
+      key: "after",
+      theme: "olive" as const,
+      icon: <IconOutcomeDocCheck />,
+      title: t("crs_outcome_after_title"),
+      items: texts(after),
+    },
+  ].filter((card) => card.items.length);
+  if (!outcomes.length) return null;
 
   return (
     <section className="crs-section crs-outcomes-section" id="crs-outcomes">
@@ -33,9 +72,7 @@ export default function CourseOutcomes({ courseId }: { courseId: string }) {
 
       <div className="crs-sec-head">
         <span className="crs-sec-bar" aria-hidden="true"></span>
-        <h2 className="crs-sec-title" data-i18n="crs_outcomes_title">
-          مخرجات البرنامج
-        </h2>
+        <h2 className="crs-sec-title">{t("crs_outcomes_title")}</h2>
       </div>
 
       <div className="crs-outcomes-grid">
@@ -45,14 +82,12 @@ export default function CourseOutcomes({ courseId }: { courseId: string }) {
               <span className="crs-outcome-icon" aria-hidden="true">
                 {card.icon}
               </span>
-              <h3 className="crs-outcome-title" data-i18n={card.titleKey}>
-                {card.title}
-              </h3>
+              <h3 className="crs-outcome-title">{card.title}</h3>
               <ul className="crs-outcome-list">
                 {card.items.map((item, i) => (
                   <li key={i}>
                     <span className="crs-outcome-dot" aria-hidden="true"></span>
-                    <span data-i18n={`${card.itemStem}${i + 1}`}>{item}</span>
+                    <span>{item}</span>
                   </li>
                 ))}
               </ul>

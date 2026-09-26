@@ -7,7 +7,7 @@ import "@/styles/creators-skeleton.css";
    The breadcrumb header itself is NOT part of it — CreatorsHero always renders
    (SiteNav lives inside it) and swaps its own copy for these bars. */
 
-function Line({ width, className = "sk-line" }: { width: string; className?: string }) {
+export function Line({ width, className = "sk-line" }: { width: string; className?: string }) {
   return <span className={className} style={{ width }} />;
 }
 
@@ -39,6 +39,24 @@ export function CreatorsGridSkeleton({ count = 10 }: { count?: number }) {
         <span key={i} className="sk-block cr-sk-card" />
       ))}
     </div>
+  );
+}
+
+/** The collaboration panel + its three step cards — shared with the
+    creator profile's skeleton, where the same section closes the page. */
+export function CollabStepsSkeleton() {
+  return (
+    <section className="cr-collab-section">
+      <div className="container">
+        <Head titleWidth="44%" />
+        <span className="sk-block cr-sk-flow" />
+        <div className="cr-steps-grid">
+          {Array.from({ length: 3 }, (_, i) => (
+            <span key={i} className="sk-block cr-sk-step" />
+          ))}
+        </div>
+      </div>
+    </section>
   );
 }
 
@@ -82,17 +100,7 @@ export default function CreatorsSkeleton() {
         </div>
       </section>
 
-      <section className="cr-collab-section">
-        <div className="container">
-          <Head titleWidth="44%" />
-          <span className="sk-block cr-sk-flow" />
-          <div className="cr-steps-grid">
-            {Array.from({ length: 3 }, (_, i) => (
-              <span key={i} className="sk-block cr-sk-step" />
-            ))}
-          </div>
-        </div>
-      </section>
+      <CollabStepsSkeleton />
 
       <section className="cr-faq-section">
         <div className="container">

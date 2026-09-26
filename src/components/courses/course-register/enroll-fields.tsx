@@ -1,6 +1,7 @@
 "use client";
 import type { ReactNode } from "react";
 import type { Option } from "./register-data";
+import { IconCaretDown } from "./enroll-icons";
 
 /* The enrollment form's building blocks. They render the join modal's field
    classes — `style.css` defines them and this route loads it — so a labelled
@@ -8,17 +9,22 @@ import type { Option } from "./register-data";
    design adds on top (a dropdown with a leading icon, the yes/no pair, the
    character counter) wears `crs-en-*` classes defined in course.css. */
 
+/** A labelled field; `error` is the API's note for it, painted the join
+    modal's way (red box + message under it). */
 export function Field({
   label,
+  error,
   children,
 }: {
   label: string;
+  error?: string;
   children: ReactNode;
 }) {
   return (
-    <div className="join-field">
+    <div className={"join-field" + (error ? " has-error" : "")}>
       <label className="join-label">{label}</label>
       {children}
+      {error ? <span className="join-field-error">{error}</span> : null}
     </div>
   );
 }
@@ -73,7 +79,9 @@ export function SelectField({
           </option>
         ))}
       </select>
-      <i className="fa-solid fa-chevron-down crs-en-select-caret"></i>
+      <i className="crs-en-select-caret crs-en-caret">
+        <IconCaretDown />
+      </i>
     </div>
   );
 }

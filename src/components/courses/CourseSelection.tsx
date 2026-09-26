@@ -1,4 +1,8 @@
 import type { ReactNode } from "react";
+import { localized } from "@/lib/api/pages";
+import { t } from "@/lib/translations";
+import type { CourseTitledItem } from "@/lib/api/courses";
+import { sortItems } from "./course-view";
 import {
   IconSelDoc,
   IconSelDocSearch,
@@ -9,39 +13,29 @@ import {
 
 /* "آلية اختيار المشاركين" — orange-bar section head + a two-column grid of
    selection steps (orange icon on an olive-50 roundel, bold title, muted
-   description). Same copy for every course, so no per-course lookup. DOM
-   order is the mock's RTL reading order — row by row, right step then left
+   description), from the course's `selection_steps`; a step without an
+   uploaded `icon_url` gets the mock's icon for its position. DOM order is
+   the mock's RTL reading order — row by row, right step then left
    step — so the right column reads 1/3/5 and the left 2/4. A pale branch
    hugs the page's right edge beside the section head. */
-const STEPS: { icon: ReactNode; title: string; desc: string }[] = [
-  {
-    icon: <IconSelDoc />,
-    title: "استلام طلبات التقديم",
-    desc: "تعبئة نموذج التسجيل بشكل كامل.",
-  },
-  {
-    icon: <IconSelDocSearch />,
-    title: "مراجعة الطلبات",
-    desc: "مراجعة الطلبات وتقييم مدى ملاءمتها للبرنامج.",
-  },
-  {
-    icon: <IconSelUserSearch />,
-    title: "تقييم المتقدمين",
-    desc: "تقييم الدافع والاهتمام بصناعة المحتوى.",
-  },
-  {
-    icon: <IconSelUsers />,
-    title: "المقابلة",
-    desc: "إجراء مقابلة قصيرة عند الحاجة.",
-  },
-  {
-    icon: <IconSelDocCheck />,
-    title: "إعلان نتائج القبول",
-    desc: "اختيار أفضل المتقدمين وإبلاغهم بنتيجة القبول.",
-  },
+const STEP_ICONS: (() => ReactNode)[] = [
+  () => <IconSelDoc />,
+  () => <IconSelDocSearch />,
+  () => <IconSelUserSearch />,
+  () => <IconSelUsers />,
+  () => <IconSelDocCheck />,
 ];
 
-export default function CourseSelection() {
+export default function CourseSelection({
+  items,
+  lang,
+}: {
+  items?: CourseTitledItem[];
+  lang: string;
+}) {
+  const steps = sortItems(items);
+  if (!steps.length) return null;
+
   return (
     <section className="crs-section crs-sel-section" id="crs-selection">
       <svg
@@ -67,24 +61,22 @@ export default function CourseSelection() {
 
       <div className="crs-sec-head">
         <span className="crs-sec-bar" aria-hidden="true"></span>
-        <h2 className="crs-sec-title" data-i18n="crs_sel_title">
-          آلية اختيار المشاركين
-        </h2>
+        <h2 className="crs-sec-title">{t("crs_sel_title")}</h2>
       </div>
 
       <ul className="crs-sel-grid">
-        {STEPS.map((step, i) => (
+        {steps.map((step, i) => (
           <li className="crs-sel-step" key={i}>
             <span className="crs-sel-icon" aria-hidden="true">
-              {step.icon}
+              {step.icon_url ? (
+                <img src={step.icon_url} alt="" width={24} height={24} />
+              ) : (
+                STEP_ICONS[i % STEP_ICONS.length]()
+              )}
             </span>
             <div>
-              <h3 className="crs-sel-title" data-i18n={`crs_sel_s${i + 1}_title`}>
-                {step.title}
-              </h3>
-              <p className="crs-sel-desc" data-i18n={`crs_sel_s${i + 1}_desc`}>
-                {step.desc}
-              </p>
+              <h3 className="crs-sel-title">{localized(step.title, lang)}</h3>
+              <p className="crs-sel-desc">{localized(step.description, lang)}</p>
             </div>
           </li>
         ))}

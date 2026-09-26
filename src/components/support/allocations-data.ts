@@ -3,6 +3,9 @@
    `color` drives the card border, top pill, percentage, bullets and progress
    fill; `tint` is the soft wash behind the icon and under the progress track. */
 
+import { localized } from "@/lib/api/pages";
+import type { SupportAllocationItem } from "@/lib/api/support";
+
 export type Allocation = {
   key: string;
   percent: number;
@@ -10,10 +13,12 @@ export type Allocation = {
   tint: string;
   icon: "lightbulb" | "mic" | "book";
   title: string;
-  titleKey: string;
+  /** Only the built-in copy carries i18n keys — the API's is already in the
+      current language. */
+  titleKey?: string;
   desc: string;
-  descKey: string;
-  items: { text: string; key: string }[];
+  descKey?: string;
+  items: { text: string; key?: string }[];
 };
 
 const ITEMS = [
@@ -63,3 +68,38 @@ export const ALLOCATIONS: Allocation[] = [
     items: ITEMS,
   },
 ];
+
+/* GET /pages/support's `fund_allocation.items`, resolved for one language.
+   The API sends the copy and the share; the look (colour, tint, glyph) is the
+   design's, matched by `key` — the API calls the third one `ops` — and by
+   position for a key this site doesn't know. The built-in three stand in when
+   the API sent none. */
+const LOOK_BY_KEY: Record<string, number> = { creators: 0, media: 1, ops: 2, education: 2 };
+
+export function resolveAllocations(
+  items: SupportAllocationItem[] | undefined,
+  lang: string,
+): Allocation[] {
+  const resolved = (items || [])
+    .map((item, index): Allocation => {
+      const key = (item.key || "").trim().toLowerCase();
+      const look = ALLOCATIONS[LOOK_BY_KEY[key] ?? index % ALLOCATIONS.length];
+      const pct = Number(item.pct);
+      return {
+        key: key || String(index),
+        percent: Number.isFinite(pct) ? Math.min(100, Math.max(0, pct)) : 0,
+        color: look.color,
+        tint: look.tint,
+        icon: look.icon,
+        title: localized(item.title, lang),
+        desc: localized(item.description, lang),
+        items: (item.bullets || [])
+          .map((bullet) => ({ text: localized(bullet, lang) }))
+          .filter((bullet) => bullet.text),
+      };
+    })
+    // an entry with no title is an empty row in the admin
+    .filter((a) => a.title);
+
+  return resolved.length ? resolved : ALLOCATIONS;
+}

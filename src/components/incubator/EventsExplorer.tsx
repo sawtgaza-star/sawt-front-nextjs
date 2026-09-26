@@ -1,46 +1,57 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { applyTranslations, getCurrentLang } from "@/lib/translations";
+import { useState } from "react";
+import { localized } from "@/lib/api/pages";
+import type { IncubatorEvent, IncubatorEventCategory } from "@/lib/api/incubator-page";
 import EventCard from "./EventCard";
-import { EVENT_FILTERS, INC_EVENTS } from "./events-data";
+import { sortItems } from "./incubator-page-view";
 
 /* Client leaf of the events section: the category chips + the card row they
-   filter. "الكل" shows everything; the other chips match IncEvent.categories. */
-export default function EventsExplorer() {
-  const [active, setActive] = useState("all");
+   filter. The chip keyed "all" shows everything; the others match an event's
+   `category_key`. A chip reads "label (count)" as in the mock, the count
+   being the API's. */
+const ALL = "all";
 
-  /* the page's i18n mutates the DOM (data-i18n), so re-rendered cards come back
-     with their Arabic fallback text — re-apply the current language after each
-     filter change */
-  useEffect(() => {
-    applyTranslations(getCurrentLang());
-  }, [active]);
+export default function EventsExplorer({
+  categories,
+  items,
+  lang,
+}: {
+  categories?: IncubatorEventCategory[];
+  items: IncubatorEvent[];
+  lang: string;
+}) {
+  const [active, setActive] = useState(ALL);
 
-  const events =
-    active === "all"
-      ? INC_EVENTS
-      : INC_EVENTS.filter((e) => e.categories.includes(active));
+  const filters = sortItems(categories).filter((c) => localized(c.label, lang));
+  const events = sortItems(items).filter(
+    (event) => active === ALL || event.category_key === active,
+  );
 
   return (
     <>
-      <div className="inc-events-filters">
-        {EVENT_FILTERS.map((f) => (
-          <button
-            type="button"
-            className={`inc-events-filter${f.key === active ? " is-active" : ""}`}
-            onClick={() => setActive(f.key)}
-            data-i18n={f.labelKey}
-            key={f.key}
-          >
-            {f.label}
-          </button>
-        ))}
-      </div>
+      {filters.length ? (
+        <div className="inc-events-filters">
+          {filters.map((filter, index) => {
+            const key = filter.key || String(index);
+            const label = localized(filter.label, lang);
+            return (
+              <button
+                type="button"
+                className={`inc-events-filter${key === active ? " is-active" : ""}`}
+                onClick={() => setActive(key)}
+                key={key}
+              >
+                {key === ALL || filter.count == null ? label : `${label} (${filter.count})`}
+              </button>
+            );
+          })}
+        </div>
+      ) : null}
 
       <div className="inc-event-row">
-        {events.map((e) => (
-          <EventCard event={e} key={e.key} />
+        {events.map((event, index) => (
+          <EventCard event={event} lang={lang} key={`${active}-${index}`} />
         ))}
       </div>
     </>

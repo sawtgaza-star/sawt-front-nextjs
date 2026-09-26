@@ -1,6 +1,10 @@
 "use client";
 import { useEffect, useRef, useState } from "react";
-import { UNTOLD_STORIES } from "./untold-stories-data";
+import { localized } from "@/lib/api/pages";
+import type { SupportStoriesContent } from "@/lib/api/support";
+import { resolveStorySlides } from "./untold-stories-data";
+import SupportSectionHead from "./SupportSectionHead";
+import UntoldStoryCard from "./UntoldStoryCard";
 
 const GAP = 20; // must match .sp-stories-track gap in support.css
 /* how far a press must travel before it counts as a drag rather than a click */
@@ -36,8 +40,19 @@ function Chevron() {
 /* "أصوات لم نقدر على توصيلها" — self-contained RTL slider (no Owl/Swiper:
    this page loads neither). Cards reuse the home page's `.rs-card` markup so
    the slide-up hover story is identical. The track shifts by one card per
-   click; in RTL a positive translateX reveals the next card. */
-export default function UntoldStories() {
+   click; in RTL a positive translateX reveals the next card.
+   Stories and copy from GET /pages/support's `stories` block. */
+export default function UntoldStories({
+  data,
+  lang = "ar",
+}: {
+  data?: SupportStoriesContent;
+  lang?: string;
+}) {
+  const stories = resolveStorySlides(data?.items, lang);
+  const ctaTitle = localized(data?.cta?.title, lang);
+  const ctaBody = localized(data?.cta?.body, lang);
+  const ctaLabel = localized(data?.cta?.label, lang);
   const [index, setIndex] = useState(0);
   const [perView, setPerView] = useState(3);
   // px offset of an in-progress pointer drag (null = not dragging)
@@ -56,7 +71,7 @@ export default function UntoldStories() {
     return () => window.removeEventListener("resize", onResize);
   }, []);
 
-  const maxIndex = Math.max(0, UNTOLD_STORIES.length - perView);
+  const maxIndex = Math.max(0, stories.length - perView);
   // Clamp when the breakpoint shrinks the number of reachable slides.
   const safeIndex = Math.min(index, maxIndex);
 
@@ -112,18 +127,18 @@ export default function UntoldStories() {
   return (
     <section className="sp-section" style={{ paddingTop: 0 }}>
       <div className="container">
-        <div className="cr-section-head">
-          <h2 className="cr-section-title">
-            <span data-i18n="support_untold_title_pre">أصوات لم نقدر على</span>{" "}
-            <span className="cr-highlight" data-i18n="support_untold_title_hl">
-              توصيلها
-            </span>
-          </h2>
-          <p className="cr-section-sub" data-i18n="support_untold_sub">
-            هذه قصص حقيقية من غزة لم تصل للعالم ـ لأن الموارد نفدت قبل أن نكمل
-            روايتها
-          </p>
-        </div>
+        <SupportSectionHead
+          title={localized(data?.title, lang)}
+          sub={localized(data?.subtitle, lang)}
+          fallback={{
+            pre: "أصوات لم نقدر على",
+            preKey: "support_untold_title_pre",
+            hl: "توصيلها",
+            hlKey: "support_untold_title_hl",
+            sub: "هذه قصص حقيقية من غزة لم تصل للعالم ـ لأن الموارد نفدت قبل أن نكمل روايتها",
+            subKey: "support_untold_sub",
+          }}
+        />
 
         <div className="sp-stories-wrap">
           <button
@@ -154,40 +169,8 @@ export default function UntoldStories() {
                 transition: dragDelta !== null ? "none" : undefined,
               }}
             >
-              {UNTOLD_STORIES.map((s) => (
-                <div className="sp-story-slide" key={s.key}>
-                  <div className="rs-card">
-                    <img className="rs-card-bg" src={s.image} alt="" />
-                    <div className="rs-card-info">
-                      <div className="rs-card-text">
-                        <span className="rs-badge" data-i18n="rs_badge">
-                          قصة نجاح
-                        </span>
-                        <h5 className="rs-card-title" data-i18n={s.titleKey}>
-                          {s.title}
-                        </h5>
-                        <p className="rs-card-desc" data-i18n="rs_card_desc">
-                          من غزة الى الأردن وأمل لايمشي مجددا
-                        </p>
-                        <p className="rs-card-full" data-i18n={s.fullKey}>
-                          {s.full}
-                        </p>
-                      </div>
-                      {/* The cards here are still the mock: they name a slug
-                          ("tea"), and /stories/{id} now resolves the API's
-                          uuid only — so the arrow opens the listing until
-                          this section has a feed of its own. */}
-                      <a
-                        href="/stories"
-                        className="rs-arrow"
-                        aria-label="عرض القصة"
-                        data-i18n-title="rs_view_story"
-                      >
-                        <i className="fa-solid fa-arrow-left"></i>
-                      </a>
-                    </div>
-                  </div>
-                </div>
+              {stories.map((story) => (
+                <UntoldStoryCard key={story.key} story={story} />
               ))}
             </div>
           </div>
@@ -223,21 +206,33 @@ export default function UntoldStories() {
         <div className="sp-stories-cta">
           <div className="sp-stories-strip">
             <div>
-              <h3
-                className="sp-stories-strip-title"
-                data-i18n="support_untold_cta_title"
-              >
-                دعمك يمنع القصة القادمة من الضياع
-              </h3>
-              <p
-                className="sp-stories-strip-desc"
-                data-i18n="support_untold_cta_desc"
-              >
-                تبرعك اليوم يضمن الصوت القادم لن يضيع
-              </p>
+              {ctaTitle ? (
+                <h3 className="sp-stories-strip-title">{ctaTitle}</h3>
+              ) : (
+                <h3
+                  className="sp-stories-strip-title"
+                  data-i18n="support_untold_cta_title"
+                >
+                  دعمك يمنع القصة القادمة من الضياع
+                </h3>
+              )}
+              {ctaBody ? (
+                <p className="sp-stories-strip-desc">{ctaBody}</p>
+              ) : (
+                <p
+                  className="sp-stories-strip-desc"
+                  data-i18n="support_untold_cta_desc"
+                >
+                  تبرعك اليوم يضمن الصوت القادم لن يضيع
+                </p>
+              )}
             </div>
             <a href="/support/methods" className="sp-btn-green">
-              <span data-i18n="support_untold_cta_btn">إدعم المنصة الآن</span>
+              {ctaLabel ? (
+                <span>{ctaLabel}</span>
+              ) : (
+                <span data-i18n="support_untold_cta_btn">إدعم المنصة الآن</span>
+              )}
             </a>
           </div>
         </div>

@@ -1,5 +1,8 @@
 /* "ساعد طلاب في الانضمام للحاضنة" — sponsorable incubator courses. */
 
+import { localized } from "@/lib/api/pages";
+import type { SupportPackage } from "@/lib/api/support";
+
 export type Course = {
   key: string;
   title: string;
@@ -54,3 +57,45 @@ export const COURSES: Course[] = [
     amount: 120,
   },
 ];
+
+/** One card as the section draws it — the API's package, or a built-in
+    course (whose copy keeps its data-i18n keys). */
+export type SponsorCard = {
+  key: string;
+  title: string;
+  titleKey?: string;
+  desc: string;
+  descKey?: string;
+  /** "8 أسابيع" in full from the API; built-in cards build it from `weeks`. */
+  duration?: string;
+  seatsLabel?: string;
+  weeks?: number;
+  seats?: number;
+  cta: string;
+  ctaKey?: string;
+  amount: number;
+};
+
+/* GET /pages/support's `sponsor.packages`, resolved for one language; the
+   built-in courses stand in when the API sent none. */
+export function resolveSponsorCards(
+  packages: SupportPackage[] | undefined,
+  lang: string,
+): SponsorCard[] {
+  const resolved = (packages || [])
+    .map((pkg, index): SponsorCard => {
+      const price = Number(pkg.price);
+      return {
+        key: String(index),
+        title: localized(pkg.title, lang),
+        desc: localized(pkg.description, lang),
+        duration: localized(pkg.duration, lang),
+        seatsLabel: localized(pkg.seats, lang),
+        cta: localized(pkg.cta?.label, lang),
+        amount: Number.isFinite(price) && price > 0 ? price : 0,
+      };
+    })
+    .filter((card) => card.title);
+
+  return resolved.length ? resolved : COURSES;
+}

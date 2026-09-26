@@ -2,6 +2,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { COUNTRIES, type Country } from "@/lib/countries";
 import { useLang } from "@/lib/use-lang";
+import { IconCaretDown } from "./enroll-icons";
 
 /* The dial-code picker in the enrollment form's phone field.
 
@@ -90,7 +91,9 @@ export default function EnrollCountrySelect({
         aria-expanded={open}
         aria-label={tr("crs_en_country")}
       >
-        <i className="fa-solid fa-chevron-down join-country-caret"></i>
+        <i className="join-country-caret crs-en-caret">
+          <IconCaretDown />
+        </i>
         <span className="join-country-code">{selected.d}</span>
         <span className={`fi fi-${selected.c} join-country-flag`}></span>
       </button>

@@ -1,32 +1,64 @@
 import { IconTarget } from "@/components/ui/icons";
+import { localized, type Localized } from "@/lib/api/pages";
+import type { SupportCommunityGoal } from "@/lib/api/support";
+import SupportSectionHead from "./SupportSectionHead";
+import { currencySymbol, formatNumber, splitAmount } from "./support-text";
 
 /* "مجتمع الدعم الحي" — monthly goal, raised / remaining totals and the
-   progress bar. Figures are the mock's placeholders until a real API exists. */
+   progress bar, from GET /pages/support's `community_goal` block. Without it
+   the mock's figures and built-in copy stand in, so an outage still shows a
+   complete section. */
 
 const GOAL = 50000;
 const RAISED = 32450;
-const REMAINING = GOAL - RAISED;
-const PERCENT = Math.round((RAISED / GOAL) * 100);
 
-export default function SupportCommunity() {
+/** A figure the API sent, or undefined for a missing / non-numeric one. */
+function figure(value: number | null | undefined): number | undefined {
+  if (value == null) return undefined;
+  const n = Number(value);
+  return Number.isFinite(n) && n >= 0 ? n : undefined;
+}
+
+/** An API label, or the built-in one with its data-i18n key. */
+function Label({ value, lang, i18n, text }: { value?: Localized; lang: string; i18n: string; text: string }) {
+  const label = localized(value, lang);
+  return label ? <span>{label}</span> : <span data-i18n={i18n}>{text}</span>;
+}
+
+export default function SupportCommunity({
+  data,
+  lang = "ar",
+}: {
+  data?: SupportCommunityGoal;
+  lang?: string;
+}) {
+  const goal = figure(data?.target) ?? GOAL;
+  const raised = figure(data?.raised) ?? RAISED;
+  const remaining = figure(data?.remaining) ?? Math.max(0, goal - raised);
+  const rawPercent =
+    figure(data?.progress_percent) ?? (goal > 0 ? (raised / goal) * 100 : 0);
+  const percent = Math.min(100, Math.max(0, Math.round(rawPercent)));
+  const symbol = currencySymbol(data?.currency);
+
+  const message = localized(data?.message, lang);
+  const [msgHead, msgTail, hasAmount] = splitAmount(message);
+  const cta = localized(data?.cta?.label, lang);
+
   return (
     <section className="sp-section sp-section-gray">
       <div className="container">
-        <div className="cr-section-head">
-          <h2 className="cr-section-title">
-            <span data-i18n="support_community_title_pre">مجتمع الدعم</span>{" "}
-            <span
-              className="cr-highlight"
-              data-i18n="support_community_title_hl"
-            >
-              الحي
-            </span>
-          </h2>
-          <p className="cr-section-sub" data-i18n="support_community_sub">
-            قيمنا هي الأساس الذي نبني عليه صوت، وهي ما يقود طريقة عملنا
-            وتطويرنا المستمر
-          </p>
-        </div>
+        <SupportSectionHead
+          title={localized(data?.title, lang)}
+          sub={localized(data?.subtitle, lang)}
+          fallback={{
+            pre: "مجتمع الدعم",
+            preKey: "support_community_title_pre",
+            hl: "الحي",
+            hlKey: "support_community_title_hl",
+            sub: "قيمنا هي الأساس الذي نبني عليه صوت، وهي ما يقود طريقة عملنا وتطويرنا المستمر",
+            subKey: "support_community_sub",
+          }}
+        />
 
         <div className="sp-stats-card">
           <div className="sp-stats-row">
@@ -36,66 +68,71 @@ export default function SupportCommunity() {
               </span>
               <div className="sp-stat-goal-text">
                 <div className="sp-stat-label">
-                  <span data-i18n="support_stat_goal">هدف الشهر</span>
+                  <Label value={data?.labels?.target} lang={lang} i18n="support_stat_goal" text="هدف الشهر" />
                 </div>
                 <div className="sp-stat-value sp-stat-value-dark">
-                  ${GOAL.toLocaleString("en-US")}
+                  {symbol}{formatNumber(goal)}
                 </div>
               </div>
             </div>
             <div className="sp-stat">
               <div className="sp-stat-label">
-                <span data-i18n="support_stat_raised">تم جمعه</span>
+                <Label value={data?.labels?.raised} lang={lang} i18n="support_stat_raised" text="تم جمعه" />
               </div>
-              <div className="sp-stat-value">
-                ${RAISED.toLocaleString("en-US")}
-              </div>
+              <div className="sp-stat-value">{symbol}{formatNumber(raised)}</div>
             </div>
             <div className="sp-stat">
               <div className="sp-stat-label">
-                <span data-i18n="support_stat_remaining">متبقي</span>
+                <Label value={data?.labels?.remaining} lang={lang} i18n="support_stat_remaining" text="متبقي" />
               </div>
-              <div className="sp-stat-value">
-                ${REMAINING.toLocaleString("en-US")}
-              </div>
+              <div className="sp-stat-value">{symbol}{formatNumber(remaining)}</div>
             </div>
             <div className="sp-stat">
               <div className="sp-stat-label">
-                <span data-i18n="support_stat_progress">الإنجاز</span>
+                <Label value={data?.labels?.progress} lang={lang} i18n="support_stat_progress" text="الإنجاز" />
               </div>
-              <div className="sp-stat-value sp-stat-value-green">
-                {PERCENT}%
-              </div>
+              <div className="sp-stat-value sp-stat-value-green">{percent}%</div>
             </div>
           </div>
 
           <div
             className="sp-progress"
             role="progressbar"
-            aria-valuenow={PERCENT}
+            aria-valuenow={percent}
             aria-valuemin={0}
             aria-valuemax={100}
           >
-            <div
-              className="sp-progress-bar"
-              style={{ width: `${PERCENT}%` }}
-            ></div>
+            <div className="sp-progress-bar" style={{ width: `${percent}%` }}></div>
           </div>
 
-          <p className="sp-progress-note">
-            <span data-i18n="support_progress_note_pre">نحتاج</span>{" "}
-            <b>{REMAINING.toLocaleString("en-US")}$</b>{" "}
-            <span data-i18n="support_progress_note_post">
-              لإتمام هدف الشهر — ساهم الآن
-            </span>
-          </p>
+          {message ? (
+            /* the sentence carries an `:amount` slot — the figure goes in bold
+               where the editor put it */
+            <p className="sp-progress-note">
+              {msgHead}
+              {hasAmount ? <b>{formatNumber(remaining)}</b> : null}
+              {msgTail}
+            </p>
+          ) : (
+            <p className="sp-progress-note">
+              <span data-i18n="support_progress_note_pre">نحتاج</span>{" "}
+              <b>{formatNumber(remaining)}$</b>{" "}
+              <span data-i18n="support_progress_note_post">
+                لإتمام هدف الشهر — ساهم الآن
+              </span>
+            </p>
+          )}
         </div>
 
         <div className="sp-community-cta">
           <a href="/support/methods" className="sp-btn-green sp-btn-pill">
-            <span data-i18n="support_add_name_cta">
-              أضف اسمك للقائمة — تبرع الآن
-            </span>
+            {cta ? (
+              <span>{cta}</span>
+            ) : (
+              <span data-i18n="support_add_name_cta">
+                أضف اسمك للقائمة — تبرع الآن
+              </span>
+            )}
           </a>
         </div>
       </div>

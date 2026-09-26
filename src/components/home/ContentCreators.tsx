@@ -2,6 +2,7 @@
 /* eslint-disable */
 import CreatorCard from "./CreatorCard";
 import { localized } from "@/lib/api/pages";
+import { creatorHref } from "@/lib/api/creator-profile";
 import type { HomeCreators } from "@/lib/api/home";
 import { splitHeading, formatFollowers } from "./home-text";
 
@@ -40,7 +41,7 @@ export default function ContentCreators({
       role: localized(item.role, lang),
       avatar: item.avatar_url,
       excerpt: localized(item.experience_excerpt, lang),
-      href: item.id != null ? `/creators/${item.id}` : "#",
+      href: creatorHref(item),
       followersLabel: count
         ? [count, followersSuffix].filter(Boolean).join(" ")
         : "",

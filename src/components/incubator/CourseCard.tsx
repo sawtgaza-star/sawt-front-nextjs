@@ -1,10 +1,12 @@
 import type { ReactNode } from "react";
+import { t } from "@/lib/translations";
 import {
   IconClockCheck,
   IconHourglass,
   IconLayers,
   IconRatingStar,
 } from "@/components/ui/icons";
+import WaitlistButton from "@/components/courses/course-register/WaitlistButton";
 import type { CourseBlock, PopularCourse } from "./popular-courses-data";
 
 const CHIP_ICONS = {
@@ -16,7 +18,9 @@ const CHIP_ICONS = {
 const STARS_TOTAL = 5;
 
 /* One "دوراتنا الأكثر شهرة" card. Every block is optional so the same component
-   covers the mock's three states (see popular-courses-data.ts). */
+   covers the mock's states (see popular-courses-data.ts). Its copy is the
+   API's; the two fixed labels ("قريبًا", "المدرب:") aren't in the payload and
+   are read through t(), since this card mounts after initTranslate()'s pass. */
 export default function CourseCard({ course }: { course: PopularCourse }) {
   const hidden = new Set<CourseBlock>(course.reveal ?? []);
   /* Blocks listed in `reveal` are wrapped in the collapsing grid that opens on
@@ -51,14 +55,12 @@ export default function CourseCard({ course }: { course: PopularCourse }) {
           <div className="inc-course-media">
             <img src={course.image} alt="" />
             {course.category && (
-              <span className="inc-course-cat" data-i18n={course.categoryKey}>
+              <span className="inc-course-cat">
                 {course.category}
               </span>
             )}
             {course.soon && (
-              <span className="inc-course-soon" data-i18n="inc_course_soon">
-                قريبًا
-              </span>
+              <span className="inc-course-soon">{t("inc_course_soon")}</span>
             )}
           </div>
         )}
@@ -73,7 +75,7 @@ export default function CourseCard({ course }: { course: PopularCourse }) {
                   return (
                     <span className="inc-course-chip" key={m.icon}>
                       <Icon />
-                      <span data-i18n={m.valueKey}>{m.value}</span>
+                      <span>{m.value}</span>
                     </span>
                   );
                 })}
@@ -85,7 +87,7 @@ export default function CourseCard({ course }: { course: PopularCourse }) {
               (title start, stars end) and only there does the wrapper become a
               flex box — see .inc-course-titlerow in incubator.css */}
           <div className="inc-course-titlerow">
-            <h3 className="inc-course-title" data-i18n={course.titleKey}>
+            <h3 className="inc-course-title">
               {course.title}
             </h3>
 
@@ -106,7 +108,7 @@ export default function CourseCard({ course }: { course: PopularCourse }) {
           {course.desc &&
             rv(
               "desc",
-              <p className="inc-course-desc" data-i18n={course.descKey}>
+              <p className="inc-course-desc">
                 {course.desc}
               </p>,
             )}
@@ -115,26 +117,33 @@ export default function CourseCard({ course }: { course: PopularCourse }) {
             rv(
               "tutor",
               <div className="inc-course-tutor">
-                <span
-                  className="inc-course-tutor-label"
-                  data-i18n="inc_course_tutor"
-                >
-                  المدرب:
+                <span className="inc-course-tutor-label">
+                  {t("inc_course_tutor")}
                 </span>
                 <img
                   className="inc-course-tutor-avatar"
                   src={course.tutor.avatar}
                   alt=""
                 />
-                <b data-i18n={course.tutor.nameKey}>{course.tutor.name}</b>
+                <b>{course.tutor.name}</b>
               </div>,
+            )}
+
+          {course.waitlist &&
+            rv(
+              "cta",
+              <WaitlistButton
+                className="inc-course-cta"
+                path={course.waitlist.path}
+                label={course.waitlist.label}
+              />,
             )}
 
           {course.cta &&
             rv(
               "cta",
               <a className="inc-course-cta" href={course.cta.href}>
-                <span data-i18n={course.cta.labelKey}>{course.cta.label}</span>
+                <span>{course.cta.label}</span>
                 <i className="fa-solid fa-angle-left"></i>
               </a>,
             )}

@@ -47,6 +47,7 @@ export default function ContentCard({ card, index, onOpen }) {
       <video
         ref={videoRef}
         src={card.video}
+        poster={card.poster}
         loop
         playsInline
         preload="auto"

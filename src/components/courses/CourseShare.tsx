@@ -1,5 +1,6 @@
 "use client";
 import { useEffect, useState } from "react";
+import { t } from "@/lib/translations";
 import {
   IconLinkStroke,
   IconTelegramCircle,
@@ -8,7 +9,8 @@ import {
 
 /* "شارك علي" — peach share card under the registration card. The page URL is
    read on mount (client-only), so the share targets always point at the
-   current course page. */
+   current course page. Its two strings go through t(): the card mounts with
+   the course, after initTranslate() has walked the page. */
 export default function CourseShare() {
   const [url, setUrl] = useState("");
 
@@ -24,12 +26,8 @@ export default function CourseShare() {
 
   return (
     <div className="crs-share">
-      <h3 className="crs-share-title" data-i18n="crs_share_title">
-        شارك علي
-      </h3>
-      <p className="crs-share-desc" data-i18n="crs_share_desc">
-        ادع أصدقاءك للأشتراك في الكورس .
-      </p>
+      <h3 className="crs-share-title">{t("crs_share_title")}</h3>
+      <p className="crs-share-desc">{t("crs_share_desc")}</p>
 
       <div className="crs-share-actions">
         <button

@@ -8,10 +8,11 @@ import { splitTail, stepNumber } from "./creators-text";
 
 /* "كيف يبدأ التعاون مع صناع محتوى صوت؟" — flow diagram + steps + CTA.
 
-   /creators fills this from the API's `collaboration` block; /creators/{id}
-   renders the same section with no payload behind it, so the built-in copy is
-   kept as the fallback for that page — and with it the `data-i18n` keys, which
-   are only ever attached when the API did NOT supply the text.
+   /creators and /creators/{id} both fill this from the API's `collaboration`
+   block (the profile payload carries the same block). The built-in copy stays
+   as the fallback for a field the editor leaves empty — and with it the
+   `data-i18n` keys, which are only ever attached when the API did NOT supply
+   the text.
 
    THE STEP TITLES ("ابحث واختر"…) ARE CHROME, not content: `steps` sends a
    number and a body, no title, so the three titles stay in the markup and keep

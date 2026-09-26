@@ -1,12 +1,25 @@
 import { IconPlay } from "@/components/ui/icons";
-import { ALBUM_CARDS } from "./album-data";
+import { localized } from "@/lib/api/pages";
+import type { IncubatorGalleryContent } from "@/lib/api/incubator-page";
+import { CHIP_POS, SLOT_AREAS } from "./album-data";
+import IncubatorSectionHead from "./IncubatorSectionHead";
+import { PLACEHOLDER, sortItems } from "./incubator-page-view";
 
-/* "الحاضنة بيتك الثاني ، البوم الحاضنة" — sixth section of /incubator: a
-   three-column photo album (tall launch-day video on the start side, featured
-   + workshop shots in the middle, mentor / community on the end side). The
-   chips and captions live on the dark gradient and only appear on hover; the
+/* "الحاضنة بيتك الثاني ، البوم الحاضنة" — a three-column photo album from the
+   API's `gallery` block, each item placed by its `slot` (see ./album-data).
+   The chips and captions live on the dark gradient and only appear on hover;
+   a video item carries the dark-green play badge and opens its video. The
    pale olive branch sits in the section's bottom-left corner, as in the mock. */
-export default function IncubatorAlbum() {
+export default function IncubatorAlbum({
+  data,
+  lang,
+}: {
+  data?: IncubatorGalleryContent;
+  lang: string;
+}) {
+  const items = sortItems(data?.items).filter((item) => SLOT_AREAS[item.slot || ""]);
+  if (!data || !items.length) return null;
+
   return (
     <section className="inc-album" id="inc-album">
       <img
@@ -16,60 +29,60 @@ export default function IncubatorAlbum() {
       />
 
       <div className="container">
-        <div className="inc-section-head">
-          <h2 className="inc-section-title">
-            <span data-i18n="inc_album_title_pre">الحاضنة بيتك الثاني ،</span>{" "}
-            <span className="inc-highlight" data-i18n="inc_album_title_hl">
-              البوم الحاضنة
-            </span>
-          </h2>
-          <p className="inc-section-sub" data-i18n="inc_album_sub">
-            مبلغ بسيط يفتح باب المعرفة أمام شاب في غزة — تبرّعك يصل مباشرة
-            لتغطية تكاليف التدريب
-          </p>
-        </div>
+        <IncubatorSectionHead
+          title={localized(data.title, lang)}
+          sub={localized(data.subtitle, lang)}
+        />
 
         <div className="inc-album-grid">
-          {ALBUM_CARDS.map((c) => (
-            <figure
-              className={`inc-album-card inc-album-card-${c.area}`}
-              key={c.key}
-            >
-              <img
-                src={c.image}
-                alt=""
-                className="inc-album-photo"
-                style={c.position ? { objectPosition: c.position } : undefined}
-              />
+          {items.map((item) => {
+            const area = SLOT_AREAS[item.slot || ""];
+            const caption = localized(item.caption, lang);
+            const sub = localized(item.subtitle, lang);
+            const isVideo = item.type === "video";
 
-              {c.play && (
-                <span className="inc-album-play" aria-hidden="true">
-                  <IconPlay />
-                </span>
-              )}
+            return (
+              <figure className={`inc-album-card inc-album-card-${area}`} key={item.slot}>
+                <img
+                  src={item.image_url || PLACEHOLDER.album}
+                  alt=""
+                  className="inc-album-photo"
+                />
 
-              <figcaption className="inc-album-overlay">
-                {c.chip && (
-                  <span
-                    className={`inc-album-chip inc-album-chip-${c.chip.pos}`}
-                    data-i18n={c.chip.key}
-                  >
-                    {c.chip.text}
-                  </span>
-                )}
-                {c.caption && (
-                  <span className="inc-album-caption">
-                    <b data-i18n={c.caption.key}>{c.caption.text}</b>
-                    {c.captionSub && (
-                      <span data-i18n={c.captionSub.key}>
-                        {c.captionSub.text}
-                      </span>
-                    )}
-                  </span>
-                )}
-              </figcaption>
-            </figure>
-          ))}
+                {isVideo ? (
+                  item.video_url ? (
+                    <a
+                      className="inc-album-play"
+                      href={item.video_url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      aria-label={caption || "video"}
+                    >
+                      <IconPlay />
+                    </a>
+                  ) : (
+                    <span className="inc-album-play" aria-hidden="true">
+                      <IconPlay />
+                    </span>
+                  )
+                ) : null}
+
+                <figcaption className="inc-album-overlay">
+                  {caption && !sub ? (
+                    <span className={`inc-album-chip inc-album-chip-${CHIP_POS[area]}`}>
+                      {caption}
+                    </span>
+                  ) : null}
+                  {caption && sub ? (
+                    <span className="inc-album-caption">
+                      <b>{caption}</b>
+                      <span>{sub}</span>
+                    </span>
+                  ) : null}
+                </figcaption>
+              </figure>
+            );
+          })}
         </div>
       </div>
     </section>

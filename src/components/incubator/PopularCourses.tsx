@@ -1,29 +1,35 @@
+import { localized } from "@/lib/api/pages";
+import type { IncubatorCoursesContent } from "@/lib/api/incubator-page";
 import CourseCard from "./CourseCard";
-import { POPULAR_COURSES } from "./popular-courses-data";
+import IncubatorSectionHead from "./IncubatorSectionHead";
+import { toPopularCourse } from "./popular-courses-data";
 
-/* "دوراتنا الأكثر شهرة" — three-up course row on the page's gray band.
-   #inc-courses is the anchor the navbar's "الكورسات" link points at. */
-export default function PopularCourses() {
+/* "دوراتنا الأكثر شهرة" — three-up course row on the page's gray band, from
+   the API's `courses` block. #inc-courses is the anchor the navbar's
+   "الدورات" link and the hero CTA point at. */
+export default function PopularCourses({
+  data,
+  lang,
+}: {
+  data?: IncubatorCoursesContent;
+  lang: string;
+}) {
+  const items = Array.isArray(data?.items) ? data.items : [];
+  if (!data || !items.length) return null;
+
   return (
     <section className="inc-courses" id="inc-courses">
       <div className="container">
-        <div className="inc-section-head">
-          <h2 className="inc-section-title">
-            <span data-i18n="inc_courses_title_pre">دوراتنا الأكثر</span>{" "}
-            <span className="inc-highlight" data-i18n="inc_courses_title_hl">
-              شهرة
-            </span>
-          </h2>
-          <p className="inc-section-sub" data-i18n="inc_courses_sub">
-            دورات تدريبية شاملة، تعتمد على التطبيق والتنفيذ العملي، نبدأ معك من
-            الصفر حتى تصل إلى الاحتراف لتؤهلك كل دورة لسوق العمل وتكون جاهزًا له.
-          </p>
-        </div>
+        <IncubatorSectionHead
+          title={localized(data.title, lang)}
+          sub={localized(data.subtitle, lang)}
+        />
 
         <div className="inc-course-row">
-          {POPULAR_COURSES.map((c) => (
-            <CourseCard course={c} key={c.key} />
-          ))}
+          {items.map((item, index) => {
+            const course = toPopularCourse(item, lang, index);
+            return <CourseCard course={course} key={course.key} />;
+          })}
         </div>
       </div>
     </section>

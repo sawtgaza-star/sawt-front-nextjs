@@ -1,42 +1,72 @@
-// @ts-nocheck
-/* eslint-disable */
 import type { Metadata } from "next";
 import "@/styles/creators.css";
 import LegacyInit from "@/components/LegacyInit";
-import CreatorProfileHero from "@/components/creators/CreatorProfileHero";
-import CreatorContent from "@/components/creators/CreatorContent";
-import CreatorCollaborations from "@/components/creators/CreatorCollaborations";
-import CollaborationSteps from "@/components/creators/CollaborationSteps";
+import CreatorProfileContent from "@/components/creators/CreatorProfileContent";
 import JoinModal from "@/components/site/JoinModal";
+import { fetchCreatorIds, fetchCreatorProfile } from "@/lib/api/creator-profile";
+import { localized } from "@/lib/api/pages";
 
-/* `output: 'export'` needs every dynamic segment pre-listed. The creator ids
-   are the 0..149 placeholders rendered by /creators/all (CreatorsGrid shows the
-   first 10 of the same range). */
-export function generateStaticParams() {
-  return Array.from({ length: 150 }, (_, i) => ({ id: String(i) }));
+/* The segment is the creator's uuid — what every CreatorCard's hover arrow
+   links to (creatorSlug in lib/api/creator-profile); GET /pages/creators/{creator} answers the id and the uuid
+   alike.
+
+   The build only reads the roster to learn which profiles exist, because
+   `output: 'export'` pre-lists every dynamic segment; a creator added after
+   the deploy therefore needs a rebuild before their URL exists. Same shape as
+   /courses/[id]. */
+export async function generateStaticParams() {
+  try {
+    const ids = await fetchCreatorIds();
+    return ids.map((id) => ({ id }));
+  } catch (caught) {
+    // The API being unreachable must not fail the build: the rest of the site
+    // still exports, and this route simply has no pages this time round.
+    console.warn("[creators] could not list creators for the export:", caught);
+    return [];
+  }
 }
 
-/* There is no per-creator data yet — CreatorProfileHero renders the same mock
-   profile for every id — so the tab title stays generic. Swap in the creator's
-   name here the moment a real roster exists. */
-export const metadata: Metadata = {
-  title: "ملف صانع المحتوى | Sawt Creator",
-  description:
-    "تعرّف على صانع المحتوى في منصة صوت — أعماله وتعاوناته وخطوات التعاون معه.",
-};
+/* Tab title = the creator's name. This is the one place the build reads a
+   profile, and only for <head>; the page's own copy still comes from the
+   browser's request, in the reader's language. */
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ id: string }>;
+}): Promise<Metadata> {
+  const { id } = await params;
 
-/* Single content-creator detail page — reached from the hover-arrow on any
-   CreatorCard (/creators/[id]). Composes the shared creators-page sections. */
-export default function Page() {
+  try {
+    const page = await fetchCreatorProfile(id);
+    const name = (page?.creator?.name || "").trim();
+    const bio = localized(page?.creator?.bio, "ar");
+    if (name) return { title: `${name} | Sawt Creator`, description: bio || undefined };
+  } catch {
+    // fall through to the section's own title
+  }
+
+  return {
+    title: "ملف صانع المحتوى | Sawt Creator",
+    description:
+      "تعرّف على صانع المحتوى في منصة صوت — أعماله وتعاوناته وخطوات التعاون معه.",
+  };
+}
+
+/* /creators/[id] — a single content creator's profile, reached from the
+   hover-arrow on any CreatorCard. Server Component; every section's content
+   comes from GET /pages/creators/{id}, fetched in the browser by
+   <CreatorProfileContent /> (static export: see lib/api/use-creator-profile). */
+export default async function Page({
+  params,
+}: {
+  params: Promise<{ id: string }>;
+}) {
+  const { id } = await params;
+
   return (
     <div className="cr-page">
       <LegacyInit page="creators" />
-      <CreatorProfileHero />
-      <main>
-        <CreatorContent />
-        <CreatorCollaborations />
-        <CollaborationSteps />
-      </main>
+      <CreatorProfileContent creator={id} />
       <JoinModal />
     </div>
   );

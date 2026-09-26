@@ -1,32 +1,44 @@
-import { COURSES } from "./courses-data";
+import { localized } from "@/lib/api/pages";
+import type { SupportSponsorContent } from "@/lib/api/support";
+import { resolveSponsorCards } from "./courses-data";
+import SupportSectionHead from "./SupportSectionHead";
 
-/* "ساعد طلاب في الانضمام للحاضنة" — one sponsorship card per incubator track. */
-export default function IncubatorCourses() {
+/* "ساعد طلاب في الانضمام للحاضنة" — one sponsorship card per incubator track,
+   from GET /pages/support's `sponsor` block. The editor can switch the whole
+   section off (`enabled: false`). */
+export default function IncubatorCourses({
+  data,
+  lang = "ar",
+}: {
+  data?: SupportSponsorContent;
+  lang?: string;
+}) {
+  if (data?.enabled === false) return null;
+  const cards = resolveSponsorCards(data?.packages, lang);
+
   return (
     <section className="sp-section" style={{ paddingTop: 0 }}>
       <div className="container">
-        <div className="cr-section-head">
-          <h2 className="cr-section-title">
-            <span data-i18n="support_courses_title_pre">
-              ساعد طلاب في الانضمام
-            </span>{" "}
-            <span className="cr-highlight" data-i18n="support_courses_title_hl">
-              للحاضنة
-            </span>
-          </h2>
-          <p className="cr-section-sub" data-i18n="support_courses_sub">
-            تكفل رسوم دورة بمبلغ بسيط يفتح باب المعرفة أمام شاب في غزة — تبرعك
-            يصل مباشرة لتغطية تكاليف التدريب
-          </p>
-        </div>
+        <SupportSectionHead
+          title={localized(data?.title, lang)}
+          sub={localized(data?.subtitle, lang)}
+          fallback={{
+            pre: "ساعد طلاب في الانضمام",
+            preKey: "support_courses_title_pre",
+            hl: "للحاضنة",
+            hlKey: "support_courses_title_hl",
+            sub: "تكفل رسوم دورة بمبلغ بسيط يفتح باب المعرفة أمام شاب في غزة — تبرعك يصل مباشرة لتغطية تكاليف التدريب",
+            subKey: "support_courses_sub",
+          }}
+        />
 
         <div className="sp-course-row">
-          {COURSES.map((c) => (
+          {cards.map((c) => (
             <article className="sp-course-card" key={c.key}>
-              <h3 className="sp-course-title" data-i18n={c.titleKey}>
+              <h3 className="sp-course-title" data-i18n={c.titleKey || undefined}>
                 {c.title}
               </h3>
-              <p className="sp-course-desc" data-i18n={c.descKey}>
+              <p className="sp-course-desc" data-i18n={c.descKey || undefined}>
                 {c.desc}
               </p>
               <div className="sp-course-meta">
@@ -43,17 +55,29 @@ export default function IncubatorCourses() {
                       fill="#7F7F7F"
                     />
                   </svg>
-                  {c.weeks} <span data-i18n="support_course_weeks">أسابيع</span>
+                  {c.duration ? (
+                    c.duration
+                  ) : (
+                    <>
+                      {c.weeks} <span data-i18n="support_course_weeks">أسابيع</span>
+                    </>
+                  )}
                 </span>
                 <span>
-                  {c.seats} <span data-i18n="support_course_seats">مقاعد</span>
+                  {c.seatsLabel ? (
+                    c.seatsLabel
+                  ) : (
+                    <>
+                      {c.seats} <span data-i18n="support_course_seats">مقاعد</span>
+                    </>
+                  )}
                 </span>
               </div>
               <a
-                href={`/support/methods?amount=${c.amount}`}
+                href={c.amount ? `/support/methods?amount=${c.amount}` : "/support/methods"}
                 className="sp-btn-green sp-btn-block"
               >
-                <span data-i18n={c.ctaKey}>{c.cta}</span>
+                <span data-i18n={c.ctaKey || undefined}>{c.cta}</span>
               </a>
             </article>
           ))}

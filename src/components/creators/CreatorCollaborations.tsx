@@ -2,25 +2,39 @@
 "use client";
 /* eslint-disable */
 import { useEffect, useRef, useState } from "react";
-import { applyTranslations, getCurrentLang } from "@/lib/translations";
-import { COMPANIES, VIDEO } from "./collaborations-data";
+import { localized } from "@/lib/api/pages";
+import { bySortOrder, captionTitle } from "./creators-text";
+
+/* The dots behind each company's logo, in the mock's order, cycling. */
+const DOT_COLORS = ["#E1723B", "#6F7A4E", "#8BA86A", "#C9A45C", "#4C5C37"];
+
+/* A string, a { ar, en } pair or a number — whichever the payload sent. */
+const text = (value, lang) =>
+  value === null || value === undefined
+    ? ""
+    : typeof value === "object"
+      ? localized(value, lang)
+      : String(value);
 
 /* "ابرز التعاونات" — intro + a selectable list of partner companies, a central
    reel card (reuses the home-page Reels markup + styling and its window.* reel
-   handlers), and a testimonial card. Clicking a company swaps the reel poster,
-   caption and testimonial to that company's content. */
+   handlers), and a testimonial card for the selected company — all from the
+   profile payload's `collaborations` block. The reel is the block's single
+   `reel` — an Instagram reel: its thumbnail is the poster, the caption's
+   first line the title, and the view count (with `labels.views_suffix`)
+   shows when Instagram reports one. Without a reel the card is left out. The quote
+   card shows what the editor filled for that company: its name and rating
+   always, the caption and the author when present. */
 
-export default function CreatorCollaborations() {
+export default function CreatorCollaborations({ data, labels, lang = "ar" }) {
   const [active, setActive] = useState(0);
   const reelRef = useRef(null);
-  const c = COMPANIES[active];
+  const companies = bySortOrder(data?.items);
+  const c = companies[Math.min(active, companies.length - 1)];
+  const reel = data?.reel?.video_url ? data.reel : null;
 
-  // On company change: re-apply the current language to the freshly-rendered
-  // keys, and reset the reel back to its (new) poster / start.
+  // On company change: reset the reel back to its poster / start.
   useEffect(() => {
-    try {
-      applyTranslations(getCurrentLang());
-    } catch {}
     const item = reelRef.current?.querySelector(".reel-item");
     if (item) {
       item.classList.remove("playing");
@@ -47,6 +61,27 @@ export default function CreatorCollaborations() {
     }
   }, [active]);
 
+  if (!c) return null;
+
+  const title = localized(data?.title, lang);
+  const words = title.trim().split(/\s+/).filter(Boolean);
+  const titleHead = words.slice(0, -1).join(" ");
+  const titleTail = words[words.length - 1] || "";
+  const description = localized(data?.description, lang);
+  const quote = localized(c.caption, lang);
+  const authorName = (c.author?.name || "").trim();
+  const authorRole = localized(c.author?.role, lang);
+  const stars = Math.max(0, Math.min(5, Math.round(Number(c.rating) || 0)));
+  const reelTitle = reel ? text(reel.title, lang) || captionTitle(text(reel.caption, lang)) : "";
+  const reelViews =
+    reel && typeof reel.views === "number"
+      ? `${reel.views.toLocaleString("en-US")} ${
+          localized(labels?.views_suffix, lang) || (lang === "en" ? "views" : "مشاهدة")
+        }`
+      : reel
+        ? text(reel.views, lang)
+        : "";
+
   return (
     <section className="cr-collabs-section">
       <div className="container">
@@ -54,14 +89,10 @@ export default function CreatorCollaborations() {
           {/* Intro (RTL start / right) */}
           <div className="cr-collabs-intro">
             <h2 className="cr-collabs-title">
-              <span data-i18n="creator_collab_title_1">ابرز</span>{" "}
-              <span className="cr-highlight" data-i18n="creator_collab_title_2">
-                التعاونات
-              </span>
+              {titleHead ? <span>{titleHead}</span> : null}{" "}
+              <span className="cr-highlight">{titleTail}</span>
             </h2>
-            <p className="cr-collabs-desc" data-i18n="creator_collab_desc">
-              صناع محتوى صوت جزء لهم بصمتهم مع الشركات المحلية والعالمية ,
-            </p>
+            {description ? <p className="cr-collabs-desc">{description}</p> : null}
           </div>
 
           {/* Company list */}
@@ -70,8 +101,11 @@ export default function CreatorCollaborations() {
               its place, the reel takes the slot right after it, and the rest
               of the companies follow. Desktop ignores the variable. */}
           <ul className="cr-collabs-list">
-            {COMPANIES.map((company, i) => (
-              <li key={company.key} style={{ "--m-order": i <= active ? i + 1 : i + 2 }}>
+            {companies.map((item, i) => {
+              const company = item.company || {};
+              const category = text((company.category || [])[0], lang);
+              return (
+              <li key={item.uuid || i} style={{ "--m-order": reel && i > active ? i + 2 : i + 1 }}>
                 <button
                   type="button"
                   className={"cr-collab-item" + (i === active ? " active" : "")}
@@ -79,36 +113,36 @@ export default function CreatorCollaborations() {
                 >
                   <span
                     className="cr-collab-item-dot"
-                    style={{ background: company.color }}
+                    style={{ background: DOT_COLORS[i % DOT_COLORS.length] }}
                   >
                     <img
                       className="cr-collab-item-logo"
-                      src="/assets/images/صوت ابيض.png"
-                      alt="صوت"
+                      src={company.logo_url || "/assets/images/صوت ابيض.png"}
+                      alt={localized(company.name, lang)}
                     />
                   </span>
                   <span className="cr-collab-item-text">
-                    <span className="cr-collab-item-name" data-i18n={company.key}>
-                      {company.name}
+                    <span className="cr-collab-item-name">
+                      {localized(company.name, lang)}
                     </span>
-                    <span className="cr-collab-item-sub" data-i18n={company.subKey}>
-                      {company.sub}
-                    </span>
+                    {category ? <span className="cr-collab-item-sub">{category}</span> : null}
                   </span>
                   <span className="cr-collab-item-status"></span>
                 </button>
               </li>
-            ))}
+              );
+            })}
           </ul>
 
           {/* Central reel card — reuses the home-page Reels markup + styling */}
+          {reel ? (
           <div className="cr-collabs-media" style={{ "--m-order": active + 2 }}>
             <div className="review-reels cr-collabs-reel" ref={reelRef}>
               <div className="reel-item" data-index="0">
                 <div className="reel-media">
                   <video
-                    src={VIDEO}
-                    
+                    src={reel.video_url}
+                    poster={reel.thumbnail || undefined}
                     loop
                     playsInline
                     onClick={(e) => {
@@ -171,56 +205,45 @@ export default function CreatorCollaborations() {
                   </div>
                 </div>
                 <div className="reel-caption">
-                  <p className="reel-title" data-i18n={c.titleKey}>
-                    {c.title}
-                  </p>
-                  <span className="reel-views" data-i18n={c.viewsKey}>
-                    {c.views}
-                  </span>
+                  <p className="reel-title">{reelTitle}</p>
+                  {reelViews ? <span className="reel-views">{reelViews}</span> : null}
                 </div>
               </div>
             </div>
           </div>
 
+          ) : null}
+
           {/* Testimonial */}
           <div className="cr-collabs-quote">
             <div className="cr-collab-quote-card">
               <div className="cr-collab-quote-head">
-                <h4 className="cr-collab-quote-company" data-i18n={c.key}>
-                  {c.name}
+                <h4 className="cr-collab-quote-company">
+                  {localized(c.company?.name, lang)}
                 </h4>
                 <div className="cr-collab-quote-stars">
                   {Array.from({ length: 5 }).map((_, i) => (
                     <i
                       key={i}
                       className={
-                        (i < c.stars ? "fa-solid" : "fa-regular") + " fa-star"
+                        (i < stars ? "fa-solid" : "fa-regular") + " fa-star"
                       }
                     ></i>
                   ))}
                 </div>
               </div>
-              <p className="cr-collab-quote-text" data-i18n={c.quoteKey}>
-                {c.quote}
-              </p>
-              <div className="cr-collab-quote-author">
-
-
-               
-
-
-
-                <span className="cr-collab-quote-author-text">
-                  <span className="cr-collab-quote-author-name" data-i18n={c.authorKey}>
-                    {c.author}
+              {quote ? <p className="cr-collab-quote-text">{quote}</p> : null}
+              {authorName ? (
+                <div className="cr-collab-quote-author">
+                  <span className="cr-collab-quote-author-text">
+                    <span className="cr-collab-quote-author-name">{authorName}</span>
+                    {authorRole ? (
+                      <span className="cr-collab-quote-author-role">{authorRole}</span>
+                    ) : null}
                   </span>
-                  <span className="cr-collab-quote-author-role" data-i18n={c.roleKey}>
-                    {c.role}
-                  </span>
-                </span>
-                <img src={c.authorImg} alt="" />
-                
-              </div>
+                  {c.author?.photo_url ? <img src={c.author.photo_url} alt="" /> : null}
+                </div>
+              ) : null}
               <span className="cr-collab-quote-mark">
                 <svg xmlns="http://www.w3.org/2000/svg" width="120" height="90" viewBox="0 0 120 90" fill="none">
                   <path d="M0 90V56.25C0 43.75 3.75 32.5 11.25 22.5C18.75 12.5 30 5 45 0L52.5 11.25C40 13.75 30.625 18.75 24.375 26.25C18.125 33.75 15 42.5 15 52.5H37.5V90H0ZM67.5 90V56.25C67.5 43.75 71.25 32.5 78.75 22.5C86.25 12.5 97.5 5 112.5 0L120 11.25C107.5 13.75 98.125 18.75 91.875 26.25C85.625 33.75 82.5 42.5 82.5 52.5H105V90H67.5Z" fill="#FFF3EB"/>

@@ -1,5 +1,6 @@
 "use client";
 import { useEffect, useState } from "react";
+import { SECTION_IDS, type IncubatorNavLink } from "./incubator-nav-data";
 
 /* The incubator navbar's link list. Client leaf: the picked section carries the
    highlight — olive label + rule in the bar, grey plate under it in the phone
@@ -8,25 +9,26 @@ import { useEffect, useState } from "react";
    Click-driven on purpose, NOT a scroll-spy: the bar isn't sticky, it sits at
    the top of the hero and scrolls out of view with it, so the only time you see
    the highlight is back at the top — where a scroll-spy would just have reset it
-   to the first section and wiped the choice you made. */
+   to the first section and wiped the choice you made.
 
-type NavLink = { id: string; key: string; label: string };
+   The labels are GET /layout/incubator/navbar's (see ./incubator-nav-data);
+   while it is in flight the row is drawn as skeleton bars. */
 
-const LINKS: NavLink[] = [
-  { id: "inc-about", key: "inc_nav_about", label: "عن الحاضنة" },
-  { id: "inc-courses", key: "inc_nav_courses", label: "الدورات" },
-  { id: "inc-workshops", key: "inc_nav_workshops", label: "الورشات" },
-];
-
-export default function IncubatorNavLinks() {
-  const [active, setActive] = useState<string>(LINKS[0].id);
+export default function IncubatorNavLinks({
+  links,
+  loading,
+}: {
+  links: IncubatorNavLink[];
+  loading: boolean;
+}) {
+  const [active, setActive] = useState<string>(SECTION_IDS[0]);
 
   /* Arriving with the section already in the URL — the same bar on /courses
      links back here as /incubator#inc-courses, and the hash survives a reload. */
   useEffect(() => {
     const fromHash = () => {
       const id = window.location.hash.slice(1);
-      if (LINKS.some((l) => l.id === id)) setActive(id);
+      if (SECTION_IDS.includes(id)) setActive(id);
     };
     fromHash();
     window.addEventListener("hashchange", fromHash);
@@ -40,7 +42,7 @@ export default function IncubatorNavLinks() {
     event: React.MouseEvent<HTMLAnchorElement>,
     id: string,
   ) => {
-    const section = document.getElementById(id);
+    const section = id ? document.getElementById(id) : null;
     // no such section — this is the /courses bar, let the href carry us over
     if (!section) return;
 
@@ -52,14 +54,25 @@ export default function IncubatorNavLinks() {
     history.replaceState(null, "", `#${id}`);
   };
 
+  if (loading) {
+    return (
+      <ul className="inc-nav-links">
+        {["86px", "52px", "56px"].map((width, index) => (
+          <li key={index}>
+            <span className="nsk-line" style={{ width }} />
+          </li>
+        ))}
+      </ul>
+    );
+  }
+
   return (
     <ul className="inc-nav-links">
-      {LINKS.map((link) => (
-        <li key={link.id}>
+      {links.map((link, index) => (
+        <li key={link.key || index}>
           <a
-            className={active === link.id ? "is-active" : undefined}
-            href={`/incubator#${link.id}`}
-            data-i18n={link.key}
+            className={link.id && active === link.id ? "is-active" : undefined}
+            href={link.href}
             onClick={(event) => onLinkClick(event, link.id)}
           >
             {link.label}

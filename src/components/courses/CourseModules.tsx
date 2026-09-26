@@ -1,27 +1,37 @@
 "use client";
 import { useState } from "react";
+import { localized } from "@/lib/api/pages";
+import { t } from "@/lib/translations";
+import type { CourseModule } from "@/lib/api/courses";
 import {
   IconChevronWide,
-  IconLessonDoc,
   IconLessonPlay,
   IconLockClosed,
 } from "@/components/ui/icons";
-import { COURSE_MODULES } from "./course-modules-data";
+import { sortItems } from "./course-view";
 
 /* The tail of the accordion is locked content: those modules carry a padlock
    instead of the chevron and don't open until the visitor subscribes. */
 const LOCKED_MODULES = 3;
 
-/* "محاور البرنامج" — numbered accordion looked up by the course's route id;
-   one module open at a time, the first open by default (as in the mock).
-   Modules without lessons still toggle so the chevron behaves consistently.
+/* "محاور البرنامج" — numbered accordion from the course's `modules`; one
+   module open at a time, the first open by default (as in the mock). Modules
+   without lessons still toggle so the chevron behaves consistently. Lesson
+   durations arrive formatted ("15 دقيقة"); the payload doesn't say which
+   lessons are quizzes, so every lesson wears the play glyph.
    A pale branch hugs the page's far-left edge beside the accordion — its
    paths run into negative x, so the SVG viewport pre-clips it and it sits
    flush against the viewport edge. */
-export default function CourseModules({ courseId }: { courseId: string }) {
+export default function CourseModules({
+  items,
+  lang,
+}: {
+  items?: CourseModule[];
+  lang: string;
+}) {
   const [open, setOpen] = useState(0);
-  const courseModules = COURSE_MODULES[courseId];
-  if (!courseModules) return null;
+  const courseModules = sortItems(items);
+  if (!courseModules.length) return null;
 
   /* never lock the whole list — short courses keep at least one open module */
   const firstLocked = Math.max(1, courseModules.length - LOCKED_MODULES);
@@ -44,15 +54,14 @@ export default function CourseModules({ courseId }: { courseId: string }) {
 
       <div className="crs-sec-head">
         <span className="crs-sec-bar" aria-hidden="true"></span>
-        <h2 className="crs-sec-title" data-i18n="crs_modules_title">
-          محاور البرنامج
-        </h2>
+        <h2 className="crs-sec-title">{t("crs_modules_title")}</h2>
       </div>
 
       <div className="crs-modules">
         {courseModules.map((m, i) => {
           const isLocked = i >= firstLocked;
           const isOpen = !isLocked && open === i;
+          const lessons = Array.isArray(m.lessons) ? m.lessons : [];
           return (
             <div
               className={
@@ -60,7 +69,7 @@ export default function CourseModules({ courseId }: { courseId: string }) {
                 (isOpen ? " crs-module-open" : "") +
                 (isLocked ? " crs-module-locked" : "")
               }
-              key={m.key}
+              key={i}
             >
               <button
                 type="button"
@@ -71,13 +80,12 @@ export default function CourseModules({ courseId }: { courseId: string }) {
               >
                 <span className="crs-module-title">
                   {i + 1}.{" "}
-                  <span data-i18n={m.titleKey}>{m.title}</span>
+                  <span>{localized(m.title, lang)}</span>
                 </span>
                 {isLocked ? (
                   <span
                     className="crs-module-lock"
-                    title="محتوى مغلق"
-                    data-i18n-title="crs_module_locked"
+                    title={t("crs_module_locked")}
                   >
                     <IconLockClosed />
                   </span>
@@ -88,22 +96,17 @@ export default function CourseModules({ courseId }: { courseId: string }) {
                 )}
               </button>
 
-              {isOpen && m.lessons && (
+              {isOpen && lessons.length > 0 && (
                 <ul className="crs-module-lessons">
-                  {m.lessons.map((lesson, j) => (
+                  {lessons.map((lesson, j) => (
                     <li className="crs-lesson" key={j}>
                       <span className="crs-lesson-icon" aria-hidden="true">
-                        {lesson.kind === "quiz" ? (
-                          <IconLessonDoc />
-                        ) : (
-                          <IconLessonPlay />
-                        )}
+                        <IconLessonPlay />
                       </span>
-                      <span data-i18n={lesson.textKey}>{lesson.text}</span>
-                      <span className="crs-lesson-duration">
-                        {lesson.duration}{" "}
-                        <span data-i18n="crs_lesson_min">دقيقة</span>
-                      </span>
+                      <span>{localized(lesson.title, lang)}</span>
+                      {lesson.duration ? (
+                        <span className="crs-lesson-duration">{lesson.duration}</span>
+                      ) : null}
                     </li>
                   ))}
                 </ul>

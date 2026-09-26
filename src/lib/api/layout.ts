@@ -187,3 +187,52 @@ export async function fetchMediaNavbar(
   if (!payload?.data) return null;
   return { ...payload.data, logo_url: assetUrl(payload.data.logo_url) };
 }
+
+/* =========================================================
+   GET /layout/incubator/navbar → { data: { site_name, logo_url,
+                                            back_to_platform, socials_label,
+                                            socials, topbar, nav, actions } }
+
+   حاضنة صوت's own bar (IncubatorNav, on /incubator and the course pages), on
+   the terms of the three endpoints above: every text field is an { ar, en }
+   pair, and the endpoint is the only source of the bar's copy.
+
+   The social row arrives twice — at the root and again under `topbar`; the
+   view model reads `topbar` first and falls back to the root pair.
+   ========================================================= */
+
+export type IncubatorNavbarContent = {
+  site_name?: string | null;
+  logo_url?: string | null;
+  /** "العودة لمنصة صوت", the top-left line of the card. */
+  back_to_platform?: NavbarItem;
+  socials_label?: Localized;
+  socials?: SocialLink[];
+  topbar?: {
+    socials_label?: Localized;
+    socials?: SocialLink[];
+    /** The label the toggle SHOWS — "En" while the site is Arabic, and back. */
+    language?: { label?: Localized };
+  };
+  nav?: {
+    /** عن الحاضنة / الدورات / الورشات — anchors into /incubator, no url. */
+    primary?: NavbarItem[];
+  };
+  actions?: {
+    /** انضم للحاضنة */
+    join?: NavbarItem;
+    /** ادعم طلاب الحاضنة */
+    support?: NavbarItem;
+  };
+};
+
+export async function fetchIncubatorNavbar(
+  signal?: AbortSignal,
+): Promise<IncubatorNavbarContent | null> {
+  const payload = await apiFetch<Envelope<IncubatorNavbarContent>>(
+    "/layout/incubator/navbar",
+    { signal },
+  );
+  if (!payload?.data) return null;
+  return { ...payload.data, logo_url: assetUrl(payload.data.logo_url) };
+}

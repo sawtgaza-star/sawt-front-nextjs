@@ -6,7 +6,9 @@ import { IconChevronLeftSmall } from "@/components/ui/icons";
    button when they act on the wizard (`onPrev` / `onNext`) — including the
    last screen, whose handler validates the contact e-mail before leaving, so
    it relabels itself ("اتمام العملية") and drops the chevron. Without either
-   handler the forward control falls back to the "#" placeholder. */
+   handler the forward control falls back to the "#" placeholder.
+   A label from the API (`backText`, or `nextLabel` with no `nextLabelKey`)
+   renders without a data-i18n key — it is already in the current language. */
 export default function CheckoutNav({
   prevHref,
   onPrev,
@@ -14,6 +16,7 @@ export default function CheckoutNav({
   nextLabel = "التالي",
   nextLabelKey = "checkout_next",
   nextArrow = true,
+  backText = "",
 }: {
   prevHref?: string;
   onPrev?: () => void;
@@ -21,6 +24,7 @@ export default function CheckoutNav({
   nextLabel?: string;
   nextLabelKey?: string;
   nextArrow?: boolean;
+  backText?: string;
 }) {
   /* points back = towards the start edge, so it is flipped in RTL */
   const backArrow = (
@@ -28,11 +32,15 @@ export default function CheckoutNav({
       <IconChevronLeftSmall />
     </i>
   );
-  const backLabel = <span data-i18n="checkout_prev">السابق</span>;
+  const backLabel = backText ? (
+    <span>{backText}</span>
+  ) : (
+    <span data-i18n="checkout_prev">السابق</span>
+  );
 
   const nextInner = (
     <>
-      <span data-i18n={nextLabelKey}>{nextLabel}</span>
+      <span data-i18n={nextLabelKey || undefined}>{nextLabel}</span>
       {nextArrow && (
         <i className="sp-wizard-next-arrow" aria-hidden="true">
           <IconChevronLeftSmall />
