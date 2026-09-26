@@ -6,11 +6,12 @@
    key — CreatorCard is told so with `translated`, so the DOM translator never
    overwrites copy React owns.
 
-   THE LINK IS /creators/{id}, not the uuid: those numeric ids are the range
-   creators/[id] pre-renders for `output: 'export'`. A row without an id is not
-   linkable. */
+   THE LINK IS /creators/{uuid} (creatorHref): the uuids are the range
+   creators/[id] pre-renders for `output: 'export'`. A row without an
+   identifier is not linkable. */
 
 import { localized } from "@/lib/api/pages";
+import { creatorHref } from "@/lib/api/creator-profile";
 import type { CreatorsGridCreator } from "@/lib/api/creators-page";
 import type { Creator } from "./CreatorCard";
 import { followersLabel } from "./creators-text";
@@ -31,6 +32,6 @@ export function creatorCards(
     followers: followersLabel(creator.followers_count, labels.followersSuffix || ""),
     experienceTitle: labels.experienceTitle || "",
     excerpt: localized(creator.experience_excerpt, lang),
-    href: creator.id != null ? `/creators/${creator.id}` : "#",
+    href: creatorHref(creator),
   }));
 }

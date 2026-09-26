@@ -1,4 +1,6 @@
 import type { ReactNode } from "react";
+import { localized, type Localized } from "@/lib/api/pages";
+import { t } from "@/lib/translations";
 import {
   IconReqUser,
   IconReqCalendar,
@@ -7,19 +9,31 @@ import {
   IconReqUserMinus,
 } from "@/components/ui/icons";
 
-/* "شروط التسجيل" — orange-bar section head + a row of five bordered cards,
-   each with a white icon on an olive roundel. Same copy for every course, so
-   no per-course lookup. DOM order is the mock's RTL reading order (right →
-   left); a pale branch decorates the page's far-left edge beside the row. */
-const REQUIREMENTS: { icon: ReactNode; text: string }[] = [
-  { icon: <IconReqUser />, text: "أن يكون المتقدم شغوفاً بصناعة المحتوى والتعلّم." },
-  { icon: <IconReqCalendar />, text: "الالتزام بحضور جميع الجلسات والأنشطة التدريبية." },
-  { icon: <IconReqPhone />, text: "امتلاك هاتف ذكي صالح للتصوير." },
-  { icon: <IconReqDoc />, text: "الاستعداد لتنفيذ المهام والمشروع النهائي." },
-  { icon: <IconReqUserMinus />, text: "لا يشترط وجود خبرة سابقة." },
+/* "شروط التسجيل" — orange-bar section head + a row of bordered cards, each
+   with a white icon on an olive roundel, from the course's `requirements`.
+   The payload sends text only, so the mock's five icons are drawn in its
+   order (cycling past five). DOM order is the mock's RTL reading order (right
+   → left); a pale branch decorates the page's far-left edge beside the row. */
+const REQ_ICONS: (() => ReactNode)[] = [
+  () => <IconReqUser />,
+  () => <IconReqCalendar />,
+  () => <IconReqPhone />,
+  () => <IconReqDoc />,
+  () => <IconReqUserMinus />,
 ];
 
-export default function CourseRequirements() {
+export default function CourseRequirements({
+  items,
+  lang,
+}: {
+  items?: Localized[];
+  lang: string;
+}) {
+  const requirements = (Array.isArray(items) ? items : [])
+    .map((item) => localized(item, lang))
+    .filter(Boolean);
+  if (!requirements.length) return null;
+
   return (
     <section className="crs-section crs-reqs-section" id="crs-reqs">
       <svg
@@ -45,20 +59,16 @@ export default function CourseRequirements() {
 
       <div className="crs-sec-head">
         <span className="crs-sec-bar" aria-hidden="true"></span>
-        <h2 className="crs-sec-title" data-i18n="crs_reqs_title">
-          شروط التسجيل
-        </h2>
+        <h2 className="crs-sec-title">{t("crs_reqs_title")}</h2>
       </div>
 
       <ul className="crs-reqs-grid">
-        {REQUIREMENTS.map((req, i) => (
+        {requirements.map((text, i) => (
           <li className="crs-req-card" key={i}>
             <span className="crs-req-icon" aria-hidden="true">
-              {req.icon}
+              {REQ_ICONS[i % REQ_ICONS.length]()}
             </span>
-            <p className="crs-req-text" data-i18n={`crs_req_i${i + 1}`}>
-              {req.text}
-            </p>
+            <p className="crs-req-text">{text}</p>
           </li>
         ))}
       </ul>

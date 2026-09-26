@@ -1,5 +1,6 @@
 "use client";
 import { useEffect, useState } from "react";
+import { t as tr } from "@/lib/translations";
 
 type Parts = { days: number; hours: number; minutes: number; seconds: number };
 
@@ -29,10 +30,10 @@ export default function CourseCountdown({ deadline }: { deadline: string }) {
   }, [deadline]);
 
   const boxes = [
-    { value: t?.seconds, unit: "ثانية", unitKey: "crs_unit_seconds" },
-    { value: t?.minutes, unit: "دقيقة", unitKey: "crs_unit_minutes" },
-    { value: t?.hours, unit: "ساعة", unitKey: "crs_unit_hours" },
-    { value: t?.days, unit: "يوم", unitKey: "crs_unit_days" },
+    { value: t?.seconds, unitKey: "crs_unit_seconds" },
+    { value: t?.minutes, unitKey: "crs_unit_minutes" },
+    { value: t?.hours, unitKey: "crs_unit_hours" },
+    { value: t?.days, unitKey: "crs_unit_days" },
   ];
 
   return (
@@ -46,7 +47,9 @@ export default function CourseCountdown({ deadline }: { deadline: string }) {
           )}
           <div className="crs-countdown-box">
             <b>{b.value === undefined ? "00" : pad(b.value)}</b>
-            <span data-i18n={b.unitKey}>{b.unit}</span>
+            {/* t(), not data-i18n: the card mounts after the translator's
+                walk, and this re-renders every second anyway */}
+            <span>{tr(b.unitKey)}</span>
           </div>
         </div>
       ))}

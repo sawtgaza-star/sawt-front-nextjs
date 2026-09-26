@@ -3,6 +3,7 @@ import { createPortal } from "react-dom";
 import ReelModal from "@/components/creators/creator-content/ReelModal";
 import { useReelSwipe } from "./useReelSwipe";
 import type { Reel } from "./content-data";
+import type { ReelMeta } from "@/components/creators/creator-content/data";
 
 /* the viewer only needs the reel's id + video — `Reel` (محتوانا) and the
    creator page's cards both satisfy it */
@@ -15,6 +16,9 @@ type Props = {
   onClose: () => void;
   /* namespaces the reel's social state: every list numbers its reels from 0 */
   scope?: string;
+  /** Who posted these reels — a creator's profile passes the creator; the
+      viewer's built-in placeholder is used otherwise. */
+  meta?: Partial<ReelMeta>;
 };
 
 /* The full-screen reel viewer, portalled to <body> and wrapped in its own
@@ -28,6 +32,7 @@ export default function ReelViewer({
   onNavigate,
   onClose,
   scope = "content",
+  meta,
 }: Props) {
   const { layerRef, swipeHandlers } = useReelSwipe({
     index,
@@ -64,6 +69,7 @@ export default function ReelViewer({
         onNavigate={onNavigate}
         onClose={onClose}
         scope={scope}
+        meta={meta}
       />
     </div>,
     document.body,

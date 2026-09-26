@@ -1,14 +1,8 @@
 import type { ReactNode } from "react";
 
-/* Hero counters strip — value + label + the mock's orange line icon. */
-
-export type HeroStat = {
-  key: string;
-  value: string;
-  label: string;
-  labelKey: string;
-  icon: ReactNode;
-};
+/* Hero counters strip — the mock's orange line icon per stat. The value and
+   label are GET /pages/incubator's `stats`; the icon is picked by the stat's
+   `key`, and a key nothing here draws gets no icon. */
 
 const IconStudents = (
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" fill="none">
@@ -48,33 +42,10 @@ const IconGraduates = (
   </svg>
 );
 
-export const HERO_STATS: HeroStat[] = [
-  {
-    key: "students",
-    value: "+200",
-    label: "طالب مسجّل",
-    labelKey: "inc_stat_students",
-    icon: IconStudents,
-  },
-  {
-    key: "trainers",
-    value: "+100",
-    label: "مدرب وخبير",
-    labelKey: "inc_stat_trainers",
-    icon: IconTrainers,
-  },
-  {
-    key: "satisfaction",
-    value: "100%",
-    label: "معدل رضاء الطلاب",
-    labelKey: "inc_stat_satisfaction",
-    icon: IconSatisfaction,
-  },
-  {
-    key: "graduates",
-    value: "+30",
-    label: "طالب متخرج",
-    labelKey: "inc_stat_graduates",
-    icon: IconGraduates,
-  },
-];
+export const STAT_ICONS: Record<string, ReactNode> = {
+  students: IconStudents,
+  mentors: IconTrainers,
+  trainers: IconTrainers,
+  satisfaction: IconSatisfaction,
+  graduates: IconGraduates,
+};

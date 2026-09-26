@@ -5,8 +5,10 @@ import {
   IconQuoteMarks,
   IconRatingStar,
 } from "@/components/ui/icons";
-import { applyTranslations, getCurrentLang } from "@/lib/translations";
-import { TESTIMONIALS } from "./testimonials-data";
+import { localized } from "@/lib/api/pages";
+import type { IncubatorTestimonial } from "@/lib/api/incubator-page";
+import { t } from "@/lib/translations";
+import { PLACEHOLDER } from "./incubator-page-view";
 
 /* The testimonials section's card strip: a scroll-snap track paged by however
    many cards actually fit (two on the desktop panel, one on a phone) plus the
@@ -18,8 +20,19 @@ import { TESTIMONIALS } from "./testimonials-data";
    Everything below is measured off the real boxes rather than assumed. A fixed
    `ceil(n / 2)` page count is what made the pager light the wrong dot on
    phones: there the cards are full-width, so the track has n stops and not
-   n/2, and every dot after the first pointed at the wrong card. */
-export default function TestimonialsSlider() {
+   n/2, and every dot after the first pointed at the wrong card.
+
+   The cards are the API's `testimonials.items`; "اقرأ المزيد" is the payload's
+   `read_more` label, and its "اقرأ أقل" twin (not in the payload) is t()'s. */
+export default function TestimonialsSlider({
+  items,
+  lang,
+  readMore,
+}: {
+  items: IncubatorTestimonial[];
+  lang: string;
+  readMore: string;
+}) {
   const trackRef = useRef<HTMLDivElement>(null);
   const [active, setActive] = useState(0);
   const [pages, setPages] = useState(1);
@@ -27,8 +40,8 @@ export default function TestimonialsSlider() {
      corrects it when the language toggle flips <html dir> */
   const [rtl, setRtl] = useState(true);
   const [dragging, setDragging] = useState(false);
-  /* keys of the cards whose quote is expanded past the 3-line clamp */
-  const [expanded, setExpanded] = useState<string[]>([]);
+  /* indexes of the cards whose quote is expanded past the 3-line clamp */
+  const [expanded, setExpanded] = useState<number[]>([]);
   const drag = useRef({ startX: 0, startScroll: 0, moved: false });
 
   /* how many whole cards the viewport shows at this width */
@@ -74,16 +87,16 @@ export default function TestimonialsSlider() {
     const el = trackRef.current;
     if (!el) return;
     const measure = () => {
-      setPages(Math.max(1, Math.ceil(TESTIMONIALS.length / perView())));
+      setPages(Math.max(1, Math.ceil(items.length / perView())));
       setActive(nearestIndex());
     };
     measure();
     const ro = new ResizeObserver(measure);
     ro.observe(el);
     return () => ro.disconnect();
-    /* perView / nearestIndex only read refs and the module-level list */
+    /* perView / nearestIndex only read refs */
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [items.length]);
 
   /* Scroll the track only (scrollIntoView would drag the page along too), by
      the physical distance between the target card's start edge and the
@@ -146,17 +159,10 @@ export default function TestimonialsSlider() {
     requestAnimationFrame(() => goTo(i));
   };
 
-  const toggleQuote = (key: string) =>
+  const toggleQuote = (key: number) =>
     setExpanded((keys) =>
       keys.includes(key) ? keys.filter((k) => k !== key) : [...keys, key],
     );
-
-  /* the page's i18n mutates the DOM (data-i18n), so a re-rendered label comes
-     back as its Arabic fallback — re-apply the current language after a
-     toggle, the same way EventsExplorer does after a filter change */
-  useEffect(() => {
-    applyTranslations(getCurrentLang());
-  }, [expanded]);
 
   /* a drag must not count as a click on the card's link */
   const onClickCapture = (e: React.MouseEvent) => {
@@ -179,15 +185,16 @@ export default function TestimonialsSlider() {
         onPointerCancel={onPointerUp}
         onClickCapture={onClickCapture}
       >
-        {TESTIMONIALS.map((t) => {
-          const isOpen = expanded.includes(t.key);
+        {items.map((item, index) => {
+          const isOpen = expanded.includes(index);
+          const rating = Math.min(5, Math.max(0, Math.round(Number(item.rating) || 0)));
           return (
           <article
             className={"inc-testi-card" + (isOpen ? " is-open" : "")}
-            key={t.key}
+            key={index}
           >
             <span className="inc-testi-avatar">
-              <img src={t.photo} alt="" draggable={false} />
+              <img src={item.avatar_url || PLACEHOLDER.person} alt="" draggable={false} />
               <span className="inc-testi-quote-badge" aria-hidden="true">
                 <IconQuoteMarks />
               </span>
@@ -195,38 +202,28 @@ export default function TestimonialsSlider() {
 
             <div className="inc-testi-stars" aria-hidden="true">
               {Array.from({ length: 5 }, (_, s) => (
-                <IconRatingStar key={s} filled={s < t.rating} />
+                <IconRatingStar key={s} filled={s < rating} />
               ))}
             </div>
 
-            <p className="inc-testi-text" data-i18n={t.quoteKey}>
-              {t.quote}
-            </p>
+            <p className="inc-testi-text">{localized(item.quote, lang)}</p>
 
             {/* the mock's chevron control: it opens the quote past its 3-line
-                clamp rather than navigating (the per-card `cta`/`ctaHref` in
-                testimonials-data are left in place, unused, for whenever the
-                link version is wanted back) */}
+                clamp rather than navigating */}
             <button
               type="button"
               className="inc-testi-cta"
               aria-expanded={isOpen}
-              onClick={() => toggleQuote(t.key)}
+              onClick={() => toggleQuote(index)}
             >
-              <span
-                data-i18n={isOpen ? "inc_testi_read_less" : "inc_testi_read_more"}
-              >
-                {isOpen ? "اقرأ أقل" : "اقرأ المزيد"}
+              <span>
+                {isOpen ? t("inc_testi_read_less") : readMore || t("inc_testi_read_more")}
               </span>
               <IconChevronDownBold />
             </button>
 
-            <b className="inc-testi-name" data-i18n={t.nameKey}>
-              {t.name}
-            </b>
-            <span className="inc-testi-meta" data-i18n={t.metaKey}>
-              {t.meta}
-            </span>
+            <b className="inc-testi-name">{item.name}</b>
+            <span className="inc-testi-meta">{localized(item.role, lang)}</span>
           </article>
           );
         })}

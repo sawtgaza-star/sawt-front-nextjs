@@ -2,17 +2,31 @@
 "use client";
 /* eslint-disable */
 import { useEffect, useRef, useState } from "react";
-import { CATEGORIES, CARDS } from "./creator-content/data";
+import { localized } from "@/lib/api/pages";
+import { creatorHref } from "@/lib/api/creator-profile";
+import { useLang } from "@/lib/use-lang";
 import ContentCard from "./creator-content/ContentCard";
 /* same full-screen viewer the محتوانا page uses: portalled above the navbar
    and carrying the Reels-style swipe gesture */
 import ReelViewer from "@/components/content/ReelViewer";
 
-/* "المحتوى" — category filter pills + a horizontal slider of vertical
-   reel-poster cards, with circular prev/next nav arrows. Self-contained
-   (no legacy JS): pills are visual filters, arrows scroll the track. */
-export default function CreatorContent() {
-  const [active, setActive] = useState(0);
+/* "المحتوى" — a horizontal slider of the creator's reels (vertical poster
+   cards) with circular prev/next nav arrows, from the profile payload's
+   `content` block. The reels come from the creator's Instagram; while that is
+   switched off in the admin (`status: "disabled"`) or nothing is synced, the
+   list is empty and the section keeps its heading with a "no content yet"
+   panel in place of the slider. A reel without a
+   playable URL is skipped. The payload has no categories, so the mock's
+   filter pills are gone. "رؤية المزيد" opens the creator's Instagram.
+
+   The viewer's info bar names the creator (`meta`), and each reel's own
+   caption when it has one. */
+function reelVideo(item) {
+  return item?.video_url || item?.media_url || "";
+}
+
+export default function CreatorContent({ content, creator, lang }) {
+  const { tr } = useLang();
   const [openIndex, setOpenIndex] = useState(null);
   const trackRef = useRef(null);
   // disable a nav arrow once the track can't scroll any further that way
@@ -47,7 +61,30 @@ export default function CreatorContent() {
       el.removeEventListener("scroll", updateEdges);
       window.removeEventListener("resize", updateEdges);
     };
-  }, []);
+  }, [content]);
+
+  const cards = (Array.isArray(content?.items) ? content.items : [])
+    .map((item, i) => ({
+      id: item.id ?? i,
+      video: reelVideo(item),
+      poster: item.thumbnail || item.thumbnail_url || undefined,
+      caption:
+        typeof item.caption === "string" ? item.caption : localized(item.caption, lang),
+    }))
+    .filter((card) => card.video);
+  const isEmpty = !cards.length;
+
+  const title = localized(content?.title, lang) || tr("cr_content_title");
+  const viewMore = localized(content?.view_more, lang);
+  const instagram = (content?.instagram_username || creator?.instagram_username || "").trim();
+  const moreHref = instagram ? `https://instagram.com/${encodeURIComponent(instagram)}` : "";
+  const meta = creator && {
+    user: creator.name || "",
+    avatar: creator.avatar_url || undefined,
+    profile: creatorHref(creator) !== "#" ? creatorHref(creator) : undefined,
+    caption: "",
+    posted: "",
+  };
 
   return (
     <section className="cr-content-detail-section ">
@@ -64,33 +101,20 @@ export default function CreatorContent() {
         <div className="cr-content-head">
           {/* the wrapper is the scroll container on mobile, so the pill list
               itself never needs an overflow of its own */}
-          <div className="cr-content-tabs-scroll">
-            <ul className="cr-content-tabs">
-              {CATEGORIES.map((c, i) => (
-                <li key={c.key}>
-                  <button
-                    type="button"
-                    className={"cr-content-tab" + (i === active ? " active" : "")}
-                    onClick={() => setActive(i)}
-                    data-i18n={c.key}
-                  >
-                    {c.label}
-                  </button>
-                </li>
-              ))}
-            </ul>
-          </div>
           <h2 className="cr-content-title">
-            <span className="cr-highlight">
-              المحتوى
-            </span>
+            <span className="cr-highlight">{title}</span>
           </h2>
           {/* mobile mock only — sits opposite the title (hidden on desktop) */}
-          <a className="cr-content-more" href="#" data-i18n="content_view_more">
-            رؤية المزيد
-          </a>
+          {!isEmpty && moreHref && viewMore ? (
+            <a className="cr-content-more" href={moreHref} target="_blank" rel="noopener noreferrer">
+              {viewMore}
+            </a>
+          ) : null}
         </div>
 
+        {isEmpty ? (
+          <p className="cr-content-empty">{tr("cr_content_empty")}</p>
+        ) : (
         <div className="cr-content-slider">
           <button
             type="button"
@@ -112,20 +136,22 @@ export default function CreatorContent() {
           </button>
 
           <div className="cr-content-track" ref={trackRef} dir="rtl">
-            {CARDS.map((card, i) => (
+            {cards.map((card, i) => (
               <ContentCard card={card} index={i} key={card.id} onOpen={setOpenIndex} />
             ))}
           </div>
         </div>
+        )}
       </div>
 
       {openIndex !== null && (
         <ReelViewer
-          reels={CARDS}
+          reels={cards}
           index={openIndex}
           onNavigate={setOpenIndex}
           onClose={() => setOpenIndex(null)}
-          scope="creator"
+          scope={`creator-${creator?.id ?? ""}`}
+          meta={meta}
         />
       )}
     </section>

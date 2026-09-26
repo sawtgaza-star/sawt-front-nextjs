@@ -1,11 +1,40 @@
-import { COURSE_GOALS } from "./course-goals-data";
+import type { ReactNode } from "react";
+import { localized } from "@/lib/api/pages";
+import { t } from "@/lib/translations";
+import type { CourseTitledItem } from "@/lib/api/courses";
+import {
+  IconGoalUsers,
+  IconGoalStoryDoc,
+  IconGoalMediaCam,
+  IconGoalShieldCheck,
+  IconGoalNotes,
+  IconGoalGrid,
+} from "@/components/ui/icons";
+import { sortItems } from "./course-view";
 
-/* "أهداف البرنامج" — orange-bar section head + 3-column goal card grid,
-   looked up by the course's route id. A pale branch pokes out of the
-   section's top-right corner, clipped by the page edge. */
-export default function CourseGoals({ courseId }: { courseId: string }) {
-  const goals = COURSE_GOALS[courseId];
-  if (!goals) return null;
+/* The mock's six icons, in its order — drawn when an objective has no
+   uploaded `icon_url`, cycling for a course with more than six. */
+const GOAL_ICONS: (() => ReactNode)[] = [
+  () => <IconGoalUsers />,
+  () => <IconGoalStoryDoc />,
+  () => <IconGoalMediaCam />,
+  () => <IconGoalShieldCheck />,
+  () => <IconGoalNotes />,
+  () => <IconGoalGrid />,
+];
+
+/* "أهداف البرنامج" — orange-bar section head + 3-column goal card grid, from
+   the course's `objectives`. A pale branch pokes out of the section's
+   top-right corner, clipped by the page edge. */
+export default function CourseGoals({
+  items,
+  lang,
+}: {
+  items?: CourseTitledItem[];
+  lang: string;
+}) {
+  const goals = sortItems(items);
+  if (!goals.length) return null;
 
   return (
     <section className="crs-section crs-goals-section" id="crs-goals">
@@ -25,23 +54,21 @@ export default function CourseGoals({ courseId }: { courseId: string }) {
 
       <div className="crs-sec-head">
         <span className="crs-sec-bar" aria-hidden="true"></span>
-        <h2 className="crs-sec-title" data-i18n="crs_goals_title">
-          أهداف البرنامج
-        </h2>
+        <h2 className="crs-sec-title">{t("crs_goals_title")}</h2>
       </div>
 
       <div className="crs-goals-grid">
-        {goals.map((g) => (
-          <article className="crs-goal-card" key={g.key}>
+        {goals.map((g, i) => (
+          <article className="crs-goal-card" key={i}>
             <span className="crs-goal-icon" aria-hidden="true">
-              {g.icon}
+              {g.icon_url ? (
+                <img src={g.icon_url} alt="" width={24} height={24} />
+              ) : (
+                GOAL_ICONS[i % GOAL_ICONS.length]()
+              )}
             </span>
-            <h3 className="crs-goal-title" data-i18n={g.titleKey}>
-              {g.title}
-            </h3>
-            <p className="crs-goal-desc" data-i18n={g.descKey}>
-              {g.desc}
-            </p>
+            <h3 className="crs-goal-title">{localized(g.title, lang)}</h3>
+            <p className="crs-goal-desc">{localized(g.description, lang)}</p>
           </article>
         ))}
       </div>

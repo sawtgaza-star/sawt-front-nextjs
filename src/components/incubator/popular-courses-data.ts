@@ -1,137 +1,96 @@
-/* "دوراتنا الأكثر شهرة" — each course declares which blocks it renders rather
-   than every card looking alike:
-   - graphic-design: photo + meta chips + rating
-   - data-analysis:  same shape as graphic-design
-   - digital-marketing: photo + "قريبًا" flag + copy + waitlist CTA
-   Order is the mock's reading order, i.e. first card = rightmost in RTL.
+/* "دوراتنا الأكثر شهرة" — the card view model. Each item of GET /pages/incubator's
+   `courses` block is turned into the shape CourseCard draws; each card
+   declares which blocks it renders rather than every card looking alike:
+   - a running course: photo + meta chips + rating, and on hover the
+     description, trainer and "تفاصيل الكورس"
+   - a coming-soon course (`is_coming_soon`): photo + "قريبًا" flag + copy +
+     CTA, with the chips, rating and trainer revealed on hover
 
    `reveal` lists the blocks a card keeps hidden until it is hovered — at rest
    it looks exactly as above, on hover it fills out to the full detail set
    while the photo slides up to make room.
 
-   `featured` (the mock's outlined, photo-less middle card) is unused now that
-   every card carries a photo; the type and its CSS are kept for when it's
-   wanted again. */
+   `featured` (the mock's outlined, photo-less middle card) is unused; the type
+   and its CSS are kept for when it's wanted again. */
+
+import { localized } from "@/lib/api/pages";
+import type { IncubatorCourse } from "@/lib/api/incubator-page";
+import { isWaitlistCta, waitlistPath } from "@/lib/api/courses";
+import { t } from "@/lib/translations";
+import { PLACEHOLDER, courseHref } from "./incubator-page-view";
 
 export type CourseMeta = {
   /* which chip icon to draw: total duration / weekly hours / level */
   icon: "duration" | "hours" | "level";
   value: string;
-  valueKey: string;
 };
 
 export type PopularCourse = {
   key: string;
-  /* course detail page — the whole card is a link (overlay), /courses/[key] */
+  /* course detail page — the whole card is a link (overlay) */
   href: string;
   /* photo card vs the bordered, image-less featured card */
   featured?: boolean;
   image?: string;
   category?: string;
-  categoryKey?: string;
   /* renders the green "قريبًا" flag on the photo */
   soon?: boolean;
   title: string;
-  titleKey: string;
   meta?: CourseMeta[];
   /* filled stars out of five */
   rating?: number;
   desc?: string;
-  descKey?: string;
-  tutor?: { name: string; nameKey: string; avatar: string };
-  cta?: { label: string; labelKey: string; href: string };
+  tutor?: { name: string; avatar: string };
+  cta?: { label: string; href: string };
+  /* a coming-soon course's CTA posts the visitor to its waiting list instead
+     of linking anywhere — the join endpoint, relative to the API base */
+  waitlist?: { label: string; path: string };
   /* blocks that stay collapsed until the card is hovered */
   reveal?: CourseBlock[];
 };
 
 export type CourseBlock = "meta" | "rating" | "desc" | "tutor" | "cta";
 
-export const POPULAR_COURSES: PopularCourse[] = [
-  {
-    key: "graphic-design",
-    href: "/courses/graphic-design",
-    image: "/assets/images/Rectangle 596.png",
-    category: "التصميم",
-    categoryKey: "inc_course_cat_design",
-    title: "تصميم الجرافيك",
-    titleKey: "inc_course_graphic_title",
-    meta: [
-      { icon: "duration", value: "15 ساعة", valueKey: "inc_course_graphic_duration" },
-      { icon: "hours", value: "4 ساعات", valueKey: "inc_course_graphic_hours" },
-      { icon: "level", value: "منخفض", valueKey: "inc_course_level_low" },
-    ],
-    rating: 4,
-    desc: "استراتيجيات فعالة لكتابة المحتوى الجذاب وزيادة التفاعل",
-    descKey: "inc_course_graphic_desc",
-    tutor: {
-      name: "أحمد الرفاعي",
-      nameKey: "inc_course_data_tutor",
-      avatar: "/assets/images/محمود زعيتر 2.png",
-    },
-    cta: {
-      label: "تفاصيل الكورس",
-      labelKey: "inc_course_details_cta",
-      href: "/courses/graphic-design",
-    },
-    reveal: ["desc", "tutor", "cta"],
-  },
-  {
-    key: "data-analysis",
-    href: "/courses/data-analysis",
-    image: "/assets/images/Rectangle 596.png",
-    category: "البيانات",
-    categoryKey: "inc_course_cat_data",
-    title: "تحليل البيانات",
-    titleKey: "inc_course_data_title",
-    meta: [
-      { icon: "duration", value: "25 ساعة", valueKey: "inc_course_data_duration" },
-      { icon: "hours", value: "8 ساعات", valueKey: "inc_course_data_hours" },
-      { icon: "level", value: "مرتفع", valueKey: "inc_course_level_high" },
-    ],
-    rating: 4,
-    /* one sentence, like the other two cards: the mock's doubled copy wrapped
-       to twice the lines and pushed the open panel past the card's bottom */
-    desc: "استراتيجيات فعالة لكتابة المحتوى الجذاب وزيادة التفاعل",
-    descKey: "inc_course_data_desc",
-    tutor: {
-      name: "أحمد الرفاعي",
-      nameKey: "inc_course_data_tutor",
-      avatar: "/assets/images/محمود زعيتر 2.png",
-    },
-    cta: {
-      label: "تفاصيل الكورس",
-      labelKey: "inc_course_details_cta",
-      href: "/courses/data-analysis",
-    },
-    reveal: ["desc", "tutor", "cta"],
-  },
-  {
-    key: "digital-marketing",
-    href: "/courses/digital-marketing",
-    image: "/assets/images/Rectangle 596.png",
-    category: "التسويق",
-    categoryKey: "inc_course_cat_marketing",
-    soon: true,
-    title: "تسويق المحتوى الرقمي",
-    titleKey: "inc_course_marketing_title",
-    meta: [
-      { icon: "duration", value: "18 ساعة", valueKey: "inc_course_marketing_duration" },
-      { icon: "hours", value: "6 ساعات", valueKey: "inc_course_marketing_hours" },
-      { icon: "level", value: "مرتفع", valueKey: "inc_course_level_high" },
-    ],
-    rating: 4,
-    desc: "استراتيجيات فعالة لكتابة المحتوى الجذاب وزيادة التفاعل",
-    descKey: "inc_course_marketing_desc",
-    tutor: {
-      name: "أحمد الرفاعي",
-      nameKey: "inc_course_data_tutor",
-      avatar: "/assets/images/محمود زعيتر 2.png",
-    },
-    cta: {
-      label: "انضم لقائمة الانتظار",
-      labelKey: "inc_course_waitlist_cta",
-      href: "#",
-    },
-    reveal: ["meta", "rating", "tutor"],
-  },
-];
+export function toPopularCourse(
+  course: IncubatorCourse,
+  lang: string,
+  index: number,
+): PopularCourse {
+  const href = courseHref(course.slug);
+  const soon = Boolean(course.is_coming_soon);
+
+  const meta: CourseMeta[] = [
+    { icon: "duration" as const, value: (course.duration_hours || "").trim() },
+    { icon: "hours" as const, value: (course.sessions_hours || "").trim() },
+    { icon: "level" as const, value: localized(course.level, lang) },
+  ].filter((chip) => chip.value);
+
+  const tutorName = localized(course.trainer?.name, lang);
+  const ctaLabel = localized(course.cta?.label, lang);
+  const waitlist =
+    course.uuid && isWaitlistCta(course.cta, soon)
+      ? {
+          label: ctaLabel || t("inc_course_waitlist_cta"),
+          path: waitlistPath(course.uuid),
+        }
+      : undefined;
+  const rating = Number(course.rating);
+
+  return {
+    key: course.uuid || course.slug || String(course.id ?? index),
+    href,
+    image: course.image_url || PLACEHOLDER.card,
+    category: localized(course.category, lang) || undefined,
+    soon,
+    title: localized(course.title, lang),
+    meta: meta.length ? meta : undefined,
+    rating: Number.isFinite(rating) && rating > 0 ? Math.min(5, Math.round(rating)) : undefined,
+    desc: localized(course.description, lang) || undefined,
+    tutor: tutorName
+      ? { name: tutorName, avatar: course.trainer?.avatar_url || PLACEHOLDER.person }
+      : undefined,
+    cta: ctaLabel && !waitlist ? { label: ctaLabel, href } : undefined,
+    waitlist,
+    reveal: soon ? ["meta", "rating", "tutor"] : ["desc", "tutor", "cta"],
+  };
+}

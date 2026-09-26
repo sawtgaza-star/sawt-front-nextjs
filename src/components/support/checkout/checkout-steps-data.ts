@@ -3,6 +3,9 @@
    `muted` reproduces the mock's lighter glyph on "إثبات التبرع"; the other
    inactive steps use the darker one. */
 
+import { localized } from "@/lib/api/pages";
+import type { SupportWizardStep } from "@/lib/api/support-methods";
+
 export type CheckoutStepValue = "platform" | "proof" | "team" | "contact";
 
 export interface CheckoutStep {
@@ -67,3 +70,27 @@ export const CHECKOUT_SCREENS: CheckoutScreen[] = [
     done: ["platform", "proof", "team"],
   },
 ];
+
+/* The API's wizard steps, as labels per step of this wizard. The API calls the
+   first step `method`; the rail, glyphs and screens stay this site's, so a key
+   it doesn't know is ignored rather than added. */
+const STEP_BY_KEY: Record<string, CheckoutStepValue> = {
+  method: "platform",
+  platform: "platform",
+  proof: "proof",
+  team: "team",
+  contact: "contact",
+};
+
+export function resolveStepLabels(
+  steps: SupportWizardStep[] | undefined,
+  lang: string,
+): Partial<Record<CheckoutStepValue, string>> {
+  const labels: Partial<Record<CheckoutStepValue, string>> = {};
+  for (const step of steps || []) {
+    const value = STEP_BY_KEY[(step.key || "").trim().toLowerCase()];
+    const label = localized(step.label, lang);
+    if (value && label && !labels[value]) labels[value] = label;
+  }
+  return labels;
+}

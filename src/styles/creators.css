@@ -1448,6 +1448,22 @@ background: var(--White, #FFF);
 .cr-content-track::-webkit-scrollbar {
   display: none;
 }
+/* the creator has no reels — a panel the height of one card stands in for
+   the slider so the section keeps its place on the page */
+.cr-content-empty {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 533px;
+  margin: 34px 0 44px;
+  padding: 24px;
+  border: 1px dashed #cfd4c4;
+  border-radius: 22px;
+  background: #f7f8f4;
+  color: #8a8f80;
+  font-size: 18px;
+  text-align: center;
+}
 .cr-content-card {
   position: relative;
   flex: 0 0 auto;
@@ -2955,6 +2971,12 @@ display:none;
   .cr-content-slider::after,
   .cr-content-nav {
     display: none;
+  }
+  .cr-content-empty {
+    min-height: 260px;
+    margin: 0;
+    border-radius: 18px;
+    font-size: 15px;
   }
   .cr-content-track {
     display: grid;

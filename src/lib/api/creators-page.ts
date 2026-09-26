@@ -35,9 +35,10 @@
        block is typed here so the shape is on record, and nothing reads it yet.
        Only the POST it submits to is wired (see ./creators).
 
-   THE CARD'S IDENTIFIER IS `id`, not the uuid: the hover arrow opens
-   /creators/{id}, which is the range creators/[id] pre-renders for
-   `output: 'export'` — the same arrangement the home page's cards use.
+   THE CARD'S IDENTIFIER IS the uuid: the hover arrow opens /creators/{uuid}
+   (creatorSlug in ./creator-profile), which is the range creators/[id]
+   pre-renders for `output: 'export'` — the same arrangement the home page's
+   cards use.
    ========================================================= */
 
 import { apiFetch } from "./client";

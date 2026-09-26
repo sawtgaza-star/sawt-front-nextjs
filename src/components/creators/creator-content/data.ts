@@ -1,28 +1,27 @@
 // @ts-nocheck
 /* eslint-disable */
 
-/* Static data for the creator "المحتوى" section: category pills, the reel cards
-   (all sharing one demo video), the skip step, and the reel-viewer metadata. */
-
-export const CATEGORIES = [
-  { key: "creator_content_cat_all", label: "الكل" },
-  { key: "creator_content_cat_economy", label: "الاقتصاد (13)" },
-  { key: "creator_content_cat_business", label: "المال والأعمال (13)" },
-  { key: "creator_content_cat_war", label: "قصص الحرب (45)" },
-  { key: "creator_content_cat_news", label: "الاخبار (13)" },
-];
-
-export const VIDEO = "/assets/videos/WhatsApp Video 2026-03-23 at 11.59.11 AM.mp4";
-
-export const CARDS = Array.from({ length: 10 }, (_, i) => ({
-  id: i,
-  video: VIDEO,
-}));
+/* Shared bits of the reel viewer: the skip step and the info bar's default
+   metadata. The creator page's reels themselves come from the API (see
+   CreatorContent). */
 
 export const SKIP = 10; // seconds each rewind/forward jumps
 
-/* metadata shown in the reel viewer (static — no backend yet) */
-export const REEL_META = {
+/* What the reel viewer's info bar shows about who posted the reel. */
+export type ReelMeta = {
+  user: string;
+  profile: string;
+  avatar: string;
+  caption: string;
+  posted: string;
+  likes?: number;
+  comments?: number;
+};
+
+/* metadata shown in the reel viewer when the list opening it passes none
+   (محتوانا) — static, no backend yet. A creator's own reels pass the creator
+   instead (see ReelViewer's `meta`). */
+export const REEL_META: ReelMeta = {
   user: "رنا الصالح",
   /* Where the name in the info bar leads. There is no per-creator data yet —
      /creators/[id] renders the same mock profile for every id — so it points at

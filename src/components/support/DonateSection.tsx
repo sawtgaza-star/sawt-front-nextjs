@@ -1,78 +1,118 @@
 import { IconCircleCheck } from "@/components/ui/icons";
+import { localized } from "@/lib/api/pages";
+import type { SupportImpactContent, SupportPlansContent } from "@/lib/api/support";
 import DonateForm from "./DonateForm";
-import { PLEDGE_ITEMS } from "./donate-data";
+import SupportSectionHead from "./SupportSectionHead";
+import { PLEDGE_ITEMS, resolveDonate } from "./donate-data";
+import { currencySymbol } from "./support-text";
 
 /* "كيف تريد ان تدعم؟" — the donation box next to the "تبرعك يعني..."
-   checklist and the Sawt team quote. Static shell; only the form is client. */
-export default function DonateSection() {
+   checklist and the Sawt team quote. Copy from GET /pages/support's `plans`
+   and `impact` blocks; each piece falls back to the built-in copy (with its
+   data-i18n key) when the API leaves it empty. Only the form is interactive. */
+export default function DonateSection({
+  plans,
+  impact,
+  lang = "ar",
+}: {
+  plans?: SupportPlansContent;
+  impact?: SupportImpactContent;
+  lang?: string;
+}) {
+  const pledgeTitle = localized(impact?.title, lang);
+  const pledges = (impact?.items || [])
+    .map((item) => localized(item.text, lang))
+    .filter(Boolean);
+  const quote = localized(impact?.quote?.text, lang);
+  const author = localized(impact?.quote?.author, lang);
+  const place = localized(impact?.quote?.location, lang);
+
   return (
     <section className="sp-section sp-donate-section">
       <div className="container">
-        <div className="cr-section-head">
-          <h2 className="cr-section-title">
-            <span data-i18n="support_donate_title_pre">كيف تريد ان</span>{" "}
-            <span className="cr-highlight" data-i18n="support_donate_title_hl">
-              تدعم؟
-            </span>
-          </h2>
-          <p className="cr-section-sub" data-i18n="support_donate_sub">
-            قيمنا هي الأساس الذي نبني عليه صوت، وهي ما يقود طريقة عملنا
-            وتطويرنا المستمر
-          </p>
-        </div>
+        <SupportSectionHead
+          title={localized(plans?.title, lang)}
+          sub={localized(plans?.description, lang)}
+          fallback={{
+            pre: "كيف تريد ان",
+            preKey: "support_donate_title_pre",
+            hl: "تدعم؟",
+            hlKey: "support_donate_title_hl",
+            sub: "قيمنا هي الأساس الذي نبني عليه صوت، وهي ما يقود طريقة عملنا وتطويرنا المستمر",
+            subKey: "support_donate_sub",
+          }}
+        />
 
         <div className="sp-donate-row">
           <div className="sp-donate-col-form">
-            <DonateForm />
+            <DonateForm
+              donate={resolveDonate(plans, lang)}
+              symbol={currencySymbol(plans?.currency)}
+            />
           </div>
 
           <div className="sp-donate-col-side">
             <div className="sp-pledge">
-              <h3 className="sp-pledge-title" data-i18n="support_pledge_title">
-                تبرعك يعني...
-              </h3>
+              {pledgeTitle ? (
+                <h3 className="sp-pledge-title">{pledgeTitle}</h3>
+              ) : (
+                <h3 className="sp-pledge-title" data-i18n="support_pledge_title">
+                  تبرعك يعني...
+                </h3>
+              )}
               <ul className="sp-pledge-list">
-                {PLEDGE_ITEMS.map((item) => (
-                  <li key={item.key}>
-                    <i className="sp-pledge-check">
-                      <IconCircleCheck />
-                    </i>
-                    <span data-i18n={item.key}>{item.text}</span>
-                  </li>
-                ))}
+                {pledges.length
+                  ? pledges.map((text, i) => (
+                      <li key={i}>
+                        <i className="sp-pledge-check">
+                          <IconCircleCheck />
+                        </i>
+                        <span>{text}</span>
+                      </li>
+                    ))
+                  : PLEDGE_ITEMS.map((item) => (
+                      <li key={item.key}>
+                        <i className="sp-pledge-check">
+                          <IconCircleCheck />
+                        </i>
+                        <span data-i18n={item.key}>{item.text}</span>
+                      </li>
+                    ))}
               </ul>
             </div>
 
             <figure className="sp-quote">
-              <blockquote
-                className="sp-quote-text"
-                data-i18n="support_quote_text"
-              >
-                «كل تبرع يشجع فيه يعني قصة جديدة توصل للناس — قصة ما كانت
-                تُسمع»
-              </blockquote>
+              {quote ? (
+                <blockquote className="sp-quote-text">«{quote}»</blockquote>
+              ) : (
+                <blockquote
+                  className="sp-quote-text"
+                  data-i18n="support_quote_text"
+                >
+                  «كل تبرع يشجع فيه يعني قصة جديدة توصل للناس — قصة ما كانت
+                  تُسمع»
+                </blockquote>
+              )}
               <figcaption className="sp-quote-foot">
-
-                                <span className="sp-quote-logo">
+                <span className="sp-quote-logo">
                   <img src="/assets/images/swat.png" alt="" />
                 </span>
-
-                
                 <div>
-                  <div
-                    className="sp-quote-name"
-                    data-i18n="support_quote_name"
-                  >
-                    فريق صوت
-                  </div>
-                  <div
-                    className="sp-quote-place"
-                    data-i18n="support_quote_place"
-                  >
-                    غزة، فلسطين
-                  </div>
+                  {author ? (
+                    <div className="sp-quote-name">{author}</div>
+                  ) : (
+                    <div className="sp-quote-name" data-i18n="support_quote_name">
+                      فريق صوت
+                    </div>
+                  )}
+                  {place ? (
+                    <div className="sp-quote-place">{place}</div>
+                  ) : (
+                    <div className="sp-quote-place" data-i18n="support_quote_place">
+                      غزة، فلسطين
+                    </div>
+                  )}
                 </div>
-
               </figcaption>
             </figure>
           </div>

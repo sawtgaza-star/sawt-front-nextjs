@@ -3,10 +3,33 @@ import {
   IconPeoplePair,
   IconVideoPlay,
 } from "@/components/ui/icons";
+import { localized } from "@/lib/api/pages";
+import type { SupportTrustContent } from "@/lib/api/support";
+
+const FEATURE_ICONS = [IconPeoplePair, IconHandStar, IconVideoPlay];
+
+const BUILT_IN_FEATURES = [
+  { text: "سهولة الدفع", key: "support_banner_feature_2" },
+  { text: "وصول فوري للمستحقين", key: "support_banner_feature_1" },
+  { text: "تبرع آمن ومشفر", key: "support_banner_feature_3" },
+];
 
 /* "ادعم المنصة التي توصل أصواتهم" — beige banner with the olive-tree artwork
    and the two floating counters from the mock. */
-export default function SupportBanner() {
+export default function SupportBanner({
+  trust,
+  lang = "ar",
+}: {
+  trust?: SupportTrustContent;
+  lang?: string;
+}) {
+  const fromApi = (trust?.items || [])
+    .map((item) => ({ text: localized(item.label, lang), key: undefined }))
+    .filter((f) => f.text);
+  const features: { text: string; key?: string }[] = fromApi.length
+    ? fromApi
+    : BUILT_IN_FEATURES;
+
   return (
     <section className="sp-section sp-banner-section" style={{ paddingTop: 0 }}>
       <div className="container">
@@ -33,30 +56,21 @@ export default function SupportBanner() {
                 </span>
               </h2>
 
-              {/* mock order: سهولة الدفع / وصول فوري on the first row */}
+              {/* mock order: سهولة الدفع / وصول فوري on the first row. The
+                  labels come from the API's `trust` block when it sends them;
+                  the glyphs stay the design's, matched by position. */}
               <div className="sp-banner-features">
-                <div className="sp-banner-feature">
-                  <span className="sp-feature-icon">
-                    <IconPeoplePair />
-                  </span>
-                  <span data-i18n="support_banner_feature_2">سهولة الدفع</span>
-                </div>
-                <div className="sp-banner-feature">
-                  <span className="sp-feature-icon">
-                    <IconHandStar />
-                  </span>
-                  <span data-i18n="support_banner_feature_1">
-                    وصول فوري للمستحقين
-                  </span>
-                </div>
-                <div className="sp-banner-feature">
-                  <span className="sp-feature-icon">
-                    <IconVideoPlay />
-                  </span>
-                  <span data-i18n="support_banner_feature_3">
-                    تبرع آمن ومشفر
-                  </span>
-                </div>
+                {features.map((f, i) => {
+                  const Icon = FEATURE_ICONS[i % FEATURE_ICONS.length];
+                  return (
+                    <div className="sp-banner-feature" key={i}>
+                      <span className="sp-feature-icon">
+                        <Icon />
+                      </span>
+                      <span data-i18n={f.key}>{f.text}</span>
+                    </div>
+                  );
+                })}
               </div>
 
               {/* wrapper is display:contents on desktop; becomes the two-button

@@ -32,6 +32,27 @@ export const API_ORIGIN = (() => {
   }
 })();
 
+/** An endpoint path the API itself handed over ("/api/v1/pages/…/subscribe"),
+    made relative to API_BASE_URL — which already carries that `/api/v1`
+    prefix — so it can go to apiFetch. A path without the prefix is used as it
+    came; a missing or malformed one falls back to `fallback`. */
+export function apiPath(path: string | null | undefined, fallback: string): string {
+  const value = (path || "").trim();
+  if (!value.startsWith("/")) return fallback;
+
+  let prefix = "";
+  try {
+    prefix = new URL(API_BASE_URL).pathname.replace(/\/+$/, "");
+  } catch {
+    prefix = API_BASE_URL.replace(/\/+$/, "");
+  }
+
+  if (prefix && prefix !== "/" && value.startsWith(prefix + "/")) {
+    return value.slice(prefix.length);
+  }
+  return value;
+}
+
 export type FieldErrors = Record<string, string[]>;
 
 /** Status used when the request never reached the server (offline, DNS, CORS). */

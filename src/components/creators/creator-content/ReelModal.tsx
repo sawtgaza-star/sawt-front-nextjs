@@ -29,6 +29,7 @@ export default function ReelModal({
   onNavigate,
   onClose,
   scope = "reel",
+  meta = undefined,
 }) {
   const {
     videoRef,
@@ -256,6 +257,7 @@ export default function ReelModal({
           pct={pct}
           progressRef={progressRef}
           onProgressPointerDown={onProgressPointerDown}
+          meta={meta && { ...meta, ...(card.caption ? { caption: card.caption } : {}) }}
         />
 
         {/* the sheet the rail opens, over the info bar */}

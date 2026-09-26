@@ -1,13 +1,27 @@
 "use client";
 import { useState } from "react";
 import { IconChevronDownBold, IconHeartOutline } from "@/components/ui/icons";
-import { SUPPORT_FAQS } from "./support-faq-data";
+import { localized } from "@/lib/api/pages";
+import type { SupportFaqContent } from "@/lib/api/support";
+import { resolveSupportFaqs } from "./support-faq-data";
 
 /* "الأسئلة المتكررة" — accordion beside the student artwork. Mirrors the
    creators-page FAQ behaviour: one item open at a time, second one open by
-   default (as shown in the mock). */
-export default function SupportFaq() {
+   default (as shown in the mock). Questions, the side artwork and the
+   contact card from GET /pages/support's `faq` block. */
+export default function SupportFaq({
+  data,
+  lang = "ar",
+}: {
+  data?: SupportFaqContent;
+  lang?: string;
+}) {
   const [open, setOpen] = useState<number>(1);
+  const faqs = resolveSupportFaqs(data?.items, lang);
+  const title = localized(data?.title, lang);
+  const moreTitle = localized(data?.cta?.title, lang);
+  const moreBody = localized(data?.cta?.body, lang);
+  const moreLabel = localized(data?.cta?.label, lang);
 
   return (
     <section className="sp-section sp-faq-section" style={{ paddingTop: 0 }}>
@@ -20,24 +34,31 @@ export default function SupportFaq() {
       <div className="container">
         <div className="cr-section-head">
           <h2 className="cr-section-title">
-            <span className="cr-highlight" data-i18n="support_faq_title">
-              الأسئلة المتكررة
-            </span>
+            {title ? (
+              <span className="cr-highlight">{title}</span>
+            ) : (
+              <span className="cr-highlight" data-i18n="support_faq_title">
+                الأسئلة المتكررة
+              </span>
+            )}
           </h2>
         </div>
 
         <div className="sp-faq-row">
           <div className="sp-faq-visual">
-            <img src="/assets/images/Frame 1984080629.png" alt="" />
+            <img
+              src={data?.image_url || "/assets/images/Frame 1984080629.png"}
+              alt=""
+            />
           </div>
 
           <div className="sp-faq-col">
-            {SUPPORT_FAQS.map((f, i) => {
+            {faqs.map((f, i) => {
               const isOpen = open === i;
               return (
                 <div
                   className={"sp-faq-item" + (isOpen ? " sp-faq-open" : "")}
-                  key={f.qKey}
+                  key={i}
                 >
                   <button
                     type="button"
@@ -68,14 +89,26 @@ export default function SupportFaq() {
               <span className="sp-faq-more-icon" aria-hidden="true">
                 <IconHeartOutline />
               </span>
-              <h3 className="sp-faq-more-title" data-i18n="support_faq_more_title">
-                لديك سؤال آخر؟
-              </h3>
-              <p className="sp-faq-more-desc" data-i18n="support_faq_more_desc">
-                فريقنا جاهز للإجابة — سنردّ عليك خلال ساعات
-              </p>
+              {moreTitle ? (
+                <h3 className="sp-faq-more-title">{moreTitle}</h3>
+              ) : (
+                <h3 className="sp-faq-more-title" data-i18n="support_faq_more_title">
+                  لديك سؤال آخر؟
+                </h3>
+              )}
+              {moreBody ? (
+                <p className="sp-faq-more-desc">{moreBody}</p>
+              ) : (
+                <p className="sp-faq-more-desc" data-i18n="support_faq_more_desc">
+                  فريقنا جاهز للإجابة — سنردّ عليك خلال ساعات
+                </p>
+              )}
               <a href="/#join" className="sp-btn-green">
-                <span data-i18n="support_contact_us">تواصل معنا</span>
+                {moreLabel ? (
+                  <span>{moreLabel}</span>
+                ) : (
+                  <span data-i18n="support_contact_us">تواصل معنا</span>
+                )}
               </a>
             </div>
           </div>

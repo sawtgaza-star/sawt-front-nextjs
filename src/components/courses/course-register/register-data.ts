@@ -1,7 +1,8 @@
 /* The enrollment modal's three steps and the options its two dropdowns offer.
 
-   The course page has no API behind it (see course-data.ts — it is all local),
-   so these lists are local too. Every label carries the `data-i18n` key the
+   GET /pages/courses/{slug} doesn't send these, so they are local; the
+   subscribe request carries the chosen option's Arabic label (see
+   ./useCourseSubscribe). Every label carries the `data-i18n` key the
    DOM translator swaps, exactly as the rest of the site does: the Arabic text
    here is the fallback that ships in the markup. */
 

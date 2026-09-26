@@ -109,3 +109,15 @@ function trimZero(value: number): string {
   const fixed = value.toFixed(1);
   return fixed.endsWith(".0") ? fixed.slice(0, -2) : fixed;
 }
+
+/* An Instagram caption as a one-line title: the first line that has any
+   text, with the tabs and padding Instagram keeps around it trimmed
+   ("\tشطرنج ! \n\nإنتاج…#منصة_صوت" → "شطرنج !"). */
+export function captionTitle(caption: string | null | undefined): string {
+  if (!caption) return "";
+  for (const line of String(caption).split(/\r?\n/)) {
+    const trimmed = line.replace(/\s+/g, " ").trim();
+    if (trimmed) return trimmed;
+  }
+  return "";
+}
