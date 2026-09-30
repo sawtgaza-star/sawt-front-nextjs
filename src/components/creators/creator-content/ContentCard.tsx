@@ -50,7 +50,7 @@ export default function ContentCard({ card, index, onOpen }) {
         poster={card.poster}
         loop
         playsInline
-        preload="auto"
+        preload="metadata"
         onLoadedMetadata={handleLoadedMetadata}
         onDurationChange={(e) => {
           if (isFinite(e.currentTarget.duration)) setDuration(e.currentTarget.duration);
