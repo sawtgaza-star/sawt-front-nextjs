@@ -6,6 +6,7 @@ import { useLang } from "@/lib/use-lang";
 import CheckoutNav from "./CheckoutNav";
 import CheckoutSteps from "./CheckoutSteps";
 import ContactStep from "./ContactStep";
+import DonationAmountFields from "./DonationAmountFields";
 import DonationProof from "./DonationProof";
 import PaymentPlatforms from "./PaymentPlatforms";
 import CheckoutSkeleton from "./CheckoutSkeleton";
@@ -73,7 +74,15 @@ export default function CheckoutWizard() {
           onChange={flow.setPlatform}
           methods={flow.methods}
           lang={lang}
-        />
+        >
+          {flow.electronic && (
+            <DonationAmountFields
+              proof={flow.proof}
+              onChange={flow.changeProof}
+              errors={flow.proofErrors}
+            />
+          )}
+        </PaymentPlatforms>
       )}
       {screen.value === "transfer" && (
         <TransferDetails method={flow.method} lang={lang} />
@@ -84,6 +93,7 @@ export default function CheckoutWizard() {
           onChange={flow.changeProof}
           onFileError={flow.rejectFile}
           errors={flow.proofErrors}
+          withAmount={!flow.electronic}
         />
       )}
       {screen.value === "contact" && (

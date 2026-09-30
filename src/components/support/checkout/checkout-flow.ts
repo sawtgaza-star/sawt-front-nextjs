@@ -26,11 +26,18 @@ export function parseAmount(value: string | null | undefined): number {
   return Number.isFinite(amount) && amount > 0 ? amount : NaN;
 }
 
-/* The receipt is required for every platform. */
-export function validateProof(proof: ProofValues): ProofErrors {
+/* "مبلغ التبرع" + the currency — both required, on whichever screen shows them. */
+export function validateAmount(proof: ProofValues): ProofErrors {
   const errors: ProofErrors = {};
   if (Number.isNaN(parseAmount(proof.amount))) errors.amount = "required";
   if (!proof.currency) errors.currency = "required";
+  return errors;
+}
+
+/* The receipt is required for every platform. `withAmount: false` when the
+   amount was already taken on screen 1 (the electronic flow). */
+export function validateProof(proof: ProofValues, withAmount = true): ProofErrors {
+  const errors: ProofErrors = withAmount ? validateAmount(proof) : {};
   if (!proof.file) errors.file = "required";
   return errors;
 }

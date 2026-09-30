@@ -2529,6 +2529,12 @@ font-size: 16px;
   gap: 20px 24px;
   margin-bottom: 24px;
 }
+/* the electronic flow draws the same two fields on screen 1, between the
+   platform row and the notes panel (which brings its own top margin) */
+.sp-pay-row + .sp-proof-fields {
+  margin-top: 32px;
+  margin-bottom: 0;
+}
 .sp-proof-field {
   display: flex;
   flex-direction: column;

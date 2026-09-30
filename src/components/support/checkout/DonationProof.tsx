@@ -1,18 +1,22 @@
 "use client";
 import { useState } from "react";
-import { IconChevronDownBold, IconCloudUpload } from "@/components/ui/icons";
+import { IconCloudUpload } from "@/components/ui/icons";
 import { checkAttachment } from "@/lib/attachment";
-import { CURRENCIES, PROOF_ACCEPT } from "./currencies-data";
+import DonationAmountFields from "./DonationAmountFields";
+import { PROOF_ACCEPT } from "./currencies-data";
 import type { ProofErrors, ProofValues } from "./checkout-flow";
 
 /* "إثبات تبرعك" — amount + currency + the receipt drop zone. The values and
    errors live in the wizard (they are what POST /support/requests/{uuid}/proof
-   sends), so they survive going back; this leaf only owns the drag state. */
+   sends), so they survive going back; this leaf only owns the drag state.
+   `withAmount: false` — the electronic flow asks for the amount + currency on
+   screen 1 instead, so this screen is just the receipt. */
 export default function DonationProof({
   proof,
   onChange,
   onFileError,
   errors,
+  withAmount = true,
 }: {
   proof: ProofValues;
   /** `clear` names the error the edit makes stale */
@@ -20,8 +24,9 @@ export default function DonationProof({
   /** a picked file broke the rules — the wizard drops it and shows why */
   onFileError: (reason: "type" | "size") => void;
   errors: ProofErrors;
+  withAmount?: boolean;
 }) {
-  const { amount, currency, file } = proof;
+  const { file } = proof;
   const error = errors.file;
   const [dragging, setDragging] = useState(false);
 
@@ -44,66 +49,9 @@ export default function DonationProof({
         إثبات تبرعك
       </h2>
 
-      <div className="sp-proof-fields">
-        <div className="sp-proof-field">
-          <label className="sp-proof-label" htmlFor="proof-amount">
-            <span data-i18n="checkout_proof_amount">مبلغ التبرع</span>
-          </label>
-          <input
-            id="proof-amount"
-            type="number"
-            min={1}
-            className={"sp-proof-input" + (errors.amount ? " is-invalid" : "")}
-            placeholder="0000"
-            aria-invalid={errors.amount ? true : undefined}
-            value={amount}
-            onChange={(e) => onChange({ amount: e.target.value }, "amount")}
-          />
-          {errors.amount && (
-            <p className="sp-contact-error" data-i18n="checkout_proof_amount_required">
-              الرجاء إدخال مبلغ التبرع.
-            </p>
-          )}
-        </div>
-
-        <div className="sp-proof-field">
-          <label className="sp-proof-label" htmlFor="proof-currency">
-            <span data-i18n="checkout_proof_currency">
-              نوع العملة المراد التبرع بيها
-            </span>
-          </label>
-          <div className="sp-proof-select-wrap">
-            <select
-              id="proof-currency"
-              className={
-                "sp-proof-select" +
-                (currency ? "" : " is-empty") +
-                (errors.currency ? " is-invalid" : "")
-              }
-              aria-invalid={errors.currency ? true : undefined}
-              value={currency}
-              onChange={(e) => onChange({ currency: e.target.value }, "currency")}
-            >
-              <option value="" data-i18n="checkout_proof_currency_placeholder">
-                اختر عملة التبرع
-              </option>
-              {CURRENCIES.map((c) => (
-                <option key={c.value} value={c.value} data-i18n={c.labelKey}>
-                  {c.label}
-                </option>
-              ))}
-            </select>
-            <span className="sp-proof-select-arrow" aria-hidden="true">
-              <IconChevronDownBold />
-            </span>
-          </div>
-          {errors.currency && (
-            <p className="sp-contact-error" data-i18n="checkout_proof_currency_required">
-              الرجاء اختيار عملة التبرع.
-            </p>
-          )}
-        </div>
-      </div>
+      {withAmount && (
+        <DonationAmountFields proof={proof} onChange={onChange} errors={errors} />
+      )}
 
       {/* a <label> wrapper makes the whole panel open the picker without an
           onClick handler; the input stays focusable for keyboard users */}

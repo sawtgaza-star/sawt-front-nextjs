@@ -16,6 +16,7 @@ import {
   EMPTY_PROOF,
   contactPayload,
   parseAmount,
+  validateAmount,
   validateProof,
   type ProofErrors,
   type ProofValues,
@@ -29,14 +30,21 @@ import {
   type ContactField,
 } from "./contact-data";
 import { CURRENCIES } from "./currencies-data";
+import { startPaypalCheckout, usePaypalReturn } from "./paypal-return";
 
 const FALLBACK_ERROR = "حدث خطأ غير متوقع. حاول مرة أخرى.";
+const PAYPAL_CANCELLED = "تم إلغاء الدفع عبر PayPal، يمكنك المحاولة مرة أخرى.";
+const PROOF_SCREEN = CHECKOUT_SCREENS.findIndex((s) => s.value === "proof");
 
 /* Everything the donation wizard keeps between screens, and the API calls
    behind its forward button:
 
      screen 1  platform  POST /support/requests (when /support handed over an
-                         amount — else it is opened on screen 3)
+                         amount — else it is opened on screen 3). The
+                         electronic category asks for the amount + currency
+                         here instead of on screen 3; a PayPal platform
+                         then leaves for PayPal (POST /support/{method}/
+                         paypal/order) and comes back straight to screen 3.
      screen 2  transfer  GET  /support/methods/{uuid}
      screen 3  proof     POST /support/requests/{uuid}/proof
      screen 4  contact   POST /support/requests/{uuid}/contact → /support
@@ -67,6 +75,10 @@ export function useCheckoutFlow() {
   const listed = methods.find((m) => m.uuid === platform) ?? methods[0] ?? null;
   const method = detail?.uuid === listed?.uuid ? detail : listed;
   const screen = CHECKOUT_SCREENS[index];
+  const electronic =
+    (page?.category?.key || method?.category || "").trim().toLowerCase() === "electronic";
+  const paypal =
+    electronic && !!method && (!!method.is_paypal || method.provider === "paypal");
 
   // the amount picked on /support (carried through /support/methods)
   useEffect(() => {
@@ -78,6 +90,17 @@ export function useCheckoutFlow() {
       setProof((p) => (p.amount ? p : { ...p, amount: String(amount) }));
     }
   }, []);
+
+  // back from PayPal: restore screen 1's picks and, if paid, go to the proof
+  usePaypalReturn((outcome, pending) => {
+    if (pending) {
+      setPlatform(pending.method);
+      setProof((p) => ({ ...p, amount: pending.amount, currency: pending.currency }));
+      if (pending.request) request.current = { uuid: pending.request, method: pending.method };
+    }
+    if (outcome === "success") setIndex(PROOF_SCREEN);
+    else setError(PAYPAL_CANCELLED);
+  });
 
   // the platform's full details for "بيانات التحويل", and its currency
   useEffect(() => {
@@ -132,10 +155,16 @@ export function useCheckoutFlow() {
     if (busy) return;
     setError("");
 
+    if (screen.value === "platform" && electronic) {
+      const errors = validateAmount(proof);
+      setProofErrors(errors);
+      if (Object.keys(errors).length) return;
+    }
+
     if (screen.value === "platform" && method) {
       // opening the draft early is a nicety — screen 3 opens it anyway, so a
       // failure here never blocks the donor
-      const amount = handedAmount.current;
+      const amount = electronic ? parseAmount(proof.amount) : handedAmount.current;
       if (!Number.isNaN(amount)) {
         await openRequest(amount, proof.currency).catch((caught) =>
           console.warn("[support/checkout] draft left for screen 3:", caught),
@@ -143,8 +172,21 @@ export function useCheckoutFlow() {
       }
     }
 
+    if (screen.value === "platform" && paypal) {
+      // off to PayPal — a full navigation; the donor comes back on screen 3
+      let approval = "";
+      const draft = request.current?.method === method!.uuid ? request.current.uuid : undefined;
+      const ok = await run(async () => {
+        approval = await startPaypalCheckout(method!.uuid, proof, draft);
+      });
+      if (!ok) return;
+      setBusy(true); // keep the button locked while the browser leaves
+      window.location.href = approval;
+      return;
+    }
+
     if (screen.value === "proof") {
-      const errors = validateProof(proof);
+      const errors = validateProof(proof, !electronic);
       setProofErrors(errors);
       if (Object.keys(errors).length) return;
       if (method) {
@@ -192,6 +234,7 @@ export function useCheckoutFlow() {
     page,
     methods,
     method,
+    electronic,
     loading,
     index,
     screen,
