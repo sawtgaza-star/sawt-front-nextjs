@@ -55,12 +55,12 @@ export default function ReelViewer({
           mobile breakpoint, where the viewer is a centred card with arrows. */}
       {prev && (
         <div className="ct-reel-peek ct-reel-peek-prev" aria-hidden="true">
-          <video src={prev.video} muted playsInline preload="auto" tabIndex={-1} />
+          <video src={prev.video} muted playsInline preload="metadata" tabIndex={-1} />
         </div>
       )}
       {next && (
         <div className="ct-reel-peek ct-reel-peek-next" aria-hidden="true">
-          <video src={next.video} muted playsInline preload="auto" tabIndex={-1} />
+          <video src={next.video} muted playsInline preload="metadata" tabIndex={-1} />
         </div>
       )}
 

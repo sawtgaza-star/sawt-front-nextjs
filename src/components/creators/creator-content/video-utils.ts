@@ -18,7 +18,7 @@ export function resolveDuration(url) {
   const p = new Promise((resolve) => {
     if (typeof document === "undefined") return resolve(0);
     const v = document.createElement("video");
-    v.preload = "auto";
+    v.preload = "metadata"; // the duration only — not the whole file
     v.muted = true;
     let settled = false;
     const finish = (d) => {
