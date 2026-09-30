@@ -24,11 +24,14 @@ export default function PaymentPlatforms({
   onChange,
   methods = [],
   lang = "ar",
+  children,
 }: {
   value: string;
   onChange: (value: string) => void;
   methods?: SupportMethod[];
   lang?: string;
+  /** extra fields under the platform row (the electronic flow's amount) */
+  children?: React.ReactNode;
 }) {
   const options: Option[] = methods.map((m) => ({
     value: m.uuid,
@@ -87,6 +90,8 @@ export default function PaymentPlatforms({
           })}
         </div>
       )}
+
+      {children}
 
       {selected && <PaymentNotes platform={selected.label} />}
     </div>
