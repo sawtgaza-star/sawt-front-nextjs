@@ -9,6 +9,14 @@ import type { Reel } from "./content-data";
 export default function ContentGrid({ reels }: { reels: Reel[] }) {
   const [openIndex, setOpenIndex] = useState<number | null>(null);
 
+  if (!reels.length) {
+    return (
+      <p className="ct-grid-empty" data-i18n="content_grid_empty">
+        لا يوجد محتوى في هذا التصنيف حاليًا.
+      </p>
+    );
+  }
+
   return (
     <>
       <div className="ct-grid">

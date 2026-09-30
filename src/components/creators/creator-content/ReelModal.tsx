@@ -3,6 +3,8 @@
 /* eslint-disable */
 import { useEffect, useState } from "react";
 import { SKIP } from "./data";
+import { DEFAULT_AVATAR, timeAgo } from "./reel-data";
+import { useLang } from "@/lib/use-lang";
 import { useReelVideo } from "./useReelVideo";
 import ReelActions from "./ReelActions";
 import ReelComments from "./ReelComments";
@@ -21,8 +23,12 @@ import {
 const IDLE_MS = 2000;
 
 /* Full-screen reel viewer opened when a card's play button is pressed.
-   `scope` namespaces the reel's social state (likes / saves / comments) —
-   every list numbers its reels from 0, so the store keys on `scope:id`. */
+   Everything it shows about the reel — who posted it, caption, time, likes,
+   comments — is the card's `details` (the API's reel, see reel-data.ts); a
+   creator's profile passes `meta` to name the creator instead of the account.
+   `scope` namespaces the visitor's own like / save / comments — ids can repeat
+   across lists, so the store keys on `scope:id`.
+   While the video is fetching or buffering a spinner covers the centre. */
 export default function ReelModal({
   cards,
   index,
@@ -44,7 +50,10 @@ export default function ReelModal({
     handleTimeUpdate,
     handleLoadedMetadata,
   } = useReelVideo();
+  const { lang } = useLang();
   const [playing, setPlaying] = useState(true);
+  // the video has no frame to play yet (first load, or stalled mid-way)
+  const [buffering, setBuffering] = useState(true);
   const [muted, setMuted] = useState(false);
   const [idle, setIdle] = useState(false);
   // "comments" | "share" | null — the sheet drawn over the bottom of the reel
@@ -83,6 +92,17 @@ export default function ReelModal({
 
   const card = cards[index];
   const reelKey = `${scope}:${card.id ?? index}`;
+  const details = card.details;
+  const username = details?.username || "";
+  const info = {
+    user: meta?.user || username,
+    avatar: meta?.avatar || DEFAULT_AVATAR,
+    profile:
+      meta?.profile ||
+      (username ? `https://www.instagram.com/${encodeURIComponent(username)}/` : ""),
+    caption: details?.caption || card.caption || "",
+    posted: timeAgo(details?.postedAt || "", lang),
+  };
   const hasPrev = index > 0;
   const hasNext = index < cards.length - 1;
 
@@ -112,6 +132,7 @@ export default function ReelModal({
   useEffect(() => {
     setCurrent(0);
     setDuration(0);
+    setBuffering(true);
     const v = videoRef.current;
     if (v) {
       v.load();
@@ -196,7 +217,17 @@ export default function ReelModal({
           }}
           onPlay={() => setPlaying(true)}
           onPause={() => setPlaying(false)}
+          onWaiting={() => setBuffering(true)}
+          onCanPlay={() => setBuffering(false)}
+          onPlaying={() => setBuffering(false)}
+          onError={() => setBuffering(false)}
         />
+
+        {buffering && (
+          <div className="cr-reel-loading" role="status" aria-label="loading">
+            <span className="cr-reel-spinner" aria-hidden="true" />
+          </div>
+        )}
 
         <button
           type="button"
@@ -216,7 +247,7 @@ export default function ReelModal({
         </button>
 
         {/* centered rewind · play/pause · forward */}
-        <div className="cr-reel-center">
+        <div className={"cr-reel-center" + (buffering ? " is-hidden" : "")}>
           <button
             type="button"
             className="cr-reel-ctrl"
@@ -248,7 +279,12 @@ export default function ReelModal({
         </div>
 
         {/* action rail — like / comments / save / share */}
-        <ReelActions reelKey={reelKey} panel={panel} onPanel={setPanel} />
+        <ReelActions
+          reelKey={reelKey}
+          details={details}
+          panel={panel}
+          onPanel={setPanel}
+        />
 
         {/* bottom info + scrub bar */}
         <ReelInfo
@@ -257,12 +293,16 @@ export default function ReelModal({
           pct={pct}
           progressRef={progressRef}
           onProgressPointerDown={onProgressPointerDown}
-          meta={meta && { ...meta, ...(card.caption ? { caption: card.caption } : {}) }}
+          meta={info}
         />
 
         {/* the sheet the rail opens, over the info bar */}
         {panel === "comments" && (
-          <ReelComments reelKey={reelKey} onClose={() => setPanel(null)} />
+          <ReelComments
+            reelKey={reelKey}
+            details={details}
+            onClose={() => setPanel(null)}
+          />
         )}
         {panel === "share" && (
           <ReelShare reelId={card.id ?? index} onClose={() => setPanel(null)} />

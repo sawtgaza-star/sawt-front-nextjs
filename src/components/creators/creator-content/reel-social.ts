@@ -1,89 +1,36 @@
 "use client";
 import { useSyncExternalStore } from "react";
-import { REEL_META } from "./data";
+import { DEFAULT_AVATAR, type ReelComment, type ReelDetails } from "./reel-data";
 
 /* Per-reel social state (like · save · comments) for the full-screen viewer.
 
-   There is no backend yet, so this is an in-memory store that lives for the
-   life of the page: the same reel keeps its likes and comments when the viewer
-   is closed and re-opened, and a reel that appears in two rows (the grid and
-   "الأكثر مشاهدة") shares one state. Reel ids restart at 0 in every list, so
-   callers pass a `scope` and the store keys on `scope:id`. */
+   The counts and the thread are the API's (`ReelDetails`, from the reel
+   itself). The API has no endpoint to like, save or comment, so what the
+   visitor does is kept here, in memory, on top of those numbers: the same reel
+   keeps it when the viewer is closed and re-opened, and a reel that appears in
+   two rows (the grid and "الأكثر مشاهدة") shares it. Reel ids can repeat
+   across lists, so callers pass a `scope` and the store keys on `scope:id`. */
 
-export type ReelComment = {
-  id: number;
-  /* translation keys for the seeded demo comments; a comment the visitor just
-     wrote has `raw: true` and carries its own text instead (see addComment) */
-  userKey: string;
-  textKey: string;
-  timeKey: string;
-  raw: boolean;
-  avatar: string;
-  likes: number;
-  liked: boolean;
-};
+export type ReelCommentView = ReelComment & { liked: boolean; mine: boolean };
 
-export type ReelSocial = {
+type Local = {
   liked: boolean;
-  likes: number;
   saved: boolean;
-  comments: ReelComment[];
+  added: ReelComment[];
+  likedComments: Record<string, boolean>;
 };
 
-const YOU_AVATAR = "/assets/images/person.png";
+const EMPTY: Local = { liked: false, saved: false, added: [], likedComments: {} };
 
-const AVATARS = [
-  "/assets/images/محمود زعيتر 2.png",
-  "/assets/images/يوسف الدوس.png",
-  "/assets/images/مايك عوض 6.png",
-  "/assets/images/Image (أحمد المنصور).png",
-];
-
-/* the demo comment pool — entry i is translated by the reel_cm{i+1}_* keys in
-   lib/translations.ts. Every reel gets all twelve (so the rail's count matches
-   the design's 12), rotated by the reel key so no two reels read the same. */
-const POOL_SIZE = 12;
-const POOL_LIKES = [4, 7, 2, 11, 1, 6, 15, 3, 9, 5, 8, 2];
-
-function hash(key: string) {
-  let h = 0;
-  for (let i = 0; i < key.length; i += 1) h = (h * 31 + key.charCodeAt(i)) >>> 0;
-  return h;
-}
-
-function seed(key: string): ReelSocial {
-  const h = hash(key);
-  const comments = Array.from({ length: POOL_SIZE }, (_, i) => {
-    const p = (h + i) % POOL_SIZE;
-    return {
-      id: p + 1,
-      userKey: `reel_cm${p + 1}_user`,
-      textKey: `reel_cm${p + 1}_text`,
-      timeKey: `reel_cm${p + 1}_time`,
-      raw: false,
-      avatar: AVATARS[p % AVATARS.length],
-      likes: POOL_LIKES[p],
-      liked: false,
-    };
-  });
-  // the design ships the reel already liked, with REEL_META's counts
-  return { liked: true, likes: REEL_META.likes, saved: false, comments };
-}
-
-const store = new Map<string, ReelSocial>();
+const store = new Map<string, Local>();
 const listeners = new Set<() => void>();
-let nextCommentId = 1000; // ids for comments the visitor adds
+let nextCommentId = 0; // ids for comments the visitor adds
 
-function read(key: string): ReelSocial {
-  let state = store.get(key);
-  if (!state) {
-    state = seed(key);
-    store.set(key, state);
-  }
-  return state;
+function read(key: string): Local {
+  return store.get(key) ?? EMPTY;
 }
 
-function write(key: string, next: ReelSocial) {
+function write(key: string, next: Local) {
   store.set(key, next);
   listeners.forEach((notify) => notify());
 }
@@ -95,21 +42,36 @@ function subscribe(notify: () => void) {
   };
 }
 
-export function useReelSocial(key: string) {
+const NO_DETAILS: Pick<ReelDetails, "likes" | "commentsCount" | "comments"> = {
+  likes: 0,
+  commentsCount: 0,
+  comments: [],
+};
+
+export function useReelSocial(
+  key: string,
+  details: Pick<ReelDetails, "likes" | "commentsCount" | "comments"> = NO_DETAILS,
+) {
   const snapshot = () => read(key);
-  const state = useSyncExternalStore(subscribe, snapshot, snapshot);
+  const local = useSyncExternalStore(subscribe, snapshot, snapshot);
+
+  const mineIds = new Set(local.added.map((c) => c.id));
+  const comments: ReelCommentView[] = [...details.comments, ...local.added].map((c) => {
+    const liked = !!local.likedComments[c.id];
+    return { ...c, liked, mine: mineIds.has(c.id), likes: c.likes + (liked ? 1 : 0) };
+  });
 
   return {
-    ...state,
+    liked: local.liked,
+    likes: details.likes + (local.liked ? 1 : 0),
+    saved: local.saved,
+    comments,
+    commentsCount: details.commentsCount + local.added.length,
     toggleLike() {
-      write(key, {
-        ...state,
-        liked: !state.liked,
-        likes: state.likes + (state.liked ? -1 : 1),
-      });
+      write(key, { ...local, liked: !local.liked });
     },
     toggleSave() {
-      write(key, { ...state, saved: !state.saved });
+      write(key, { ...local, saved: !local.saved });
     },
     /* appended at the end of the thread, the way a chat reads — the panel
        scrolls down to it (see ReelComments) */
@@ -118,25 +80,19 @@ export function useReelSocial(key: string) {
       if (!body) return;
       nextCommentId += 1;
       const comment: ReelComment = {
-        id: nextCommentId,
-        userKey: "reel_comment_you",
-        textKey: body,
-        timeKey: "reel_time_now",
-        raw: true,
-        avatar: YOU_AVATAR,
+        id: `mine-${nextCommentId}`,
+        user: "",
+        text: body,
+        time: new Date().toISOString(),
+        avatar: DEFAULT_AVATAR,
         likes: 0,
-        liked: false,
       };
-      write(key, { ...state, comments: [...state.comments, comment] });
+      write(key, { ...local, added: [...local.added, comment] });
     },
-    toggleCommentLike(id: number) {
+    toggleCommentLike(id: string) {
       write(key, {
-        ...state,
-        comments: state.comments.map((c) =>
-          c.id === id
-            ? { ...c, liked: !c.liked, likes: c.likes + (c.liked ? -1 : 1) }
-            : c,
-        ),
+        ...local,
+        likedComments: { ...local.likedComments, [id]: !local.likedComments[id] },
       });
     },
   };

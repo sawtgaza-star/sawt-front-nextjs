@@ -5,12 +5,25 @@ import {
   IconFlash,
   IconInfoCircle,
 } from "@/components/ui/icons";
+import type { SupportMethod } from "@/lib/api/support-methods";
 import { TRANSFER_FIELDS } from "./transfer-details-data";
+import { methodRows, methodSteps } from "./method-details";
 
-/* "بيانات التحويل" — the bank rows the donor transfers to, each with a copy
+/* "بيانات التحويل" — the rows the donor transfers to, each with a copy
    button, then the confirmation note and the orange reminder panel.
-   Client leaf: the copy buttons need the clipboard + a short "copied" state. */
-export default function TransferDetails() {
+   Client leaf: the copy buttons need the clipboard + a short "copied" state.
+   With a platform from the API (GET /support/methods/{uuid}) the rows are its
+   account + `fields`, followed by its QR code and instructions; without one,
+   the built-in bank rows stand in. */
+export default function TransferDetails({
+  method = null,
+  lang = "ar",
+}: {
+  method?: SupportMethod | null;
+  lang?: string;
+}) {
+  const rows = method ? methodRows(method, lang) : TRANSFER_FIELDS;
+  const steps = method ? methodSteps(method, lang) : [];
   const [copied, setCopied] = useState<string | null>(null);
   const timer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
@@ -36,13 +49,17 @@ export default function TransferDetails() {
       </h2>
 
       <dl className="sp-transfer-list">
-        {TRANSFER_FIELDS.map((field) => (
-          <div className="sp-transfer-row" key={field.labelKey}>
-            <dt className="sp-transfer-label" data-i18n={field.labelKey}>
+        {rows.map((field, i) => (
+          <div className="sp-transfer-row" key={field.labelKey || i}>
+            <dt
+              className="sp-transfer-label"
+              data-i18n={field.labelKey || undefined}
+            >
               {field.label}
             </dt>
             <dd className="sp-transfer-field">
               <span className="sp-transfer-value">{field.value}</span>
+              {field.copyable !== false && (
               <button
                 type="button"
                 className={
@@ -59,10 +76,36 @@ export default function TransferDetails() {
                   نسخ
                 </span>
               </button>
+              )}
             </dd>
           </div>
         ))}
       </dl>
+
+      {method && !rows.length && !steps.length && (
+        <p className="sp-transfer-empty" data-i18n="checkout_transfer_empty">
+          لم تتم إضافة بيانات التحويل لهذه الوسيلة بعد، سيتواصل معك الفريق
+          لتزويدك بها.
+        </p>
+      )}
+
+      {method?.qr_image_url && (
+        <img
+          src={method.qr_image_url}
+          alt="QR"
+          className="sp-transfer-qr"
+          width={180}
+          height={180}
+        />
+      )}
+
+      {steps.length > 0 && (
+        <ol className="sp-transfer-steps">
+          {steps.map((line, i) => (
+            <li key={i}>{line}</li>
+          ))}
+        </ol>
+      )}
 
       <p className="sp-transfer-note">
         <span className="sp-transfer-note-icon" aria-hidden="true">

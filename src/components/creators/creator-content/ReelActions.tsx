@@ -1,23 +1,27 @@
 "use client";
 import { useLang } from "@/lib/use-lang";
 import { useReelSocial } from "./reel-social";
+import type { ReelDetails } from "./reel-data";
 import { IconHeart, IconComment, IconBookmark, IconShare } from "./reel-icons";
 
 export type ReelPanel = "comments" | "share" | null;
 
 type Props = {
   reelKey: string;
+  /** the reel's own counts from the API */
+  details?: ReelDetails;
   panel: ReelPanel;
   onPanel: (panel: ReelPanel) => void;
 };
 
-/* The vertical rail on the reel: like · comments · save · share. Like and save
-   flip the reel's state in the shared store (so the counts survive closing the
-   viewer); the other two toggle the panel the viewer renders over the video. */
-export default function ReelActions({ reelKey, panel, onPanel }: Props) {
+/* The vertical rail on the reel: like · comments · save · share. The counts
+   are the reel's own (API); like and save flip the visitor's state in the
+   shared store on top of them (so it survives closing the viewer); the other
+   two toggle the panel the viewer renders over the video. */
+export default function ReelActions({ reelKey, details, panel, onPanel }: Props) {
   const { tr } = useLang();
-  const { liked, likes, saved, comments, toggleLike, toggleSave } =
-    useReelSocial(reelKey);
+  const { liked, likes, saved, commentsCount, toggleLike, toggleSave } =
+    useReelSocial(reelKey, details);
 
   const toggle = (which: Exclude<ReelPanel, null>) =>
     onPanel(panel === which ? null : which);
@@ -44,7 +48,7 @@ export default function ReelActions({ reelKey, panel, onPanel }: Props) {
         title={tr("reel_action_comment")}
       >
         <IconComment />
-        <span>{comments.length}</span>
+        <span>{commentsCount}</span>
       </button>
       <button
         type="button"

@@ -4,8 +4,11 @@
 
 export interface TransferField {
   label: string;
-  labelKey: string;
+  /** Only the built-in rows carry one — API labels arrive translated. */
+  labelKey?: string;
   value: string;
+  /** false hides the copy button (e.g. the crypto network) */
+  copyable?: boolean;
 }
 
 export const TRANSFER_FIELDS: TransferField[] = [

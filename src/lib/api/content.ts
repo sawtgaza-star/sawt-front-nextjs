@@ -1,7 +1,8 @@
 /* =========================================================
    The "محتوانا" page's content from the Sawt API (base + error shape: ./client).
 
-     GET /pages/content → { data: { hero, reels } }
+     GET /pages/content?category={slug}&sort={latest|oldest}
+       → { data: { hero, categories, reels } }
 
    Same conventions as ./pages: every text field arrives as { ar, en } and is
    picked per the language the site is currently in (`localized`), and uploads
@@ -24,12 +25,17 @@
    and the "الأكثر مشاهدة" row below it both render it — the payload has no
    second list, and the page keeps no bundled reels of its own any more.
 
-   The category pills, their counts and the sort dropdown have NO field in this
-   payload at all — they stay local chrome with their `data-i18n` keys.
+   `categories` are the filter pills (name + reel count; "all" is one of them).
+   `?category=` narrows `reels.items` to one slug and `?sort=` orders them —
+   the backend knows `latest` (its default) and `oldest`; any other value falls
+   back to `latest`, so "الأكثر مشاهدة" is sorted on the page. `reels.category`
+   / `reels.sort` echo what was applied, `status: "empty"` + `message` explain
+   an empty list. Only the sort dropdown's options stay local chrome.
    ========================================================= */
 
 import { apiFetch } from "./client";
 import { assetUrl, type Localized } from "./pages";
+import type { ApiReelComment } from "@/components/creators/creator-content/reel-data";
 
 type Envelope<T> = { message?: string; data?: T };
 
@@ -47,6 +53,15 @@ export type ContentHeroContent = {
   title?: Localized;
   description?: Localized;
   items?: ContentHeroPoster[];
+};
+
+/* ---------------------------------------------------------- categories */
+
+/** One filter pill. `count` is how many reels carry it. */
+export type ContentCategory = {
+  slug?: string;
+  name?: Localized;
+  count?: number | null;
 };
 
 /* --------------------------------------------------------------- reels */
@@ -68,6 +83,8 @@ export type ContentReel = {
   username?: string | null;
   likes?: number | null;
   comments_count?: number | null;
+  /** the comment thread, when the backend syncs it */
+  comment_items?: ApiReelComment[] | null;
   views?: number | null;
   reach?: number | null;
   collaborators?: string[];
@@ -80,15 +97,27 @@ export type ContentReels = {
   title?: Localized;
   /** Label of the "رؤية المزيد" link beside the heading. */
   view_more?: Localized;
-  /** "ok" / "token_expired" … — why `items` is empty, when it is. */
+  /** "ok" / "empty" / "token_expired" … — why `items` is empty, when it is. */
   status?: string | null;
   message?: string | null;
+  /** the category / sort the backend applied */
+  category?: string | null;
+  sort?: string | null;
   items?: ContentReel[];
 };
 
 export type ContentPage = {
   hero?: ContentHeroContent;
+  categories?: ContentCategory[];
   reels?: ContentReels;
+};
+
+/** What `?sort=` the backend understands. */
+export type ContentApiSort = "latest" | "oldest";
+
+export type ContentQuery = {
+  category?: string;
+  sort?: ContentApiSort;
 };
 
 /** `list.map(fn)` that tolerates the field being absent or not an array — the
@@ -124,10 +153,19 @@ function withAssetUrls(page: ContentPage): ContentPage {
 }
 
 export async function fetchContentPage(
+  query: ContentQuery = {},
   signal?: AbortSignal,
 ): Promise<ContentPage | null> {
-  const payload = await apiFetch<Envelope<ContentPage>>("/pages/content", {
-    signal,
-  });
+  const params = new URLSearchParams();
+  if (query.category && query.category !== "all") {
+    params.set("category", query.category);
+  }
+  if (query.sort && query.sort !== "latest") params.set("sort", query.sort);
+  const search = params.toString();
+
+  const payload = await apiFetch<Envelope<ContentPage>>(
+    "/pages/content" + (search ? `?${search}` : ""),
+    { signal },
+  );
   return payload?.data ? withAssetUrls(payload.data) : null;
 }

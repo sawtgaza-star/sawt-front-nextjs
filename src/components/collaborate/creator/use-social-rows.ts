@@ -9,12 +9,11 @@
    file outside the rules printed under the zone is refused with the reason. */
 
 import { useRef, useState } from "react";
+import { checkAttachment } from "@/lib/attachment";
 import type { SocialFields, SocialRow } from "./SocialStep";
 import {
   DEFAULT_SOCIAL_ROWS,
   SOCIAL_PLATFORMS,
-  VIDEO_MAX_BYTES,
-  VIDEO_TYPES,
 } from "./creator-form-data";
 
 export type SocialRowsState = {
@@ -82,14 +81,11 @@ export function useSocialRows(): SocialRowsState {
 
   /* Both the file input and a drop share this: reject anything outside the
      rules printed under the zone, otherwise keep the file. */
-  function acceptVideo(picked: File | undefined) {
+  async function acceptVideo(picked: File | undefined) {
     if (!picked) return;
-    if (!VIDEO_TYPES.includes(picked.type)) {
-      setSocial((s) => ({ ...s, video: null, videoError: "type" }));
-      return;
-    }
-    if (picked.size > VIDEO_MAX_BYTES) {
-      setSocial((s) => ({ ...s, video: null, videoError: "size" }));
+    const problem = await checkAttachment(picked);
+    if (problem) {
+      setSocial((s) => ({ ...s, video: null, videoError: problem }));
       return;
     }
     setSocial((s) => ({ ...s, video: picked, videoError: null }));

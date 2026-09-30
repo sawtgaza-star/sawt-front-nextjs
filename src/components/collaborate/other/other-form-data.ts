@@ -21,6 +21,6 @@ export const OTHER_STEPS: WizardStep[] = [
 
 /* ---- limits printed on the form ---- */
 export const NOTE_MAX = 500;
-export const FILE_MAX_BYTES = 5 * 1024 * 1024;
-export const FILE_TYPES = ["image/png", "image/jpeg", "application/pdf"];
-export const FILE_ACCEPT = ".png,.jpg,.jpeg,.pdf";
+/* the site-wide upload rule (5MB, png/jpg/pdf, checked by content) — see
+   lib/attachment */
+export { ATTACH_ACCEPT as FILE_ACCEPT } from "@/lib/attachment";

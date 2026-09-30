@@ -5,9 +5,10 @@ import { useReelSwipe } from "./useReelSwipe";
 import type { Reel } from "./content-data";
 import type { ReelMeta } from "@/components/creators/creator-content/data";
 
-/* the viewer only needs the reel's id + video — `Reel` (محتوانا) and the
-   creator page's cards both satisfy it */
-type ViewerReel = Pick<Reel, "id" | "video">;
+/* the viewer needs the reel's id + video, and its API details for the info
+   bar / likes / comments — `Reel` (محتوانا) and the creator page's cards
+   both carry them */
+type ViewerReel = Pick<Reel, "id" | "video" | "details">;
 
 type Props = {
   reels: ViewerReel[];
@@ -16,8 +17,8 @@ type Props = {
   onClose: () => void;
   /* namespaces the reel's social state: every list numbers its reels from 0 */
   scope?: string;
-  /** Who posted these reels — a creator's profile passes the creator; the
-      viewer's built-in placeholder is used otherwise. */
+  /** Who posted these reels — a creator's profile passes the creator;
+      otherwise each reel's own Instagram account is shown. */
   meta?: Partial<ReelMeta>;
 };
 

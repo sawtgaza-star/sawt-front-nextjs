@@ -11,10 +11,11 @@
    ruling on anything themselves.
 
    SENT AS MULTIPART, always: each endpoint takes an optional `attachment`
-   file, which is what the drop zone at the end of every flow uploads. Laravel
-   reads `key[]` for a list and `socials[i][…]` for the creator's rows, so that
-   is how they are written; an empty field is left out entirely rather than
-   sent blank.
+   file, which is what the drop zone at the end of every flow uploads. Lists
+   (`content_types`, `support_types`, `partnership_types`, the creator's
+   `socials`) go as one JSON string each and booleans as "true" / "false" —
+   the same body the API's own collection posts; an empty field is left out
+   entirely rather than sent blank.
 
    THE API'S VOCABULARY IS NOT THE FORMS' — the chips and tick boxes carry the
    values the mock gave them, and the maps below translate each one on the way
@@ -104,23 +105,23 @@ type Field = string | number | boolean | string[] | SocialLink[] | null | undefi
 function append(form: FormData, key: string, value: Field): void {
   if (value === null || value === undefined) return;
 
+  // a list goes as one JSON string — content_types=["culture_arts"],
+  // socials=[{"platform":"instagram","url":"https://…"}] — the shape the API's
+  // own collection posts; a row without a URL and an empty list are left out
   if (Array.isArray(value)) {
-    value.forEach((item, index) => {
-      if (typeof item === "string") {
-        if (item) form.append(key + "[]", item);
-        return;
-      }
-      // the creator's social rows: socials[0][platform], socials[0][url]
-      const url = withScheme(item.url);
-      if (!url) return;
-      form.append(key + "[" + index + "][platform]", item.platform);
-      form.append(key + "[" + index + "][url]", url);
-    });
+    const items = (value as (string | SocialLink)[])
+      .map((item) =>
+        typeof item === "string"
+          ? item
+          : { platform: item.platform, url: withScheme(item.url) },
+      )
+      .filter((item) => (typeof item === "string" ? item : item.url));
+    if (items.length) form.append(key, JSON.stringify(items));
     return;
   }
 
   if (typeof value === "boolean") {
-    form.append(key, value ? "1" : "0");
+    form.append(key, value ? "true" : "false");
     return;
   }
 

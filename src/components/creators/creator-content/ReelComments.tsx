@@ -2,22 +2,26 @@
 import { useRef, useState } from "react";
 import { useLang } from "@/lib/use-lang";
 import { useReelSocial } from "./reel-social";
+import { timeAgo, type ReelDetails } from "./reel-data";
 import { useSheetDismiss } from "./useSheetDismiss";
 import { IconClose } from "./reel-icons";
 
 /* Comments sheet for one reel — slides up over the bottom of the video, the
-   way the rest of the reel chrome sits on top of it. Comments live in the
-   shared store (reel-social.ts), so each video keeps its own list and anything
-   the visitor writes is still there when the viewer is re-opened. */
+   way the rest of the reel chrome sits on top of it. The thread is the reel's
+   `comment_items` from the API; what the visitor writes is added in the shared
+   store (reel-social.ts), so it is still there when the viewer is re-opened. */
 export default function ReelComments({
   reelKey,
+  details,
   onClose,
 }: {
   reelKey: string;
+  details?: ReelDetails;
   onClose: () => void;
 }) {
-  const { tr } = useLang();
-  const { comments, addComment, toggleCommentLike } = useReelSocial(reelKey);
+  const { tr, lang } = useLang();
+  const { comments, commentsCount, addComment, toggleCommentLike } =
+    useReelSocial(reelKey, details);
   const { sheetRef, dismissHandlers } = useSheetDismiss(onClose);
   const [draft, setDraft] = useState("");
   const listRef = useRef<HTMLUListElement | null>(null);
@@ -45,7 +49,7 @@ export default function ReelComments({
       <span className="cr-reel-panel-grip" aria-hidden="true" />
       <div className="cr-reel-panel-head">
         <span className="cr-reel-panel-title">
-          {tr("reel_comments_title")} ({comments.length})
+          {tr("reel_comments_title")} ({commentsCount})
         </span>
         <button
           type="button"
@@ -66,12 +70,14 @@ export default function ReelComments({
               <img src={c.avatar} alt="" className="cr-reel-comment-avatar" />
               <div className="cr-reel-comment-body">
                 <div className="cr-reel-comment-meta">
-                  <span className="cr-reel-comment-user">{tr(c.userKey)}</span>
-                  <span className="cr-reel-comment-time">{tr(c.timeKey)}</span>
+                  <span className="cr-reel-comment-user">
+                    {c.mine ? tr("reel_comment_you") : c.user}
+                  </span>
+                  <span className="cr-reel-comment-time">
+                    {timeAgo(c.time, lang)}
+                  </span>
                 </div>
-                <p className="cr-reel-comment-text">
-                  {c.raw ? c.textKey : tr(c.textKey)}
-                </p>
+                <p className="cr-reel-comment-text">{c.text}</p>
               </div>
               <button
                 type="button"

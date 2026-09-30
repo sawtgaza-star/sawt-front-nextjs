@@ -129,6 +129,6 @@ export const DEFAULT_SOCIAL_ROWS = ["instagram", "facebook"];
 
 /* ---- limits printed on the form ---- */
 export const NOTE_MAX = 500;
-export const VIDEO_MAX_BYTES = 5 * 1024 * 1024;
-export const VIDEO_TYPES = ["image/png", "image/jpeg", "application/pdf"];
-export const VIDEO_ACCEPT = ".png,.jpg,.jpeg,.pdf";
+/* the site-wide upload rule (5MB, png/jpg/pdf, checked by content) — see
+   lib/attachment */
+export { ATTACH_ACCEPT as VIDEO_ACCEPT } from "@/lib/attachment";

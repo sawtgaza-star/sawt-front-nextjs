@@ -15,6 +15,28 @@ export function SupportHeroSkeleton() {
   );
 }
 
+/** /support/methods' section head plus the method cards, in the real
+    .sp-methods-row so the cards arrive into the same grid. */
+export function PaymentMethodsSkeleton({ count = 3 }: { count?: number }) {
+  return (
+    <section className="sp-section" aria-busy="true" aria-hidden="true">
+      <div className="container">
+        <div className="cr-sk-head">
+          <span className="sk-line-title" style={{ width: "34%" }} />
+          <span className="sk-line" style={{ width: "58%" }} />
+        </div>
+        <div className="sp-methods-row">
+          {Array.from({ length: count }, (_, i) => (
+            <div className="sp-method" key={i}>
+              <span className="sk-block sp-sk-method" />
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
 /** A section head plus a content block, `count` times over. */
 export function SupportBodySkeleton({ count = 2 }: { count?: number }) {
   return (

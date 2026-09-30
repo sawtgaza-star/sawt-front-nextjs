@@ -1,39 +1,41 @@
 "use client";
 import { useState } from "react";
 import { IconChevronDownBold, IconCloudUpload } from "@/components/ui/icons";
-import {
-  CURRENCIES,
-  PROOF_ACCEPT,
-  PROOF_MAX_BYTES,
-  PROOF_TYPES,
-} from "./currencies-data";
+import { checkAttachment } from "@/lib/attachment";
+import { CURRENCIES, PROOF_ACCEPT } from "./currencies-data";
+import type { ProofErrors, ProofValues } from "./checkout-flow";
 
-/* "إثبات تبرعك" — amount + currency + the receipt drop zone. Client leaf: it
-   owns the field values and the drag-and-drop state. Nothing is submitted yet
-   (same as the other forms on the site). */
-export default function DonationProof() {
-  const [amount, setAmount] = useState("");
-  const [currency, setCurrency] = useState("");
-  const [file, setFile] = useState<File | null>(null);
-  const [error, setError] = useState<string | null>(null);
+/* "إثبات تبرعك" — amount + currency + the receipt drop zone. The values and
+   errors live in the wizard (they are what POST /support/requests/{uuid}/proof
+   sends), so they survive going back; this leaf only owns the drag state. */
+export default function DonationProof({
+  proof,
+  onChange,
+  onFileError,
+  errors,
+}: {
+  proof: ProofValues;
+  /** `clear` names the error the edit makes stale */
+  onChange: (patch: Partial<ProofValues>, clear: keyof ProofErrors) => void;
+  /** a picked file broke the rules — the wizard drops it and shows why */
+  onFileError: (reason: "type" | "size") => void;
+  errors: ProofErrors;
+}) {
+  const { amount, currency, file } = proof;
+  const error = errors.file;
   const [dragging, setDragging] = useState(false);
 
   /* Both the file input and a drop share this: reject anything outside the
-     rules printed under the zone, otherwise keep the file. */
-  function accept(picked: File | undefined) {
+     rules printed under the zone (checked by content, see lib/attachment),
+     otherwise keep the file. */
+  async function accept(picked: File | undefined) {
     if (!picked) return;
-    if (!PROOF_TYPES.includes(picked.type)) {
-      setFile(null);
-      setError("type");
+    const problem = await checkAttachment(picked);
+    if (problem) {
+      onFileError(problem);
       return;
     }
-    if (picked.size > PROOF_MAX_BYTES) {
-      setFile(null);
-      setError("size");
-      return;
-    }
-    setError(null);
-    setFile(picked);
+    onChange({ file: picked }, "file");
   }
 
   return (
@@ -51,11 +53,17 @@ export default function DonationProof() {
             id="proof-amount"
             type="number"
             min={1}
-            className="sp-proof-input"
+            className={"sp-proof-input" + (errors.amount ? " is-invalid" : "")}
             placeholder="0000"
+            aria-invalid={errors.amount ? true : undefined}
             value={amount}
-            onChange={(e) => setAmount(e.target.value)}
+            onChange={(e) => onChange({ amount: e.target.value }, "amount")}
           />
+          {errors.amount && (
+            <p className="sp-contact-error" data-i18n="checkout_proof_amount_required">
+              الرجاء إدخال مبلغ التبرع.
+            </p>
+          )}
         </div>
 
         <div className="sp-proof-field">
@@ -67,9 +75,14 @@ export default function DonationProof() {
           <div className="sp-proof-select-wrap">
             <select
               id="proof-currency"
-              className={"sp-proof-select" + (currency ? "" : " is-empty")}
+              className={
+                "sp-proof-select" +
+                (currency ? "" : " is-empty") +
+                (errors.currency ? " is-invalid" : "")
+              }
+              aria-invalid={errors.currency ? true : undefined}
               value={currency}
-              onChange={(e) => setCurrency(e.target.value)}
+              onChange={(e) => onChange({ currency: e.target.value }, "currency")}
             >
               <option value="" data-i18n="checkout_proof_currency_placeholder">
                 اختر عملة التبرع
@@ -84,13 +97,22 @@ export default function DonationProof() {
               <IconChevronDownBold />
             </span>
           </div>
+          {errors.currency && (
+            <p className="sp-contact-error" data-i18n="checkout_proof_currency_required">
+              الرجاء اختيار عملة التبرع.
+            </p>
+          )}
         </div>
       </div>
 
       {/* a <label> wrapper makes the whole panel open the picker without an
           onClick handler; the input stays focusable for keyboard users */}
       <label
-        className={"sp-drop" + (dragging ? " is-dragging" : "")}
+        className={
+          "sp-drop" +
+          (dragging ? " is-dragging" : "") +
+          (error === "required" ? " is-invalid" : "")
+        }
         onDragOver={(e) => {
           e.preventDefault();
           setDragging(true);
@@ -106,7 +128,10 @@ export default function DonationProof() {
           type="file"
           className="sp-drop-input"
           accept={PROOF_ACCEPT}
-          onChange={(e) => accept(e.target.files?.[0])}
+          onChange={(e) => {
+            accept(e.target.files?.[0]);
+            e.target.value = ""; // the same file can be picked again
+          }}
         />
         <span className="sp-drop-icon" aria-hidden="true">
           <IconCloudUpload />
@@ -132,6 +157,11 @@ export default function DonationProof() {
           الصيغة غير مدعومة، الرجاء رفع ملف png أو jpg أو pdf.
         </p>
       )}
+      {error === "required" && (
+        <p className="sp-drop-error" data-i18n="checkout_proof_error_required">
+          الرجاء إرفاق صورة إيصال التحويل.
+        </p>
+      )}
       {error === "size" && (
         <p className="sp-drop-error" data-i18n="checkout_proof_error_size">
           حجم الملف أكبر من 5 ميجابايت.
@@ -149,7 +179,7 @@ export default function DonationProof() {
           <button
             type="button"
             className="sp-drop-remove"
-            onClick={() => setFile(null)}
+            onClick={() => onChange({ file: null }, "file")}
             data-i18n="checkout_proof_remove"
           >
             إزالة

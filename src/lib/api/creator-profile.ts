@@ -26,6 +26,7 @@
 
 import { apiFetch } from "./client";
 import { assetUrl, type Localized } from "./pages";
+import type { ApiReelComment } from "@/components/creators/creator-content/reel-data";
 import {
   fetchAllCreators,
   type CreatorsCollaborationContent,
@@ -86,6 +87,8 @@ export type CreatorReelItem = {
   username?: string | null;
   likes?: number | null;
   comments_count?: number | null;
+  /** the comment thread, when the backend syncs it */
+  comment_items?: ApiReelComment[] | null;
   views?: number | null;
   posted_at?: string | null;
 };

@@ -48,6 +48,7 @@ export default function DonateSection({
             <DonateForm
               donate={resolveDonate(plans, lang)}
               symbol={currencySymbol(plans?.currency)}
+              currency={plans?.currency || "USD"}
             />
           </div>
 
