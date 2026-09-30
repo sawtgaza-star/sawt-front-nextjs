@@ -1,5 +1,6 @@
 "use client";
 import { useEffect, useRef, useState } from "react";
+import { checkAttachment } from "@/lib/attachment";
 import { useRouter } from "next/navigation";
 import WizardAlert from "@/components/collaborate/WizardAlert";
 import WizardDone from "@/components/collaborate/WizardDone";
@@ -17,7 +18,7 @@ import type { FieldErrors } from "@/lib/api/client";
 import ContactStep, { type ContactErrors, type ContactFields } from "./ContactStep";
 import IdeaStep, { type IdeaErrors, type IdeaFields } from "./IdeaStep";
 import OtherSteps from "./OtherSteps";
-import { FILE_MAX_BYTES, FILE_TYPES, OTHER_STEPS } from "./other-form-data";
+import { OTHER_STEPS } from "./other-form-data";
 import { checkContact, checkIdea } from "./other-checks";
 
 /* Which step owns each box the API can flag, so a rejection puts the visitor
@@ -123,14 +124,11 @@ export default function OtherWizard() {
 
   /* Reject anything outside the rules printed under the drop zone, otherwise
      keep the file. */
-  function acceptFile(picked: File | undefined) {
+  async function acceptFile(picked: File | undefined) {
     if (!picked) return;
-    if (!FILE_TYPES.includes(picked.type)) {
-      setIdea((s) => ({ ...s, file: null, fileError: "type" }));
-      return;
-    }
-    if (picked.size > FILE_MAX_BYTES) {
-      setIdea((s) => ({ ...s, file: null, fileError: "size" }));
+    const problem = await checkAttachment(picked);
+    if (problem) {
+      setIdea((s) => ({ ...s, file: null, fileError: problem }));
       return;
     }
     setIdea((s) => ({ ...s, file: picked, fileError: null }));

@@ -122,6 +122,7 @@ export const translations: any = {
     content_cat_business: "المال والأعمال (13)",
     content_cat_news: "الاخبار (13)",
     content_sort_label: "الترتيب",
+    content_grid_empty: "لا يوجد محتوى في هذا التصنيف حاليًا.",
     content_sort_newest: "من الأحدث إلى الأقدم",
     content_sort_oldest: "من الأقدم إلى الأحدث",
     content_sort_views: "الأكثر مشاهدة",
@@ -835,6 +836,8 @@ export const translations: any = {
     support_methods_title_pre: "اختر طريقة الدعم التي",
     support_methods_title_hl: "تناسبك",
     support_method_continue: "المتابعة",
+    checkout_pay_empty: "لا توجد وسائل دفع متاحة حاليًا، الرجاء المحاولة لاحقًا.",
+    support_methods_empty: "لا توجد طرق دعم متاحة حاليًا، الرجاء المحاولة لاحقًا.",
     support_method_gateway_title: "دفع إلكتروني",
     support_method_gateway_desc:
       "يتم التبرع عبر منصة خارجية آمنة وسهلة الاستخدام، بحيث يقدر المتبرع إتمام العملية بسرعة وبطريقة موثوقة.",
@@ -901,6 +904,19 @@ export const translations: any = {
     checkout_contact_email_required:
       "الرجاء إدخال البريد الالكتروني للتواصل معك.",
     checkout_contact_email_invalid: "الرجاء إدخال بريد الكتروني صحيح.",
+    checkout_contact_whatsapp: "رقم الواتساب",
+    checkout_proof_amount_required: "الرجاء إدخال مبلغ التبرع.",
+    checkout_proof_currency_required: "الرجاء اختيار عملة التبرع.",
+    checkout_proof_error_required: "الرجاء إرفاق صورة إيصال التحويل.",
+    checkout_transfer_empty:
+      "لم تتم إضافة بيانات التحويل لهذه الوسيلة بعد، سيتواصل معك الفريق لتزويدك بها.",
+    checkout_contact_whatsapp_invalid: "الرجاء إدخال رقم واتساب صحيح.",
+    checkout_contact_whatsapp_required: "الرجاء إدخال رقم الواتساب للتواصل معك.",
+    checkout_contact_name_required: "الرجاء إدخال اسم المتبرع.",
+    checkout_contact_name: "اسم المتبرع",
+    checkout_contact_name_placeholder: "محمد",
+    checkout_contact_notes: "ملاحظات أخرى",
+    checkout_contact_notes_placeholder: "هل لديك أي ملاحظات تود إضافتها؟",
     checkout_contact_note:
       "شكرا لك، تم استلام بيانات التبرع بنجاح. سنقوم بالتواصل معك بعد تأكيد وصول الحوالة.",
 
@@ -2026,11 +2042,10 @@ export const translations: any = {
     collab_f_add_platform: "اضافة منصة",
     collab_f_notes: "ملاحظات إضافية",
     collab_f_notes_ph: "أي معلومات إضافية تود إضافتها (اختياري)",
-    collab_f_video:
-      "فيديو تعريفي عنك ولماذا تريد التعاون مع المنصة ؟ 3 دقائق ك حد أقصى",
-    collab_f_video_title: "إضافة فيديو",
+    collab_f_video: "إضافة ملف تعريفي",
+    collab_f_video_title: "رفع ملف تعريفي",
     collab_f_video_hint:
-      "الحد الأقصى لحجم الفيديو المسموح به هو 5 ميجابايت، وتشمل الصيغ المدعومة png, jpg, pdf",
+      "الحد الأقصى لحجم الملف التعريفي المسموح به هو 5 ميجابايت، وتشمل الصيغ المدعومة png, jpg, pdf",
     collab_f_video_error_type: "الصيغة غير مدعومة، الرجاء رفع ملف png أو jpg أو pdf.",
     collab_f_video_error_size: "حجم الملف أكبر من 5 ميجابايت.",
     collab_f_video_remove: "إزالة",
@@ -2072,7 +2087,7 @@ export const translations: any = {
     collab_fu_f_file: "إضافة ملف تعريفي أو عرض تفصيلي",
     collab_fu_f_file_title: "رفع ملف تعريفي",
     collab_fu_f_file_hint:
-      "الحد الأقصى لحجم الفيديو المسموح به هو 5 ميجابايت، وتشمل الصيغ المدعومة png, jpg, pdf",
+      "الحد الأقصى لحجم الملف التعريفي المسموح به هو 5 ميجابايت، وتشمل الصيغ المدعومة png, jpg, pdf",
     collab_fu_f_notes_ph: "أضف ملاحظاتك",
 
     // "شراكة استراتيجية" application wizard
@@ -2100,7 +2115,7 @@ export const translations: any = {
     collab_pa_f_file: "إضافة ملف تعريفي",
     collab_pa_f_file_title: "رفع ملف تعريفي",
     collab_pa_f_file_hint:
-      "الحد الأقصى لحجم الفيديو المسموح به هو 5 ميجابايت، وتشمل الصيغ المدعومة png, jpg, pdf",
+      "الحد الأقصى لحجم الملف التعريفي المسموح به هو 5 ميجابايت، وتشمل الصيغ المدعومة png, jpg, pdf",
     collab_pa_f_notes_ph: "أضف ملاحظاتك",
 
     // "تعاون آخر" application wizard
@@ -2119,7 +2134,7 @@ export const translations: any = {
     collab_ot_f_file: "إضافة ملف",
     collab_ot_f_file_title: "رفع ملف تعريفي",
     collab_ot_f_file_hint:
-      "الحد الأقصى لحجم الفيديو المسموح به هو 5 ميجابايت، وتشمل الصيغ المدعومة png, jpg, pdf",
+      "الحد الأقصى لحجم الملف التعريفي المسموح به هو 5 ميجابايت، وتشمل الصيغ المدعومة png, jpg, pdf",
     collab_ot_f_notes_ph: "أضف ملاحظاتك",
   },
 
@@ -2224,6 +2239,7 @@ export const translations: any = {
     content_cat_business: "Money & Business (13)",
     content_cat_news: "News (13)",
     content_sort_label: "Sort",
+    content_grid_empty: "No content in this category yet.",
     content_sort_newest: "Newest to oldest",
     content_sort_oldest: "Oldest to newest",
     content_sort_views: "Most watched",
@@ -2942,6 +2958,8 @@ export const translations: any = {
     support_methods_title_pre: "Choose the support method that",
     support_methods_title_hl: "suits you",
     support_method_continue: "Continue",
+    checkout_pay_empty: "No payment methods are available right now, please try again later.",
+    support_methods_empty: "No support methods are available right now, please try again later.",
     support_method_gateway_title: "Online payment",
     support_method_gateway_desc:
       "Donate through a secure, easy-to-use external platform, so you can complete the transaction quickly and reliably.",
@@ -3010,6 +3028,19 @@ export const translations: any = {
     checkout_contact_email_required:
       "Please enter the email address we can reach you on.",
     checkout_contact_email_invalid: "Please enter a valid email address.",
+    checkout_contact_whatsapp: "WhatsApp number",
+    checkout_proof_amount_required: "Please enter the donation amount.",
+    checkout_proof_currency_required: "Please choose the donation currency.",
+    checkout_proof_error_required: "Please attach the transfer receipt.",
+    checkout_transfer_empty:
+      "Transfer details for this method haven't been added yet — the team will contact you with them.",
+    checkout_contact_whatsapp_invalid: "Please enter a valid WhatsApp number.",
+    checkout_contact_whatsapp_required: "Please enter the WhatsApp number we can reach you on.",
+    checkout_contact_name_required: "Please enter the donor's name.",
+    checkout_contact_name: "Donor name",
+    checkout_contact_name_placeholder: "Mohamed",
+    checkout_contact_notes: "Other notes",
+    checkout_contact_notes_placeholder: "Any notes you would like to add?",
     checkout_contact_note:
       "Thank you — your donation details were received. We will contact you once the transfer is confirmed.",
 
@@ -4150,9 +4181,8 @@ export const translations: any = {
     collab_f_add_platform: "Add platform",
     collab_f_notes: "Additional notes",
     collab_f_notes_ph: "Anything else you would like to add (optional)",
-    collab_f_video:
-      "An intro video about you and why you want to collaborate — 3 minutes max",
-    collab_f_video_title: "Add a video",
+    collab_f_video: "Add a profile file",
+    collab_f_video_title: "Upload a profile file",
     collab_f_video_hint:
       "Maximum file size is 5 MB; supported formats are png, jpg, pdf",
     collab_f_video_error_type:

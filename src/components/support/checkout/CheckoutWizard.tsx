@@ -1,40 +1,30 @@
 "use client";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 import { applyTranslations, getCurrentLang } from "@/lib/translations";
 import { localized } from "@/lib/api/pages";
-import { useSupportCategory } from "@/lib/api/use-support-category";
 import { useLang } from "@/lib/use-lang";
-import { markDonationComplete } from "../donation-complete";
 import CheckoutNav from "./CheckoutNav";
 import CheckoutSteps from "./CheckoutSteps";
-import ContactStep, { type ContactEmailError } from "./ContactStep";
+import ContactStep from "./ContactStep";
 import DonationProof from "./DonationProof";
 import PaymentPlatforms from "./PaymentPlatforms";
+import CheckoutSkeleton from "./CheckoutSkeleton";
 import TransferDetails from "./TransferDetails";
 import { CHECKOUT_SCREENS, resolveStepLabels } from "./checkout-steps-data";
-import { DEFAULT_PLATFORM } from "./payment-platforms-data";
-
-/* Same shape the browser uses for <input type="email">: something, an @, then
-   a dotted domain. Kept deliberately loose — the address is only checked for
-   typos here, never verified. */
-const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+import { useCheckoutFlow } from "./use-checkout-flow";
 
 /* The donation wizard: "التالي" swaps the screen in place instead of
    navigating, and "السابق" walks back — out of the first screen it leaves for
-   /support/methods, the page the flow came from. "اتمام العملية" on the last
-   screen needs the contact e-mail, then hands off to /support.
-   The chosen platform and that e-mail live here so they survive the screen
-   changes.
+   /support/methods, the page the flow came from. The values, validation and
+   API calls behind each screen live in useCheckoutFlow; this component only
+   lays the screens out.
    Step labels, the counter and the button labels come from GET /support/
-   methods/category/{key} for the `?method=` picked on /support/methods; the
-   wizard works on its built-in copy until (or unless) that answer lands. */
+   methods/category/{key} for the `?method=` picked on /support/methods; a
+   skeleton stands in while that request is in flight. */
 export default function CheckoutWizard() {
-  const [index, setIndex] = useState(0);
-  const [platform, setPlatform] = useState(DEFAULT_PLATFORM);
-  const [email, setEmail] = useState("");
-  const [emailError, setEmailError] = useState<ContactEmailError | null>(null);
+  const flow = useCheckoutFlow();
+  const { page, index, screen, busy, error } = flow;
   const wizard = useRef<HTMLDivElement>(null);
-  const { page } = useSupportCategory();
   const { lang } = useLang();
 
   const stepLabels = resolveStepLabels(page?.wizard?.steps, lang);
@@ -43,7 +33,6 @@ export default function CheckoutWizard() {
   const submitText = localized(page?.labels?.submit, lang);
   const backText = localized(page?.labels?.back, lang);
 
-  const screen = CHECKOUT_SCREENS[index];
   const first = index === 0;
   const last = index === CHECKOUT_SCREENS.length - 1;
 
@@ -59,23 +48,14 @@ export default function CheckoutWizard() {
     }
   }, [index, page]);
 
-  /* Last screen: block the hand-off until there is a usable address, then
-     raise the flag <DonationToast /> is waiting for on /support. Plain
-     navigation, like every other link that crosses a CSS group. */
-  function finish() {
-    const value = email.trim();
-    if (!value) {
-      setEmailError("required");
-      return;
-    }
-    if (!EMAIL_RE.test(value)) {
-      setEmailError("invalid");
-      return;
-    }
-    setEmailError(null);
-    markDonationComplete();
-    window.location.href = "/support";
-  }
+  // validation messages mount after the page was translated
+  useEffect(() => {
+    try {
+      applyTranslations(getCurrentLang());
+    } catch {}
+  }, [flow.proofErrors, flow.contactErrors]);
+
+  if (flow.loading) return <CheckoutSkeleton />;
 
   return (
     <div className="sp-wizard" ref={wizard}>
@@ -88,26 +68,45 @@ export default function CheckoutWizard() {
       />
 
       {screen.value === "platform" && (
-        <PaymentPlatforms value={platform} onChange={setPlatform} />
+        <PaymentPlatforms
+          value={flow.platform}
+          onChange={flow.setPlatform}
+          methods={flow.methods}
+          lang={lang}
+        />
       )}
-      {screen.value === "transfer" && <TransferDetails />}
-      {screen.value === "proof" && <DonationProof />}
+      {screen.value === "transfer" && (
+        <TransferDetails method={flow.method} lang={lang} />
+      )}
+      {screen.value === "proof" && (
+        <DonationProof
+          proof={flow.proof}
+          onChange={flow.changeProof}
+          onFileError={flow.rejectFile}
+          errors={flow.proofErrors}
+        />
+      )}
       {screen.value === "contact" && (
         <ContactStep
-          email={email}
-          onEmailChange={(value) => {
-            setEmail(value);
-            setEmailError(null); // the message goes as soon as they retype
-          }}
-          error={emailError}
+          contact={flow.contact}
+          onChange={flow.changeContact}
+          errors={flow.contactErrors}
         />
+      )}
+
+      {/* the server's own (Arabic) message when a step's call fails */}
+      {error && (
+        <p className="sp-wizard-error" role="alert">
+          {error}
+        </p>
       )}
 
       <CheckoutNav
         prevHref={first ? "/support/methods" : undefined}
         backText={backText}
-        onPrev={first ? undefined : () => setIndex((i) => i - 1)}
-        onNext={last ? finish : () => setIndex((i) => i + 1)}
+        onPrev={first ? undefined : flow.back}
+        onNext={flow.next}
+        busy={busy || (screen.value === "platform" && !flow.method)}
         nextLabel={
           last ? submitText || "اتمام العملية" : nextText || undefined
         }

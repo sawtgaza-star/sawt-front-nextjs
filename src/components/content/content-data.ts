@@ -6,11 +6,20 @@
 
    The reels are the API's too, now that it serves them: the bundled demo reel
    and the rows built out of it are gone, and `reelsFromApi` below is the one
-   place the payload becomes cards. What is left local is chrome the payload
-   has no field for at all — the category pills, their counts and the sort
-   options — which keep their `data-i18n` keys. */
+   place the payload becomes cards. The category pills are the payload's too
+   (`categoriesFromApi`); only the sort options are left local chrome, with
+   their `data-i18n` keys. */
 
-import type { ContentReel } from "@/lib/api/content";
+import { localized } from "@/lib/api/pages";
+import {
+  reelDetails,
+  type ReelDetails,
+} from "@/components/creators/creator-content/reel-data";
+import type {
+  ContentApiSort,
+  ContentCategory,
+  ContentReel,
+} from "@/lib/api/content";
 import { bySortOrder } from "./content-text";
 
 /* hero coverflow fallback — the bundled poster, repeated enough times that the
@@ -32,15 +41,25 @@ export function heroSlides(images: string[]): string[] {
   return padded;
 }
 
-export const CATEGORIES = [
-  { value: "all", key: "content_cat_all", label: "الكل" },
-  { value: "economy", key: "content_cat_economy", label: "الاقتصاد (13)" },
-  { value: "war", key: "content_cat_war", label: "قصص الحرب (45)" },
-  { value: "business", key: "content_cat_business", label: "المال والأعمال (13)" },
-  { value: "news", key: "content_cat_news", label: "الاخبار (13)" },
-] as const;
+/** One filter pill, resolved for the current language. */
+export type ContentCategoryPill = { value: string; label: string };
 
-export type CategoryValue = (typeof CATEGORIES)[number]["value"];
+/* GET /pages/content's `categories` as pills: the name, then the reel count in
+   brackets ("الاقتصاد (13)") — except on "all", which the design shows bare. */
+export function categoriesFromApi(
+  categories: ContentCategory[] | undefined,
+  lang: string,
+): ContentCategoryPill[] {
+  return (categories || [])
+    .map((c) => {
+      const value = (c.slug || "").trim();
+      const name = localized(c.name, lang);
+      if (!value || !name) return null;
+      const count = value === "all" || c.count == null ? "" : ` (${c.count})`;
+      return { value, label: name + count };
+    })
+    .filter((c): c is ContentCategoryPill => c !== null);
+}
 
 export const SORT_OPTIONS = [
   { value: "newest", key: "content_sort_newest", label: "من الأحدث إلى الأقدم" },
@@ -50,11 +69,21 @@ export const SORT_OPTIONS = [
 
 export type SortValue = (typeof SORT_OPTIONS)[number]["value"];
 
-/** One reel card. Only `id` and `video` are drawn; the other two exist to
-    order the list and are never rendered. */
+/* The backend orders by date only; "views" asks for the latest and is then
+   re-ordered on the page by `sortReels`. */
+export const API_SORT: Record<SortValue, ContentApiSort> = {
+  newest: "latest",
+  oldest: "oldest",
+  views: "latest",
+};
+
+/** One reel card. The card draws `id` + `video`; `details` is what the
+    viewer shows (poster, caption, likes, comments); `views` / `publishedAt`
+    only order the list. */
 export type Reel = {
   id: number | string;
   video: string;
+  details?: ReelDetails;
   /** what the "الأكثر مشاهدة" sort reads — see `reelsFromApi` */
   views?: number;
   /** ISO date, for the newest / oldest sorts */
@@ -87,6 +116,7 @@ export function reelsFromApi(items: ContentReel[] | undefined): Reel[] {
     .map((item, index) => ({
       id: item.id ?? index,
       video: item.video_url || "",
+      details: reelDetails(item),
       views: item.views ?? item.likes ?? undefined,
       publishedAt: item.posted_at ?? undefined,
     }))

@@ -3,6 +3,7 @@ import {
   IconCloudUpload,
   IconInfoCircle,
 } from "@/components/ui/icons";
+import { dropZoneProps } from "@/lib/attachment";
 import CollabPlatformSelect from "./CollabPlatformSelect";
 import {
   NOTE_MAX,
@@ -120,26 +121,29 @@ export default function SocialStep({
 
       <div className="cl-field">
         <span className="cl-label" data-i18n="collab_f_video">
-          فيديو تعريفي عنك ولماذا تريد التعاون مع المنصة ؟ 3 دقائق ك حد أقصى
+          إضافة ملف تعريفي
         </span>
 
         {/* a <label> wrapper makes the whole panel open the picker without an
             onClick handler; the input stays focusable for keyboard users */}
-        <label className="cl-drop">
+        <label className="cl-drop" {...dropZoneProps(onVideo)}>
           <input
             type="file"
             className="cl-drop-input"
             accept={VIDEO_ACCEPT}
-            onChange={(e) => onVideo(e.target.files?.[0])}
+            onChange={(e) => {
+              onVideo(e.target.files?.[0]);
+              e.target.value = ""; // the same file can be picked again
+            }}
           />
           <span className="cl-drop-icon" aria-hidden="true">
             <IconCloudUpload />
           </span>
           <span className="cl-drop-title" data-i18n="collab_f_video_title">
-            إضافة فيديو
+            رفع ملف تعريفي
           </span>
           <span className="cl-drop-hint" data-i18n="collab_f_video_hint">
-            الحد الأقصى لحجم الفيديو المسموح به هو 5 ميجابايت، وتشمل الصيغ
+            الحد الأقصى لحجم الملف التعريفي المسموح به هو 5 ميجابايت، وتشمل الصيغ
             المدعومة png, jpg, pdf
           </span>
         </label>

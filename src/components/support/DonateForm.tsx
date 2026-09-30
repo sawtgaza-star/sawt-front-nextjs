@@ -7,6 +7,11 @@ import {
   IconHeartOutline,
   IconRotate,
 } from "@/components/ui/icons";
+import { ApiError } from "@/lib/api/client";
+import {
+  createSupportCheckout,
+  type SupportCheckoutInterval,
+} from "@/lib/api/support-checkout";
 import { resolveDonate, type PlanValue, type ResolvedDonate } from "./donate-data";
 
 /* Plan tab glyphs — kept here (not in donate-data.ts) since that file is
@@ -17,22 +22,35 @@ const PLAN_ICON = {
   yearly: IconRotate,
 };
 
+/* The form's plan values → the checkout endpoint's `interval`. */
+const INTERVAL: Record<PlanValue, SupportCheckoutInterval> = {
+  once: "one_time",
+  monthly: "monthly",
+  yearly: "yearly",
+};
+
+const FAILED_MESSAGE = "تعذر بدء عملية الدفع. حاول مرة أخرى.";
+
 /* Donation box: plan tabs (لمرة واحدة / شهري / سنوي), preset amount pills and
    a custom amount field. Client leaf — it owns the selection state. The tabs,
    presets and custom-amount limits come from GET /pages/support's `plans`
-   block (resolved in donate-data); the form hands the pick to
-   /support/methods. */
+   block (resolved in donate-data); submitting opens a PayPal checkout
+   (POST /support/checkout) and sends the donor to its approval_url. */
 export default function DonateForm({
   donate = resolveDonate(undefined, "ar"),
   symbol = "$",
+  currency = "USD",
 }: {
   donate?: ResolvedDonate;
   symbol?: string;
+  currency?: string;
 }) {
   const [plan, setPlan] = useState<PlanValue>(donate.defaultPlan);
   const activePlan = donate.plans.find((p) => p.value === plan) ?? donate.plans[0];
   const [amount, setAmount] = useState<number>(activePlan.defaultAmount);
   const [custom, setCustom] = useState("");
+  const [busy, setBusy] = useState(false);
+  const [error, setError] = useState("");
 
   // A custom amount, once typed, wins over the selected pill.
   const total = custom.trim() !== "" ? custom.trim() : String(amount);
@@ -74,13 +92,29 @@ export default function DonateForm({
 
       <form
         className="sp-donate-body"
-        onSubmit={(e) => {
+        onSubmit={async (e) => {
           e.preventDefault();
-          // Hand the chosen plan + amount to the payment-methods step. Full
-          // page load (not <Link>) — same CSS-group rule the rest of the site
-          // follows for cross-page links.
-          const params = new URLSearchParams({ plan, amount: total });
-          window.location.href = `/support/methods?${params.toString()}`;
+          if (busy) return;
+          const value = Number(total);
+          if (!Number.isFinite(value) || value <= 0) return;
+          setBusy(true);
+          setError("");
+          try {
+            const back = `${window.location.origin}/support`;
+            const { approvalUrl } = await createSupportCheckout({
+              amount: value,
+              currency,
+              interval: INTERVAL[plan],
+              // No /support/thank-you page exists yet — land back on /support.
+              return_url: `${back}?payment=success`,
+              cancel_url: `${back}?payment=cancelled`,
+            });
+            // Off-site to PayPal — a full navigation, not a router push.
+            window.location.href = approvalUrl;
+          } catch (err) {
+            setError(err instanceof ApiError && err.message ? err.message : FAILED_MESSAGE);
+            setBusy(false);
+          }
         }}
       >
         <label className="sp-field-label" data-i18n="support_choose_amount">
@@ -142,7 +176,18 @@ export default function DonateForm({
           </label>
         )}
 
-        <button type="submit" className="sp-btn-green sp-btn-block">
+        {error && (
+          <p className="sp-wizard-error" role="alert">
+            {error}
+          </p>
+        )}
+
+        <button
+          type="submit"
+          className="sp-btn-green sp-btn-block"
+          disabled={busy}
+          aria-busy={busy}
+        >
           <span data-i18n="support_donate_with">تبرع بـ</span> {symbol}{total}
         </button>
       </form>

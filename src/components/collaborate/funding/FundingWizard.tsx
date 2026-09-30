@@ -1,5 +1,6 @@
 "use client";
 import { useEffect, useRef, useState } from "react";
+import { checkAttachment } from "@/lib/attachment";
 import { useRouter } from "next/navigation";
 import WizardAlert from "@/components/collaborate/WizardAlert";
 import WizardDone from "@/components/collaborate/WizardDone";
@@ -25,8 +26,6 @@ import SupportStep, {
   type SupportFields,
 } from "./SupportStep";
 import {
-  FILE_MAX_BYTES,
-  FILE_TYPES,
   FUNDING_STEPS,
 } from "./funding-form-data";
 import { checkExtras, checkOrg, checkSupport } from "./funding-checks";
@@ -148,14 +147,11 @@ export default function FundingWizard() {
 
   /* Reject anything outside the rules printed under the drop zone, otherwise
      keep the file. */
-  function acceptFile(picked: File | undefined) {
+  async function acceptFile(picked: File | undefined) {
     if (!picked) return;
-    if (!FILE_TYPES.includes(picked.type)) {
-      setExtras((s) => ({ ...s, file: null, fileError: "type" }));
-      return;
-    }
-    if (picked.size > FILE_MAX_BYTES) {
-      setExtras((s) => ({ ...s, file: null, fileError: "size" }));
+    const problem = await checkAttachment(picked);
+    if (problem) {
+      setExtras((s) => ({ ...s, file: null, fileError: problem }));
       return;
     }
     setExtras((s) => ({ ...s, file: picked, fileError: null }));

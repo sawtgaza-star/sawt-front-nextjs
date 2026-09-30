@@ -13,7 +13,8 @@ import { resolvePaymentMethods } from "./payment-methods-data";
    to that method's flow, the same way CollaborateTypes works.
    Reuses cr-section-head / cr-highlight from creators.css like the rest of the
    support page. Cards and heading from GET /support/methods (fetched by
-   <MethodsContent />), with the built-in three as the fallback. */
+   <MethodsContent />); no built-in cards — an empty or failed response
+   shows the empty line instead. */
 export default function PaymentMethods({
   data,
   lang = "ar",
@@ -25,9 +26,17 @@ export default function PaymentMethods({
   const [selected, setSelected] = useState("");
   const router = useRouter();
 
+  /* The plan + amount picked on /support ride along to the wizard, which
+     opens the donation request with that amount. */
   function select(value: string, href: string) {
     setSelected(value);
-    router.push(href);
+    const from = new URLSearchParams(window.location.search);
+    const url = new URL(href, window.location.origin);
+    for (const key of ["plan", "amount"]) {
+      const carried = from.get(key);
+      if (carried) url.searchParams.set(key, carried);
+    }
+    router.push(url.pathname + url.search);
   }
 
   return (
@@ -44,16 +53,22 @@ export default function PaymentMethods({
           }}
         />
 
-        <div className="sp-methods-row">
-          {methods.map((m) => (
-            <PaymentMethodCard
-              key={m.value}
-              method={m}
-              checked={m.value === selected}
-              onSelect={() => select(m.value, m.href)}
-            />
-          ))}
-        </div>
+        {methods.length ? (
+          <div className="sp-methods-row">
+            {methods.map((m) => (
+              <PaymentMethodCard
+                key={m.value}
+                method={m}
+                checked={m.value === selected}
+                onSelect={() => select(m.value, m.href)}
+              />
+            ))}
+          </div>
+        ) : (
+          <p className="sp-methods-empty" data-i18n="support_methods_empty">
+            لا توجد طرق دعم متاحة حاليًا، الرجاء المحاولة لاحقًا.
+          </p>
+        )}
       </div>
     </section>
   );

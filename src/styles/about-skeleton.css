@@ -3,10 +3,10 @@
    The page carries no copy of its own any more (see about/_components), so
    without these the visitor gets a bare header and a white gap until the
    response lands. The skeleton reuses the REAL section classes — .container,
-   .value-card, .about-sec-img-col … — and only fills them with grey bars, so
+   .value-card, .about-intro-banner … — and only fills them with grey bars, so
    the layout it holds is the layout the content arrives into and nothing jumps.
 
-   Sizes here mirror style.css: 56px icon circle, 210px intro photo, 300px join
+   Sizes here mirror style.css: 56px icon circle, 300px join
    banner. Keep them in step if those change. */
 
 /* `.sk-line-title` is in this group, not only in its own rule below: most of
@@ -52,13 +52,6 @@
 .sk-block {
   width: 100%;
   border-radius: 16px;
-}
-
-/* .about-sec-img — same rounded-corner silhouette as the real photo */
-.sk-block-intro {
-  min-height: 210px;
-  height: 260px;
-  border-radius: 150px 0 150px 0;
 }
 
 .sk-block-platform {

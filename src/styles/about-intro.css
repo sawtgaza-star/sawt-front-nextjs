@@ -1,0 +1,75 @@
+/* About "من نحن" intro — the design artwork spans the section and the copy sits
+   on its empty side. The trees are on the artwork's LEFT, and in RTL the text
+   column is the row's first (right-hand) one, so the two never overlap.
+
+   Phones and tablets: the artwork first at full width, the copy under it —
+   the text is far too long to fit over a narrow image. */
+
+.about-intro-banner {
+  position: relative;
+  overflow: hidden;
+  border-radius: 16px;
+}
+
+.about-intro-img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.about-intro-banner .about-sec-content {
+  position: relative;
+}
+
+@media (min-width: 992px) {
+  /* The banner is at least as tall as the artwork's own ratio (1920×881) and
+     grows with the text; the image then covers it anchored left, so any crop
+     falls on the empty right side, behind the text, never on the trees. */
+  .about-intro-banner {
+    /* aspect-ratio's automatic minimum lets the box outgrow it for content */
+    aspect-ratio: 1920 / 881;
+    display: flex;
+    align-items: center;
+  }
+
+  .about-intro-img {
+    position: absolute;
+    inset: 0;
+    height: 100%;
+    object-fit: cover;
+    object-position: left center;
+  }
+
+  .about-intro-banner .row {
+    width: 100%;
+    margin: 0;
+  }
+
+  .about-intro-banner .about-sec-content {
+    padding: 40px 48px;
+  }
+
+  .about-intro-banner .about-sec-title {
+    margin-top: 0;
+  }
+}
+
+/* Between lg and xxl the half-width column is narrow for this much copy. */
+@media (min-width: 992px) and (max-width: 1399.98px) {
+  .about-intro-banner .about-sec-title {
+    font-size: 32px;
+    margin-bottom: 16px;
+  }
+
+  .about-intro-banner .about-sec-desc {
+    font-size: 16px;
+  }
+}
+
+/* In English the row runs left-to-right, which would put the copy over the
+   trees — push the column to the right, the artwork's empty side, instead. */
+@media (min-width: 992px) {
+  [dir="ltr"] .about-intro-banner .about-sec-content {
+    margin-left: auto;
+  }
+}

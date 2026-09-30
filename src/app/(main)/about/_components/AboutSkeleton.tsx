@@ -1,4 +1,6 @@
 import "@/styles/about-skeleton.css";
+import "@/styles/about-intro.css";
+import { INTRO_IMAGE } from "./AboutIntro";
 
 /* Everything below the hero, as grey bars, until the payload lands.
 
@@ -41,19 +43,23 @@ function CardBody() {
 export default function AboutSkeleton() {
   return (
     <div aria-busy="true" aria-hidden="true">
-      {/* intro */}
+      {/* intro — the artwork is a local file, not API data, so the real
+          banner shows right away and only the copy on it is bars */}
       <section>
         <div className="about-sec container" style={{ marginTop: 50, zIndex: 1 }}>
-          <div className="row align-items-center">
-            <div className="col-12 col-lg-6 about-sec-content" dir="rtl">
-              <Line width="35%" className="sk-line-title" />
-              <Line width="100%" />
-              <Line width="100%" />
-              <Line width="100%" />
-              <Line width="80%" />
-            </div>
-            <div className="col-12 col-lg-6 mt-4 about-sec-img-col">
-              <span className="sk-block sk-block-intro" />
+          <div className="about-intro-banner">
+            <img src={INTRO_IMAGE} alt="" className="about-intro-img" />
+            <div className="row">
+              <div className="col-12 col-lg-6 about-sec-content" dir="rtl">
+                <Line width="35%" className="sk-line-title" />
+                <Line width="100%" />
+                <Line width="100%" />
+                <Line width="100%" />
+                <Line width="100%" />
+                <Line width="100%" />
+                <Line width="100%" />
+                <Line width="60%" />
+              </div>
             </div>
           </div>
         </div>

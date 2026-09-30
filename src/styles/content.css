@@ -160,6 +160,12 @@ filter: drop-shadow(4px 4px 10px #FF7420) drop-shadow(0 4px 10px #000);
 }
 
 /* ---------- Reel grid ---------- */
+.ct-grid-empty {
+  margin: 40px 0;
+  text-align: center;
+  font-size: 16px;
+  color: #6b6b6b;
+}
 .ct-grid {
   display: grid;
   grid-template-columns: repeat(5, 1fr);

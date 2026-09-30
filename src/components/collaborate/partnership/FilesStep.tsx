@@ -1,4 +1,5 @@
 import { IconCloudUpload, IconInfoCircle } from "@/components/ui/icons";
+import { dropZoneProps } from "@/lib/attachment";
 import { FILE_ACCEPT, NOTE_MAX } from "./partnership-form-data";
 
 /* Step 3 — "مرفقات وملاحظات": the company-profile drop zone and any last
@@ -31,12 +32,15 @@ export default function FilesStep({
 
         {/* a <label> wrapper makes the whole panel open the picker without an
             onClick handler; the input stays focusable for keyboard users */}
-        <label className="cl-drop">
+        <label className="cl-drop" {...dropZoneProps(onFile)}>
           <input
             type="file"
             className="cl-drop-input"
             accept={FILE_ACCEPT}
-            onChange={(e) => onFile(e.target.files?.[0])}
+            onChange={(e) => {
+              onFile(e.target.files?.[0]);
+              e.target.value = ""; // the same file can be picked again
+            }}
           />
           <span className="cl-drop-icon" aria-hidden="true">
             <IconCloudUpload />
@@ -45,7 +49,7 @@ export default function FilesStep({
             رفع ملف تعريفي
           </span>
           <span className="cl-drop-hint" data-i18n="collab_pa_f_file_hint">
-            الحد الأقصى لحجم الفيديو المسموح به هو 5 ميجابايت، وتشمل الصيغ
+            الحد الأقصى لحجم الملف التعريفي المسموح به هو 5 ميجابايت، وتشمل الصيغ
             المدعومة png, jpg, pdf
           </span>
         </label>

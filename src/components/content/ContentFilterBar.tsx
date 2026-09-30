@@ -1,21 +1,23 @@
 "use client";
 import {
-  CATEGORIES,
   SORT_OPTIONS,
-  type CategoryValue,
+  type ContentCategoryPill,
   type SortValue,
 } from "./content-data";
 
 type Props = {
-  active: CategoryValue;
-  onSelect: (value: CategoryValue) => void;
+  categories: ContentCategoryPill[];
+  active: string;
+  onSelect: (value: string) => void;
   sort: SortValue;
   onSortChange: (value: SortValue) => void;
 };
 
 /* Category pills (right, RTL) + the sort dropdown (left) above the reel grid.
-   Pills reuse the .cr-content-tab look from the creator page. */
+   Pills reuse the .cr-content-tab look from the creator page; they are the
+   API's `categories`, already in the current language, so no data-i18n. */
 export default function ContentFilterBar({
+  categories,
   active,
   onSelect,
   sort,
@@ -24,7 +26,7 @@ export default function ContentFilterBar({
   return (
     <div className="ct-filter-bar">
       <ul className="ct-tabs">
-        {CATEGORIES.map((c) => (
+        {categories.map((c) => (
           <li key={c.value}>
             <button
               type="button"
@@ -33,7 +35,6 @@ export default function ContentFilterBar({
               }
               onClick={() => onSelect(c.value)}
               aria-pressed={active === c.value}
-              data-i18n={c.key}
             >
               {c.label}
             </button>

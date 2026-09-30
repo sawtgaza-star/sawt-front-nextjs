@@ -1,7 +1,8 @@
 "use client";
 import { useState } from "react";
 import type { PointerEvent as ReactPointerEvent, RefObject } from "react";
-import { REEL_META, type ReelMeta } from "./data";
+import type { ReelMeta } from "./data";
+import { DEFAULT_AVATAR } from "./reel-data";
 import { fmtTime } from "./video-utils";
 import { IconFollow, IconFollowCheck } from "./reel-icons";
 import { useLang } from "@/lib/use-lang";
@@ -12,28 +13,22 @@ type Props = {
   pct: number;
   progressRef: RefObject<HTMLDivElement | null>;
   onProgressPointerDown: (e: ReactPointerEvent<HTMLDivElement>) => void;
-  /** Who posted the reel — fields left out fall back to REEL_META. */
-  meta?: Partial<ReelMeta>;
+  /** Who posted the reel, its caption and when — see ReelModal. */
+  meta: ReelMeta;
 };
 
 /* The bar across the bottom of the reel: creator + follow, caption, scrubber
-   and the "posted" line. Extracted from ReelModal unchanged — same markup,
-   same classes. */
+   and the "posted" line. Extracted from ReelModal — same markup, same
+   classes. */
 export default function ReelInfo({
   current,
   duration,
   pct,
   progressRef,
   onProgressPointerDown,
-  meta: override,
+  meta,
 }: Props) {
-  // a field passed as undefined keeps the default rather than blanking it
-  const meta: ReelMeta = {
-    ...REEL_META,
-    ...Object.fromEntries(
-      Object.entries(override ?? {}).filter(([, value]) => value !== undefined),
-    ),
-  };
+  const external = /^https?:/.test(meta.profile);
   const [following, setFollowing] = useState(false);
   /* Rendered from tr(), not data-i18n — the viewer mounts long after
      applyTranslations() has walked the page. Same as ReelActions. */
@@ -42,11 +37,15 @@ export default function ReelInfo({
   return (
     <div className="cr-reel-info">
       <div className="cr-reel-user">
-        <img src={meta.avatar} alt={meta.user} />
+        <img src={meta.avatar || DEFAULT_AVATAR} alt={meta.user} />
         {/* Plain <a>: the reel viewer runs inside the creators and content
             route groups, which load different stylesheets — the same reason
             the links in SiteNav are not <Link>. */}
-        <a className="cr-reel-user-link" href={meta.profile}>
+        <a
+          className="cr-reel-user-link"
+          href={meta.profile || "#"}
+          {...(external ? { target: "_blank", rel: "noopener noreferrer" } : {})}
+        >
           <span>{meta.user}</span>
         </a>
         <button
@@ -68,7 +67,7 @@ export default function ReelInfo({
           </span>
         )}
       </div>
-      <p className="cr-reel-caption">{meta.caption}</p>
+      {meta.caption && <p className="cr-reel-caption">{meta.caption}</p>}
       <div className="cr-reel-progress-row">
         <span>{fmtTime(current)}</span>
         <div
@@ -83,7 +82,7 @@ export default function ReelInfo({
         </div>
         <span>{duration > 0 ? fmtTime(duration) : "--:--"}</span>
       </div>
-      <span className="cr-reel-posted">{meta.posted}</span>
+      {meta.posted && <span className="cr-reel-posted">{meta.posted}</span>}
     </div>
   );
 }

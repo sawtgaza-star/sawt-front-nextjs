@@ -6,6 +6,7 @@ import { localized } from "@/lib/api/pages";
 import { creatorHref } from "@/lib/api/creator-profile";
 import { useLang } from "@/lib/use-lang";
 import ContentCard from "./creator-content/ContentCard";
+import { reelDetails } from "./creator-content/reel-data";
 /* same full-screen viewer the محتوانا page uses: portalled above the navbar
    and carrying the Reels-style swipe gesture */
 import ReelViewer from "@/components/content/ReelViewer";
@@ -19,8 +20,8 @@ import ReelViewer from "@/components/content/ReelViewer";
    playable URL is skipped. The payload has no categories, so the mock's
    filter pills are gone. "رؤية المزيد" opens the creator's Instagram.
 
-   The viewer's info bar names the creator (`meta`), and each reel's own
-   caption when it has one. */
+   The viewer's info bar names the creator (`meta`); the caption, time, likes
+   and comments are each reel's own (`details`). */
 function reelVideo(item) {
   return item?.video_url || item?.media_url || "";
 }
@@ -70,6 +71,7 @@ export default function CreatorContent({ content, creator, lang }) {
       poster: item.thumbnail || item.thumbnail_url || undefined,
       caption:
         typeof item.caption === "string" ? item.caption : localized(item.caption, lang),
+      details: reelDetails(item, lang),
     }))
     .filter((card) => card.video);
   const isEmpty = !cards.length;
@@ -82,8 +84,6 @@ export default function CreatorContent({ content, creator, lang }) {
     user: creator.name || "",
     avatar: creator.avatar_url || undefined,
     profile: creatorHref(creator) !== "#" ? creatorHref(creator) : undefined,
-    caption: "",
-    posted: "",
   };
 
   return (

@@ -14,7 +14,6 @@ export const CURRENCIES: Currency[] = [
   { value: "JOD", label: "دينار أردني", labelKey: "checkout_currency_jod" },
 ];
 
-/* Upload rules printed under the drop zone (5MB, png/jpg/pdf). */
-export const PROOF_MAX_BYTES = 5 * 1024 * 1024;
-export const PROOF_ACCEPT = ".png,.jpg,.jpeg,.pdf";
-export const PROOF_TYPES = ["image/png", "image/jpeg", "application/pdf"];
+/* the site-wide upload rule (5MB, png/jpg/pdf, checked by content) — see
+   lib/attachment */
+export { ATTACH_ACCEPT as PROOF_ACCEPT } from "@/lib/attachment";

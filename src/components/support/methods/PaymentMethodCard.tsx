@@ -59,10 +59,10 @@ export default function PaymentMethodCard({
           <span className="sp-method-dot" aria-hidden="true"></span>
         </span>
 
-        <h3 className="sp-method-title" data-i18n={method.titleKey || undefined}>
+        <h3 className="sp-method-title">
           {method.title}
         </h3>
-        <p className="sp-method-desc" data-i18n={method.descKey || undefined}>
+        <p className="sp-method-desc">
           {method.desc}
         </p>
       </label>

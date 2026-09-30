@@ -8,7 +8,8 @@ import { IconChevronLeftSmall } from "@/components/ui/icons";
    it relabels itself ("اتمام العملية") and drops the chevron. Without either
    handler the forward control falls back to the "#" placeholder.
    A label from the API (`backText`, or `nextLabel` with no `nextLabelKey`)
-   renders without a data-i18n key — it is already in the current language. */
+   renders without a data-i18n key — it is already in the current language.
+   `busy` locks both buttons while a step's API call is in flight. */
 export default function CheckoutNav({
   prevHref,
   onPrev,
@@ -17,6 +18,7 @@ export default function CheckoutNav({
   nextLabelKey = "checkout_next",
   nextArrow = true,
   backText = "",
+  busy = false,
 }: {
   prevHref?: string;
   onPrev?: () => void;
@@ -25,6 +27,7 @@ export default function CheckoutNav({
   nextLabelKey?: string;
   nextArrow?: boolean;
   backText?: string;
+  busy?: boolean;
 }) {
   /* points back = towards the start edge, so it is flipped in RTL */
   const backArrow = (
@@ -57,14 +60,25 @@ export default function CheckoutNav({
           {backLabel}
         </a>
       ) : (
-        <button type="button" className="sp-wizard-back" onClick={onPrev}>
+        <button
+          type="button"
+          className="sp-wizard-back"
+          onClick={onPrev}
+          disabled={busy}
+        >
           {backArrow}
           {backLabel}
         </button>
       )}
 
       {onNext ? (
-        <button type="button" className="sp-wizard-next" onClick={onNext}>
+        <button
+          type="button"
+          className={"sp-wizard-next" + (busy ? " is-busy" : "")}
+          onClick={onNext}
+          disabled={busy}
+          aria-busy={busy || undefined}
+        >
           {nextInner}
         </button>
       ) : (
