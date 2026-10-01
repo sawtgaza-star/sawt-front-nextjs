@@ -219,27 +219,30 @@ left: 12px;
 }
 .team-detail-photo {
   order: 2; /* image sits on the left (visual start) in RTL */
+  /* Fixed waveform backdrop; the mic portrait (cut-out PNG from the API)
+     is laid centered on top of it. */
+  position: relative;
+  aspect-ratio: 6 / 5;
+  border-radius: 32px;
+  overflow: hidden;
+  background: #fcfaf5 url("/assets/images/Minimalist Green and Amber Waveform.png") center / cover no-repeat;
 }
 
-/* Only while the photo is still downloading (see TeamDetailPhoto): the column
-   has no height of its own until the image arrives, so it borrows the ratio
-   TeamProfileSkeleton already uses for this box and shimmers in its place.
-   The class comes off on load, and with it the ratio — the loaded portrait is
-   laid out exactly as before, by its own proportions at 110% width.
-
-   No radius of its own: the box is square-cornered on desktop and 32px under
-   the mobile breakpoint, and naming one here would win over that rule (two
-   classes to one) and square the corners on mobile too. */
-.team-detail-photo.is-loading {
-  aspect-ratio: 1 / 1.15;
-  background: linear-gradient(90deg, #e2e5e8 25%, #eef1f3 37%, #e2e5e8 63%);
-  background-size: 400% 100%;
-  animation: sk-shimmer 1.4s ease-in-out infinite;
+/* Only while the mic portrait is still downloading (see TeamDetailPhoto):
+   the waveform backdrop holds the box, and the image fades in on load. */
+.team-detail-photo.is-loading img {
+  opacity: 0;
 }
 .team-detail-photo img {
-  width: 110%;
-  height: auto;
+  position: absolute;
+  inset: 0;
+  margin: auto;
+  width: auto;
+  max-width: 100%;
+  height: 92%;
+  object-fit: contain;
   display: block;
+  transition: opacity 0.3s ease;
 }
 
 .team-detail-name {
@@ -429,9 +432,7 @@ left: 12px;
   }
   /* Desktop bleeds the portrait 10% past its box; on stacked mobile that
      overflows the centered column, so pin it back to the box width. */
-  .team-detail-photo img {
-    width: 100%;
-  }
+
   .team-members-row {
     grid-template-columns: repeat(3, 1fr);
   }
@@ -450,10 +451,7 @@ left: 12px;
     order: 0;
     border-radius:32px;
   }
-    .team-detail-photo img {
-    
-    border-radius:32px;
-  }
+
   .team-detail-info {
     order: 1;
   }

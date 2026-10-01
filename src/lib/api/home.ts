@@ -194,6 +194,9 @@ export type HomeTeamMember = {
   uuid?: string;
   id?: number;
   image?: string | null;
+  /** The member already composited inside the mic (transparent PNG) — drawn
+      whole on the card in place of the frame + photo box. */
+  mic_image?: string | null;
   name?: Localized;
   role?: Localized;
   major?: HomeTeamMajor;
@@ -362,6 +365,7 @@ function withAssetUrls(page: HomePage): HomePage {
       items: mapList(page.team.items, (item) => ({
         ...item,
         image: assetUrl(item.image),
+        mic_image: assetUrl(item.mic_image),
       })),
     },
     join_cta: page.join_cta && {

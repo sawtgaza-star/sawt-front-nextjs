@@ -99,6 +99,8 @@ export type TeamMemberDetail = {
   years_of_experience?: number | null;
   bio?: Localized;
   photo_url?: string | null;
+  /** Cut-out mic portrait (transparent PNG) drawn over the waveform backdrop. */
+  mic_photo_url?: string | null;
   socials?: TeamSocials;
   sort_order?: number;
   major?: TeamMemberMajor;
@@ -186,6 +188,7 @@ export async function fetchTeamMember(
     member: page.member && {
       ...page.member,
       photo_url: assetUrl(page.member.photo_url),
+      mic_photo_url: assetUrl(page.member.mic_photo_url),
     },
     intro: page.intro && { ...page.intro, image_url: assetUrl(page.intro.image_url) },
     related: page.related && {

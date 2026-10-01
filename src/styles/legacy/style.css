@@ -4542,6 +4542,37 @@ svg {
   width: 100%;
 }
 
+/* ‎mic_image‎ من الـAPI بعد قصّه (‎src/lib/mic-cutout.ts‎): خلفيته أُزيلت
+   والصورة مقصوصة على حدود المايك نفسه، أياً كان حجمه في الملف المرفوع.
+   الصندوق بنفس نِسبة ‎مايك عوض 6.png‎ (310×587) والمايك يوضع في نفس المستطيل
+   الذي يشغله مايك الإطار المحلي (17..292 × 3..560)، فتتساوى كل البطاقات ويبقى
+   الاسم (‎bottom: 39%‎) على جسم المايك. ‎opacity‎ حتى يجهز القصّ، فلا تظهر
+   الصورة الخام بخلفيتها. المحدد مزدوج ليغلب
+   ‎.owl-carousel .owl-item img { width: 100% }‎ */
+.mic-composed-box {
+  position: relative;
+  aspect-ratio: 310 / 587;
+}
+
+.mic-container .mic-composed-box .mic-frame-composed {
+  position: absolute;
+  top: 0.51%;
+  left: 5.48%;
+  width: 88.71%;
+  height: 94.89%;
+  max-width: none;
+  /* ‎fill‎ لا ‎contain‎: الصورة مقصوصة على حدود المايك، فتملأ المستطيل نفسه
+     دائماً وتتطابق أحجام كل المايكات مهما اختلف الملف المرفوع */
+  object-fit: fill;
+  z-index: 2;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.mic-container .mic-composed-box .mic-frame-composed.is-ready {
+  opacity: 1;
+}
+
 /* content page */
 
 .nav-pills .nav-link.active {
