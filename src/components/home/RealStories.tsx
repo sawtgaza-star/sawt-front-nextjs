@@ -27,7 +27,7 @@ function StoryCard({ story }) {
       <div className="rs-card">
         {" "}
         {story.image ? (
-          <img className="rs-card-bg" src={story.image} alt="" />
+          <img loading="lazy" decoding="async" className="rs-card-bg" src={story.image} alt="" />
         ) : null}{" "}
         <div className="rs-card-info">
           {" "}

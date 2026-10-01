@@ -49,6 +49,11 @@ function HeroSlide({ slide, index, trust, support, collaborate, lang }) {
           src={slide.image_url}
           className="d-block w-100 carousel-img"
           alt={title}
+          /* the first slide is the page's LCP image: fetch it ahead of the
+             scripts. The others aren't lazy — Bootstrap reveals them mid-slide,
+             too late to start a request — they just yield the bandwidth. */
+          fetchPriority={index === 0 ? "high" : "low"}
+          decoding={index === 0 ? undefined : "async"}
         />
       ) : null}{" "}
       <div className="carousel-caption-custom text-center">

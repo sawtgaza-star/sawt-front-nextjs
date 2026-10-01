@@ -1,6 +1,6 @@
 import { localized } from "@/lib/api/pages";
 import type { TeamDetailLabels, TeamMemberDetail } from "@/lib/api/team";
-import { PLACEHOLDER_PHOTO, toSocialLinks } from "./team-data";
+import { toSocialLinks } from "./team-data";
 import TeamDetailPhoto from "./TeamDetailPhoto";
 
 /* Member detail hero: the mic-framed portrait (left in RTL) beside the member's
@@ -100,7 +100,7 @@ export default function TeamMemberProfile({
             )}
           </div>
 
-          <TeamDetailPhoto src={member.photo_url || PLACEHOLDER_PHOTO} alt={name} />
+          <TeamDetailPhoto src={member.mic_photo_url} alt={name} />
         </div>
       </div>
     </section>

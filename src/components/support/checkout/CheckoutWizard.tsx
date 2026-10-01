@@ -13,6 +13,7 @@ import CheckoutSkeleton from "./CheckoutSkeleton";
 import TransferDetails from "./TransferDetails";
 import { CHECKOUT_SCREENS, resolveStepLabels } from "./checkout-steps-data";
 import { useCheckoutFlow } from "./use-checkout-flow";
+import { RemixiconCss } from "@/components/ui/CdnStylesheets";
 
 /* The donation wizard: "التالي" swaps the screen in place instead of
    navigating, and "السابق" walks back — out of the first screen it leaves for
@@ -60,6 +61,7 @@ export default function CheckoutWizard() {
 
   return (
     <div className="sp-wizard" ref={wizard}>
+      <RemixiconCss />
       <CheckoutSteps
         current={screen.current}
         done={screen.done}

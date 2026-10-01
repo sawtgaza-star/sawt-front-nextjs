@@ -21,7 +21,7 @@ export default function NewsCard({ item }: { item: NewsItem }) {
       <div className="card h-100 news-card">
         {/* src="" would make the browser re-request the page as an image */}
         {item.img ? (
-          <img src={item.img} className="card-img-top" alt={item.alt} />
+          <img loading="lazy" decoding="async" src={item.img} className="card-img-top" alt={item.alt} />
         ) : null}
         <div className="card-body">
           <h5 className="card-title fw-bold" data-i18n={item.titleKey}>{item.title}</h5>

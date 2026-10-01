@@ -3,9 +3,11 @@
 import { localized } from "@/lib/api/pages";
 import type { HomeTeam } from "@/lib/api/home";
 import { splitHeading } from "./home-text";
+import MicCutouts from "./MicCutouts";
 
-/* The API's `team` block. Each card shows the member's photo behind the mic
-   frame and their name — the design has no room for the role, so `role` /
+/* The API's `team` block. Each card shows the member's `mic_image` (the photo
+   already composited inside the mic) — or, when it is null, the bare `image`
+   behind the local mic frame — and their name — the design has no room for the role, so `role` /
    `major` are carried in the payload but not drawn here.
 
    The scattered photos behind the section used to point at member1..4.jpg,
@@ -21,10 +23,19 @@ function TeamCard({ member, profileCta }) {
   return (
     <div className="item">
       <div className="mic-container">
-        <div className="member-photo-box">
-          {member.photo ? <img src={member.photo} alt={member.name} /> : null}
-        </div>
-        <img src="/assets/images/مايك عوض 6.png" className="mic-frame" alt="" />
+        {member.mic ? (
+          <div className="mic-composed-box">
+            {/* src is filled in by <MicCutouts> once the backdrop is cut away */}
+            <img data-mic-src={member.mic} className="mic-frame-composed" alt="" />
+          </div>
+        ) : (
+          <>
+            <div className="member-photo-box">
+              {member.photo ? <img loading="lazy" decoding="async" src={member.photo} alt={member.name} /> : null}
+            </div>
+            <img loading="lazy" decoding="async" src="/assets/images/مايك عوض 6.png" className="mic-frame" alt="" />
+          </>
+        )}
         <div className="member-name-tag">{member.name}</div>
       </div>
       {profileCta ? (
@@ -55,6 +66,7 @@ export default function TeamSection({
     key: item.uuid || item.id,
     name: localized(item.name, lang),
     photo: item.image,
+    mic: item.mic_image,
     href: item.uuid ? `/team/${item.uuid}` : "#",
   }));
 
@@ -67,11 +79,11 @@ export default function TeamSection({
     <section className="team-section text-center">
       <div className="bg-scattered-photos">
         {backdrop.map((member, index) => (
-          <img key={member.key ?? index} src={member.photo} className={`pic-${index + 1}`} alt="" />
+          <img loading="lazy" decoding="async" key={member.key ?? index} src={member.photo} className={`pic-${index + 1}`} alt="" />
         ))}
       </div>
-      <img src="/assets/images/leaf_cutout.png" className="olive-branch branch-left-top" alt="Olive Branch" />
-      <img src="/assets/images/leaf_cutout.png" className="olive-branch branch-right-bottom" alt="Olive Branch" />
+      <img loading="lazy" decoding="async" src="/assets/images/leaf_cutout.png" className="olive-branch branch-left-top" alt="Olive Branch" />
+      <img loading="lazy" decoding="async" src="/assets/images/leaf_cutout.png" className="olive-branch branch-right-bottom" alt="Olive Branch" />
       <div className="container font-42">
         {title ? (
           <h1 className="title">
@@ -85,6 +97,7 @@ export default function TeamSection({
             <TeamCard key={member.key ?? index} member={member} profileCta={profileCta} />
           ))}
         </div>
+        <MicCutouts urls={members.map((member) => member.mic).filter(Boolean)} />
       </div>
     </section>
   );

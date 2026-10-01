@@ -6,6 +6,7 @@ import { localized } from "@/lib/api/pages";
 import type { HomeReviews, HomeReviewReel } from "@/lib/api/home";
 import { bySortOrder, formatViews, splitHeading } from "./home-text";
 import { reviewComments } from "./reviews-data";
+import { useNearViewport } from "./use-near-viewport";
 
 /* "آراؤكم في المحتوى" — the whole section is the API's `reviews` block now:
    the heading and the lead, the reel column beside them, and the comment
@@ -49,6 +50,11 @@ export default function Reviews({
       ? []
       : bySortOrder(data?.reels).filter((reel) => reel.video_url);
 
+  /* The posters are attached only once the column nears the viewport — see
+     use-near-viewport for why. Until then each reel is its own dark frame,
+     the same box it has with a poster, so nothing moves when they appear. */
+  const [reelsRef, reelsNear] = useNearViewport<HTMLDivElement>();
+
   /* Hand the thread to lib/legacy-main. The copy on `window` is for ordering:
      LegacyInit imports that module dynamically, so on the first paint the
      setter may not exist yet — its own boot (and replayComments, on a repeat
@@ -88,13 +94,16 @@ export default function Reviews({
             </div>
 
             <div className="col-lg-3 col-md-6">
-              <div className="review-reels reels-container" id="reelsContainer">
+              <div className="review-reels reels-container" id="reelsContainer" ref={reelsRef}>
                 {reels.map((reel, index) => (
                   <div className="reel-item" data-index={index} key={reel.id ?? index}>
                     <div className="reel-media">
                       <video
                         src={reel.video_url}
-                        poster={reel.thumbnail || undefined}
+                        poster={(reelsNear && reel.thumbnail) || undefined}
+                        /* the poster stands in until a tap: no Instagram bytes
+                           are spent on reels nobody plays */
+                        preload="none"
                         loop
                         playsInline
                         onClick={(e) => {

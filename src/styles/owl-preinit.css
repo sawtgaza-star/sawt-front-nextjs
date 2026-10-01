@@ -1,0 +1,153 @@
+/* =========================================================
+   Owl carousels BEFORE Owl runs.
+
+   owl.carousel.css hides every `.owl-carousel` until the script adds
+   `.owl-loaded`. That was harmless while the home page shipped as a skeleton,
+   but its sections are now in the static HTML (app/(main)/page.tsx fetches
+   them at build time) — and on a phone the scripts arrive seconds after the
+   first paint. Hidden, the four sliders would take no room until then and
+   shove everything below them down when they appear: the layout shift this
+   change is meant to remove.
+
+   So until `.owl-loaded`, each carousel is laid out the way Owl is about to
+   lay it out: one row, the same number of cards per breakpoint, the same
+   gaps and stage padding — every figure below is copied from the matching
+   config in lib/owl-sliders.ts, and must follow it if that changes. Owl's
+   item width is (W − 2·stagePadding + margin) / items − margin. The cards are
+   the same `.item` elements Owl will wrap, so their own CSS sizes them alike.
+
+   Owl's breakpoints compare against window.innerWidth, which is what
+   min-width media queries read too. `direction: rtl` matches `rtl: true`
+   (Owl puts `.owl-rtl` on the element in English as well).
+   ========================================================= */
+
+.owl-carousel:not(.owl-loaded) {
+  display: flex;
+  flex-wrap: nowrap;
+  align-items: flex-start;
+  overflow: hidden;
+  direction: rtl;
+  /* = style.css's `.owl-carousel .owl-stage-outer { padding: 3px 0 }` */
+  padding-block: 3px;
+}
+
+.owl-carousel:not(.owl-loaded) > .item {
+  flex: 0 0 auto;
+  min-width: 0;
+}
+
+/* ---- آخر أخبارنا — .creators-carousel
+   0: autoWidth (the card's own 70vw), margin 12 · 600: 2, margin 20 · 1000: 3 */
+.creators-carousel:not(.owl-loaded) {
+  column-gap: 12px;
+}
+@media (min-width: 600px) {
+  .creators-carousel:not(.owl-loaded) {
+    column-gap: 20px;
+  }
+  .creators-carousel:not(.owl-loaded) > .item {
+    width: calc((100% + 20px) / 2 - 20px);
+  }
+}
+@media (min-width: 1000px) {
+  .creators-carousel:not(.owl-loaded) > .item {
+    width: calc((100% + 20px) / 3 - 20px);
+  }
+}
+
+/* ---- صناع المحتوى — .creators-carousel2
+   0: 1, center, stagePadding 58, margin 12 · 600: 2 · 1100: 3 · 1300: 4 ·
+   1500: 5, margin 25 */
+.creators-carousel2:not(.owl-loaded) {
+  column-gap: 12px;
+}
+.creators-carousel2:not(.owl-loaded) > .item {
+  width: calc(100% - 2 * 58px);
+}
+@media (min-width: 600px) {
+  .creators-carousel2:not(.owl-loaded) {
+    column-gap: 25px;
+  }
+  .creators-carousel2:not(.owl-loaded) > .item {
+    width: calc((100% + 25px) / 2 - 25px);
+  }
+}
+@media (min-width: 1100px) {
+  .creators-carousel2:not(.owl-loaded) > .item {
+    width: calc((100% + 25px) / 3 - 25px);
+  }
+}
+@media (min-width: 1300px) {
+  .creators-carousel2:not(.owl-loaded) > .item {
+    width: calc((100% + 25px) / 4 - 25px);
+  }
+}
+@media (min-width: 1500px) {
+  .creators-carousel2:not(.owl-loaded) > .item {
+    width: calc((100% + 25px) / 5 - 25px);
+  }
+}
+
+/* ---- قصص حقيقية — .real-stories-carousel
+   0: 1 · 768: 2, margin 20 */
+.real-stories-carousel:not(.owl-loaded) {
+  column-gap: 20px;
+}
+.real-stories-carousel:not(.owl-loaded) > .item {
+  width: 100%;
+}
+@media (min-width: 768px) {
+  .real-stories-carousel:not(.owl-loaded) > .item {
+    width: calc((100% + 20px) / 2 - 20px);
+  }
+}
+/* …plus the room its `.owl-dots` pill will take under the stage (style.css:
+   25px tall, 16px margin on phones / 26px above 768px). Owl only draws dots
+   when there are more stories than fit — hence the :has() item counts. */
+@media (max-width: 767.98px) {
+  .real-stories-carousel:not(.owl-loaded):has(> .item:nth-child(2)) {
+    padding-bottom: calc(3px + 16px + 25px);
+  }
+}
+@media (min-width: 768px) {
+  .real-stories-carousel:not(.owl-loaded):has(> .item:nth-child(3)) {
+    padding-bottom: calc(3px + 26px + 25px);
+  }
+}
+
+/* ---- الفريق — .team-carousel
+   0: 1, center, stagePadding 70, margin 10 · 400: stagePadding 95 ·
+   600: 2, margin 20 · 1000: 4 */
+.team-carousel:not(.owl-loaded) {
+  column-gap: 10px;
+}
+.team-carousel:not(.owl-loaded) > .item {
+  width: calc(100% - 2 * 70px);
+}
+.team-carousel:not(.owl-loaded) > .item:first-child {
+  margin-inline-start: 70px;
+}
+@media (min-width: 400px) {
+  .team-carousel:not(.owl-loaded) > .item {
+    width: calc(100% - 2 * 95px);
+  }
+  .team-carousel:not(.owl-loaded) > .item:first-child {
+    margin-inline-start: 95px;
+  }
+}
+@media (min-width: 600px) {
+  .team-carousel:not(.owl-loaded) {
+    column-gap: 20px;
+  }
+  .team-carousel:not(.owl-loaded) > .item {
+    width: calc((100% + 20px) / 2 - 20px);
+  }
+  .team-carousel:not(.owl-loaded) > .item:first-child {
+    margin-inline-start: 0;
+  }
+}
+@media (min-width: 1000px) {
+  .team-carousel:not(.owl-loaded) > .item {
+    width: calc((100% + 20px) / 4 - 20px);
+  }
+}

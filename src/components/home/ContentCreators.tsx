@@ -56,12 +56,12 @@ export default function ContentCreators({
         {" "}
         <div className="container position-relative">
           {" "}
-          <img
+          <img loading="lazy" decoding="async"
             src="/assets/images/leaf_cutout.png"
             className="olive-branch branch-right-top-home-section"
             alt="Olive Branch"
           />{" "}
-          <img
+          <img loading="lazy" decoding="async"
             src="/assets/images/leaf_cutout.png"
             className="olive-branch branch-left-bottom-home-section"
             alt="Olive Branch"

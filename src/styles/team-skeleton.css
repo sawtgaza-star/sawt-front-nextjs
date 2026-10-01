@@ -83,12 +83,12 @@
   border-radius: 14px;
 }
 
-/* The profile's portrait column — the photo is 110% wide and free-height, so
-   the placeholder takes a portrait box in its place. */
+/* The profile's portrait column — same fixed 6:5 box as .team-detail-photo,
+   so nothing jumps when the real portrait replaces it. */
 .team-sk-portrait {
   width: 100%;
-  aspect-ratio: 1 / 1.15;
-  border-radius: 18px;
+  aspect-ratio: 6 / 5;
+  border-radius: 32px;
 }
 
 /* Air between the profile's blocks (name/role → bio → button). */

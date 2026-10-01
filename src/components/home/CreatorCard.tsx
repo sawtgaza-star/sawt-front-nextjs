@@ -43,7 +43,7 @@ export default function CreatorCard({
                 <div className="img-circle rounded-circle p-2 mb-3 d-flex justify-content-center align-items-center">
                   {" "}
                   {creator.avatar ? (
-                    <img
+                    <img loading="lazy" decoding="async"
                       className="rounded-circle object-fit-cover"
                       style={{ width: "95px", height: "95px" }}
                       src={creator.avatar}

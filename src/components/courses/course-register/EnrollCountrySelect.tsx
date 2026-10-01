@@ -3,6 +3,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { COUNTRIES, type Country } from "@/lib/countries";
 import { useLang } from "@/lib/use-lang";
 import { IconCaretDown } from "./enroll-icons";
+import { FlagIconsCss } from "@/components/ui/CdnStylesheets";
 
 /* The dial-code picker in the enrollment form's phone field.
 
@@ -83,6 +84,7 @@ export default function EnrollCountrySelect({
       className={"join-country-box crs-en-country" + (open ? " is-open" : "")}
       ref={boxRef}
     >
+      <FlagIconsCss />
       <button
         type="button"
         className="crs-en-country-btn"

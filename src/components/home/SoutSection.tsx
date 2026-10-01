@@ -18,7 +18,7 @@ import { bySortOrder } from "./home-text";
 function FeatureIcon({ url }: { url?: string | null }) {
   if (!url) return null;
   return (
-    <img
+    <img loading="lazy" decoding="async"
       src={url}
       alt=""
       style={{ width: "1.2em", height: "1.2em", objectFit: "contain" }}
@@ -78,7 +78,7 @@ export default function SoutSection({
           {/*  نسخة الجوال: الصورة أولاً ثم النص وشبكة مزايا 2×2  */}{" "}
           <div className="sout-mobile d-md-none">
             {" "}
-            {image ? <img className="image-swat" src={image} alt="" /> : null}{" "}
+            {image ? <img loading="lazy" decoding="async" className="image-swat" src={image} alt="" /> : null}{" "}
             {title ? (
               <h3 className="sout-mobile-title fw-bold text-center">{title}</h3>
             ) : null}{" "}
@@ -119,7 +119,7 @@ export default function SoutSection({
             <div className="col-lg-6 mt-2 order-lg-2">
               {" "}
               {image ? (
-                <img className="image-swat" src={image} alt="" />
+                <img loading="lazy" decoding="async" className="image-swat" src={image} alt="" />
               ) : null}{" "}
             </div>{" "}
             <div

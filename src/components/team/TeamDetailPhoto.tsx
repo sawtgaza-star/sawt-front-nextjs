@@ -1,46 +1,42 @@
 "use client";
-import { useCallback, useState } from "react";
+import { useEffect, useState } from "react";
+import { cutoutMic } from "@/lib/mic-cutout";
 
-/* The profile portrait, with a placeholder under it until the photo paints.
+/* The profile's mic portrait over the fixed waveform backdrop.
 
-   By the time this renders, GET /pages/team/{uuid} has already answered —
-   TeamProfileSkeleton is gone and the name, the role and the bio are all on
-   screen — but the JPEG itself is still downloading, and the column sat empty
-   until it arrived.
-
-   It is a client leaf, and the only one in the profile, because the box cannot
-   hold its place in CSS alone: `.team-detail-photo img` is 110% wide at
-   `height: auto`, so the column takes the photo's own proportions and a
-   placeholder would have to pin it to a fixed ratio — which would change how
-   the loaded photo is laid out. Instead the ratio is worn only while
-   `.is-loading` is on (see team.css), and dropping the class restores exactly
-   today's rendering.
-
-   `complete` is checked on mount as well as `onLoad`: a cached photo can
-   finish before React attaches its handler, and the class would never come
-   off. `onError` clears it too — a broken src must not shimmer forever. */
+   The box itself is fixed (aspect-ratio + the waveform in team.css). The
+   API's `mic_photo_url` arrives with whatever background it was uploaded on
+   (transparent, flat gray, even a painted checkerboard), so it goes through
+   lib/mic-cutout first: backdrop removed, cropped to the mic. Until that is
+   ready the image stays transparent (`.is-loading`), then fades in centered.
+   If the cutout fails, the upload is shown as it came. */
 export default function TeamDetailPhoto({
   src,
   alt,
 }: {
-  src: string;
+  src?: string | null;
   alt: string;
 }) {
-  const [loaded, setLoaded] = useState(false);
+  const [cut, setCut] = useState<string | null>(null);
 
-  const ref = useCallback((node: HTMLImageElement | null) => {
-    if (node?.complete) setLoaded(true);
-  }, []);
+  useEffect(() => {
+    if (!src) return;
+    let cancelled = false;
+    setCut(null);
+    cutoutMic(src)
+      .catch(() => src)
+      .then((url) => {
+        if (!cancelled) setCut(url);
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, [src]);
 
   return (
-    <div className={"team-detail-photo" + (loaded ? "" : " is-loading")}>
-      <img
-        ref={ref}
-        src={src}
-        alt={alt}
-        onLoad={() => setLoaded(true)}
-        onError={() => setLoaded(true)}
-      />
+    <div className={"team-detail-photo" + (src && !cut ? " is-loading" : "")}>
+      {/* No mic portrait yet: the waveform backdrop stands on its own. */}
+      {cut ? <img src={cut} alt={alt} /> : null}
     </div>
   );
 }

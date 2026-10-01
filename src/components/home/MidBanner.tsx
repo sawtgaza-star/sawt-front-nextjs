@@ -17,7 +17,7 @@ function PartnerLogos({ partners, hidden }) {
     <div className="marquee-group" aria-hidden={hidden ? "true" : undefined}>
       {" "}
       {partners.map((partner, index) => (
-        <img key={index} src={partner.logo} alt={partner.name} />
+        <img loading="lazy" decoding="async" key={index} src={partner.logo} alt={partner.name} />
       ))}{" "}
     </div>
   );

@@ -36,12 +36,12 @@ function PlatformCard({ item, index }) {
       <div className="platform-card">
         <div className="image-container">
           {item.image ? (
-            <img src={item.image} alt={item.title} className="img-fluid" />
+            <img loading="lazy" decoding="async" src={item.image} alt={item.title} className="img-fluid" />
           ) : null}
           <div className="up-center-icon">
             <div className="center-img">
               {item.iconUrl ? (
-                <img src={item.iconUrl} alt="" style={{ objectFit: "contain" }} />
+                <img loading="lazy" decoding="async" src={item.iconUrl} alt="" style={{ objectFit: "contain" }} />
               ) : (
                 <Logo />
               )}
