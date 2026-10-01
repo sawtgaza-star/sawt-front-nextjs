@@ -3,6 +3,23 @@ name: Deploy Next.js Frontend
 on:
   push:
     branches: [main]
+  # The home page bakes GET /pages/home into index.html at build time
+  # (src/app/(main)/page.tsx), so a rebuild is what publishes CMS edits to the
+  # static HTML. The browser still refreshes from the API on load; these keep
+  # that refresh a no-op most of the time.
+  schedule:
+    - cron: "0 */6 * * *" # every 6h — also renews the reels' signed Instagram links (~36h TTL)
+  workflow_dispatch: # manual "Run workflow" button
+  repository_dispatch:
+    # backend calls POST /repos/{owner}/{repo}/dispatches
+    #   {"event_type": "content-updated"} after an editor saves
+    types: [content-updated]
+
+# A save burst must not run two deploys over each other. Queued, not cancelled:
+# killing a run mid-rsync would leave public_html half-updated.
+concurrency:
+  group: deploy-frontend
+  cancel-in-progress: false
 
 jobs:
   deploy:

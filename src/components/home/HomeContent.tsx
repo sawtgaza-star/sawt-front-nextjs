@@ -5,11 +5,21 @@
    plain functions.
 
    The page has no copy of its own — every word and image below comes from
-   GET /pages/home. So the first render, server prerender and hydration alike,
-   shows <HomeSkeleton />: the hero's <header> chrome plus grey bars in the
-   shape of the sections. They give way to the real thing when the response
-   lands, or to nothing at all if the request fails — see lib/api/use-home-page
-   for why an outage isn't surfaced.
+   GET /pages/home. `initialPage` is that payload as fetched at build time
+   (app/(main)/page.tsx), so normally the prerendered HTML is already the real
+   page. Only when the build couldn't reach the API does the first render show
+   <HomeSkeleton /> — the hero's <header> chrome plus grey bars in the shape of
+   the sections — until the browser's own request lands, or nothing at all if
+   that fails too. See lib/api/use-home-page for the refresh and the outages.
+
+   A browser answer that differs from the baked copy bumps `version`. The four
+   carousel sections are keyed by a hash of their own block (`contentKey`), so
+   only a carousel whose data actually changed is remounted: Owl has moved its
+   cards into its own stage + clones by then, and a React patch of that markup
+   would corrupt it. Everything else — the reels' expiring Instagram links,
+   copy, the header — is patched in place as usual. The <header> must not be
+   remounted anyway: SiteNav lives in it and initHeaderPin() has re-parented
+   its nodes; the Bootstrap carousel is restarted below.
 
    RE-BOOTING THE LEGACY WIDGETS
    -----------------------------
@@ -19,8 +29,9 @@
 
      - the four Owl carousels. Owl marks an element `.owl-loaded` and skips it
        on a repeat call, which is why the skeleton renders no `.owl-carousel`
-       at all: nothing gets initialised on an empty stage, and this call is
-       the first one that sees the items.
+       at all: nothing gets initialised on an empty stage. With a baked payload
+       LegacyInit's own call already sees the items, and this one is a no-op
+       until a remount brings fresh, un-initialised carousels.
      - the Bootstrap hero carousel. Its element IS in the first render (SiteNav
        lives inside that header), but with an empty `.carousel-inner`, so the
        instance Bootstrap made has no slides to cycle — it is disposed and
@@ -47,6 +58,15 @@ import TeamSection from "./TeamSection";
 import JoinUs from "./JoinUs";
 import Reviews from "./Reviews";
 import HomeSkeleton from "./HomeSkeleton";
+import type { HomePage } from "@/lib/api/home";
+
+/** A short, stable key for a section's payload block — changes iff the block does. */
+function contentKey(block: unknown): string {
+  const text = JSON.stringify(block ?? null);
+  let hash = 5381;
+  for (let i = 0; i < text.length; i++) hash = ((hash << 5) + hash + text.charCodeAt(i)) | 0;
+  return `${text.length}-${hash >>> 0}`;
+}
 
 /** Rebuild the hero's Bootstrap carousel now that it has slides. */
 function restartHeroCarousel() {
@@ -58,8 +78,13 @@ function restartHeroCarousel() {
   bootstrap.Carousel.getOrCreateInstance(element);
 }
 
-export default function HomeContent() {
-  const { page, loading } = useHomePage();
+export default function HomeContent({
+  initialPage = null,
+}: {
+  /** /pages/home as fetched at build time; null if the build couldn't reach it. */
+  initialPage?: HomePage | null;
+}) {
+  const { page, loading, version } = useHomePage(initialPage);
   const { lang } = useLang();
 
   // Widgets that read the markup once — run after the sections first appear.
@@ -81,7 +106,7 @@ export default function HomeContent() {
     return () => {
       cancelled = true;
     };
-  }, [loading]);
+  }, [loading, version]);
 
   // …and the two that also have to follow every language toggle.
   useEffect(() => {
@@ -96,7 +121,7 @@ export default function HomeContent() {
     return () => {
       cancelled = true;
     };
-  }, [loading, lang]);
+  }, [loading, lang, version]);
 
   return (
     <>
@@ -113,12 +138,12 @@ export default function HomeContent() {
         ) : (
           <>
             <SoutSection data={page?.who_we_are} lang={lang} />
-            <LatestNews data={page?.news} lang={lang} />
-            <ContentCreators data={page?.creators} lang={lang} />
+            <LatestNews key={contentKey(page?.news)} data={page?.news} lang={lang} />
+            <ContentCreators key={contentKey(page?.creators)} data={page?.creators} lang={lang} />
             <PlatformSections data={page?.platform_sections} lang={lang} />
             <MidBanner data={page?.partners} lang={lang} />
-            <RealStories data={page?.stories} lang={lang} />
-            <TeamSection data={page?.team} lang={lang} />
+            <RealStories key={contentKey(page?.stories)} data={page?.stories} lang={lang} />
+            <TeamSection key={contentKey(page?.team)} data={page?.team} lang={lang} />
             <JoinUs data={page?.join_cta} lang={lang} />
             <Reviews data={page?.reviews} lang={lang} />
           </>
