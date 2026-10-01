@@ -3,9 +3,12 @@
 /* eslint-disable */
 
 /* "انضم إلينا" stepper modal (opened from the JoinUs section; logic in lib/legacy-home). */
+import { DeferredStylesheet, FLAG_ICONS_CSS } from "@/components/ui/CdnStylesheets";
 export default function JoinModal() {
   return (
     <>
+      {/* the country picker's flags — the dialog is closed on load, so off the critical path */}
+      <DeferredStylesheet href={FLAG_ICONS_CSS} />
 <div className="join-modal-overlay" id="joinModal" aria-hidden="true"> <div className="join-modal" role="dialog" aria-modal="true" aria-labelledby="joinModalTitle"> {/*  Header  */} <div className="join-modal-head"> <button type="button" className="join-modal-close" id="joinModalClose" aria-label="إغلاق"> <i className="fa-solid fa-xmark"></i> </button> <h3 className="join-modal-title" id="joinModalTitle" data-i18n="jm_title">
             انضم إلينا كصانع محتوى
           </h3> <p className="join-modal-subtitle" data-i18n="jm_subtitle">

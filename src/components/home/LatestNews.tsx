@@ -42,8 +42,8 @@ export default function LatestNews({
 
   return (
     <section className="latest-news py-5 position-relative">
-      <div className="bg-icon bg-icon-right"><img src="/assets/images/fa-solid_microphone-alt.png" alt="" /></div>
-      <div className="bg-icon bg-icon-left"><img src="/assets/images/fa-solid_microphone-alt (1).png" alt="" /></div>
+      <div className="bg-icon bg-icon-right"><img loading="lazy" decoding="async" src="/assets/images/fa-solid_microphone-alt.png" alt="" /></div>
+      <div className="bg-icon bg-icon-left"><img loading="lazy" decoding="async" src="/assets/images/fa-solid_microphone-alt (1).png" alt="" /></div>
       <div className="container">
         <div className="text-center mb-2">
           {title ? (

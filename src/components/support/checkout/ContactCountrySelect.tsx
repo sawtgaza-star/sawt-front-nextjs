@@ -2,6 +2,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { COUNTRIES, type Country } from "@/lib/countries";
 import { useLang } from "@/lib/use-lang";
+import { FlagIconsCss } from "@/components/ui/CdnStylesheets";
 
 /* The WhatsApp field's dial-code picker on "التواصل" — the same searchable
    flag + name + code menu as the media consult form (MediaCountrySelect), but
@@ -70,6 +71,7 @@ export default function ContactCountrySelect({
       className={"sp-country-select" + (open ? " is-open" : "")}
       ref={boxRef}
     >
+      <FlagIconsCss />
       <button
         type="button"
         className="sp-country-box"

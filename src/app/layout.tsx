@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import { Rubik } from "next/font/google";
 import "bootstrap/dist/css/bootstrap.min.css";
-import "swiper/css/bundle";
 import "@/styles/tokens.css";
 import "@/styles/animations.css";
 import "@/styles/i18n.css";
@@ -68,14 +67,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           crossOrigin="anonymous"
           referrerPolicy="no-referrer"
         />
-        <link
-          href="https://cdn.jsdelivr.net/npm/remixicon@4.5.0/fonts/remixicon.css"
-          rel="stylesheet"
-        />
-        <link
-          rel="stylesheet"
-          href="https://cdn.jsdelivr.net/npm/flag-icons@7.2.3/css/flag-icons.min.css"
-        />
+        {/* remixicon + flag-icons are no longer global: the few components
+            that draw them load them (components/ui/CdnStylesheets). */}
       </head>
       <body dir="rtl" suppressHydrationWarning>
         {/* Starts the page-entrance animation before first paint; skipped for

@@ -3,6 +3,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { IconFieldCaret } from "@/components/collaborate/collaborate-icons";
 import { COUNTRIES, type Country } from "@/lib/countries";
 import { useLang } from "@/lib/use-lang";
+import { FlagIconsCss } from "@/components/ui/CdnStylesheets";
 
 /* Dial-code picker in the wizard's phone field — the same searchable
    flag + name + code menu the consult form and the join modal have, in this
@@ -63,6 +64,7 @@ export default function CollabCountrySelect({
 
   return (
     <div className={"cl-country" + (open ? " is-open" : "")} ref={boxRef}>
+      <FlagIconsCss />
       <button
         type="button"
         className="cl-country-box"

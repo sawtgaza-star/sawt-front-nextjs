@@ -2,6 +2,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { COUNTRIES, type Country } from "@/lib/countries";
 import { useLang } from "@/lib/use-lang";
+import { FlagIconsCss } from "@/components/ui/CdnStylesheets";
 
 /* The dial-code picker in the consult form's phone field — the same searchable
    flag + name + code menu the join modal has, written as a React leaf so the
@@ -62,6 +63,7 @@ export default function MediaCountrySelect({ name = "dial_code" }: { name?: stri
 
   return (
     <div className={"sm-country-select" + (open ? " is-open" : "")} ref={boxRef}>
+      <FlagIconsCss />
       <button
         type="button"
         className="sm-country-box"

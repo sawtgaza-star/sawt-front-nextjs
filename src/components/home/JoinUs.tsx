@@ -28,14 +28,14 @@ export default function JoinUs({
     <>
       <section className="join-us-section position-relative">
         {creator && (
-          <img
+          <img loading="lazy" decoding="async"
             src="/assets/images/leaf_cutout.png"
             className="olive-branch branch-right-top-joinUs-section"
             alt="Olive Branch"
           />
         )}
         <div className="join-us-banner ">
-          <img src={image} alt="" className="join-us-bg" />
+          <img loading="lazy" decoding="async" src={image} alt="" className="join-us-bg" />
           <div className="join-us-content text-center ">
             <h2 className="join-us-title" data-i18n={title ? undefined : "join_creator_title"}>
               {title || "انضم إلينا كصانع محتوى"}
