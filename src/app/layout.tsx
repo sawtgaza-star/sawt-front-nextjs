@@ -4,6 +4,7 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import "@/styles/tokens.css";
 import "@/styles/animations.css";
 import "@/styles/i18n.css";
+import "@/styles/cairo.css";
 import PageAnimations from "@/components/PageAnimations";
 
 /* The design tokens call for Rubik (`var(--fontFamily-text, Rubik)`); nothing
@@ -42,30 +43,28 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       suppressHydrationWarning
     >
       <head suppressHydrationWarning>
-        {/* Cairo — the family every `font-family: "cairo"` in the legacy CSS
-            asks for. It sits here instead of as an @import at the top of
-            style.css / password.css because an @import only counts while it is
-            the first rule of its sheet: the CSS bundler concatenates a route
-            group into one file, so any stylesheet ordered ahead of style.css
-            killed the import silently and the site fell back to the browser
-            default. A <link> is immune to that, is discovered by the preload
-            scanner instead of only after style.css parses, and covers the auth
-            pages (password.css) from the same place. */}
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        {/* Cairo is self-hosted (styles/cairo.css, imported above — never an
+            @import inside style.css / password.css: an @import only counts
+            while it is the first rule of its sheet, and the bundler's
+            concatenation silently killed it). The Arabic file carries almost
+            every glyph on the page, so it is fetched alongside the CSS rather
+            than after it parses. */}
         <link
-          rel="preconnect"
-          href="https://fonts.gstatic.com"
+          rel="preload"
+          href="/assets/fonts/cairo/cairo-arabic.woff2"
+          as="font"
+          type="font/woff2"
           crossOrigin="anonymous"
         />
+        {/* Font Awesome 6.2.1, self-hosted and cut down to the ~50 icons src/
+            uses (all.min.css with every other icon rule removed, fonts
+            subset to those glyphs — see public/assets/vendor/fontawesome).
+            A plain <link> AFTER the bundled CSS on purpose: that is where the
+            cdnjs sheet sat, so its rules still win the same cascade ties
+            against the legacy CSS. Using a new icon means regenerating it. */}
         <link
           rel="stylesheet"
-          href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&display=swap"
-        />
-        <link
-          rel="stylesheet"
-          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css"
-          crossOrigin="anonymous"
-          referrerPolicy="no-referrer"
+          href="/assets/vendor/fontawesome/css/fa-subset.min.css"
         />
         {/* remixicon + flag-icons are no longer global: the few components
             that draw them load them (components/ui/CdnStylesheets). */}
