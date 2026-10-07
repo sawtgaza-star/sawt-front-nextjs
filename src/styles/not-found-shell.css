@@ -1,0 +1,3 @@
+/* The (main) group's sheets for the 404 — see components/site/NotFoundContent. */
+@import "./legacy/style.css";
+@import "./legacy/search.css";

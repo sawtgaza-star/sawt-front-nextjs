@@ -1,24 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import { Rubik } from "next/font/google";
-import "bootstrap/dist/css/bootstrap.min.css";
-import "@/styles/tokens.css";
-import "@/styles/animations.css";
-import "@/styles/i18n.css";
-import "@/styles/cairo.css";
-import PageAnimations from "@/components/PageAnimations";
-import AuthClassSync from "@/components/AuthClassSync";
-
-/* The design tokens call for Rubik (`var(--fontFamily-text, Rubik)`); nothing
-   defined that variable, so every rule using it fell back to the page font.
-   next/font downloads and self-hosts the files at build time — no runtime CDN —
-   and exposes the family as the token below. The arabic subset is required: the
-   pills and everything else on this site are Arabic. */
-const rubik = Rubik({
-  subsets: ["arabic", "latin"],
-  weight: ["400", "500", "600", "700"],
-  display: "swap",
-  variable: "--fontFamily-text",
-});
+import DocumentShell from "@/components/DocumentShell";
 
 /* The title here doubles as the home page's: (main)/page.tsx is a Client
    Component, and Next.js reads `metadata` from Server Components only, so `/`
@@ -45,78 +26,5 @@ export const metadata: Metadata = {
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
-  return (
-    <html
-      lang="ar"
-      dir="rtl"
-      className={rubik.variable}
-      suppressHydrationWarning
-    >
-      <head suppressHydrationWarning>
-        {/* Cairo is self-hosted (styles/cairo.css, imported above — never an
-            @import inside style.css / password.css: an @import only counts
-            while it is the first rule of its sheet, and the bundler's
-            concatenation silently killed it). The Arabic file carries almost
-            every glyph on the page, so it is fetched alongside the CSS rather
-            than after it parses. */}
-        <link
-          rel="preload"
-          href="/assets/fonts/cairo/cairo-arabic.woff2"
-          as="font"
-          type="font/woff2"
-          crossOrigin="anonymous"
-        />
-        {/* Font Awesome 6.2.1, self-hosted and cut down to the ~50 icons src/
-            uses (all.min.css with every other icon rule removed, fonts
-            subset to those glyphs — see public/assets/vendor/fontawesome).
-            A plain <link> AFTER the bundled CSS on purpose: that is where the
-            cdnjs sheet sat, so its rules still win the same cascade ties
-            against the legacy CSS. Using a new icon means regenerating it. */}
-        <link
-          rel="stylesheet"
-          href="/assets/vendor/fontawesome/css/fa-subset.min.css"
-        />
-        {/* remixicon + flag-icons are no longer global: the few components
-            that draw them load them (components/ui/CdnStylesheets). */}
-      </head>
-      <body dir="rtl" suppressHydrationWarning>
-        {/* Starts the page-entrance animation before first paint; skipped for
-            reduced-motion users (see styles/animations.css). */}
-        <script
-          dangerouslySetInnerHTML={{
-            __html:
-              'try{if(!matchMedia("(prefers-reduced-motion: reduce)").matches){document.documentElement.classList.add("sawt-anim");document.body.classList.add("sawt-page-in")}}catch(e){}',
-          }}
-        />
-        {/* Applies the saved language's direction before first paint. The SSR
-            markup is always ar/rtl, so without this an English visitor sees the
-            whole page flip RTL→LTR once initTranslate() runs after hydration.
-            For any non-Arabic language it also masks the translatable text
-            (.i18n-pending, see styles/i18n.css) so the Arabic fallbacks never
-            paint while the page chunk loads; initTranslate() lifts the mask the
-            moment the English strings are in place, and the timeout below is a
-            safety net for the case where that never happens (JS disabled/failed). */}
-        <script
-          dangerouslySetInnerHTML={{
-            __html:
-              'try{var l=localStorage.getItem("lang")||"ar";var d=l==="ar"?"rtl":"ltr";var r=document.documentElement;r.setAttribute("dir",d);r.setAttribute("lang",l);document.body.setAttribute("dir",d);if(l!=="ar"){r.classList.add("i18n-pending");setTimeout(function(){r.classList.remove("i18n-pending")},2500)}}catch(e){}',
-          }}
-        />
-        {/* Marks the document as signed-in before first paint. The top bar
-            ships BOTH variants (guest CTAs + account/notification icons) and
-            style.css shows one of them off this class — so switching state
-            costs no JS on the critical path, no hydration mismatch and no
-            flash of the wrong navbar. See lib/auth-state.ts. */}
-        <script
-          dangerouslySetInnerHTML={{
-            __html:
-              'try{if(localStorage.getItem("sawt_auth")==="1"){document.documentElement.classList.add("sawt-authed")}}catch(e){}',
-          }}
-        />
-        <PageAnimations />
-        <AuthClassSync />
-        {children}
-      </body>
-    </html>
-  );
+  return <DocumentShell>{children}</DocumentShell>;
 }
