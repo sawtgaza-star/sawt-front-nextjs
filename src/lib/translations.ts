@@ -1976,6 +1976,11 @@ export const translations: any = {
     sm_faq_a:
       "البرنامج عملي بشكل كامل، حيث ستقوم بتطبيق كل ما تتعلمه عبر مشاريع حقيقية.",
 
+    // 404 page (src/app/not-found.tsx)
+    nf_title: "يبدو إن الصوت ضاع في الطريق:(",
+    nf_desc: "يبدو أن الرابط الذي تحاول الوصول إليه غير متاح أو تم نقله.",
+    nf_back: "العودة للرئيسية",
+
     // Collaborate page (تعاون معنا) — /collaborate
     collab_breadcrumb: "تعاون معنا",
     collab_hero_title: "ادعم صوت دعم دعم",
@@ -4118,6 +4123,11 @@ export const translations: any = {
     sm_faq_q5: "Do I get a certificate at the end?",
     sm_faq_a:
       "The programme is fully practical — you apply everything you learn on real projects.",
+
+    // 404 page (src/app/not-found.tsx)
+    nf_title: "Looks like the voice got lost on the way :(",
+    nf_desc: "The link you are trying to reach is unavailable or has been moved.",
+    nf_back: "Back to home",
 
     // Collaborate page (تعاون معنا) — /collaborate
     collab_breadcrumb: "Collaborate with us",

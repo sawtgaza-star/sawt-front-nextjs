@@ -3,6 +3,20 @@
    (defined in style.css, loaded by the (main) layout); everything below is
    specific to the team roster: filter pills, the grid, and the member card. */
 
+/* ---------- Hero: show the whole backdrop ----------
+   creators.css covers the box from the top, which on a wide screen (the box is
+   ~4:1, the team image ~3:1) cuts the people off at the waist. Giving the box
+   the image's own ratio lets `cover` fit it edge to edge; the ratio is only a
+   floor, so on narrower screens the header still grows to fit the navbar and
+   title (and then crops the sides instead). Below 768px creators.css swaps the
+   photo for a plain white header, so this stays desktop/tablet-only. */
+@media (min-width: 768px) {
+  .team-page .cr-header {
+    aspect-ratio: 1783 / 592;
+    background-position: center bottom !important;
+  }
+}
+
 .team-grid-section {
   padding: 110px 0 40px;
   overflow: hidden;
