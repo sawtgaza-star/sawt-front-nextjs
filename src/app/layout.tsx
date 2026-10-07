@@ -6,6 +6,7 @@ import "@/styles/animations.css";
 import "@/styles/i18n.css";
 import "@/styles/cairo.css";
 import PageAnimations from "@/components/PageAnimations";
+import AuthClassSync from "@/components/AuthClassSync";
 
 /* The design tokens call for Rubik (`var(--fontFamily-text, Rubik)`); nothing
    defined that variable, so every rule using it fell back to the page font.
@@ -113,6 +114,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           }}
         />
         <PageAnimations />
+        <AuthClassSync />
         {children}
       </body>
     </html>
