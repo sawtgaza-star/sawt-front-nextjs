@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Rubik } from "next/font/google";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "@/styles/tokens.css";
@@ -30,6 +30,15 @@ const rubik = Rubik({
    branch) covers the whole site; /media, /incubator and /courses each drop
    their own icon.svg next to their route so a section's tab wears its own
    mark. */
+/* iOS Safari zooms the page in when an input under 16px gets focus, which
+   throws the mobile layout off. `maximumScale: 1` stops that auto-zoom; iOS
+   still lets the visitor pinch-zoom manually. */
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 1,
+};
+
 export const metadata: Metadata = {
   title: "منصة صوت | Sawt Platform",
 };

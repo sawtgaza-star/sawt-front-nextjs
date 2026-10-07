@@ -16,14 +16,18 @@ export default function MicCutouts({ urls }: { urls: string[] }) {
     let cancelled = false;
     for (const url of new Set(urls)) {
       cutoutMic(url)
-        .catch(() => url)
-        .then((src) => {
+        .then((src) => ({ src, raw: false }))
+        .catch(() => ({ src: url, raw: true }))
+        .then(({ src, raw }) => {
           if (cancelled) return;
           document
             .querySelectorAll<HTMLImageElement>("img[data-mic-src]")
             .forEach((img) => {
               if (img.dataset.micSrc === url && img.src !== src) {
                 img.src = src;
+                // the raw upload is not cropped to the mic, so it must not be
+                // stretched into the mic's rectangle (see .is-raw in style.css)
+                img.classList.toggle("is-raw", raw);
                 img.classList.add("is-ready");
               }
             });

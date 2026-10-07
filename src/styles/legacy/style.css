@@ -4572,6 +4572,13 @@ svg {
   opacity: 1;
 }
 
+/* تعذّر القصّ (مثلاً الـAPI لم يُرسل ‎Access-Control-Allow-Origin‎) فظهرت الصورة
+   الخام كما رُفعت: ليست مقصوصة على حدود المايك، فـ‎fill‎ يضغطها و‎contain‎ يصغّرها.
+   ‎cover‎ يحافظ على نِسبتها ويملأ الارتفاع، ويقصّ الهوامش الفارغة على جانبي المايك */
+.mic-container .mic-composed-box .mic-frame-composed.is-raw {
+  object-fit: cover;
+}
+
 /* content page */
 
 .nav-pills .nav-link.active {
@@ -8375,8 +8382,12 @@ svg {
     bottom: 37%;
   }
 
+  /* "عرض الملف الشخصي" في سطر واحد: خط أصغر وحشوة أقل حتى يتسع الزر للكلمتين */
   .btn-view-profile {
-    font-size: 12px;
+    font-size: 10px;
+    white-space: nowrap;
+    padding: 6px 10px;
+    gap: 6px;
   }
 
   /* في المحاكاة يظهر زر البطاقتين الجانبيتين أيضاً (ضبابياً مع البطاقة) */
