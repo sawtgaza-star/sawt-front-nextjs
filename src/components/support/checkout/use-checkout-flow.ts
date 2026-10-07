@@ -11,6 +11,8 @@ import {
   uploadSupportProof,
 } from "@/lib/api/support-requests";
 import { useSupportCategory } from "@/lib/api/use-support-category";
+import { useRecaptcha } from "@/components/ui/Recaptcha";
+import { RECAPTCHA_ACTIONS } from "@/lib/recaptcha";
 import { markDonationComplete } from "../donation-complete";
 import {
   EMPTY_PROOF,
@@ -70,6 +72,11 @@ export function useCheckoutFlow() {
   const request = useRef<{ uuid: string; method: string } | null>(null);
   const sentProof = useRef<ProofValues | null>(null);
   const handedAmount = useRef(NaN);
+  const [amountHanded, setAmountHanded] = useState(false);
+  /* POST /support/requests wants "أنا لست روبوت" — asked on the screen that
+     opens the draft, until a draft for this platform exists */
+  const captcha = useRecaptcha(RECAPTCHA_ACTIONS.supportRequest);
+  const [openedFor, setOpenedFor] = useState("");
 
   // nothing picked yet (or an unknown pick) → the first platform
   const listed = methods.find((m) => m.uuid === platform) ?? methods[0] ?? null;
@@ -79,6 +86,13 @@ export function useCheckoutFlow() {
     (page?.category?.key || method?.category || "").trim().toLowerCase() === "electronic";
   const paypal =
     electronic && !!method && (!!method.is_paypal || method.provider === "paypal");
+  /* the draft is opened on screen 1 when the amount is known there, else on
+     the proof screen — and again if the platform changes after */
+  const captchaHere =
+    !!method &&
+    openedFor !== method.uuid &&
+    (screen.value === "proof" ||
+      (screen.value === "platform" && (electronic || amountHanded)));
 
   // the amount picked on /support (carried through /support/methods)
   useEffect(() => {
@@ -86,6 +100,7 @@ export function useCheckoutFlow() {
       new URLSearchParams(window.location.search).get("amount"),
     );
     handedAmount.current = amount;
+    setAmountHanded(!Number.isNaN(amount));
     if (!Number.isNaN(amount)) {
       setProof((p) => (p.amount ? p : { ...p, amount: String(amount) }));
     }
@@ -96,7 +111,10 @@ export function useCheckoutFlow() {
     if (pending) {
       setPlatform(pending.method);
       setProof((p) => ({ ...p, amount: pending.amount, currency: pending.currency }));
-      if (pending.request) request.current = { uuid: pending.request, method: pending.method };
+      if (pending.request) {
+        request.current = { uuid: pending.request, method: pending.method };
+        setOpenedFor(pending.method);
+      }
     }
     if (outcome === "success") setIndex(PROOF_SCREEN);
     else setError(PAYPAL_CANCELLED);
@@ -124,12 +142,20 @@ export function useCheckoutFlow() {
     if (request.current && request.current.method === method!.uuid) {
       return request.current.uuid;
     }
-    const uuid = await createSupportRequest({
-      method_uuid: method!.uuid,
-      amount,
-      currency: currency || undefined,
-    });
+    let uuid: string;
+    try {
+      uuid = await createSupportRequest({
+        method_uuid: method!.uuid,
+        amount,
+        currency: currency || undefined,
+        recaptcha_token: captcha.token,
+      });
+    } finally {
+      // the API has spent that token, whatever it answered
+      captcha.reset();
+    }
     request.current = { uuid, method: method!.uuid };
+    setOpenedFor(method!.uuid);
     sentProof.current = null;
     return uuid;
   }
@@ -152,7 +178,7 @@ export function useCheckoutFlow() {
   }
 
   async function next() {
-    if (busy) return;
+    if (busy || (captchaHere && !captcha.token)) return;
     setError("");
 
     if (screen.value === "platform" && electronic) {
@@ -240,6 +266,8 @@ export function useCheckoutFlow() {
     screen,
     busy,
     error,
+    captcha,
+    captchaHere,
     platform: method?.uuid ?? platform,
     setPlatform,
     proof,

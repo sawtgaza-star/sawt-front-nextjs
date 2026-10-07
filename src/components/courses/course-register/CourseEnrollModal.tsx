@@ -1,6 +1,8 @@
 "use client";
 import { useEffect, useRef, useState } from "react";
 import { useLang } from "@/lib/use-lang";
+import Recaptcha, { useRecaptcha } from "@/components/ui/Recaptcha";
+import { RECAPTCHA_ACTIONS } from "@/lib/recaptcha";
 import { apiMessage } from "@/lib/api/messages";
 import CourseModal from "./CourseModal";
 import { StepAcademic, StepGoals, StepPersonal } from "./EnrollSteps";
@@ -42,6 +44,8 @@ export default function CourseEnrollModal({
   const done = result !== null || duplicate !== null;
   const hasFieldErrors = Object.keys(fieldErrors).length > 0;
   const bodyRef = useRef<HTMLDivElement>(null);
+  /* the last pane's "أنا لست روبوت" box — "تسجيل في الكورس" waits on it */
+  const captcha = useRecaptcha(RECAPTCHA_ACTIONS.courseSubscribe);
 
   const set = <K extends keyof EnrollForm>(key: K, value: EnrollForm[K]) => {
     setForm((prev) => ({ ...prev, [key]: value }));
@@ -69,7 +73,9 @@ export default function CourseEnrollModal({
       setStep((s) => (s + 1) as StepId);
       return;
     }
-    const errors = await submit(form);
+    const errors = await submit(form, captcha.token);
+    // the API has spent that token, whatever it answered
+    captcha.reset();
     const back = errors && firstStepWithError(errors);
     if (back) setStep(back);
   };
@@ -120,9 +126,12 @@ export default function CourseEnrollModal({
               </div>
               <button
                 type="button"
-                className="join-btn crs-en-next"
+                className={
+                  "join-btn crs-en-next" +
+                  (!pending && step === 3 && !captcha.token ? " is-locked" : "")
+                }
                 onClick={next}
-                disabled={pending}
+                disabled={pending || (step === 3 && !captcha.token)}
               >
                 {tr(pending ? "crs_en_sending" : step === 3 ? "crs_en_submit" : "crs_en_next")}
               </button>
@@ -142,6 +151,7 @@ export default function CourseEnrollModal({
           {step === 1 && <StepPersonal form={form} set={set} tr={tr} error={fieldError} />}
           {step === 2 && <StepAcademic form={form} set={set} tr={tr} error={fieldError} />}
           {step === 3 && <StepGoals form={form} set={set} tr={tr} error={fieldError} />}
+          {step === 3 && <Recaptcha captcha={captcha} />}
           {/* A 422's top-level message only echoes the first field note,
               already under its box — the banner is for everything else
               (a 401, a 500, a dropped connection). */}

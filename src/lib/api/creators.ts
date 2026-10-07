@@ -29,6 +29,8 @@ export type CreatorJoinRequest = {
   content_bio: string;
   socials: CreatorSocial[];
   notes?: string;
+  /** The "أنا لست روبوت" answer (lib/recaptcha), checked by the API. */
+  recaptcha_token?: string | null;
 };
 
 export type CreatorJoinResponse = {

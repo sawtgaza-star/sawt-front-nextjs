@@ -12,6 +12,7 @@
 
 import { getToken } from "@/lib/auth-state";
 import { apiFetch } from "./client";
+import { getRecaptchaToken, RECAPTCHA_ACTIONS } from "../recaptcha";
 
 type Envelope<T> = { message?: string; data?: T };
 
@@ -36,7 +37,7 @@ export async function createPaypalOrder(
     Envelope<{ approval_url?: string; reference?: string; order_id?: string }>
   >(`/support/${encodeURIComponent(methodUuid)}/paypal/order`, {
     method: "POST",
-    body: input,
+    body: { ...input, recaptcha_token: await getRecaptchaToken(RECAPTCHA_ACTIONS.supportPaypal) },
     token: getToken(),
   });
 

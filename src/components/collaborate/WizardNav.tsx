@@ -5,6 +5,8 @@ import { IconArrowUpLeftThin, IconChevronLeftSmall } from "@/components/ui/icons
    Step 1's back control cancels the whole thing ("الغاء") instead of stepping
    back, and the last step's forward button submits ("تسليم الطلب") — which
    reads "جاري الإرسال..." while the application is with the API.
+   `locked` holds the forward button alone — the last step's until its
+   "أنا لست روبوت" box is ticked.
    `total` is the flow's step count — three for /collaborate/creator, /funding
    and /partnership, two for /collaborate/other. */
 export default function WizardNav({
@@ -13,6 +15,7 @@ export default function WizardNav({
   onBack,
   onNext,
   pending = false,
+  locked = false,
 }: {
   index: number;
   total: number;
@@ -20,6 +23,8 @@ export default function WizardNav({
   onNext: () => void;
   /** The application is on its way — both controls are held while it is. */
   pending?: boolean;
+  /** The forward button waits on something the visitor still has to do. */
+  locked?: boolean;
 }) {
   const first = index === 0;
   const last = index === total - 1;
@@ -55,9 +60,9 @@ export default function WizardNav({
 
       <button
         type="button"
-        className="cl-nav-next"
+        className={"cl-nav-next" + (locked && !pending ? " is-locked" : "")}
         onClick={onNext}
-        disabled={pending}
+        disabled={pending || locked}
         aria-busy={pending}
       >
         {pending ? (

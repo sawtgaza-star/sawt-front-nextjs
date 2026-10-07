@@ -96,23 +96,34 @@ export function getUser(): AuthUser | null {
   }
 }
 
-/** Drop the local session only — see logout() for the API round trip. */
-export function clearSession(): void {
+/** Forget the stored session without touching the page (no class flip, no
+    event) — for a caller that is about to reload it anyway. */
+function forgetSession(): void {
   try {
     localStorage.removeItem(TOKEN_KEY);
     localStorage.removeItem(USER_KEY);
     localStorage.removeItem(EXPIRES_KEY);
+    localStorage.removeItem(AUTH_KEY);
   } catch {
     /* ignore */
   }
+}
+
+/** Drop the local session only — see logout() for the API round trip. */
+export function clearSession(): void {
+  forgetSession();
   setLoggedIn(false);
 }
 
 /** Invalidate the token server-side, then clear locally. The local session is
-    dropped even if the request fails — the user asked to leave. */
+    dropped even if the request fails — the user asked to leave.
+
+    The page itself is left as it is: the caller reloads it, and the pre-paint
+    script draws the guest bar on arrival — flipping `.sawt-authed` here showed
+    the signed-out navbar for the length of the round trip and the load. */
 export async function logout(): Promise<void> {
   const token = read(TOKEN_KEY);
-  clearSession();
+  forgetSession();
   if (!token) return;
   try {
     await logoutRequest(token);

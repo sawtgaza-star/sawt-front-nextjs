@@ -14,6 +14,7 @@ import TransferDetails from "./TransferDetails";
 import { CHECKOUT_SCREENS, resolveStepLabels } from "./checkout-steps-data";
 import { useCheckoutFlow } from "./use-checkout-flow";
 import { RemixiconCss } from "@/components/ui/CdnStylesheets";
+import Recaptcha from "@/components/ui/Recaptcha";
 
 /* The donation wizard: "التالي" swaps the screen in place instead of
    navigating, and "السابق" walks back — out of the first screen it leaves for
@@ -106,6 +107,8 @@ export default function CheckoutWizard() {
         />
       )}
 
+      {flow.captchaHere && <Recaptcha captcha={flow.captcha} />}
+
       {/* the server's own (Arabic) message when a step's call fails */}
       {error && (
         <p className="sp-wizard-error" role="alert">
@@ -119,6 +122,7 @@ export default function CheckoutWizard() {
         onPrev={first ? undefined : flow.back}
         onNext={flow.next}
         busy={busy || (screen.value === "platform" && !flow.method)}
+        locked={flow.captchaHere && !flow.captcha.token}
         nextLabel={
           last ? submitText || "اتمام العملية" : nextText || undefined
         }

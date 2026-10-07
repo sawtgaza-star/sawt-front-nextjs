@@ -13,6 +13,11 @@
      POST /auth/logout           (bearer)
      POST /auth/refresh          (bearer)                 → new access_token
      GET  /auth/me               (bearer)                 → user
+     GET  /auth/providers                                 → { google: { enabled, client_id },
+                                                              facebook: { enabled, app_id } }
+     POST /auth/social/google    { token }                → session, like /auth/login
+                                   (`token` is the Google Identity Services
+                                   ID token — the "credential")
 
    Server-side rules worth knowing: password is min 8 chars and must match
    `password_confirmation`; the login endpoint answers 422 (not 401) with
@@ -158,6 +163,44 @@ export async function resetPassword(input: {
     body: input,
   });
   return payload?.message ?? "";
+}
+
+/** Which social sign-ins the backend has switched on, and the public ids the
+    browser needs to start them. */
+export type AuthProviders = {
+  google: { enabled: boolean; clientId: string | null };
+  facebook: { enabled: boolean; appId: string | null };
+};
+
+export async function fetchAuthProviders(signal?: AbortSignal): Promise<AuthProviders> {
+  const payload = await apiFetch<
+    Envelope<{
+      google?: { enabled?: boolean; client_id?: string | null };
+      facebook?: { enabled?: boolean; app_id?: string | null };
+    }>
+  >("/auth/providers", { signal });
+  const google = payload?.data?.google;
+  const facebook = payload?.data?.facebook;
+  return {
+    google: { enabled: !!google?.enabled && !!google.client_id, clientId: google?.client_id ?? null },
+    facebook: { enabled: !!facebook?.enabled && !!facebook.app_id, appId: facebook?.app_id ?? null },
+  };
+}
+
+/** Signs in (or up) with the ID token Google handed the page. Answers like
+    login(): the session plus the API's own message, defaulted the same way. */
+export async function loginWithGoogle(
+  credential: string,
+): Promise<{ session: AuthSession; message: string }> {
+  const payload = await apiFetch<Envelope<AuthSession>>("/auth/social/google", {
+    method: "POST",
+    body: { token: credential },
+  });
+  const session = payload?.data;
+  if (!session?.access_token) {
+    throw new ApiError("تعذر إتمام تسجيل الدخول. حاول مرة أخرى.", 500);
+  }
+  return { session, message: payload?.message || "تم تسجيل الدخول بنجاح." };
 }
 
 export async function logoutRequest(token: string): Promise<void> {

@@ -45,39 +45,46 @@ export function useAuthForm() {
     setFromApi(false);
   }, []);
 
+  /** The plumbing behind `submit`, for a sign-in that doesn't come from the
+      form (Google answers through a callback): same pending flag, same
+      banner, same double-start guard. */
+  const run = useCallback(async (handler: () => Promise<void>) => {
+    if (inFlight.current) return;
+
+    inFlight.current = true;
+    setPending(true);
+    setError(null);
+    setSuccess(null);
+    setFieldErrors({});
+    setFromApi(false);
+
+    try {
+      await handler();
+    } catch (caught) {
+      // Both branches are "came back from the round trip", including the
+      // unexpected one — neither is a rule the form checked itself.
+      setFromApi(true);
+      if (caught instanceof ApiError) {
+        setError(caught.message);
+        setFieldErrors(caught.errors);
+      } else {
+        console.error(caught);
+        setError(UNKNOWN_MESSAGE);
+      }
+    } finally {
+      inFlight.current = false;
+      setPending(false);
+    }
+  }, []);
+
   const submit = useCallback(
     (handler: (data: FormData) => Promise<void>) =>
       async (event: React.FormEvent<HTMLFormElement>) => {
-      event.preventDefault();
-      const data = new FormData(event.currentTarget);
-      if (inFlight.current) return;
-
-      inFlight.current = true;
-      setPending(true);
-      setError(null);
-      setSuccess(null);
-      setFieldErrors({});
-      setFromApi(false);
-
-      try {
-        await handler(data);
-      } catch (caught) {
-        // Both branches are "came back from the round trip", including the
-        // unexpected one — neither is a rule the form checked itself.
-        setFromApi(true);
-        if (caught instanceof ApiError) {
-          setError(caught.message);
-          setFieldErrors(caught.errors);
-        } else {
-          console.error(caught);
-          setError(UNKNOWN_MESSAGE);
-        }
-      } finally {
-        inFlight.current = false;
-        setPending(false);
-      }
-    },
-    [],
+        event.preventDefault();
+        const data = new FormData(event.currentTarget);
+        await run(() => handler(data));
+      },
+    [run],
   );
 
   /** Raise a local (client-side) validation message without hitting the API. */
@@ -145,6 +152,7 @@ export function useAuthForm() {
     apiMessages,
     localFieldErrors,
     submit,
+    run,
     reset,
     fail,
     clearField,

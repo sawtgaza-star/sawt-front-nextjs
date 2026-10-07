@@ -5,10 +5,13 @@ import LegacyInit from "@/components/LegacyInit";
 import AuthShell from "@/components/site/AuthShell";
 import IconInput from "@/components/ui/IconInput";
 import Button from "@/components/ui/Button";
-import { IconMail, IconPassword, IconUser, IconGoogle, IconFacebook, IconApple } from "@/components/ui/icons";
+import { IconMail, IconPassword, IconUser, IconFacebook } from "@/components/ui/icons";
 import { AuthMessage, fieldError, fieldErrorList, pendingProps } from "@/components/auth/AuthMessage";
 import { useAuthForm } from "@/components/auth/useAuthForm";
-import { register } from "@/lib/api/auth";
+import { register, loginWithGoogle } from "@/lib/api/auth";
+import { ApiError } from "@/lib/api/client";
+import GoogleSignInButton from "@/components/auth/GoogleSignInButton";
+import { finishSignIn } from "@/components/auth/finish-sign-in";
 import { saveSession } from "@/lib/auth-state";
 import { passwordPolicyErrors } from "@/lib/password-policy";
 
@@ -16,7 +19,7 @@ export default function Page() {
   /* Two destinations, on purpose: what the API rejects ("هذا البريد مسجّل
      مسبقاً.") goes to the banner above the form, what this page checks itself
      (a missing box, the password rules) stays under the box it is about. */
-  const { pending, apiMessages, localFieldErrors, submit, fail, clearField } = useAuthForm();
+  const { pending, apiMessages, localFieldErrors, submit, run, fail, clearField } = useAuthForm();
 
   const onSubmit = submit(async (data) => {
     const first_name = String(data.get("first_name") || "").trim();
@@ -70,16 +73,25 @@ export default function Page() {
     }
   });
 
+  /* "تسجيل الدخول باستخدام google" signs up and in at once: Google hands back
+     an ID token, the API trades it for a session (creating the account the
+     first time) — then the same ending as the login page. */
+  const onGoogle = (credential) =>
+    run(async () => {
+      const { session, message } = await loginWithGoogle(credential);
+      finishSignIn(session, message);
+    });
+  const onGoogleUnavailable = () =>
+    run(async () => {
+      throw new ApiError("تسجيل الدخول عبر Google غير متاح حالياً.", 503);
+    });
+
   return (
     <>
       <LegacyInit page="register" />
       <AuthShell mobileTopBar>
-    <div className="text-center"> <h1 className="title" data-i18n="register_title">تسجيل حساب جديد</h1> <p className="subtitle" data-i18n="register_subtitle">أنشئ حساب مع صوت و تابع اخر التطورات</p> </div> <form onSubmit={onSubmit} onInput={(event) => clearField(event.target.name)} noValidate> <AuthMessage error={apiMessages} /> <div className="row"> <div className="col-6"> <IconInput icon={<IconUser />} type="text" name="first_name" placeholder="الاسم الأول" data-i18n-placeholder="register_first_name" required className="mb-3" autoComplete="given-name" error={fieldError(localFieldErrors, "first_name")} /> </div> <div className="col-6"> <IconInput type="text" name="last_name" placeholder="اسم العائلة" data-i18n-placeholder="register_last_name" required className="mb-3" autoComplete="family-name" error={fieldError(localFieldErrors, "last_name")} /> </div> </div> {/*  حقل البريد الإلكتروني مع الأيقونة بداخلها  */} <IconInput icon={<IconMail />} type="email" name="email" placeholder="البريد الإلكتروني" data-i18n-placeholder="auth_email_placeholder" required className="mb-3" autoComplete="email" error={fieldError(localFieldErrors, "email")} /> {/*  حقل كلمة المرور مع الأيقونات بداخلها  */} <IconInput icon={<IconPassword />} type="password" id="password" name="password" placeholder="كلمة المرور" data-i18n-placeholder="auth_password_placeholder" required minLength={8} className="mb-1" toggleId="togglePassword" autoComplete="new-password" error={fieldErrorList(localFieldErrors, "password", "password_confirmation")} /> <Button type="submit" className="mt-4" {...pendingProps(pending)} data-i18n="register_submit">انشئ حساب</Button> <div className="divider-line" data-i18n="auth_or">أو</div> {/*  أزرار التواصل الاجتماعي  */} <button type="button" className="btn btn-social-media btn-google"> <i className="social-icon"><IconGoogle /></i> <span data-i18n="auth_google">
-                تسجيل الدخول باستخدام google
-              </span> </button> <button type="button" className="btn btn-social-media btn-facebook"> <i className="social-icon"><IconFacebook /></i> <span data-i18n="auth_facebook">
+    <div className="text-center"> <h1 className="title" data-i18n="register_title">تسجيل حساب جديد</h1> <p className="subtitle" data-i18n="register_subtitle">أنشئ حساب مع صوت و تابع اخر التطورات</p> </div> <form onSubmit={onSubmit} onInput={(event) => clearField(event.target.name)} noValidate> <AuthMessage error={apiMessages} /> <div className="row"> <div className="col-6"> <IconInput icon={<IconUser />} type="text" name="first_name" placeholder="الاسم الأول" data-i18n-placeholder="register_first_name" required className="mb-3" autoComplete="given-name" error={fieldError(localFieldErrors, "first_name")} /> </div> <div className="col-6"> <IconInput type="text" name="last_name" placeholder="اسم العائلة" data-i18n-placeholder="register_last_name" required className="mb-3" autoComplete="family-name" error={fieldError(localFieldErrors, "last_name")} /> </div> </div> {/*  حقل البريد الإلكتروني مع الأيقونة بداخلها  */} <IconInput icon={<IconMail />} type="email" name="email" placeholder="البريد الإلكتروني" data-i18n-placeholder="auth_email_placeholder" required className="mb-3" autoComplete="email" error={fieldError(localFieldErrors, "email")} /> {/*  حقل كلمة المرور مع الأيقونات بداخلها  */} <IconInput icon={<IconPassword />} type="password" id="password" name="password" placeholder="كلمة المرور" data-i18n-placeholder="auth_password_placeholder" required minLength={8} className="mb-1" toggleId="togglePassword" autoComplete="new-password" error={fieldErrorList(localFieldErrors, "password", "password_confirmation")} /> <Button type="submit" className="mt-4" {...pendingProps(pending)} data-i18n="register_submit">انشئ حساب</Button> <div className="divider-line" data-i18n="auth_or">أو</div> {/*  أزرار التواصل الاجتماعي  */} <GoogleSignInButton onCredential={onGoogle} onUnavailable={onGoogleUnavailable} /> <button type="button" className="btn btn-social-media btn-facebook"> <i className="social-icon"><IconFacebook /></i> <span data-i18n="auth_facebook">
                 تسجيل الدخول باستخدام facebook
-              </span> </button> <button type="button" className="btn btn-social-media btn-apple"> <i className="social-icon"><IconApple /></i> <span data-i18n="auth_apple">
-                تسجيل الدخول باستخدام apple
               </span> </button> <div className="link-create-account text-center">
                 <span data-i18n="register_have_account">هل لديك حساب؟</span> <a href="/login" data-i18n="register_sign_in">تسجيل الدخول</a> </div> </form>
       </AuthShell>

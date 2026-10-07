@@ -10,6 +10,7 @@
 
 import { getToken } from "@/lib/auth-state";
 import { apiFetch } from "./client";
+import { getRecaptchaToken, RECAPTCHA_ACTIONS } from "../recaptcha";
 
 type Envelope<T> = { message?: string; data?: T };
 
@@ -31,7 +32,11 @@ export async function createSupportCheckout(input: {
 }): Promise<SupportCheckout> {
   const payload = await apiFetch<
     Envelope<{ type?: string; approval_url?: string; reference?: string }>
-  >("/support/checkout", { method: "POST", body: input, token: getToken() });
+  >("/support/checkout", {
+    method: "POST",
+    body: { ...input, recaptcha_token: await getRecaptchaToken(RECAPTCHA_ACTIONS.supportCheckout) },
+    token: getToken(),
+  });
 
   const approvalUrl = payload?.data?.approval_url || "";
   if (!approvalUrl) throw new Error("support checkout answered without an approval_url");

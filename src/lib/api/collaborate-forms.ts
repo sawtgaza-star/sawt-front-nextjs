@@ -151,6 +151,8 @@ type Contact = {
   email: string;
   phone: string;
   countryCode: string;
+  /** The "أنا لست روبوت" answer (lib/recaptcha), checked by the API. */
+  recaptchaToken: string | null;
 };
 
 export type CreatorApplication = Contact & {
@@ -183,6 +185,7 @@ export function submitCreatorApplication(
         url: row.url,
       })),
       additional_notes: application.additionalNotes,
+      recaptcha_token: application.recaptchaToken,
       terms_accepted: application.termsAccepted,
     },
     application.attachment,
@@ -219,6 +222,7 @@ export function submitSponsorshipApplication(
       organization_bio: application.organizationBio,
       conditions_notes: application.conditionsNotes,
       additional_notes: application.additionalNotes,
+      recaptcha_token: application.recaptchaToken,
     },
     application.attachment,
   );
@@ -244,6 +248,7 @@ export function submitPartnershipApplication(
       partnership_types: translate(application.partnershipTypes, PARTNER_TYPE),
       partnership_goal: application.partnershipGoal,
       additional_notes: application.additionalNotes,
+      recaptcha_token: application.recaptchaToken,
     },
     application.attachment,
   );
@@ -268,6 +273,7 @@ export function submitOtherApplication(
       country_code: application.countryCode,
       collaboration_idea: application.collaborationIdea,
       additional_notes: application.additionalNotes,
+      recaptcha_token: application.recaptchaToken,
     },
     application.attachment,
   );
