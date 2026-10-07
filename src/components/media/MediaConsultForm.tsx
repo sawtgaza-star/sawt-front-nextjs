@@ -14,6 +14,8 @@ import { IconMail, IconUser } from "@/components/ui/icons";
 import { IconFormPhone } from "./media-icons";
 import MediaCountrySelect from "./MediaCountrySelect";
 import MediaFormToast from "./MediaFormToast";
+import Recaptcha, { useRecaptcha } from "@/components/ui/Recaptcha";
+import { RECAPTCHA_ACTIONS } from "@/lib/recaptcha";
 
 /* The "احجز الأن" card — the booking that lands in صوت ميديا's inbox.
 
@@ -48,6 +50,8 @@ export default function MediaConsultForm({
      the payload's or, for the API's messages, translated by useAuthForm */
   const { tr } = useLang();
   const options = useMediaServiceOptions();
+  /* "أنا لست روبوت" — the button waits on it */
+  const captcha = useRecaptcha(RECAPTCHA_ACTIONS.mediaConsultation);
   const closeToast = useCallback(() => setSuccess(null), [setSuccess]);
 
   const fields = form?.fields;
@@ -66,16 +70,23 @@ export default function MediaConsultForm({
   const onSubmit = submit(async (data) => {
     const value = (key: string) => String(data.get(key) || "").trim();
 
-    const result = await submitConsultation(
-      {
-        name: value(nameKey),
-        email: value(emailKey),
-        phone: value(phoneKey),
-        country_code: value(codeKey),
-        service: value(serviceKey),
-      },
-      consultationPath(form?.submit_path),
-    );
+    let result: Awaited<ReturnType<typeof submitConsultation>>;
+    try {
+      result = await submitConsultation(
+        {
+          name: value(nameKey),
+          email: value(emailKey),
+          phone: value(phoneKey),
+          country_code: value(codeKey),
+          service: value(serviceKey),
+          recaptcha_token: captcha.token,
+        },
+        consultationPath(form?.submit_path),
+      );
+    } finally {
+      // the API has spent that token, whatever it answered
+      captcha.reset();
+    }
 
     /* Only the message stays on screen: the next visitor to the card shouldn't
        find the last one's booking still in it. The country picker keeps its
@@ -195,10 +206,12 @@ export default function MediaConsultForm({
         </p>
       ) : null}
 
+      <Recaptcha captcha={captcha} />
+
       <button
         type="submit"
         className="sm-btn-green sm-form-submit"
-        disabled={pending}
+        disabled={pending || !captcha.token}
         aria-busy={pending}
       >
         <span>

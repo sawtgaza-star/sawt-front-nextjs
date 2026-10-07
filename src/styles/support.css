@@ -2935,6 +2935,11 @@ font-size: 16px;
   opacity: 0.6;
   cursor: progress;
 }
+/* waiting on the "أنا لست روبوت" box */
+.sp-wizard-next.is-locked {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
 /* invalid proof fields — same red as the contact step */
 .sp-proof-input.is-invalid,
 .sp-proof-select.is-invalid,

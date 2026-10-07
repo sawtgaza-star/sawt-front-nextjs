@@ -95,6 +95,10 @@ export function initHomeInline() {
           } else {
             nextLabel.textContent = t("jm_next", "التالي");
           }
+
+          // step 3 carries the "أنا لست روبوت" box; the send waits on it
+          if (current === TOTAL) mountCaptcha();
+          syncCaptchaLock();
         }
 
         function openModal() {
@@ -205,6 +209,7 @@ export function initHomeInline() {
 
         function goNext() {
           if (!validateStep(current)) return;
+          if (current === TOTAL && captchaHost && !captchaToken) return;
           if (current < TOTAL) {
             current += 1;
             render();
@@ -301,6 +306,7 @@ export function initHomeInline() {
             content_bio: val("about"),
             socials: socials,
             notes: val("notes"),
+            recaptcha_token: captchaToken,
           };
         }
 
@@ -308,6 +314,51 @@ export function initHomeInline() {
         /* Set once the API has accepted the application: the footer is gone
            and the success pane is up, so the button must not be re-labelled. */
         let sent = false;
+
+        /* "أنا لست روبوت" (lib/recaptcha) under step 3's notes. Rendered the
+           first time step 3 shows — not while the modal is hidden — and
+           unticked after every attempt and on reset: the API spends a token
+           the moment it checks one. Until it is ticked, "تسليم الطلب" is
+           disabled (.is-locked). */
+        const captchaHost = document.getElementById("joinRecaptcha");
+        let captchaToken = null;
+        let captchaWidget = null;
+        let captchaMounted = false;
+
+        function mountCaptcha() {
+          if (captchaMounted || !captchaHost) return;
+          captchaMounted = true;
+          import("./recaptcha").then(function (mod) {
+            mod.mountRecaptcha(
+              captchaHost,
+              function (token) {
+                captchaToken = token;
+                syncCaptchaLock();
+              },
+              function (id) {
+                captchaWidget = id;
+              },
+              mod.RECAPTCHA_ACTIONS.creatorJoin,
+            );
+          });
+        }
+
+        function resetCaptcha() {
+          captchaToken = null;
+          if (captchaWidget !== null) {
+            import("./recaptcha").then(function (mod) {
+              mod.resetRecaptcha(captchaWidget);
+            });
+          }
+          syncCaptchaLock();
+        }
+
+        function syncCaptchaLock() {
+          if (sending) return;
+          const locked = !!captchaHost && current === TOTAL && !captchaToken;
+          nextBtn.disabled = locked;
+          nextBtn.classList.toggle("is-locked", locked);
+        }
 
         /* The button locks while the request is in flight — a double click was
            two applications otherwise. Everything else about the modal stays
@@ -332,6 +383,8 @@ export function initHomeInline() {
             .then(function () {
               sending = false;
               nextBtn.disabled = false;
+              // the API has spent that token, whatever it answered
+              resetCaptcha();
               /* Re-label from the step now on screen rather than restoring
                  what the button said before: a rejection may have walked the
                  modal back to the step the API complained about, where it
@@ -390,6 +443,7 @@ export function initHomeInline() {
 
           overlay.querySelectorAll(".join-field").forEach(clearError);
           clearSubmitError();
+          resetCaptcha();
         }
 
         /* Everything the last attempt left behind: the message under each box

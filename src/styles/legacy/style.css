@@ -1435,7 +1435,6 @@ svg {
 .creators-carousel .owl-nav.disabled {
   display: none !important;
 }
-
 /* الجوال: عرض البطاقة مع autoWidth بحيث تظهر بطاقة ونصف.
    الكاروسيل يبدأ الآن من حافة ‎.container‎ الموحّدة (10px = عرض شريط التنقل)
    بدل الوصول إلى حافة الشاشة — انظر كتلة توحيد ‎.container‎ في أعلى الملف. */
@@ -4295,7 +4294,7 @@ svg {
 
 .member-name-tag {
   position: absolute;
-  bottom: 39%;
+  bottom: 36%;
   width: 100%;
   z-index: 4;
   color: #fff;
@@ -7870,6 +7869,8 @@ svg {
     flex-direction: row !important;
     flex-wrap: nowrap !important;
     gap: 14px !important;
+    /* breathing room from the screen edges */
+    padding: 0 16px;
   }
   .heroOptionsBtn .btn {
     flex: 1 1 0;
@@ -8367,8 +8368,11 @@ svg {
     max-width: 200px;
   }
 
+  /* صغير وفي الفراغ بين إطار الصورة والضوء البرتقالي على جسم المايك
+     (≈59%–66% من ارتفاعه) بدل أن يركب أسفل الصورة */
   .member-name-tag {
-    font-size: 18px;
+    font-size: 12px;
+    bottom: 37%;
   }
 
   .btn-view-profile {
@@ -9553,6 +9557,12 @@ svg {
 
 .join-btn:hover {
   background: #38422a;
+}
+
+/* the last step's send button until "أنا لست روبوت" is ticked */
+.join-btn.is-locked {
+  opacity: 0.6;
+  cursor: not-allowed;
 }
 
 .join-btn-ghost {

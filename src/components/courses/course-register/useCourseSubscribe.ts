@@ -76,7 +76,7 @@ export function validateStep(step: StepId, form: EnrollForm): FieldErrors {
 const labelOf = (options: typeof LEVELS, value: string) =>
   options.find((option) => option.value === value)?.label ?? value;
 
-function toRequest(form: EnrollForm): CourseSubscribeRequest {
+function toRequest(form: EnrollForm, recaptchaToken: string | null): CourseSubscribeRequest {
   const optional = (value: string) => value.trim() || undefined;
   return {
     full_name: form.fullname.trim(),
@@ -89,6 +89,7 @@ function toRequest(form: EnrollForm): CourseSubscribeRequest {
     goals_interests: optional(form.interests),
     join_goal: form.goal ? labelOf(GOALS, form.goal) : "",
     additional_notes: optional(form.notes),
+    recaptcha_token: recaptchaToken,
   };
 }
 
@@ -110,7 +111,7 @@ export function useCourseSubscribe(path: string) {
   const inFlight = useRef(false);
 
   const submit = useCallback(
-    async (form: EnrollForm): Promise<FieldErrors | null> => {
+    async (form: EnrollForm, recaptchaToken: string | null): Promise<FieldErrors | null> => {
       if (inFlight.current) return null;
       inFlight.current = true;
       setPending(true);
@@ -118,7 +119,7 @@ export function useCourseSubscribe(path: string) {
       setFieldErrors({});
 
       try {
-        setResult(await subscribeToCourse(path, toRequest(form), getToken()));
+        setResult(await subscribeToCourse(path, toRequest(form, recaptchaToken), getToken()));
         return null;
       } catch (caught) {
         if (caught instanceof ApiError) {

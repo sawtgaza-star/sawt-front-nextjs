@@ -15,6 +15,7 @@
    ========================================================= */
 
 import { apiFetch } from "./client";
+import { getRecaptchaToken, RECAPTCHA_ACTIONS } from "../recaptcha";
 
 type Envelope<T> = { message?: string; data?: T };
 
@@ -31,6 +32,8 @@ export async function createSupportRequest(input: {
   method_uuid: string;
   amount: number;
   currency?: string;
+  /** The "أنا لست روبوت" answer (lib/recaptcha), checked by the API. */
+  recaptcha_token?: string | null;
 }): Promise<string> {
   const payload = await apiFetch<Envelope<RequestData>>("/support/requests", {
     method: "POST",
@@ -49,6 +52,7 @@ export async function uploadSupportProof(
   form.append("amount", String(input.amount));
   form.append("currency", input.currency);
   input.files.forEach((file) => form.append("proofs[]", file));
+  form.append("recaptcha_token", (await getRecaptchaToken(RECAPTCHA_ACTIONS.supportProof)) ?? "");
   await apiFetch(`${requestPath(uuid)}/proof`, { method: "POST", body: form });
 }
 
@@ -63,5 +67,8 @@ export async function submitSupportContact(
     notes?: string;
   },
 ): Promise<void> {
-  await apiFetch(`${requestPath(uuid)}/contact`, { method: "POST", body: input });
+  await apiFetch(`${requestPath(uuid)}/contact`, {
+    method: "POST",
+    body: { ...input, recaptcha_token: await getRecaptchaToken(RECAPTCHA_ACTIONS.supportContact) },
+  });
 }

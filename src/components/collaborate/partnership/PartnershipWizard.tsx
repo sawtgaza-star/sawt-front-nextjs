@@ -5,6 +5,8 @@ import { useRouter } from "next/navigation";
 import WizardAlert from "@/components/collaborate/WizardAlert";
 import WizardDone from "@/components/collaborate/WizardDone";
 import WizardNav from "@/components/collaborate/WizardNav";
+import Recaptcha, { useRecaptcha } from "@/components/ui/Recaptcha";
+import { RECAPTCHA_ACTIONS } from "@/lib/recaptcha";
 import {
   clearTouched,
   passes,
@@ -60,6 +62,8 @@ const COMPANY_FIELD: Record<string, keyof CompanyErrors> = {
 export default function PartnershipWizard() {
   const [index, setIndex] = useState(0);
   const form = useCollaborateForm();
+  /* the last step's "أنا لست روبوت" box — "تسليم الطلب" waits on it */
+  const captcha = useRecaptcha(RECAPTCHA_ACTIONS.collaboratePartnership);
   const done = form.done !== null;
   const wizard = useRef<HTMLDivElement>(null);
   const router = useRouter();
@@ -123,6 +127,7 @@ export default function PartnershipWizard() {
         email: company.email,
         phone: company.phone,
         countryCode: company.dial,
+        recaptchaToken: captcha.token,
         website: company.site,
         partnershipTypes: nature.types,
         partnershipGoal: nature.about,
@@ -130,6 +135,8 @@ export default function PartnershipWizard() {
         attachment: files.file,
       }),
     );
+    // the API has spent that token, whatever it answered
+    captcha.reset();
     if (flagged) showRejection(flagged);
   }
 
@@ -196,12 +203,15 @@ export default function PartnershipWizard() {
         />
       )}
 
+      {index === PARTNERSHIP_STEPS.length - 1 && <Recaptcha captcha={captcha} />}
+
       <WizardAlert messages={form.messages} />
 
       <WizardNav
         index={index}
         total={PARTNERSHIP_STEPS.length}
         pending={form.pending}
+        locked={index === PARTNERSHIP_STEPS.length - 1 && !captcha.token}
         onBack={
           index === 0
             ? () => router.push("/collaborate")

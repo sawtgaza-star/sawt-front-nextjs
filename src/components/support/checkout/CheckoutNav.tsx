@@ -9,7 +9,8 @@ import { IconChevronLeftSmall } from "@/components/ui/icons";
    handler the forward control falls back to the "#" placeholder.
    A label from the API (`backText`, or `nextLabel` with no `nextLabelKey`)
    renders without a data-i18n key — it is already in the current language.
-   `busy` locks both buttons while a step's API call is in flight. */
+   `busy` locks both buttons while a step's API call is in flight; `locked`
+   holds the forward one alone (waiting on "أنا لست روبوت"). */
 export default function CheckoutNav({
   prevHref,
   onPrev,
@@ -19,6 +20,7 @@ export default function CheckoutNav({
   nextArrow = true,
   backText = "",
   busy = false,
+  locked = false,
 }: {
   prevHref?: string;
   onPrev?: () => void;
@@ -28,6 +30,7 @@ export default function CheckoutNav({
   nextArrow?: boolean;
   backText?: string;
   busy?: boolean;
+  locked?: boolean;
 }) {
   /* points back = towards the start edge, so it is flipped in RTL */
   const backArrow = (
@@ -74,9 +77,11 @@ export default function CheckoutNav({
       {onNext ? (
         <button
           type="button"
-          className={"sp-wizard-next" + (busy ? " is-busy" : "")}
+          className={
+            "sp-wizard-next" + (busy ? " is-busy" : locked ? " is-locked" : "")
+          }
           onClick={onNext}
-          disabled={busy}
+          disabled={busy || locked}
           aria-busy={busy || undefined}
         >
           {nextInner}

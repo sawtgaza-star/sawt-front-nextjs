@@ -18,6 +18,8 @@ import { useSocialRows } from "./use-social-rows";
 import WizardAlert from "@/components/collaborate/WizardAlert";
 import WizardDone from "@/components/collaborate/WizardDone";
 import WizardNav from "@/components/collaborate/WizardNav";
+import Recaptcha, { useRecaptcha } from "@/components/ui/Recaptcha";
+import { RECAPTCHA_ACTIONS } from "@/lib/recaptcha";
 import {
   clearTouched,
   passes,
@@ -62,6 +64,8 @@ const PERSONAL_FIELD: Record<string, keyof PersonalErrors> = {
 export default function CreatorWizard() {
   const [index, setIndex] = useState(0);
   const form = useCollaborateForm();
+  /* the last step's "أنا لست روبوت" box — "تسليم الطلب" waits on it */
+  const captcha = useRecaptcha(RECAPTCHA_ACTIONS.collaborateCreator);
   const done = form.done !== null;
   const wizard = useRef<HTMLDivElement>(null);
   const router = useRouter();
@@ -135,6 +139,7 @@ export default function CreatorWizard() {
         email: personal.email,
         phone: personal.phone,
         countryCode: personal.dial,
+        recaptchaToken: captcha.token,
         contentTypes: content.categories,
         followersCount: content.followers,
         contentBio: content.about,
@@ -147,6 +152,8 @@ export default function CreatorWizard() {
         attachment: social.video,
       }),
     );
+    // the API has spent that token, whatever it answered
+    captcha.reset();
     if (flagged) showRejection(flagged);
   }
 
@@ -212,12 +219,15 @@ export default function CreatorWizard() {
         />
       )}
 
+      {index === CREATOR_STEPS.length - 1 && <Recaptcha captcha={captcha} />}
+
       <WizardAlert messages={form.messages} />
 
       <WizardNav
         index={index}
         total={CREATOR_STEPS.length}
         pending={form.pending}
+        locked={index === CREATOR_STEPS.length - 1 && !captcha.token}
         onBack={
           index === 0
             ? () => router.push("/collaborate")

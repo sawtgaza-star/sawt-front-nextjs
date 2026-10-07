@@ -72,6 +72,15 @@ export default function TeamSection({
 
   if (!title && !subtitle && !members.length) return null;
 
+  /* Owl disables the arrows while it has no more items than it shows (4 on
+     desktop), so a short roster is repeated until there are enough slides to
+     scroll through. */
+  const MIN_SLIDES = 5;
+  const slides = [];
+  while (members.length && slides.length < MIN_SLIDES) {
+    members.forEach((member) => slides.push({ ...member, key: `${member.key}-${slides.length}` }));
+  }
+
   /* The blurred backdrop takes the first four portraits it is given. */
   const backdrop = members.slice(0, 4).filter((member) => member.photo);
 
@@ -93,7 +102,7 @@ export default function TeamSection({
         ) : null}
         {subtitle ? <p className="mb-5 describ-p">{subtitle}</p> : null}
         <div className="owl-carousel owl-theme team-carousel">
-          {members.map((member, index) => (
+          {slides.map((member, index) => (
             <TeamCard key={member.key ?? index} member={member} profileCta={profileCta} />
           ))}
         </div>

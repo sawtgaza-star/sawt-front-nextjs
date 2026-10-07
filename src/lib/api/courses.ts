@@ -21,6 +21,7 @@
    ========================================================= */
 
 import { apiFetch, apiPath } from "./client";
+import { getRecaptchaToken, RECAPTCHA_ACTIONS } from "../recaptcha";
 import { assetUrl, type Localized } from "./pages";
 import type { IncubatorCourse } from "./incubator-page";
 
@@ -176,6 +177,8 @@ export type CourseSubscribeRequest = {
   goals_interests?: string;
   join_goal: string;
   additional_notes?: string;
+  /** The "أنا لست روبوت" answer (lib/recaptcha), checked by the API. */
+  recaptcha_token?: string | null;
 };
 
 export type CourseConfirmation = {
@@ -241,9 +244,13 @@ export function waitlistPath(uuid: string, ctaPath?: string | null): string {
   return /\/join\/?$/.test(path) ? apiPath(path, fallback) : fallback;
 }
 
-export function joinWaitlist(
+export async function joinWaitlist(
   path: string,
   token: string | null,
 ): Promise<CourseSubscribeResponse> {
-  return apiFetch<CourseSubscribeResponse>(path, { method: "POST", token });
+  return apiFetch<CourseSubscribeResponse>(path, {
+    method: "POST",
+    body: { recaptcha_token: await getRecaptchaToken(RECAPTCHA_ACTIONS.courseWaitlist) },
+    token,
+  });
 }

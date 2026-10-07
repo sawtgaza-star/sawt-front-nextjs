@@ -962,6 +962,11 @@ border: 1px dashed #4C5C37;
 .cl-nav-next:hover {
   background: #3d4a2c;
 }
+/* the last step's "تسليم الطلب" until "أنا لست روبوت" is ticked */
+.cl-nav-next.is-locked {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
 
 /* --- what replaces the wizard once the application is in --- */
 .cl-done {

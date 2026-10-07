@@ -5,6 +5,8 @@ import { useRouter } from "next/navigation";
 import WizardAlert from "@/components/collaborate/WizardAlert";
 import WizardDone from "@/components/collaborate/WizardDone";
 import WizardNav from "@/components/collaborate/WizardNav";
+import Recaptcha, { useRecaptcha } from "@/components/ui/Recaptcha";
+import { RECAPTCHA_ACTIONS } from "@/lib/recaptcha";
 import {
   clearTouched,
   passes,
@@ -51,6 +53,8 @@ const CONTACT_FIELD: Record<string, keyof ContactErrors> = {
 export default function OtherWizard() {
   const [index, setIndex] = useState(0);
   const form = useCollaborateForm();
+  /* the last step's "أنا لست روبوت" box — "تسليم الطلب" waits on it */
+  const captcha = useRecaptcha(RECAPTCHA_ACTIONS.collaborateOther);
   const done = form.done !== null;
   const wizard = useRef<HTMLDivElement>(null);
   const router = useRouter();
@@ -107,11 +111,14 @@ export default function OtherWizard() {
         email: contact.email,
         phone: contact.phone,
         countryCode: contact.dial,
+        recaptchaToken: captcha.token,
         collaborationIdea: idea.idea,
         additionalNotes: idea.notes,
         attachment: idea.file,
       }),
     );
+    // the API has spent that token, whatever it answered
+    captcha.reset();
     if (flagged) showRejection(flagged);
   }
 
@@ -171,12 +178,15 @@ export default function OtherWizard() {
         />
       )}
 
+      {index === OTHER_STEPS.length - 1 && <Recaptcha captcha={captcha} />}
+
       <WizardAlert messages={form.messages} />
 
       <WizardNav
         index={index}
         total={OTHER_STEPS.length}
         pending={form.pending}
+        locked={index === OTHER_STEPS.length - 1 && !captcha.token}
         onBack={
           index === 0
             ? () => router.push("/collaborate")

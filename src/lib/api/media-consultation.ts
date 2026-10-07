@@ -51,6 +51,8 @@ export type ConsultationRequest = {
   country_code?: string;
   /** The chosen service's UUID. */
   service: string;
+  /** The "أنا لست روبوت" answer (lib/recaptcha), checked by the API. */
+  recaptcha_token?: string | null;
 };
 
 export type ConsultationResponse = {
