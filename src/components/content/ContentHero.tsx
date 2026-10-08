@@ -46,7 +46,7 @@ export default function ContentHero({
   return (
     <header>
       <div
-        className="cr-header ct-header py-1"
+        className={`cr-header ct-header py-1${loading ? " hero-bg-loading" : ""}`}
         style={
           backdrop
             ? ({ "--ct-hero-bg": `url("${backdrop}")` } as CSSProperties)

@@ -44,8 +44,8 @@ export default function CollaborateHero({
   return (
     <header>
       <div
-        className="cr-header py-1"
-        style={{ background: `url("${data?.image_url || HERO_IMAGE}")` }}
+        className={`cr-header py-1${loading ? " hero-bg-loading" : ""}`}
+        style={loading ? undefined : { background: `url("${data?.image_url || HERO_IMAGE}")` }}
       >
         <SiteNav />
         <div className="container cr-hero">

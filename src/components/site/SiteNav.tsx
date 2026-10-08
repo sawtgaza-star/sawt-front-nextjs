@@ -3,7 +3,6 @@
 "use client";
 import {
   IconGlobe,
-  IconNavAccount,
   IconChevronLeftSmall,
   IconNavUserPlus,
   IconNavMic,
@@ -17,6 +16,7 @@ import NavPills from "./NavPills";
 import NavSocialLinks from "./NavSocialLinks";
 import MobileSearchPanel from "./MobileSearchPanel";
 import NavLogoutButton from "./NavLogoutButton";
+import NavAccountAvatar from "./NavAccountAvatar";
 import NavNotifications from "./NavNotifications";
 import LogoutToast from "./LogoutToast";
 import "@/styles/nav-skeleton.css";
@@ -190,7 +190,7 @@ export default function SiteNav() {
                 data-i18n-title="nav_account"
               >
                 {" "}
-                <IconNavAccount />{" "}
+                <NavAccountAvatar />{" "}
               </a>{" "}
               <NavNotifications className="nav-icon-btn" />{" "}
               {/* The group itself is `.nav-authed-only`, so the button only

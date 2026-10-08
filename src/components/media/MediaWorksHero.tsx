@@ -37,7 +37,7 @@ export default function MediaWorksHero({
 
   return (
     <header
-      className="sm-wp-hero sm-wp-hero-plain"
+      className={`sm-wp-hero sm-wp-hero-plain${loading ? " hero-bg-loading" : ""}`}
       style={image ? { backgroundImage: `url("${image}")` } : undefined}
     >
       <span className="sm-wp-hero-veil" aria-hidden="true" />

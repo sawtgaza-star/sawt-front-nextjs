@@ -16,9 +16,9 @@
   width: 420px;
   max-width: calc(100vw - 32px);
   background: #fff;
-  border: 1px solid #e4e4e4;
+  border: 1px solid #DADADA;
   border-radius: 16px;
-  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.12);
+  box-shadow: 0 5px 40px 0 rgba(0, 0, 0, 0.05);
   overflow: hidden;
   text-align: start;
   color: #1d1d1b;
@@ -76,9 +76,7 @@ html[dir="ltr"] .nav-notif-panel {
   cursor: pointer;
 }
 
-.nav-notif-markall:hover {
-  text-decoration: underline;
-}
+
 
 .nav-notif-list {
   list-style: none;
@@ -89,7 +87,7 @@ html[dir="ltr"] .nav-notif-panel {
 }
 
 .nav-notif-list li + li {
-  border-top: 1px solid #e4e4e4;
+  border-top: 1px solid #DADADA;
 }
 
 .nav-notif-item {
@@ -110,7 +108,7 @@ html[dir="ltr"] .nav-notif-panel {
 }
 
 .nav-notif-item.is-unread {
-  background: #edefeb;
+  background: #EDEFEB;
 }
 
 .nav-notif-icon {
@@ -121,7 +119,7 @@ html[dir="ltr"] .nav-notif-panel {
   width: 40px;
   height: 40px;
   border-radius: 100px;
-  background: #f2f2f2;
+  background: #F2F2F2;
   color: #4c5c37;
 }
 

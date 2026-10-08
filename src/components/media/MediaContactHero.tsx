@@ -34,7 +34,7 @@ export default function MediaContactHero({
   const subtitle = localized(data?.subtitle, lang);
 
   return (
-    <header className="sm-wp-hero sm-wp-hero-plain sm-ct-hero">
+    <header className={`sm-wp-hero sm-wp-hero-plain sm-ct-hero${loading ? " hero-bg-loading" : ""}`}>
       <span className="sm-wp-hero-veil" aria-hidden="true" />
 
       <MediaNav base="/media" />

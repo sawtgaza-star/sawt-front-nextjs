@@ -49,7 +49,7 @@
 .acc-tabs {
   display: flex;
   gap: 8px;
-  border-bottom: 1px solid var(--acc-line);
+  border-bottom: 1px solid #DADADA;
   overflow-x: auto;
   scrollbar-width: none;
 }
@@ -63,12 +63,12 @@
   margin-bottom: -1px;
   padding: 10px 18px;
   border: none;
-  border-bottom: 2px solid transparent;
+  border-bottom: 3px solid transparent;
   border-radius: 8px 8px 0 0;
   background: none;
   font-size: 16px;
   font-weight: 500;
-  color: #3a3a3a;
+  color: #6D6D6D;
   cursor: pointer;
   white-space: nowrap;
   transition: color 0.2s ease, background-color 0.2s ease;
@@ -99,7 +99,7 @@
 .acc-desc {
   margin: 0 0 24px;
   font-size: 15px;
-  color: #3a3a3a;
+  color: #6D6D6D;
 }
 
 .acc-loading {
@@ -115,7 +115,7 @@
   gap: 8px;
   padding: 9px 20px;
   border: none;
-  border-radius: 100px;
+  border-radius: 24px;
   background: var(--acc-olive);
   color: #fff;
   font-size: 14px;
@@ -147,8 +147,7 @@
   background: none;
   font-size: 14px;
   font-weight: 700;
-  color: var(--acc-text);
-  text-decoration: underline;
+  color: var(--acc-olive);
   text-underline-offset: 3px;
   cursor: pointer;
 }
@@ -183,7 +182,7 @@
 .acc-avatar-lg {
   width: 96px;
   height: 96px;
-  border: 3px solid #fff;
+  border: 2px solid #C3C8C3;
 }
 
 .acc-avatar-md {
@@ -194,9 +193,9 @@
 /* ---- profile card -------------------------------------------------------------- */
 .acc-profile-card {
   padding: 24px;
-  border: 1px solid var(--acc-line);
+  border: 1px solid #DADADA;
   border-radius: 16px;
-  background: var(--acc-surface);
+  background: #EDEFEB;
 }
 
 .acc-profile-top {
@@ -231,7 +230,7 @@
   justify-content: center;
   width: 28px;
   height: 28px;
-  border: 2px solid #fff;
+  border: 2px solid var(--acc-olive);
   border-radius: 50%;
   background: var(--acc-olive);
   color: #fff;
@@ -251,14 +250,14 @@
 .acc-profile-email {
   margin: 0 0 2px;
   font-size: 14px;
-  color: #3a3a3a;
+  color: #6D6D6D;
   overflow-wrap: anywhere;
 }
 
 .acc-profile-since {
   margin: 0;
   font-size: 13px;
-  color: var(--acc-muted);
+  color:#6D6D6D;
 }
 
 .acc-stats {
@@ -285,7 +284,7 @@
 }
 
 .acc-stat-num {
-  font-size: 24px;
+  font-size: 28px;
   font-weight: 700;
   color: var(--acc-text);
 }
@@ -293,7 +292,7 @@
 .acc-stat-label {
   font-size: 14px;
   font-weight: 600;
-  color: #3a3a3a;
+  color: var(--acc-text);
 }
 
 /* ---- followed creators ---------------------------------------------------------- */
@@ -426,14 +425,14 @@ html[dir="rtl"] .acc-creator-badge {
   display: flex;
   gap: 8px;
   margin-bottom: 20px;
-  border-bottom: 1px solid var(--acc-line);
+  border-bottom: 1px solid #DADADA;
 }
 
 .acc-subtab {
   margin-bottom: -1px;
   padding: 8px 14px;
   border: none;
-  border-bottom: 2px solid transparent;
+  border-bottom: 3px solid transparent;
   background: none;
   font-size: 15px;
   font-weight: 500;
@@ -450,21 +449,21 @@ html[dir="rtl"] .acc-creator-badge {
 .acc-card {
   margin-bottom: 20px;
   padding: 24px;
-  border: 1px solid var(--acc-line);
+  border: 1px solid #DADADA;
   border-radius: 16px;
-  background: var(--acc-surface);
+  background: #EDEFEB;
 }
 
 .acc-card-title {
   margin: 0 0 16px;
-  font-size: 22px;
+  font-size: 24px;
   font-weight: 700;
 }
 
 .acc-card-desc {
   margin: -8px 0 14px;
   font-size: 14px;
-  color: #3a3a3a;
+  color: #6D6D6D;
 }
 
 .acc-photo-row {
@@ -507,8 +506,8 @@ html[dir="rtl"] .acc-creator-badge {
   width: 100%;
   height: 44px;
   padding: 0 14px;
-  border: 1px solid #cfcfcf;
-  border-radius: 10px;
+  border: 1px solid #DADADA;
+  border-radius:8px;
   background: #fff;
   font-size: 14px;
   color: var(--acc-text);
@@ -537,7 +536,7 @@ html[dir="rtl"] .acc-input[dir="ltr"] {
 .acc-hint {
   display: block;
   font-size: 12px;
-  color: var(--acc-muted);
+  color: #6D6D6D;
 }
 
 .acc-actions {

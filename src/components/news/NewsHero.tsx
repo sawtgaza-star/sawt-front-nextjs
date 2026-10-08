@@ -56,8 +56,8 @@ export default function NewsHero({
   return (
     <header>
       <div
-        className="about-header py-1"
-        style={{ background: `url("${image || HERO_IMAGE}")` }}
+        className={`about-header py-1${loading ? " hero-bg-loading" : ""}`}
+        style={loading ? undefined : { background: `url("${image || HERO_IMAGE}")` }}
       >
         <SiteNav />
         <div className="container about-hero text-center text-white">

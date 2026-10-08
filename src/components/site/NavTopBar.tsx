@@ -3,10 +3,10 @@
 import {
   IconNavUserPlus,
   IconNavMic,
-  IconNavAccount,
 } from "@/components/ui/icons";
 import NavSocialLinks from "./NavSocialLinks";
 import NavLogoutButton from "./NavLogoutButton";
+import NavAccountAvatar from "./NavAccountAvatar";
 import NavNotifications from "./NavNotifications";
 import NavSearch from "./NavSearch";
 
@@ -53,7 +53,7 @@ export default function NavTopBar({ nav, loading }) {
               data-i18n-title="nav_account"
             >
               {" "}
-              <IconNavAccount />{" "}
+              <NavAccountAvatar />{" "}
             </a>{" "}
             <NavNotifications />{" "}
             <NavLogoutButton />{" "}
