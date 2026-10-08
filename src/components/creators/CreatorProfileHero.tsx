@@ -91,8 +91,8 @@ export default function CreatorProfileHero({
   return (
     <header>
       <div
-        className="cr-header cr-detail-header py-1"
-        style={{ background: `url("${hero?.image_url || HERO_IMAGE}")` }}
+        className={`cr-header cr-detail-header py-1${loading ? " hero-bg-loading" : ""}`}
+        style={loading ? undefined : { background: `url("${hero?.image_url || HERO_IMAGE}")` }}
       >
         <SiteNav />
         <div className="container cr-hero cr-detail-hero">

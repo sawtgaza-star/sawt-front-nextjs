@@ -1,0 +1,18 @@
+/* Hero backdrops while the page's request is in flight.
+
+   Every hero falls back to a bundled image (heroSectionImg.jpeg, WhoUs.jpg,
+   "Hero background container.png") when the API sends none — set inline or
+   from its own CSS rule. While loading, that fallback must not flash before
+   the API's real backdrop replaces it, so the hero gets `.hero-bg-loading`
+   and shows a flat skeleton ground instead.
+
+   The doubled class outranks the single-class `!important` rules that paint
+   those fallbacks (.ct-header in content.css, .sm-wp-hero in media.css). */
+.hero-bg-loading.hero-bg-loading {
+  background-image: none !important;
+  background-color: #e9ecef !important;
+}
+/* the veils/overlays tint the image; on a flat ground they only grey it out */
+.hero-bg-loading .sm-wp-hero-veil {
+  display: none;
+}

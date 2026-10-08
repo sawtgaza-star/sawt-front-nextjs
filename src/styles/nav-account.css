@@ -1,0 +1,10 @@
+/* The signed-in user's photo inside the navbar's 40px .nav-icon-btn circle
+   (NavAccountAvatar), in place of the outline person icon. */
+.nav-icon-btn .nav-account-avatar {
+  display: block;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  object-fit: cover;
+  flex-shrink: 0;
+}

@@ -4,6 +4,7 @@ import "@/styles/tokens.css";
 import "@/styles/animations.css";
 import "@/styles/i18n.css";
 import "@/styles/cairo.css";
+import "@/styles/hero-loading.css";
 import PageAnimations from "@/components/PageAnimations";
 import AuthClassSync from "@/components/AuthClassSync";
 
