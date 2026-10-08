@@ -1,0 +1,750 @@
+/* /account — components/account. Everything is `.acc-` prefixed. */
+
+.acc-page {
+  --acc-olive: #4c5c37;
+  --acc-olive-dark: #3d4a2c;
+  --acc-surface: #edefeb;
+  --acc-line: #d9d9d9;
+  --acc-text: #1d1d1b;
+  --acc-muted: #6f6f6f;
+  --acc-orange: #f26b3a;
+  background: #fff;
+  color: var(--acc-text);
+}
+
+.acc-header {
+  background: #fff;
+}
+
+/* ---- breadcrumb ---------------------------------------------------------- */
+.acc-breadcrumb {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 28px 16px 8px;
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.acc-breadcrumb a {
+  color: var(--acc-text);
+  text-decoration: none;
+}
+
+.acc-breadcrumb .arrow {
+  font-size: 12px;
+  color: var(--acc-text);
+}
+
+.acc-breadcrumb-current {
+  color: var(--acc-orange);
+}
+
+/* ---- tabs ------------------------------------------------------------------ */
+.acc-main {
+  padding-top: 28px;
+  padding-bottom: 80px;
+}
+
+.acc-tabs {
+  display: flex;
+  gap: 8px;
+  border-bottom: 1px solid var(--acc-line);
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.acc-tabs::-webkit-scrollbar {
+  display: none;
+}
+
+.acc-tab {
+  flex: 0 0 auto;
+  margin-bottom: -1px;
+  padding: 10px 18px;
+  border: none;
+  border-bottom: 2px solid transparent;
+  border-radius: 8px 8px 0 0;
+  background: none;
+  font-size: 16px;
+  font-weight: 500;
+  color: #3a3a3a;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: color 0.2s ease, background-color 0.2s ease;
+}
+
+.acc-tab:hover {
+  color: var(--acc-olive);
+}
+
+.acc-tab.is-active {
+  border-bottom-color: var(--acc-olive);
+  font-weight: 700;
+  color: var(--acc-olive);
+}
+
+/* ---- panel head ------------------------------------------------------------ */
+.acc-panel {
+  padding-top: 28px;
+}
+
+.acc-title {
+  margin: 0 0 6px;
+  font-size: 28px;
+  font-weight: 700;
+  color: var(--acc-text);
+}
+
+.acc-desc {
+  margin: 0 0 24px;
+  font-size: 15px;
+  color: #3a3a3a;
+}
+
+.acc-loading {
+  min-height: 320px;
+}
+
+/* ---- buttons ---------------------------------------------------------------- */
+.acc-btn-primary,
+.acc-btn-edit {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 9px 20px;
+  border: none;
+  border-radius: 100px;
+  background: var(--acc-olive);
+  color: #fff;
+  font-size: 14px;
+  font-weight: 600;
+  text-decoration: none;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.acc-btn-primary:hover,
+.acc-btn-edit:hover {
+  background: var(--acc-olive-dark);
+  color: #fff;
+}
+
+.acc-btn-text {
+  padding: 9px 12px;
+  border: none;
+  background: none;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--acc-text);
+  cursor: pointer;
+}
+
+.acc-link-btn {
+  padding: 0;
+  border: none;
+  background: none;
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--acc-text);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  cursor: pointer;
+}
+
+.acc-link-btn:hover {
+  color: var(--acc-olive);
+}
+
+/* ---- avatar ------------------------------------------------------------------ */
+.acc-avatar {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  border-radius: 50%;
+  overflow: hidden;
+  background: #dfe3d8;
+  color: #9aa58a;
+}
+
+.acc-avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.acc-avatar svg {
+  width: 62%;
+  height: 62%;
+}
+
+.acc-avatar-lg {
+  width: 96px;
+  height: 96px;
+  border: 3px solid #fff;
+}
+
+.acc-avatar-md {
+  width: 64px;
+  height: 64px;
+}
+
+/* ---- profile card -------------------------------------------------------------- */
+.acc-profile-card {
+  padding: 24px;
+  border: 1px solid var(--acc-line);
+  border-radius: 16px;
+  background: var(--acc-surface);
+}
+
+.acc-profile-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 20px;
+}
+
+.acc-profile-id {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  min-width: 0;
+}
+
+.acc-profile-avatar {
+  position: relative;
+  padding: 0;
+  border: none;
+  background: none;
+  cursor: pointer;
+}
+
+.acc-profile-avatar-badge {
+  position: absolute;
+  bottom: 2px;
+  inset-inline-end: 2px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border: 2px solid #fff;
+  border-radius: 50%;
+  background: var(--acc-olive);
+  color: #fff;
+}
+
+.acc-profile-text {
+  min-width: 0;
+}
+
+.acc-profile-name {
+  margin: 0 0 4px;
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--acc-text);
+}
+
+.acc-profile-email {
+  margin: 0 0 2px;
+  font-size: 14px;
+  color: #3a3a3a;
+  overflow-wrap: anywhere;
+}
+
+.acc-profile-since {
+  margin: 0;
+  font-size: 13px;
+  color: var(--acc-muted);
+}
+
+.acc-stats {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 14px;
+}
+
+.acc-stat {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  padding: 18px 8px;
+  border: 1px solid transparent;
+  border-radius: 12px;
+  background: #fff;
+  cursor: pointer;
+  transition: border-color 0.2s ease;
+}
+
+.acc-stat:hover {
+  border-color: var(--acc-olive);
+}
+
+.acc-stat-num {
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--acc-text);
+}
+
+.acc-stat-label {
+  font-size: 14px;
+  font-weight: 600;
+  color: #3a3a3a;
+}
+
+/* ---- followed creators ---------------------------------------------------------- */
+.acc-creators-row {
+  display: flex;
+  gap: 20px;
+  overflow-x: auto;
+  padding-bottom: 12px;
+  scroll-snap-type: x proximity;
+}
+
+.acc-creator-card {
+  position: relative;
+  flex: 0 0 220px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 28px 16px 20px;
+  border: 1px solid var(--acc-line);
+  border-radius: 16px;
+  background: var(--acc-surface);
+  text-align: center;
+  scroll-snap-align: start;
+}
+
+.acc-creator-badge {
+  position: absolute;
+  top: 10px;
+  inset-inline-end: 10px;
+  padding: 2px 8px;
+  border-radius: 100px;
+  background: var(--acc-olive);
+  color: #fff;
+  font-size: 11px;
+  font-weight: 600;
+  direction: ltr;
+}
+
+html[dir="rtl"] .acc-creator-badge {
+  direction: rtl;
+}
+
+.acc-creator-photo {
+  display: block;
+  width: 136px;
+  height: 136px;
+  margin-bottom: 14px;
+  padding: 5px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #c9a27a, #b8c2a6 60%, #e3d6c3);
+  box-shadow: 0 8px 20px rgba(76, 92, 55, 0.12);
+}
+
+.acc-creator-photo img {
+  width: 100%;
+  height: 100%;
+  border: 4px solid #f4f1e8;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.acc-creator-name {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--acc-text);
+  text-decoration: none;
+}
+
+.acc-creator-name:hover {
+  color: var(--acc-olive);
+}
+
+.acc-creator-sub {
+  margin: 4px 0 16px;
+  font-size: 14px;
+  color: #3a3a3a;
+}
+
+.acc-creator-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: auto;
+  padding: 7px 26px;
+  border: 1px solid var(--acc-olive);
+  border-radius: 100px;
+  background: #fff;
+  color: var(--acc-olive);
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.acc-creator-btn:hover {
+  background: #e5e9df;
+}
+
+.acc-note {
+  margin: 16px 0 0;
+  font-size: 13px;
+  color: var(--acc-muted);
+}
+
+.acc-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  padding: 48px 16px;
+  border: 1px dashed var(--acc-line);
+  border-radius: 16px;
+  text-align: center;
+}
+
+.acc-empty-title {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 700;
+}
+
+.acc-empty-desc {
+  margin: 0 0 12px;
+  font-size: 14px;
+  color: #3a3a3a;
+}
+
+/* ---- settings ------------------------------------------------------------------ */
+.acc-subtabs {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 20px;
+  border-bottom: 1px solid var(--acc-line);
+}
+
+.acc-subtab {
+  margin-bottom: -1px;
+  padding: 8px 14px;
+  border: none;
+  border-bottom: 2px solid transparent;
+  background: none;
+  font-size: 15px;
+  font-weight: 500;
+  color: #3a3a3a;
+  cursor: pointer;
+}
+
+.acc-subtab.is-active {
+  border-bottom-color: var(--acc-olive);
+  font-weight: 700;
+  color: var(--acc-olive);
+}
+
+.acc-card {
+  margin-bottom: 20px;
+  padding: 24px;
+  border: 1px solid var(--acc-line);
+  border-radius: 16px;
+  background: var(--acc-surface);
+}
+
+.acc-card-title {
+  margin: 0 0 16px;
+  font-size: 22px;
+  font-weight: 700;
+}
+
+.acc-card-desc {
+  margin: -8px 0 14px;
+  font-size: 14px;
+  color: #3a3a3a;
+}
+
+.acc-photo-row {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 20px;
+}
+
+.acc-photo-title {
+  margin: 0;
+  font-size: 15px;
+  font-weight: 700;
+}
+
+.acc-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px 24px;
+}
+
+.acc-field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: 14px;
+}
+
+.acc-grid .acc-field {
+  margin-bottom: 0;
+}
+
+.acc-label {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--acc-text);
+}
+
+.acc-input {
+  width: 100%;
+  height: 44px;
+  padding: 0 14px;
+  border: 1px solid #cfcfcf;
+  border-radius: 10px;
+  background: #fff;
+  font-size: 14px;
+  color: var(--acc-text);
+  outline: none;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+html[dir="rtl"] .acc-input[dir="ltr"] {
+  text-align: right;
+}
+
+.acc-input:focus {
+  border-color: var(--acc-olive);
+  box-shadow: 0 0 0 2px rgba(76, 92, 55, 0.15);
+}
+
+.acc-input[readonly] {
+  background: #f7f7f7;
+  color: #5a5a5a;
+}
+
+.acc-select {
+  appearance: auto;
+}
+
+.acc-hint {
+  display: block;
+  font-size: 12px;
+  color: var(--acc-muted);
+}
+
+.acc-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 20px;
+}
+
+.acc-msg {
+  margin: 16px 0 0;
+  padding: 10px 14px;
+  border-radius: 10px;
+  font-size: 14px;
+  list-style: none;
+}
+
+ul.acc-msg {
+  padding-inline-start: 14px;
+}
+
+.acc-msg.is-error {
+  background: #fdecec;
+  color: #ab1c1e;
+}
+
+.acc-msg.is-success {
+  background: #e6efdc;
+  color: var(--acc-olive-dark);
+}
+
+.acc-msg.is-info {
+  background: #fff4e5;
+  color: #7a4b00;
+}
+
+.acc-msg a {
+  color: inherit;
+  font-weight: 700;
+}
+
+.acc-toggle-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  cursor: pointer;
+}
+
+.acc-toggle-title {
+  display: block;
+  margin-bottom: 2px;
+  font-size: 15px;
+  font-weight: 700;
+}
+
+.acc-switch {
+  flex: 0 0 auto;
+  appearance: none;
+  position: relative;
+  width: 44px;
+  height: 24px;
+  border-radius: 100px;
+  background: #c8c8c8;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.acc-switch::after {
+  content: "";
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: #fff;
+  transition: transform 0.2s ease;
+}
+
+.acc-switch:checked {
+  background: var(--acc-olive);
+}
+
+.acc-switch:checked::after {
+  transform: translateX(20px);
+}
+
+/* ---- phones -------------------------------------------------------------------- */
+@media (max-width: 767.98px) {
+  .acc-main {
+    padding-top: 18px;
+  }
+
+  .acc-tab {
+    padding: 8px 12px;
+    font-size: 14px;
+  }
+
+  .acc-tab.is-active {
+    background: var(--acc-surface);
+  }
+
+  .acc-title {
+    font-size: 22px;
+  }
+
+  .acc-profile-card {
+    padding: 16px;
+  }
+
+  .acc-profile-top {
+    align-items: flex-start;
+  }
+
+  /* the pill shrinks to its pencil */
+  .acc-btn-edit span {
+    display: none;
+  }
+
+  .acc-btn-edit {
+    width: 40px;
+    height: 40px;
+    padding: 0;
+    background: #fff;
+    border: 1px solid var(--acc-line);
+    color: var(--acc-olive);
+  }
+
+  .acc-avatar-lg {
+    width: 72px;
+    height: 72px;
+  }
+
+  .acc-profile-name {
+    font-size: 20px;
+  }
+
+  .acc-stats {
+    gap: 10px;
+  }
+
+  .acc-creator-card {
+    flex-basis: 78%;
+  }
+
+  .acc-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .acc-card {
+    padding: 18px 16px;
+  }
+}
+
+/* ---- privacy (الإعدادات → الخصوصية) ------------------------------------------ */
+.acc-pv-row {
+  display: flex;
+  flex-direction: column;
+  padding: 16px 0;
+  border-bottom: 1px solid var(--acc-line);
+}
+
+.acc-pv-row.acc-toggle-row {
+  flex-direction: row;
+}
+
+.acc-pv-desc {
+  display: block;
+  font-size: 13px;
+  color: #3a3a3a;
+}
+
+.acc-pv-row .acc-toggle-title {
+  margin-bottom: 6px;
+}
+
+/* the design's switches are a size down from the default */
+.acc-pv-row .acc-switch {
+  width: 32px;
+  height: 18px;
+}
+
+.acc-pv-row .acc-switch::after {
+  top: 2px;
+  left: 2px;
+  width: 14px;
+  height: 14px;
+}
+
+.acc-pv-row .acc-switch:checked::after {
+  transform: translateX(14px);
+}
+
+.acc-pv-choice {
+  display: flex;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.acc-pv-choice .acc-subtab {
+  margin-bottom: 0;
+  padding: 6px 4px;
+}
+
+.acc-pv-note {
+  margin: 20px 0 0;
+  font-size: 12px;
+  color: var(--acc-text);
+}

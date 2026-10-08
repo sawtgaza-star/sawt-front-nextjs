@@ -3089,3 +3089,16 @@ display:none;
     transition: transform 0.26s cubic-bezier(0.22, 0.61, 0.36, 1);
   }
 }
+
+/* "متابعة" once the creator is followed — reads "إلغاء المتابعة" (see
+   CreatorProfileHero / lib/follows). */
+.cr-profile-follow.is-following {
+  background: #4c5c37;
+  color: #fff;
+}
+.cr-profile-follow.is-following svg path {
+  fill: #fff;
+}
+.cr-profile-follow.is-following:hover {
+  background: #3d4a2c;
+}

@@ -6,6 +6,10 @@ import type { CreatorsHeroContent } from "@/lib/api/creators-page";
 import type { CreatorProfile, CreatorProfileLabels } from "@/lib/api/creator-profile";
 import { CreatorsHeroSkeleton, Line } from "./CreatorsSkeleton";
 import { compact } from "./creators-text";
+import { follow, unfollow, useFollows } from "@/lib/follows";
+import { isLoggedIn, loginHref } from "@/lib/auth-state";
+import { pushNotification } from "@/lib/notifications";
+import { t } from "@/lib/translations";
 
 const HERO_IMAGE = "/assets/images/heroSectionImg.jpeg";
 const AVATAR_FALLBACK = "/assets/images/Image (أحمد المنصور).png";
@@ -33,7 +37,9 @@ const SOCIAL_ICONS: Record<string, string> = {
    The <header> shell is NOT conditional — <SiteNav /> lives in it and
    initHeaderPin() wraps its bar right after mount (see CreatorsHero). While
    the profile is in flight the copy and the card are drawn as bars. "متابعة"
-   opens the creator's first social profile — the site has no follow system. */
+   follows the creator — they then appear in /account's "صناع المحتوى" tab —
+   and flips to "إلغاء المتابعة"; a guest is sent to sign in first. Follows
+   are browser-local until the API has an endpoint (lib/follows). */
 export default function CreatorProfileHero({
   hero,
   creator,
@@ -53,7 +59,28 @@ export default function CreatorProfileHero({
   const name = (creator?.name || "").trim();
   const bio = localized(creator?.bio, lang);
   const socials = (creator?.socials || []).filter((social) => social.url);
-  const followUrl = socials[0]?.url;
+  const uuid = creator?.uuid || (creator?.id != null ? String(creator.id) : "");
+  const following = useFollows().some((c) => c.uuid === uuid);
+
+  function toggleFollow() {
+    if (!isLoggedIn()) {
+      window.location.href = loginHref();
+      return;
+    }
+    if (following) {
+      unfollow(uuid);
+      return;
+    }
+    follow({
+      uuid,
+      name,
+      avatar: creator?.avatar_url || null,
+      role: creator?.role,
+      followers: creator?.stats?.followers ?? null,
+      videos: creator?.stats?.videos ?? null,
+    });
+    pushNotification({ kind: "follow", params: { name }, href: "/account#creators" });
+  }
 
   const stats = [
     { key: "views", value: creator?.stats?.views, suffix: label("views_suffix") },
@@ -133,14 +160,17 @@ export default function CreatorProfileHero({
 
               <div className="cr-profile-name-row">
                 <h2 className="cr-profile-name">{name}</h2>
-                {followUrl && (
+                {uuid && (
                   <button
                     type="button"
-                    className="cr-profile-follow"
-                    onClick={() => window.open(followUrl, "_blank", "noopener,noreferrer")}
+                    className={"cr-profile-follow" + (following ? " is-following" : "")}
+                    onClick={toggleFollow}
+                    aria-pressed={following}
                   >
                     {/* label first so the icon sits on the left in RTL, as in the mock */}
-                    <span>{label("follow")}</span>
+                    <span>
+                      {following ? t("acc_unfollow") : label("follow") || t("acc_follow")}
+                    </span>
                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16" fill="none">
                       <path d="M7.33301 8.83301C7.98221 8.83301 8.60498 8.95342 9.17871 9.17285C9.43655 9.27154 9.56543 9.56048 9.4668 9.81836C9.36813 10.0762 9.07919 10.2051 8.82129 10.1064C8.35987 9.92999 7.85813 9.83301 7.33301 9.83301H6C3.86804 9.83301 2.11031 11.4346 1.86328 13.5H7.66699C7.94298 13.5002 8.16699 13.724 8.16699 14C8.16699 14.276 7.94298 14.4998 7.66699 14.5H1.33301C1.05702 14.4998 0.833008 14.276 0.833008 14C0.833008 11.1465 3.14653 8.83301 6 8.83301H7.33301ZM12.333 8.83301C12.609 8.83301 12.8328 9.05702 12.833 9.33301V11.167H14.667C14.943 11.1672 15.167 11.391 15.167 11.667C15.1668 11.9429 14.9429 12.1668 14.667 12.167H12.833V14C12.833 14.2761 12.6092 14.5 12.333 14.5C12.057 14.4998 11.833 14.276 11.833 14V12.167H10C9.72397 12.167 9.50018 11.943 9.5 11.667C9.5 11.3908 9.72386 11.167 10 11.167H11.833V9.33301C11.8332 9.05712 12.0571 8.83318 12.333 8.83301ZM6.66699 1.5C8.41574 1.50018 9.83301 2.9182 9.83301 4.66699C9.83283 6.41564 8.41564 7.83283 6.66699 7.83301C4.9182 7.83301 3.50018 6.41574 3.5 4.66699C3.5 2.91809 4.91809 1.5 6.66699 1.5ZM6.66699 2.5C5.47038 2.5 4.5 3.47038 4.5 4.66699C4.50018 5.86346 5.47048 6.83301 6.66699 6.83301C7.86335 6.83283 8.83283 5.86335 8.83301 4.66699C8.83301 3.47048 7.86346 2.50018 6.66699 2.5Z" fill="#4C5C37"/>
                     </svg>

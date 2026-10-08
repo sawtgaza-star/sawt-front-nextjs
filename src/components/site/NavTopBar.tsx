@@ -4,10 +4,10 @@ import {
   IconNavUserPlus,
   IconNavMic,
   IconNavAccount,
-  IconNavBell,
 } from "@/components/ui/icons";
 import NavSocialLinks from "./NavSocialLinks";
 import NavLogoutButton from "./NavLogoutButton";
+import NavNotifications from "./NavNotifications";
 import NavSearch from "./NavSearch";
 
 /* Top utility bar, above the main navbar.
@@ -47,7 +47,7 @@ export default function NavTopBar({ nav, loading }) {
                 [🔍] [👤] [🔔] [En] left-to-right, as in the design. */}
             <a
               className="nav-icon-btn nav-authed-only"
-              href="#"
+              href="/account"
               aria-label="حسابي"
               title="حسابي"
               data-i18n-title="nav_account"
@@ -55,17 +55,7 @@ export default function NavTopBar({ nav, loading }) {
               {" "}
               <IconNavAccount />{" "}
             </a>{" "}
-            <a
-              className="nav-icon-btn nav-authed-only"
-              href="#"
-              aria-label="الإشعارات"
-              title="الإشعارات"
-              data-i18n-title="nav_notifications"
-            >
-              {" "}
-              <IconNavBell />{" "}
-              <span className="nav-bell-badge">10</span>{" "}
-            </a>{" "}
+            <NavNotifications />{" "}
             <NavLogoutButton />{" "}
             {/* Never remounted: initTranslate() wires every .language-btn once,
                 so the button has to be the same node before and after the API
