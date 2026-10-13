@@ -1,15 +1,36 @@
-/* Placeholders for /creators while GET /pages/creators is in flight.
+/* Placeholders for /creators, /creators/all and /creators/{id} while their
+   payloads are in flight (components/creators/creators-skeleton).
 
-   The page carries no copy of its own any more (see components/creators), so
-   without these the visitor gets the breadcrumb header and an empty page until
-   the response lands. The bars sit inside the REAL wrappers —
-   .cr-creators-grid, .cr-stats-grid, .cr-companies-grid, .cr-steps-grid,
-   .cr-faq-row — so the layout they hold is the layout the content arrives
-   into and nothing jumps.
+   The skeletons are the real sections' markup, so creators.css already sizes
+   almost everything; text is <SkeletonText /> and pictures carry `.sk-shimmer`
+   (skeleton-text.css). What is left here is the few boxes that have no real
+   element to borrow their size from, and the shimmer winning over the real
+   elements' own backgrounds. */
 
-   Same base classes as home-skeleton.css / team-skeleton.css / news-skeleton
-   .css; only one of them ever loads on a page. Sizes mirror creators.css:
-   300px card, 16px stat radius, 14px company radius, 20px flow panel. */
+/* One creator card — the 300px box .cr-creators-grid .main-container draws. */
+.cr-card-ph {
+  display: block;
+  width: 100%;
+  height: 300px;
+  border-radius: 18px;
+}
+
+/* The shimmer, over the backgrounds these real classes paint (the reel card's
+   black, the avatar tile's colour, the logo's 0.28 opacity). */
+.cr-content-card.sk-shimmer,
+.cr-collab-item-dot.sk-shimmer,
+.cr-collabs-reel video.sk-shimmer,
+.cr-company-logo.sk-shimmer {
+  background: linear-gradient(90deg, #e8ecf0 25%, #f4f6f8 45%, #e8ecf0 65%);
+  background-size: 400% 100%;
+  opacity: 1;
+}
+
+.cr-company-logo.sk-shimmer {
+  border-radius: 12px;
+}
+
+/* ---- kept for support's CheckoutSkeleton, which still uses these bars ---- */
 
 /* `.sk-line-title` is in this group, not only in its own rule below: most of
    the skeleton components pass it as the ONLY class (<Line className=
@@ -36,180 +57,11 @@
   margin-bottom: 22px;
 }
 
-/* A section head: the title bar and its subtitle, centred like .cr-section-head. */
-.cr-sk-head {
-  text-align: center;
-  margin-bottom: 40px;
-}
-
-.cr-sk-head .sk-line,
-.cr-sk-head .sk-line-title {
-  margin-left: auto;
-  margin-right: auto;
-}
-
-/* The hero sits on the dark collage, where the light grey above would glare —
-   the same shimmer, dimmed into it. */
-
-/* Centred, because the copy it stands in for is: `.cr-hero` / the hero
-   container is `text-align: center`, but a block with a max-width and no auto
-   margins still sits at the inline start — which in RTL is the right edge, not
-   where the title is. The bars inside need it too: they are blocks, not text,
-   so `text-align` does nothing for them. */
-.cr-sk-hero {
-  max-width: 1020px;
-  margin-inline: auto;
-}
-
-.cr-sk-hero .sk-line,
-.cr-sk-hero .sk-line-title {
-  margin-inline: auto;
-}
-
-.cr-sk-hero .sk-line,
-.cr-sk-hero .sk-line-title {
-  background: linear-gradient(
-    90deg,
-    rgba(255, 255, 255, 0.1) 25%,
-    rgba(255, 255, 255, 0.2) 37%,
-    rgba(255, 255, 255, 0.1) 63%
-  );
-  background-size: 400% 100%;
-}
-
-/* One creator card — the 300px box .cr-creators-grid .main-container draws. */
-.cr-sk-card {
-  width: 100%;
-  height: 300px;
-  border-radius: 18px;
-}
-
-/* One stat card: icon + figure + label, at the height .cr-stat-card lands on. */
-.cr-sk-stat {
-  width: 100%;
-  height: 186px;
-  border-radius: 16px;
-}
-
-/* The join banner, at the height the real one holds. */
-.cr-sk-join {
-  width: 100%;
-  height: 300px;
-  border-radius: 20px;
-}
-
-/* One partner company card: logo + name + avatar row. */
-.cr-sk-company {
-  width: 100%;
-  height: 212px;
-  border-radius: 14px;
-}
-
-/* The collaboration diagram panel and the three step cards under it. */
-.cr-sk-flow {
-  width: 100%;
-  height: 260px;
-  border-radius: 20px;
-  margin-bottom: 34px;
-}
-
-.cr-sk-step {
-  width: 100%;
-  height: 150px;
-  border-radius: 16px;
-}
-
-/* The FAQ: a stack of closed question rows beside the image panel. */
-.cr-sk-faq-q {
-  width: 100%;
-  height: 64px;
-  border-radius: 12px;
-  margin-bottom: 14px;
-}
-
-.cr-sk-faq-visual {
-  width: 100%;
-  height: 100%;
-  min-height: 420px;
-  border-radius: 20px 20px 90px 20px;
-}
-
 @keyframes sk-shimmer {
   0% {
     background-position: 100% 50%;
   }
   100% {
     background-position: 0 50%;
-  }
-}
-
-/* ---- /creators/[id] (CreatorProfileSkeleton) ---- */
-
-/* The reel slider: a row of 9:16 cards the size of .cr-content-card, clipped
-   rather than scrolled — it is only a shape. */
-.cr-sk-reels {
-  display: flex;
-  gap: 30px;
-  overflow: hidden;
-  margin: 34px 0 44px;
-}
-
-.cr-sk-reel {
-  flex: 0 0 auto;
-  width: 300px;
-  height: 533px;
-  border-radius: 22px;
-}
-
-/* Collaborations: intro + company rows, the reel, the quote card. */
-.cr-sk-collabs {
-  display: grid;
-  grid-template-columns: 1.4fr 1fr 1.2fr;
-  gap: 30px;
-  align-items: start;
-}
-
-.cr-sk-collab-item {
-  width: 100%;
-  height: 64px;
-  border-radius: 12px;
-  margin-top: 14px;
-}
-
-.cr-sk-collab-media {
-  width: 100%;
-  aspect-ratio: 9 / 16;
-  max-height: 480px;
-  border-radius: 20px;
-}
-
-.cr-sk-collab-quote {
-  width: 100%;
-  height: 260px;
-  border-radius: 20px;
-}
-
-@media (max-width: 767.98px) {
-  .cr-sk-reels {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 12px;
-    margin: 0;
-  }
-
-  .cr-sk-reel {
-    width: 100%;
-    height: auto;
-    aspect-ratio: 9 / 16;
-    border-radius: 18px;
-  }
-
-  /* two cards are enough on a phone */
-  .cr-sk-reel:nth-child(n + 3) {
-    display: none;
-  }
-
-  .cr-sk-collabs {
-    grid-template-columns: 1fr;
   }
 }

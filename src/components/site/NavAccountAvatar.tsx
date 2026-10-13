@@ -28,6 +28,7 @@ export default function NavAccountAvatar() {
       className="nav-account-avatar"
       src={src}
       alt={user?.name || ""}
+      referrerPolicy="no-referrer"
       onError={() => setFailed(true)}
     />
   );

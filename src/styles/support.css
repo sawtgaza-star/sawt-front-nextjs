@@ -1965,11 +1965,6 @@ color:#4C5C37 !important;
   cursor: pointer;
   transition: border-color 0.2s ease, background 0.2s ease;
 }
-.sp-sk-method {
-  width: 100%;
-  min-height: 240px;
-  border-radius: 20px;
-}
 .sp-methods-empty {
   margin: 40px 0 0;
   text-align: center;

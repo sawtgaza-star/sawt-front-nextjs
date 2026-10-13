@@ -2,9 +2,11 @@
 import { useEffect, useState } from "react";
 import { cutoutMic } from "@/lib/mic-cutout";
 
-/* The profile's mic portrait over the fixed waveform backdrop.
+/* The profile's mic portrait over its backdrop.
 
-   The box itself is fixed (aspect-ratio + the waveform in team.css). The
+   The box itself is fixed (aspect-ratio in team.css). Its waveform backdrop
+   only shows when the API sends no `mic_background_url` — otherwise that image
+   backs the whole profile card and this box is transparent. The
    API's `mic_photo_url` arrives with whatever background it was uploaded on
    (transparent, flat gray, even a painted checkerboard), so it goes through
    lib/mic-cutout first: backdrop removed, cropped to the mic. Until that is

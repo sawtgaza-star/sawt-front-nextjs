@@ -6,7 +6,12 @@ import NewsGallery from "@/components/news/detail/NewsGallery";
 import NewsBody from "@/components/news/detail/NewsBody";
 import RelatedNews from "@/components/news/detail/RelatedNews";
 import StoryCard from "./StoryCard";
-import { NewsArticleSkeleton } from "@/components/news/NewsSkeleton";
+import { STORY_ARTICLE_HERO_LEN } from "@/components/news/NewsSkeleton";
+import {
+  NewsArticleSkeleton,
+  RelatedNewsSkeleton,
+} from "@/components/news/detail/NewsArticleSkeleton";
+import { STORY_ARTICLE_SHAPE } from "@/components/news/detail/article-skeleton-data";
 import { storyCards } from "./story-cards";
 import { storyArticle } from "./story-article";
 import { STORIES_PARENT } from "./story-chrome";
@@ -68,12 +73,13 @@ export default function StoryArticleContent({ uuid }: { uuid: string }) {
         hero={{ title: heroTitle, desc: heroDesc }}
         image={hero?.image_url}
         loading={loading}
+        skeleton={STORY_ARTICLE_HERO_LEN}
       />
       <main className="nws-main">
         <div className="container">
           <div className="nws-layout">
             <div className="nws-content">
-              {loading ? <NewsArticleSkeleton /> : null}
+              {loading ? <NewsArticleSkeleton shape={STORY_ARTICLE_SHAPE} /> : null}
               {article ? (
                 <>
                   <NewsArticleHead article={article} />
@@ -88,6 +94,13 @@ export default function StoryArticleContent({ uuid }: { uuid: string }) {
           </div>
         </div>
       </main>
+      {loading ? (
+        <RelatedNewsSkeleton
+          shape={STORY_ARTICLE_SHAPE}
+          card="story"
+          moreHref={STORIES_PARENT.href}
+        />
+      ) : null}
       {relatedItems.length ? (
         <RelatedNews
           heading={{

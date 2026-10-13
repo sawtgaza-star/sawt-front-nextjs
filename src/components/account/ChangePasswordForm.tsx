@@ -1,36 +1,77 @@
-import { useState, type FormEvent } from "react";
+import { useEffect, useState, type FormEvent } from "react";
 import { useLang } from "@/lib/use-lang";
 import { passwordPolicyErrors } from "@/lib/password-policy";
 import { apiMessage } from "@/lib/api/messages";
+import { ApiError } from "@/lib/api/client";
+import { changePassword } from "@/lib/api/profile";
+import { getToken, USER_EVENT } from "@/lib/auth-state";
+import { handleAuthError } from "@/lib/follows";
+import NewsletterToast from "@/components/site/NewsletterToast";
+import { useAccountToast } from "./use-account-toast";
+import { markHasPassword, needsCurrentPassword } from "./account-user";
 
 /* "تغيير كلمة المرور": current / new / confirm, checked against the same
-   policy /register uses (lib/password-policy).
-
-   The API has no authenticated change-password endpoint (only the emailed
-   reset flow), so a valid submit says so and points to "نسيت كلمة المرور"
-   rather than pretending the password changed. Wire the request in here once
-   the endpoint exists. */
+   policy /register uses (lib/password-policy), then sent as
+   POST /auth/password. The server's answer is shown as it came (through
+   apiMessage); its field errors — a wrong current password among them — are
+   listed in the toast. An account from a Google/Facebook sign-in that has
+   no password yet gets only "new" + "confirm" (see needsCurrentPassword). */
 export default function ChangePasswordForm({ onCancel }: { onCancel: () => void }) {
   const { tr } = useLang();
   const [values, setValues] = useState({ current: "", next: "", confirm: "" });
-  const [errors, setErrors] = useState<string[]>([]);
-  const [notice, setNotice] = useState("");
+  const toast = useAccountToast();
+  // read after mount (localStorage); re-read when GET /auth/profile lands
+  const [askCurrent, setAskCurrent] = useState(true);
+  useEffect(() => {
+    const sync = () => setAskCurrent(needsCurrentPassword());
+    sync();
+    document.addEventListener(USER_EVENT, sync);
+    return () => document.removeEventListener(USER_EVENT, sync);
+  }, []);
+  const [saving, setSaving] = useState(false);
 
   function set(field: keyof typeof values, value: string) {
     setValues((v) => ({ ...v, [field]: value }));
-    setErrors([]);
-    setNotice("");
   }
 
-  function submit(event: FormEvent) {
+  async function submit(event: FormEvent) {
     event.preventDefault();
+    if (saving) return;
     const found: string[] = [];
-    if (!values.current) found.push(tr("acc_pw_current_required"));
+    if (askCurrent && !values.current) found.push(tr("acc_pw_current_required"));
     found.push(...passwordPolicyErrors(values.next).map((m) => apiMessage(m) || m));
     if (values.next && values.next !== values.confirm) found.push(tr("acc_pw_mismatch"));
-    if (values.current && values.current === values.next) found.push(tr("acc_pw_same"));
-    setErrors(found);
-    if (found.length === 0) setNotice(tr("acc_pw_unavailable"));
+    if (askCurrent && values.current && values.current === values.next) {
+      found.push(tr("acc_pw_same"));
+    }
+    if (found.length > 0) {
+      toast.error(found);
+      return;
+    }
+    toast.close();
+
+    setSaving(true);
+    try {
+      const message = await changePassword(getToken() || "", {
+        ...(askCurrent ? { current_password: values.current } : {}),
+        password: values.next,
+        password_confirmation: values.confirm,
+      });
+      setValues({ current: "", next: "", confirm: "" });
+      markHasPassword();
+      toast.success(apiMessage(message) || tr("acc_pw_changed"));
+    } catch (error) {
+      if (handleAuthError(error)) return;
+      const list =
+        error instanceof ApiError
+          ? Object.values(error.errors).flat().concat(
+              Object.keys(error.errors).length ? [] : [error.message],
+            )
+          : [tr("acc_pw_failed")];
+      toast.error(list.map((m) => apiMessage(m) || m));
+    } finally {
+      setSaving(false);
+    }
   }
 
   const fields: { key: keyof typeof values; label: string; auto: string }[] = [
@@ -41,7 +82,7 @@ export default function ChangePasswordForm({ onCancel }: { onCancel: () => void 
 
   return (
     <form className="acc-card" onSubmit={submit} noValidate>
-      {fields.map((field) => (
+      {fields.filter((field) => askCurrent || field.key !== "current").map((field) => (
         <label className="acc-field" key={field.key}>
           <span className="acc-label">{tr(field.label)}</span>
           <input
@@ -58,22 +99,10 @@ export default function ChangePasswordForm({ onCancel }: { onCancel: () => void 
 
       <p className="acc-note">{tr("acc_pw_note")}</p>
 
-      {errors.length > 0 ? (
-        <ul className="acc-msg is-error">
-          {errors.map((message) => (
-            <li key={message}>{message}</li>
-          ))}
-        </ul>
-      ) : null}
-      {notice ? (
-        <p className="acc-msg is-info">
-          {notice}{" "}
-          <a href="/forgot-password">{tr("acc_password_change")}</a>
-        </p>
-      ) : null}
+      {toast.notice ? <NewsletterToast notice={toast.notice} onClose={toast.close} /> : null}
 
       <div className="acc-actions">
-        <button type="submit" className="acc-btn-primary">
+        <button type="submit" className="acc-btn-primary" disabled={saving} aria-busy={saving}>
           {tr("acc_pw_submit")}
         </button>
         <button type="button" className="acc-btn-text" onClick={onCancel}>

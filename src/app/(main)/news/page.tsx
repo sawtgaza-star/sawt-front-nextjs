@@ -5,7 +5,7 @@ import "@/styles/news.css";
 import LegacyInit from "@/components/LegacyInit";
 import NewsHero from "@/components/news/NewsHero";
 import NewsCard from "@/components/news/NewsCard";
-import { NewsGridSkeleton } from "@/components/news/NewsSkeleton";
+import { NEWS_HERO_LEN, NewsGridSkeleton } from "@/components/news/NewsSkeleton";
 import Pagination from "@/components/ui/Pagination";
 import { blogCards } from "@/components/news/blog-cards";
 import { NEWS_PER_PAGE } from "@/components/news/news-data";
@@ -46,12 +46,13 @@ export default function Page() {
         hero={{ title: heroTitle, desc: heroDesc }}
         image={hero?.image_url}
         loading={loading}
+        skeleton={NEWS_HERO_LEN}
       />
       <main>
         <section className="news-grid-section">
           <div className="container">
             {loading ? (
-              <NewsGridSkeleton count={NEWS_PER_PAGE} />
+              <NewsGridSkeleton />
             ) : (
               <div className="news-grid">
                 {items.map((item) => (

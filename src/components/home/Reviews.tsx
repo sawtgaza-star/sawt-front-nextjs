@@ -22,10 +22,10 @@ import { useNearViewport } from "./use-near-viewport";
    payload — the script finds them by the same `.reel-item` / `data-index`
    markup it always did — and the thread is handed over by the effect below.
 
-   ONE THREAD, NOT THREE. The script used to swap the comment list as you
-   scrolled from reel to reel, because it carried a list per reel. The API
-   sends ONE list for the section (`reviews.comments`), so scrolling no longer
-   changes the thread and the counter is that list's count.
+   ONE THREAD PER REEL. Each reel carries its latest Instagram comments
+   (`comment_items`), so the list swaps as you scroll from reel to reel and
+   the counter is that reel's count. The section's own `reviews.comments` is
+   the thread only when the column has no reels.
 
    The lead loses one flourish in the move: the legacy copy painted its second
    word in the accent colour through an inline <span class="hl"> carried in the
@@ -63,6 +63,14 @@ export default function Reviews({
     const payload = {
       count: data?.comments?.count ?? 0,
       items: reviewComments(data?.comments?.items, lang),
+      /* each reel's own Instagram comments, in the column's order (the same
+         `reels` as the data-index below) — the list follows the reel on
+         screen. The count is Instagram's total, which can exceed the latest
+         ten that come with the reel. */
+      reels: reels.map((reel) => {
+        const items = reviewComments(reel.comment_items, lang);
+        return { count: Math.max(reel.comments_count ?? 0, items.length), items };
+      }),
     };
     (window as any).__sawtReviewComments = payload;
     (window as any).__setReviewsComments?.(payload);

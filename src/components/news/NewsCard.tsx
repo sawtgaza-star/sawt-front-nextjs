@@ -26,7 +26,9 @@ export default function NewsCard({ item }: { item: NewsItem }) {
         <div className="card-body">
           <h5 className="card-title fw-bold" data-i18n={item.titleKey}>{item.title}</h5>
           <p className="card-text font-md-18" style={{ fontWeight: "500", color: "rgba(109, 109, 109, 1)" }}>
-            {item.desc}
+            {/* inner span: the clamp can't sit on the <p> — its padding above
+                the divider would show the top of a third line */}
+            <span className="news-card-desc">{item.desc}</span>
           </p>
         </div>
         <div className="card-footer bg-white border-0 d-flex font-16 text-dark pb-3 fw-bold">

@@ -107,15 +107,6 @@
   object-fit: contain;
 }
 
-/* One option card while the payload is in flight — the box .cl-type draws,
-   held at the height its copy fills (components/collaborate/
-   CollaborateSkeleton; the shimmer itself is creators-skeleton.css). */
-.cl-sk-type {
-  height: 100%;
-  min-height: 232px;
-  border-radius: 20px;
-}
-
 .cl-type-dot {
   display: inline-flex;
   align-items: center;

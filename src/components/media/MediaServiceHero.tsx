@@ -3,6 +3,7 @@ import type { MediaServiceHeroContent } from "@/lib/api/media-service";
 import { ctaHref } from "./media-page-view";
 import MediaNav from "./MediaNav";
 import "@/styles/nav-skeleton.css";
+import SkeletonText from "@/components/ui/SkeletonText";
 
 /* Banner of /media/services/[slug] — the same dark collage the works listing
    and the case study use (media.css styles all three through `.sm-wp-hero`),
@@ -70,7 +71,7 @@ export default function MediaServiceHero({
         </nav>
         {loading ? (
           <h1 className="sm-wp-hero-title">
-            <span className="nsk-line" style={{ width: "min(520px, 80%)", height: "28px" }} />
+            <SkeletonText chars={45} />
           </h1>
         ) : title ? (
           <h1 className="sm-wp-hero-title">{title}</h1>

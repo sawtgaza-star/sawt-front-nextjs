@@ -4,6 +4,7 @@
 "use client";
 import { t, translations } from "./translations";
 import { apiMessage } from "./api/messages";
+import { getJoinPhoto, setJoinPhoto } from "@/components/site/join-photo/join-photo-store";
 
 export function initHomeInline() {
   if ((window as any).__initHomeInline) return; (window as any).__initHomeInline = true;
@@ -307,6 +308,8 @@ export function initHomeInline() {
             socials: socials,
             notes: val("notes"),
             recaptcha_token: captchaToken,
+            // the framed square from step 1's optional photo (JoinPhotoField)
+            avatar: getJoinPhoto()?.cropped ?? null,
           };
         }
 
@@ -420,6 +423,7 @@ export function initHomeInline() {
            reaching into the markup they generate. */
         function resetJoinForm() {
           form.reset();
+          setJoinPhoto(null);
 
           Array.from(socialList.querySelectorAll(".join-social-row")).forEach(
             function (row, index) {

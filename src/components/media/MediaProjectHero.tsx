@@ -3,6 +3,7 @@ import type { MediaWorkHeroContent } from "@/lib/api/media-work";
 import { ctaHref } from "./media-page-view";
 import MediaNav from "./MediaNav";
 import "@/styles/nav-skeleton.css";
+import SkeletonText from "@/components/ui/SkeletonText";
 
 /* Banner of /media/works/[slug] — the same dark collage the works listing uses
    (media.css styles both through `.sm-wp-hero`), with a three-step breadcrumb:
@@ -61,7 +62,7 @@ export default function MediaProjectHero({
         </nav>
         {loading ? (
           <h1 className="sm-wp-hero-title">
-            <span className="nsk-line" style={{ width: "min(520px, 80%)", height: "28px" }} />
+            <SkeletonText chars={45} />
           </h1>
         ) : title ? (
           <h1 className="sm-wp-hero-title">{title}</h1>

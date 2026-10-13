@@ -1,6 +1,8 @@
 import { useEffect, useState, type FormEvent } from "react";
 import { getUser } from "@/lib/auth-state";
 import { useLang } from "@/lib/use-lang";
+import NewsletterToast from "@/components/site/NewsletterToast";
+import { useAccountToast } from "./use-account-toast";
 
 /* الإعدادات → الخصوصية: "من يرى ما تشاركه؟" — four switches and the
    "من يمكنه رؤية نشاطي؟" choice, saved with "حفظ التغييرات" and put back
@@ -85,7 +87,7 @@ export default function PrivacyForm() {
   const { tr } = useLang();
   const [saved, setSaved] = useState<Privacy>(DEFAULTS);
   const [draft, setDraft] = useState<Privacy>(DEFAULTS);
-  const [done, setDone] = useState(false);
+  const toast = useAccountToast();
 
   useEffect(() => {
     const stored = readPrivacy();
@@ -95,14 +97,13 @@ export default function PrivacyForm() {
 
   function patch(next: Partial<Privacy>) {
     setDraft((d) => ({ ...d, ...next }));
-    setDone(false);
   }
 
   function submit(event: FormEvent) {
     event.preventDefault();
     writePrivacy(draft);
     setSaved(draft);
-    setDone(true);
+    toast.success(tr("acc_saved"));
   }
 
   const toggle = (key: SwitchKey, label: string) => (
@@ -150,7 +151,7 @@ export default function PrivacyForm() {
 
       <p className="acc-pv-note">{tr("acc_pv_note")}</p>
 
-      {done ? <p className="acc-msg is-success">{tr("acc_saved")}</p> : null}
+      {toast.notice ? <NewsletterToast notice={toast.notice} onClose={toast.close} /> : null}
 
       <div className="acc-actions">
         <button type="submit" className="acc-btn-primary">
@@ -161,7 +162,7 @@ export default function PrivacyForm() {
           className="acc-btn-text"
           onClick={() => {
             setDraft(saved);
-            setDone(false);
+            toast.close();
           }}
         >
           {tr("acc_cancel")}

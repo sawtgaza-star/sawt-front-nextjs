@@ -1,53 +1,94 @@
+import SkeletonText from "@/components/ui/SkeletonText";
+import { IconCircleCheck } from "@/components/ui/icons";
+import { SkProjectCta, SkProjectHead, SkTile } from "./MediaSkeletonParts";
 import "@/styles/media-skeleton.css";
 
-/* Everything below the banner, as grey bars, until the payload lands — the
-   same bargain as MediaSkeleton, in this page's own section wrappers so the
-   coverflow's height and the three-tile row are already held open. The
-   banner's own bars live in <MediaServiceHero />, which always renders its
-   shell (see the note there). */
+/* Everything below the banner while GET /pages/media/services/{slug} is in
+   flight — MediaServiceGallery, MediaServiceIncludes, MediaServiceWorks and
+   MediaProjectCta, in their own elements and classes, with the copy swapped
+   for <SkeletonText /> and the stills left as empty frames. The counts are the
+   current payload's (professional-photography); other services differ a little
+   in copy, not in shape. The banner's own bars live in <MediaServiceHero />,
+   which always renders its shell (see the note there). */
+const SHOTS = 4;
+const OPENING_SLIDE = 1;
+const INCLUDES = { title: 16, body: 115, items: [42, 41, 39] };
+const WORKS = { title: 16, items: 3, more: 10 };
 
-function Line({ width, className = "smk-line" }: { width: string; className?: string }) {
-  return <span className={className} style={{ width }} />;
-}
-
-function Head() {
-  return <Line width="min(260px, 60%)" className="smk-title" />;
+function Pager({ dots }: { dots: number }) {
+  return (
+    <div className="sm-pager sm-pager-olive">
+      <button type="button" className="sm-pager-arrow" tabIndex={-1}>
+        <i className="fa-solid fa-angle-right"></i>
+      </button>
+      <span className="sm-pager-dots">
+        {Array.from({ length: dots }, (_, i) => (
+          <button
+            type="button"
+            className={"sm-pager-dot" + (i === OPENING_SLIDE ? " active" : "")}
+            tabIndex={-1}
+            key={i}
+          ></button>
+        ))}
+      </span>
+      <button type="button" className="sm-pager-arrow" tabIndex={-1}>
+        <i className="fa-solid fa-angle-left"></i>
+      </button>
+    </div>
+  );
 }
 
 export default function MediaServiceSkeleton() {
   return (
     <div aria-busy="true" aria-hidden="true">
-      {/* the coverflow */}
       <section className="sm-sv-gallery">
         <div className="container">
-          <Head />
-          <span className="smk-block" style={{ height: 420 }} />
+          <SkProjectHead chars={17} dot="orange" />
         </div>
+        <div className="sm-sv-track">
+          {Array.from({ length: SHOTS }, (_, i) => (
+            <figure className={"sm-sv-shot smk-fill" + (i === OPENING_SLIDE ? " active" : "")} key={i} />
+          ))}
+        </div>
+        <Pager dots={SHOTS} />
       </section>
 
       <div className="container sm-sv-body">
-        {/* ماذا تشمل الخدمة */}
         <section className="sm-sv-includes">
-          <Head />
-          <Line width="100%" />
-          <Line width="90%" />
-          <div className="smk-row" style={{ marginTop: 24 }}>
-            {[0, 1, 2].map((i) => (
-              <span key={i} className="smk-block" style={{ height: 52 }} />
+          <SkProjectHead chars={INCLUDES.title} dot="orange" />
+          <p className="sm-sv-text">
+            <SkeletonText chars={INCLUDES.body} />
+          </p>
+          <div className="sm-sv-features">
+            {INCLUDES.items.map((chars, index) => (
+              <span className="sm-sv-feature" key={index}>
+                <IconCircleCheck />
+                <span>
+                  <SkeletonText chars={chars} />
+                </span>
+              </span>
             ))}
           </div>
         </section>
 
-        {/* نماذج من أعمالنا */}
         <section className="sm-sv-works">
-          <Head />
-          <div className="smk-row">
-            {[0, 1, 2].map((i) => (
-              <span key={i} className="smk-block" style={{ height: 320 }} />
+          <SkProjectHead chars={WORKS.title} dot="orange" />
+          <div className="sm-sv-grid">
+            {Array.from({ length: WORKS.items }, (_, i) => (
+              <SkTile key={i} />
             ))}
+          </div>
+          <div className="sm-sv-more">
+            <a className="sm-btn-outline" tabIndex={-1}>
+              <span>
+                <SkeletonText chars={WORKS.more} />
+              </span>
+            </a>
           </div>
         </section>
       </div>
+
+      <SkProjectCta />
     </div>
   );
 }

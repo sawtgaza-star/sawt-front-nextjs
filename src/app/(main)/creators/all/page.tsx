@@ -21,6 +21,10 @@ import { localized } from "@/lib/api/pages";
    which that endpoint answers alongside the cards. */
 const PER_PAGE = 15;
 
+/* How many cards the first page currently holds — the skeleton's count before
+   `meta` is known; after that it is the size of the page being fetched. */
+const FIRST_PAGE_CARDS = 8;
+
 /* Build the visible page list: first page, last page, and a window around the
    current page, with "…" filling any gaps (e.g. 1 2 3 … 10). */
 function buildPages(current: number, total: number): (number | string)[] {
@@ -81,7 +85,13 @@ export default function Page() {
 
           <div className="container">
             {loading ? (
-              <CreatorsGridSkeleton count={PER_PAGE} />
+              <CreatorsGridSkeleton
+                count={
+                  typeof meta.total === "number"
+                    ? Math.max(0, Math.min(PER_PAGE, meta.total - (page - 1) * PER_PAGE))
+                    : FIRST_PAGE_CARDS
+                }
+              />
             ) : (
               <div className="cr-creators-grid">
                 {pageItems.map((c) => (

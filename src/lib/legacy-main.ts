@@ -256,27 +256,48 @@ __ready(() => {
    يصلان من GET /pages/home (reviews) — الريلز يرسمها مكوّن Reviews
    نفسه، والتعليقات يمرّرها إلى هنا عبر __setReviewsComments بعد وصول الردّ.
 
-   الخيط واحد لكل العمود وليس لكل ريل خيطه كما كان: الـ API يرسل قائمة
-   تعليقات واحدة للقسم كلّه (reviews.comments)، فلم يعد للتبديل مصدر يستند إليه. */
+   لكل ريل خيطه: يحمل كل ريل آخر تعليقاته على انستقرام (comment_items)،
+   فتتبدّل القائمة مع الريل الظاهر. خيط القسم (reviews.comments) يُعرض فقط
+   حين لا يكون في العمود ريلز. */
 let activeReel = 0;
 let commentsData = [];
 let commentsCount = 0;
+/* خيط كل ريل { items, count } بترتيب العمود — commentsData يشير إلى items
+   الريل الظاهر نفسها، فيبقى تعليق الزائر مع ريله عند التنقّل. */
+let reelThreads = [];
 
 /* يستدعيها مكوّن Reviews بعد وصول الردّ، وقد يسبق ذلك تحميل هذا الملف
    (الاستيراد ديناميكي في LegacyInit)، لذلك يترك المكوّن نسخة على window
    يقرأها loadReviewComments أدناه عند أول رسم. */
 function setReviewsComments(payload) {
   const items = payload && Array.isArray(payload.items) ? payload.items : [];
-  commentsData = items.slice();
-  commentsCount =
-    payload && typeof payload.count === "number" ? payload.count : items.length;
-  // تعليق يكتبه الزائر يأخذ رقماً بعد آخر ما جاء من الـ API
-  commentIdSeq = commentsData.reduce(
-    (max, c) => Math.max(max, Number(c && c.id) || 0),
-    0,
-  ) + 1;
+  /* أرقام محلية متسلسلة بدل معرّفات الـ API: معرّف انستقرام رقم أكبر من أن
+     يُقرأ بدقّة (findComment يقارن بـ parseInt)، والتعليق الجديد يأخذ التالي */
+  commentIdSeq = 1;
+  const renumber = (list) => list.map((c) => ({ ...c, id: commentIdSeq++ }));
+
+  const reels = payload && Array.isArray(payload.reels) ? payload.reels : [];
+  reelThreads = reels.map((r) => {
+    const list = renumber(r && Array.isArray(r.items) ? r.items : []);
+    return { items: list, count: r && typeof r.count === "number" ? r.count : list.length };
+  });
+
+  if (reelThreads.length) {
+    showReelThread(Math.min(activeReel, reelThreads.length - 1));
+  } else {
+    commentsData = renumber(items);
+    commentsCount =
+      payload && typeof payload.count === "number" ? payload.count : items.length;
+  }
   renderComments();
   updateCommentsCount();
+}
+
+function showReelThread(index) {
+  const thread = reelThreads[index];
+  if (!thread) return;
+  commentsData = thread.items;
+  commentsCount = thread.count;
 }
 
 function loadReviewComments() {
@@ -300,20 +321,38 @@ function updateCommentsCount() {
   counter.textContent = `${t("comments_word")} (${commentsCount})`;
 }
 
-/* خيط التعليقات واحد لكل العمود الآن، فالوصول إلى ريل آخر لم يعد يبدّل شيئاً
-   — نكتفي بتذكّر الريل الظاهر (تستدعيها detectActiveReel عند كل تمرير). */
+/* تستدعيها detectActiveReel عند كل تمرير: إن صار ريل آخر في المنتصف تُعرض
+   تعليقاته هو. */
 function setActiveReel(index) {
+  if (index === activeReel) return;
+  // العدد كما تركه الزائر (addComment يزيده) يبقى مع ريله
+  if (reelThreads[activeReel]) reelThreads[activeReel].count = commentsCount;
   activeReel = index;
+  if (!reelThreads[index]) return;
+  showReelThread(index);
+  renderComments();
+  updateCommentsCount();
+}
+
+/* نصوص التعليقات تأتي من انستقرام (يكتبها أي أحد) وتُرسم عبر innerHTML،
+   فتُهرَّب قبل وضعها في القالب. */
+function escapeHtml(value) {
+  return String(value == null ? "" : value)
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#39;");
 }
 
 function replyMarkup(r) {
   const styleAttr = r.style ? ` style="${r.style}"` : "";
   return `
     <div class="rv-reply">
-      <div class="avatar-circle ${r.av} rv-avatar-sm"${styleAttr}>${r.letter}</div>
+      <div class="avatar-circle ${r.av} rv-avatar-sm"${styleAttr}>${escapeHtml(r.letter)}</div>
       <div class="rv-reply-body">
-        <span class="rv-name">${r.name || ""}</span>
-        <p class="rv-text">${r.text}</p>
+        <span class="rv-name">${escapeHtml(r.name)}</span>
+        <p class="rv-text">${escapeHtml(r.text)}</p>
       </div>
     </div>`;
 }
@@ -329,12 +368,12 @@ function commentMarkup(c) {
   return `
     <div class="rv-comment-head">
       <div class="rv-user">
-        <div class="avatar-circle ${c.av}"${styleAttr}>${c.letter}</div>
-        <span class="rv-name">${c.name || ""}</span>
+        <div class="avatar-circle ${c.av}"${styleAttr}>${escapeHtml(c.letter)}</div>
+        <span class="rv-name">${escapeHtml(c.name)}</span>
       </div>
-      <span class="rv-time">${c.time || ""}</span>
+      <span class="rv-time">${escapeHtml(c.time)}</span>
     </div>
-    <p class="rv-text">${c.text}</p>
+    <p class="rv-text">${escapeHtml(c.text)}</p>
     <div class="rv-actions">
       <div class="rv-like ${c.liked ? "liked" : ""}" onclick="toggleCommentLike(this)">
         <i class="fa-${c.liked ? "solid" : "regular"} fa-heart"></i>

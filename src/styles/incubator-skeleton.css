@@ -1,0 +1,43 @@
+/* Placeholders for /incubator and /courses/[id] while their payloads are in
+   flight (components/incubator/incubator-skeleton, components/courses/
+   course-skeleton).
+
+   Those skeletons are the real sections' markup, so the boxes come from
+   incubator.css / course.css; this file only paints them. Text is
+   <SkeletonText /> (skeleton-text.css); everything that is not text — photos,
+   avatars, icon roundels, buttons — carries .incskel-media and turns into a grey
+   block of its own size. */
+
+.incskel-media {
+  background: rgba(128, 128, 128, 0.22) !important;
+  border-color: transparent !important;
+  box-shadow: none !important;
+  color: transparent !important;
+  animation: sk-text-pulse 1.4s ease-in-out infinite;
+}
+
+/* a button or chip is already one grey block — its label needs no band too */
+.incskel-media .sk-text {
+  background: none;
+  animation: none;
+}
+
+/* icons are kept for their box, drawn as faint grey glyphs */
+.incskel-root svg,
+.incskel-root .fa-solid,
+.incskel-root .fab {
+  filter: grayscale(1);
+  opacity: 0.3;
+}
+
+/* nothing in a skeleton is a target yet */
+.incskel-root a,
+.incskel-root button {
+  pointer-events: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .incskel-media {
+    animation: none;
+  }
+}

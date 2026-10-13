@@ -16,6 +16,24 @@
   background: #fff;
 }
 
+/* The page is white, so the navbar card gets an outline here only. The card is
+   two stacked boxes — .nav-face (top corners, already has the divider) and
+   .navbar .container (bottom corners) — so each takes its half of the border.
+   Mobile (≤768px) already outlines the card and hides .nav-face. */
+@media (min-width: 769px) {
+  /* !important: the top bar's Bootstrap `border-light border-opacity-25`
+     classes force a near-white border colour with !important. */
+  .acc-header .nav-face {
+    border: 1px solid var(--Natural-Gray-200, #dadada) !important;
+    background: var(--White, #fff);
+  }
+  .acc-header .navbar .container {
+    border: 1px solid var(--Natural-Gray-200, #dadada);
+    border-top: 0;
+    border-radius: 0 0 16px 16px;
+  }
+}
+
 /* ---- breadcrumb ---------------------------------------------------------- */
 .acc-breadcrumb {
   display: flex;
@@ -102,8 +120,22 @@
   color: #6D6D6D;
 }
 
-.acc-loading {
-  min-height: 320px;
+/* ---- placeholders (AccountSkeleton) -------------------------------------------- */
+.acc-sk-block {
+  background: #dfe3d8;
+  animation: sk-text-pulse 1.4s ease-in-out infinite;
+}
+
+/* the creator photo keeps its gradient ring; its centre stays empty */
+.acc-sk-ring {
+  animation: sk-text-pulse 1.4s ease-in-out infinite;
+}
+
+/* the inert copies of the real buttons */
+.acc-panel [aria-busy="true"] button:disabled,
+.acc-panel[aria-busy="true"] button:disabled {
+  cursor: default;
+  opacity: 1;
 }
 
 /* ---- buttons ---------------------------------------------------------------- */
@@ -520,8 +552,8 @@ html[dir="rtl"] .acc-input[dir="ltr"] {
 }
 
 .acc-input:focus {
-  border-color: var(--acc-olive);
-  box-shadow: 0 0 0 2px rgba(76, 92, 55, 0.15);
+  border-color: #DADADA;
+  box-shadow: none;
 }
 
 .acc-input[readonly] {
@@ -746,4 +778,135 @@ ul.acc-msg {
   margin: 20px 0 0;
   font-size: 12px;
   color: var(--acc-text);
+}
+
+/* Several errors share one toast, a line each (see use-account-toast). */
+.acc-page .logout-toast-text {
+  white-space: pre-line;
+}
+
+/* ---- photo cropper (AvatarCropper) ---------------------------------------- */
+.acc-crop-backdrop {
+  position: fixed;
+  inset: 0;
+  /* above the navbar (1030), under the toast (1200) — a too-big photo picked
+     from inside the dialog still has to show its error */
+  z-index: 1150;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  background: rgba(28, 28, 28, 0.55);
+}
+
+.acc-crop {
+  width: 100%;
+  max-width: 520px;
+  max-height: calc(100vh - 32px);
+  overflow-y: auto;
+  padding: 24px;
+  border-radius: 16px;
+  background: #fff;
+  box-shadow: 0 16px 40px rgba(28, 28, 28, 0.2);
+}
+
+.acc-crop-title {
+  margin: 0 0 6px;
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--acc-text);
+}
+
+.acc-crop-frame {
+  position: relative;
+  width: min(360px, 100%);
+  aspect-ratio: 1;
+  margin: 16px auto;
+  overflow: hidden;
+  border-radius: 12px;
+  /* what an uncovered corner is saved as (JPEG) */
+  background: #fff;
+  cursor: grab;
+  touch-action: none;
+  user-select: none;
+}
+
+.acc-crop-frame:active {
+  cursor: grabbing;
+}
+
+.acc-crop-frame:focus-visible {
+  outline: 2px solid var(--acc-olive);
+  outline-offset: 2px;
+}
+
+.acc-crop-frame img {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  max-width: none;
+  transform-origin: center;
+  pointer-events: none;
+}
+
+/* everything outside the circle is dimmed; the ring marks its edge */
+.acc-crop-mask {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  box-shadow: 0 0 0 9999px rgba(0, 0, 0, 0.5);
+  outline: 2px solid rgba(255, 255, 255, 0.85);
+  pointer-events: none;
+}
+
+.acc-crop-zoom,
+.acc-crop-tools {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+}
+
+.acc-crop-zoom input[type="range"] {
+  flex: 1 1 auto;
+  accent-color: var(--acc-olive);
+}
+
+.acc-crop-tools {
+  margin-top: 12px;
+}
+
+.acc-crop-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  padding: 0;
+  border: 1px solid #dadada;
+  border-radius: 50%;
+  background: #fff;
+  color: var(--acc-olive);
+  cursor: pointer;
+}
+
+.acc-crop-icon:hover {
+  background: var(--acc-surface);
+}
+
+/* the dialog reads a step larger than the form behind it */
+.acc-crop .acc-hint {
+  font-size: 15px;
+}
+
+.acc-crop .acc-link-btn,
+.acc-crop .acc-btn-primary,
+.acc-crop .acc-btn-text {
+  font-size: 16px;
+}
+
+.acc-crop-error {
+  margin: 12px 0 0;
+  font-size: 15px;
+  color: #ab1c1e;
 }

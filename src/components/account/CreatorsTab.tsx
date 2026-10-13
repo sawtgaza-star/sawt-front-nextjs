@@ -2,13 +2,33 @@ import { unfollow, type FollowedCreator } from "@/lib/follows";
 import { useLang } from "@/lib/use-lang";
 import { fill } from "./account-user";
 import FollowedCreatorCard from "./FollowedCreatorCard";
+import { CreatorsListSkeleton } from "./AccountSkeleton";
 
-/* "صناع المحتوى المتابعون": every creator followed from their profile page
-   (CreatorProfileHero → lib/follows), newest first, in a sideways-scrolling
-   row; an empty state pointing at /creators when there are none. */
-export default function CreatorsTab({ creators }: { creators: FollowedCreator[] }) {
+/* "صناع المحتوى المتابعون": the creators the user follows (GET /auth/profile
+   → lib/follows), in a sideways-scrolling row; an empty state pointing at
+   /creators when there are none. "إلغاء المتابعة" drops the card at once and
+   sends DELETE …/follow — a failure brings it back (lib/follows). */
+export default function CreatorsTab({
+  creators,
+  loaded,
+  expected,
+}: {
+  creators: FollowedCreator[];
+  loaded: boolean;
+  /** The stored following count — how many cards the placeholder row shows. */
+  expected: number;
+}) {
   const { lang, tr } = useLang();
   const count = creators.length;
+
+  if (!loaded && count === 0) {
+    return (
+      <section className="acc-panel">
+        <h1 className="acc-title">{tr("acc_creators_title")}</h1>
+        <CreatorsListSkeleton count={expected} />
+      </section>
+    );
+  }
 
   return (
     <section className="acc-panel">
@@ -27,7 +47,11 @@ export default function CreatorsTab({ creators }: { creators: FollowedCreator[] 
                 creator={creator}
                 lang={lang}
                 tr={tr}
-                onUnfollow={() => unfollow(creator.uuid)}
+                onUnfollow={() =>
+                  unfollow(creator.uuid).catch((error) =>
+                    console.warn("[follow] unfollow failed:", error),
+                  )
+                }
               />
             ))}
           </div>

@@ -7,7 +7,8 @@ import MediaHeroWord from "./MediaHeroWord";
 import MediaHeroFan from "./MediaHeroFan";
 import MediaSatisfactionChip from "./MediaSatisfactionChip";
 import MediaTicker from "./MediaTicker";
-import "@/styles/nav-skeleton.css";
+import SkeletonText from "@/components/ui/SkeletonText";
+import { SkButton, SkChip, SkTicker } from "./MediaSkeletonParts";
 
 /* Hero of /media — hosts the page's own navbar, the headline whose second
    line names the service in focus, the two CTAs, the two floating rating
@@ -22,10 +23,23 @@ import "@/styles/nav-skeleton.css";
    page load — a header that appeared only when the payload landed would bring
    that button up afterwards and the toggle would never be wired. So the frame
    renders from the first paint and only its text is drawn as bars while
-   `loading` (styles/nav-skeleton.css, as in the navbar itself).
+   `loading`: the same elements with each string swapped for a <SkeletonText />
+   of the current copy's length (LOADING), so the headline, the buttons, the
+   chips and the ticker hold the room the payload lands in.
 
    The ellipsis in front of the eyebrow is the design's, not the editor's: it
    is typography, so it stays in the markup whatever the API sends. */
+/** Character counts of the current hero copy (GET /pages/media → hero). The
+    rotating word is sized by its longest phrase, the line it wraps on. */
+const LOADING = {
+  eyebrow: 17,
+  word: 20,
+  description: 95,
+  primary: 11,
+  secondary: 16,
+  phrases: [16, 17, 19, 18, 20, 13],
+};
+
 export default function MediaHero({
   data,
   lang = "ar",
@@ -73,7 +87,14 @@ export default function MediaHero({
             <div className="sm-hero-text">
               <h1 className="sm-hero-title">
                 {loading ? (
-                  <span className="nsk-line" style={{ width: "260px", height: "34px" }} />
+                  <>
+                    <span>
+                      <SkeletonText chars={LOADING.eyebrow} />
+                    </span>
+                    <span className="sm-hero-word">
+                      <SkeletonText chars={LOADING.word} />
+                    </span>
+                  </>
                 ) : (
                   <>
                     <span>...{eyebrow}</span>
@@ -83,7 +104,7 @@ export default function MediaHero({
               </h1>
               {loading ? (
                 <p className="sm-hero-desc">
-                  <span className="nsk-line" style={{ width: "min(560px, 90%)" }} />
+                  <SkeletonText chars={LOADING.description} />
                 </p>
               ) : description ? (
                 <p className="sm-hero-desc">{description}</p>
@@ -91,8 +112,10 @@ export default function MediaHero({
               <div className="sm-hero-cta">
                 {loading ? (
                   <>
-                    <span className="nsk-cta" style={{ width: "150px" }} />
-                    <span className="nsk-cta" style={{ width: "160px" }} />
+                    <SkButton className="sm-btn-green" chars={LOADING.primary} />
+                    <a className="sm-btn-outline" aria-hidden="true" tabIndex={-1}>
+                      <SkeletonText chars={LOADING.secondary} />
+                    </a>
                   </>
                 ) : (
                   <>
@@ -132,14 +155,21 @@ export default function MediaHero({
 
         {/* the chips are artboard-level, not part of the deck: the design puts
             the -3.779° one beside the headline and the +4° one over the deck */}
-        <MediaSatisfactionChip className="sm-chip-hero-a" tilt={1} {...badge} />
-        <MediaSatisfactionChip className="sm-chip-hero-b" tilt={0} {...badge} />
+        {loading ? (
+          <>
+            <SkChip className="sm-chip-hero-a" tilt={1} />
+            <SkChip className="sm-chip-hero-b" tilt={0} />
+          </>
+        ) : (
+          <>
+            <MediaSatisfactionChip className="sm-chip-hero-a" tilt={1} {...badge} />
+            <MediaSatisfactionChip className="sm-chip-hero-b" tilt={0} {...badge} />
+          </>
+        )}
       </div>
 
-      {/* empty while the payload is on its way — `.sm-ticker:empty` in
-          media.css holds the strip's height so nothing below it jumps */}
       {loading ? (
-        <div className="sm-ticker" aria-hidden="true" />
+        <SkTicker phrases={LOADING.phrases} />
       ) : (
         <MediaTicker phrases={phrases} />
       )}

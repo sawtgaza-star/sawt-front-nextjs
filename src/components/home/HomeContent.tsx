@@ -59,6 +59,7 @@ import JoinUs from "./JoinUs";
 import Reviews from "./Reviews";
 import HomeSkeleton from "./HomeSkeleton";
 import type { HomePage } from "@/lib/api/home";
+import { enableHeroDrag } from "./hero-drag";
 
 /** A short, stable key for a section's payload block — changes iff the block does. */
 function contentKey(block: unknown): string {
@@ -68,14 +69,32 @@ function contentKey(block: unknown): string {
   return `${text.length}-${hash >>> 0}`;
 }
 
-/** Rebuild the hero's Bootstrap carousel now that it has slides. */
-function restartHeroCarousel() {
+/** How long each hero slide stays up before the next one slides in. */
+const HERO_INTERVAL = 5000;
+
+/** Rebuild the hero's Bootstrap carousel now that it has slides, and start it
+    cycling. Bootstrap is taken from its module, not `window.bootstrap`: the
+    bundle is imported as a module (LegacyInit), which never sets the global —
+    and it lands after the window `load` that its own data-bs-ride
+    auto-start listens for, so nothing else starts the carousel. */
+async function restartHeroCarousel() {
   const element = document.getElementById("heroCarousel");
-  const bootstrap = (window as any).bootstrap;
-  if (!element || !bootstrap?.Carousel) return;
-  bootstrap.Carousel.getInstance(element)?.dispose();
-  // `data-bs-ride="carousel"` is on the element, so this starts cycling too.
-  bootstrap.Carousel.getOrCreateInstance(element);
+  if (!element) return;
+  // @ts-ignore — no types for the bundle; same import LegacyInit makes
+  const mod: any = await import("bootstrap/dist/js/bootstrap.bundle.min.js");
+  const Carousel = mod?.Carousel ?? mod?.default?.Carousel;
+  if (!Carousel) return;
+  Carousel.getInstance(element)?.dispose();
+  // touch: false — hero-drag handles fingers too, in the direction they move
+  const carousel = Carousel.getOrCreateInstance(element, {
+    interval: HERO_INTERVAL,
+    ride: "carousel",
+    touch: false,
+  });
+  carousel.cycle();
+  // drag / swipe (see hero-drag); re-wired with the carousel
+  (element as any).__heroDragOff?.();
+  (element as any).__heroDragOff = enableHeroDrag(element, carousel);
 }
 
 export default function HomeContent({
@@ -100,7 +119,7 @@ export default function HomeContent({
       const { initReels, replayComments } = await import("@/lib/legacy-main");
       initReels();
       replayComments();
-      restartHeroCarousel();
+      await restartHeroCarousel();
     })();
 
     return () => {

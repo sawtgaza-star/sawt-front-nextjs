@@ -43,7 +43,6 @@ function HeroSlide({ slide, index, trust, support, collaborate, lang }) {
       className={"carousel-item position-relative" + (index === 0 ? " active" : "")}
     >
       {" "}
-      <div className="overlay"></div>{" "}
       {slide.image_url ? (
         <img
           src={slide.image_url}
@@ -154,7 +153,7 @@ export default function HeroHeader({
           {" "}
           <SiteNav />{" "}
           {/*  Mobile search panel (revealed by the mobile search icon)  */}{" "}
-          <div id="heroCarousel" className="carousel slide" data-bs-ride="carousel">
+          <div id="heroCarousel" className="carousel slide" data-bs-ride="carousel" data-bs-interval="5000">
             {" "}
             <div className="carousel-indicators">
               {" "}

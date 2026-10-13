@@ -65,14 +65,26 @@ function reply(item: HomeReviewReply): LegacyReply {
   };
 }
 
-/** The API's thread as the comment list can draw it. A comment with no text is
-    dropped — it would render as a name over an empty paragraph. */
+/** When the comment was written: `created_at` on the section's thread, `time`
+    on a reel's Instagram comments — whose "+0000" offset Safari can't parse
+    until it reads "+00:00". */
+function dateOf(item: HomeReviewComment): string {
+  const raw = item.created_at || item.time || "";
+  return raw.replace(/([+-]\d{2})(\d{2})$/, "$1:$2");
+}
+
+/** The API's thread as the comment list can draw it, oldest first — the order
+    lib/legacy-main expects ("الأحدث" reverses it); Instagram sends a reel's
+    comments newest first. A comment with no text is dropped — it would render
+    as a name over an empty paragraph. */
 export function reviewComments(
   items: HomeReviewComment[] | undefined,
   lang: string,
 ): LegacyComment[] {
   if (!Array.isArray(items)) return [];
-  return items
+  const time = (item: HomeReviewComment) => Date.parse(dateOf(item)) || 0;
+  return [...items]
+    .sort((a, b) => time(a) - time(b))
     .map((item, index) => {
       const name = nameOf(item);
       return {
@@ -81,7 +93,7 @@ export function reviewComments(
         letter: name.charAt(0),
         name,
         text: bodyOf(item),
-        time: formatDate(item.created_at, lang),
+        time: formatDate(dateOf(item), lang),
         likes: typeof item.likes === "number" ? item.likes : 0,
         liked: !!item.liked,
         replies: Array.isArray(item.replies) ? item.replies.map(reply) : [],

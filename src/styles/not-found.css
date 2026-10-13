@@ -3,6 +3,23 @@
   background: #fff;
 }
 
+/* White page, so the navbar card gets the same outline as /account
+   (account.css → .acc-header): .nav-face holds the top half, .navbar
+   .container the bottom. Mobile (≤768px) already outlines the card. */
+@media (min-width: 769px) {
+  /* !important: the top bar's Bootstrap `border-light border-opacity-25`
+     classes force a near-white border colour with !important. */
+  .nf-header .nav-face {
+    border: 1px solid var(--Natural-Gray-200, #dadada) !important;
+    background: var(--White, #fff);
+  }
+  .nf-header .navbar .container {
+    border: 1px solid var(--Natural-Gray-200, #dadada);
+    border-top: 0;
+    border-radius: 0 0 16px 16px;
+  }
+}
+
 .nf-page {
   display: flex;
   flex-direction: column;

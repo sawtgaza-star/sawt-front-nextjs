@@ -2,7 +2,11 @@ import Link from "next/link";
 import TeamMembersSlider from "./TeamMembersSlider";
 import type { TeamCardMember } from "./team-data";
 import { splitHeading } from "./team-text";
-import { TeamMembersRowSkeleton } from "./TeamSkeleton";
+import {
+  TeamMembersMoreSkeleton,
+  TeamMembersRowSkeleton,
+  TeamMembersTitleSkeleton,
+} from "./TeamSkeleton";
 
 /* "اعضاء الفريق" block on the member detail page: a centred, decorated heading,
    a row of member cards, and a "عرض الكل" link back to the full roster.
@@ -21,7 +25,7 @@ export default function TeamMembersSection({
   title?: string;
   viewAllLabel?: string;
   viewAllHref?: string;
-  /** The payload is still on its way — hold the row's height with bars. */
+  /** The payload is still on its way — hold the heading, row and link with skeletons. */
   loading?: boolean;
 }) {
   const [titleHead, titleTail] = splitHeading(title, 1);
@@ -29,7 +33,9 @@ export default function TeamMembersSection({
   return (
     <section className="team-members-section">
       <div className="container">
-        {title ? (
+        {loading ? (
+          <TeamMembersTitleSkeleton />
+        ) : title ? (
           <h2 className="team-members-title">
             <span>{titleHead}</span>{" "}
             <span className="team-members-highlight">{titleTail}</span>
@@ -42,7 +48,9 @@ export default function TeamMembersSection({
           <TeamMembersSlider members={members} />
         )}
 
-        {viewAllLabel ? (
+        {loading ? (
+          <TeamMembersMoreSkeleton />
+        ) : viewAllLabel ? (
           <div className="team-members-more">
             <Link href={viewAllHref}>
               <span>{viewAllLabel}</span>

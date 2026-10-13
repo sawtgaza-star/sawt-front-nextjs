@@ -1,121 +1,62 @@
-/* Placeholders for /news and /news/{uuid} while GET /pages/blogs is in flight.
+/* Placeholders for /news, /stories and their article pages while the request
+   is in flight (components/news/NewsSkeleton, detail/NewsArticleSkeleton).
 
-   Neither page carries copy of its own any more (see components/news), so
-   without these the visitor gets the breadcrumb header and a white page until
-   the response lands. The bars sit inside the REAL wrappers — .news-grid,
-   .nws-content — so the layout they hold is the layout the content arrives
-   into and nothing jumps.
+   The text placeholders are <SkeletonText /> inside the real elements, so they
+   need nothing here. These rules only paint the blocks that stand in for the
+   pictures, in the real picture's box: the 230px card image (news.css), the
+   story poster's aspect-ratio (.rs-card-bg, style.css / news.css), the 16/9
+   gallery frame and the thumbnails (.nws-gallery-*, news.css). */
 
-   Same base classes as home-skeleton.css / about-skeleton.css; only one of the
-   three ever loads on a page. Sizes mirror news.css: 230px card image, 16/9
-   gallery stage, 67px thumbnails. Keep them in step if those change. */
-
-/* `.sk-line-title` is in this group, not only in its own rule below: most of
-   the skeleton components pass it as the ONLY class (<Line className=
-   "sk-line-title" />), so without display + background here a title bar is an
-   inline span with a height that does nothing — invisible. */
-.sk-line-title,
-.sk-line,
-.sk-block {
+.nph-img,
+.nph-block,
+.nph-frame {
   display: block;
-  background: linear-gradient(90deg, #e9ecef 25%, #f5f7f9 37%, #e9ecef 63%);
-  background-size: 400% 100%;
-  animation: sk-shimmer 1.4s ease-in-out infinite;
+  background: #e9ecef;
+  animation: nph-pulse 1.4s ease-in-out infinite;
 }
 
-.sk-line {
-  height: 14px;
-  border-radius: 7px;
-  margin-bottom: 12px;
-}
-
-.sk-line-title {
-  height: 28px;
-  border-radius: 10px;
-  margin-bottom: 22px;
-}
-
-.sk-block {
+/* the card's <img> box: news.css gives every card image on these pages 230px */
+.news-card .nph-img {
   width: 100%;
-  border-radius: 16px;
-}
-
-/* --- breadcrumb hero ---
-   The hero sits on the dark collage, where the light grey above would glare —
-   the same shimmer, dimmed into it (same treatment as creators-skeleton.css).
-   Centred, because the copy it stands in for is. */
-.sk-nws-hero {
-  max-width: 900px;
-  margin-inline: auto;
-}
-
-.sk-nws-hero .sk-line,
-.sk-nws-hero .sk-line-title {
-  margin-inline: auto;
-  background: linear-gradient(
-    90deg,
-    rgba(255, 255, 255, 0.1) 25%,
-    rgba(255, 255, 255, 0.2) 37%,
-    rgba(255, 255, 255, 0.1) 63%
-  );
-  background-size: 400% 100%;
-}
-
-/* the title bar carries the height .about-hero-title lands on */
-.sk-nws-hero .sk-line-title {
-  height: 34px;
-}
-
-/* One card of the listing grid: the image box of news.css, then the two body
-   lines and the footer row the card shows under it. */
-.sk-news-card {
-  border-radius: 16px;
-  overflow: hidden;
-}
-
-.sk-news-card .sk-news-cover {
   height: 230px;
-  border-radius: 16px;
-  margin-bottom: 16px;
 }
 
-/* --- article --- */
-.sk-nws-tags {
-  display: flex;
-  gap: 8px;
-  margin-bottom: 18px;
+/* the gallery stage is dark behind its photo; the frame fills it instead */
+.nws-gallery-stage.nph-stage {
+  background: transparent;
 }
 
-.sk-nws-tag {
-  height: 30px;
-  width: 120px;
-  border-radius: 999px;
-}
-
-.sk-nws-stage {
+.nph-frame {
+  width: 100%;
   aspect-ratio: 16 / 9;
-  border-radius: 12px;
-  margin: 26px 0 18px;
 }
 
-.sk-nws-thumbs {
-  display: flex;
-  gap: 8px;
-  margin-bottom: 30px;
+/* the thumbnails sit at 60% opacity until picked; the placeholder doesn't */
+.nws-gallery-thumb.nph-block {
+  opacity: 1;
 }
 
-.sk-nws-thumb {
-  width: 100px;
-  height: 67px;
-  flex: 0 0 100px;
-  border-radius: 12px;
+/* the category pills keep their box, in grey rather than orange */
+.nws-tag.nph-tag {
+  background: #f1f3f5;
+  border-color: #e9ecef;
 }
 
-@keyframes sk-shimmer {
-  0% {
-    background-position: 100% 50%;
+/* chevrons that follow a placeholder label keep their room, not their glyph */
+.nph-glyph {
+  visibility: hidden;
+}
+
+@keyframes nph-pulse {
+  50% {
+    opacity: 0.55;
   }
-  100% {
-    background-position: 0 50%;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .nph-img,
+  .nph-block,
+  .nph-frame {
+    animation: none;
   }
 }
