@@ -47,6 +47,15 @@
   border-radius: 10px;
 }
 
+/* on phones the real logo is 44px tall (style.css, header .navbar-brand img
+   in the 767.98px block) — the placeholder follows, at the same ratio */
+@media (max-width: 767.98px) {
+  .nsk-logo {
+    width: 79px;
+    height: 44px;
+  }
+}
+
 /* .nav-cta: 8px 18px padding around 16px text, fully rounded */
 .nsk-cta {
   height: 37px;

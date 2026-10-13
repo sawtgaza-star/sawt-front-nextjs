@@ -17,6 +17,7 @@ import { useFollows } from "@/lib/follows";
 import { useLang } from "@/lib/use-lang";
 import { useAccountUser } from "./account-user";
 import ProfileTab from "./ProfileTab";
+import { ProfileTabSkeleton } from "./AccountSkeleton";
 import CreatorsTab from "./CreatorsTab";
 import SettingsTab, { type SettingsView } from "./SettingsTab";
 
@@ -53,6 +54,9 @@ export default function AccountContent() {
   const { tr } = useLang();
   const { user, save } = useAccountUser();
   const follows = useFollows();
+  const followingCount = follows.loaded
+    ? follows.creators.length
+    : (user?.followingCount ?? 0);
   const [route, setRoute] = useState<Route>({ tab: "profile", view: "account" });
 
   useEffect(() => {
@@ -103,12 +107,12 @@ export default function AccountContent() {
             {route.tab === "profile" ? (
               <ProfileTab
                 user={user}
-                followingCount={follows.length}
+                followingCount={followingCount}
                 onEdit={() => go({ tab: "settings", view: "account" })}
                 onShowCreators={() => go({ tab: "creators", view: "account" })}
               />
             ) : null}
-            {route.tab === "creators" ? <CreatorsTab creators={follows} /> : null}
+            {route.tab === "creators" ? <CreatorsTab creators={follows.creators} loaded={follows.loaded} expected={followingCount} /> : null}
             {route.tab === "settings" ? (
               <SettingsTab
                 view={route.view}
@@ -119,7 +123,9 @@ export default function AccountContent() {
             ) : null}
           </>
         ) : (
-          <div className="acc-loading" aria-busy="true" />
+          // the stored user isn't read yet (exported HTML, before hydration):
+          // the profile tab — the default — with placeholders for its details
+          <ProfileTabSkeleton />
         )}
       </main>
     </>

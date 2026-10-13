@@ -93,3 +93,14 @@
     font-size: 14px;
   }
 }
+
+/* Error tint — used by <NewsletterToast /> for a rejected email or an
+   invalid/expired confirmation link. */
+.logout-toast.is-error {
+  border-color: #f1c9b4;
+  background: #fdf1ea;
+}
+
+.logout-toast.is-error .logout-toast-icon {
+  color: rgba(225, 114, 59, 1);
+}

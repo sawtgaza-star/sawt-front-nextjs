@@ -1,9 +1,16 @@
-import { useEffect, useRef, useState, type FormEvent } from "react";
+import { useCallback, useEffect, useRef, useState, type FormEvent } from "react";
 import { useLang } from "@/lib/use-lang";
+import { ApiError } from "@/lib/api/client";
+import { apiMessage } from "@/lib/api/messages";
+import { handleAuthError } from "@/lib/follows";
+import NewsletterToast from "@/components/site/NewsletterToast";
 import AccountAvatar from "./AccountAvatar";
-import { resizeAvatar, type AccountUser, type Gender } from "./account-user";
+import AvatarCropper from "./AvatarCropper";
+import { useAccountToast } from "./use-account-toast";
+import type { AccountDraft, AccountUser, Gender } from "./account-user";
 
 const MAX_PHOTO_BYTES = 5 * 1024 * 1024;
+const PHOTO_TYPES = ["image/jpeg", "image/png"];
 
 type Draft = { name: string; phone: string; gender: Gender; avatar: string | null };
 
@@ -11,53 +18,98 @@ function draftOf(user: AccountUser): Draft {
   return { name: user.name, phone: user.phone, gender: user.gender, avatar: user.avatar };
 }
 
+/* Every message the server sent back — field errors first, else its message. */
+function errorsOf(error: unknown): string[] {
+  if (error instanceof ApiError) {
+    const fields = Object.values(error.errors).flat();
+    const list = fields.length ? fields : [error.message];
+    return list.map((m) => apiMessage(m) || m);
+  }
+  return [apiMessage("حدث خطأ غير متوقع. حاول مرة أخرى.") || ""];
+}
+
 /* "المعلومات الشخصية": photo (+ "تغيير الصورة"), full name, email (read-only —
-   changing it needs a verified flow the API doesn't offer), phone, gender;
-   "حفظ التغييرات" / "إلغاء". Saved through account-user's save(). */
+   changing it needs a verified flow), phone, gender; "حفظ التغييرات" /
+   "إلغاء". Sent as POST /auth/profile through account-user's save(); the
+   picked photo is first framed in <AvatarCropper /> (zoom, move, turn), and
+   the cropped square is what is previewed locally and uploaded. */
 export default function AccountInfoForm({
   user,
   onSave,
 }: {
   user: AccountUser;
-  onSave: (draft: Draft) => void;
+  onSave: (draft: AccountDraft) => Promise<void>;
 }) {
   const { tr } = useLang();
   const [draft, setDraft] = useState<Draft>(() => draftOf(user));
-  const [error, setError] = useState("");
-  const [saved, setSaved] = useState(false);
+  const [photo, setPhoto] = useState<File | null>(null);
+  const toast = useAccountToast();
+  const [cropping, setCropping] = useState<File | null>(null);
+  // bumped per picked file, so "تغيير الصورة" inside the dialog starts it afresh
+  const [cropKey, setCropKey] = useState(0);
+  const closeCropper = useCallback(() => setCropping(null), []);
+  const [saving, setSaving] = useState(false);
   const fileRef = useRef<HTMLInputElement>(null);
 
-  // Another tab (or the first read) changed the stored user — start over from it.
-  useEffect(() => setDraft(draftOf(user)), [user]);
+  // The stored user changed (first fetch, a save, another tab) — start over from it.
+  useEffect(() => {
+    setDraft(draftOf(user));
+    setPhoto(null);
+  }, [user]);
+
+  // the local preview of a picked photo is an object URL — release it
+  useEffect(() => {
+    const src = draft.avatar;
+    return () => {
+      if (src?.startsWith("blob:")) URL.revokeObjectURL(src);
+    };
+  }, [draft.avatar]);
 
   function patch(next: Partial<Draft>) {
     setDraft((d) => ({ ...d, ...next }));
-    setSaved(false);
-    setError("");
   }
 
-  async function pickPhoto(file?: File) {
+  function pickPhoto(file?: File) {
     if (!file) return;
+    if (!PHOTO_TYPES.includes(file.type)) return;
     if (file.size > MAX_PHOTO_BYTES) {
-      setError(tr("acc_photo_too_big"));
+      toast.error([tr("acc_photo_too_big")]);
       return;
     }
-    try {
-      patch({ avatar: await resizeAvatar(file) });
-    } catch {
-      /* not a readable image — keep the current photo */
-    }
+    setCropping(file);
+    setCropKey((k) => k + 1);
   }
 
-  function submit(event: FormEvent) {
+  function takeCropped(file: File) {
+    setCropping(null);
+    setPhoto(file);
+    patch({ avatar: URL.createObjectURL(file) });
+  }
+
+  function reset() {
+    setDraft(draftOf(user));
+    setPhoto(null);
+    toast.close();
+  }
+
+  async function submit(event: FormEvent) {
     event.preventDefault();
+    if (saving) return;
     const name = draft.name.trim();
     if (!name) {
-      setError(tr("acc_name_required"));
+      toast.error([tr("acc_name_required")]);
       return;
     }
-    onSave({ ...draft, name, phone: draft.phone.trim() });
-    setSaved(true);
+    setSaving(true);
+    toast.close();
+    try {
+      await onSave({ name, phone: draft.phone.trim(), gender: draft.gender, avatarFile: photo });
+      toast.success(tr("acc_saved"));
+    } catch (error) {
+      if (!handleAuthError(error)) toast.error(errorsOf(error));
+    } finally {
+      setSaving(false);
+    }
   }
 
   return (
@@ -126,21 +178,26 @@ export default function AccountInfoForm({
         </label>
       </div>
 
-      {error ? <p className="acc-msg is-error">{error}</p> : null}
-      {saved ? <p className="acc-msg is-success">{tr("acc_saved")}</p> : null}
+      {cropping ? (
+        <AvatarCropper
+          key={cropKey}
+          file={cropping}
+          onCancel={closeCropper}
+          onDone={takeCropped}
+          onPickAnother={() => fileRef.current?.click()}
+        />
+      ) : null}
+      {toast.notice ? <NewsletterToast notice={toast.notice} onClose={toast.close} /> : null}
 
       <div className="acc-actions">
-        <button type="submit" className="acc-btn-primary">
+        <button type="submit" className="acc-btn-primary" disabled={saving} aria-busy={saving}>
           {tr("acc_save")}
         </button>
         <button
           type="button"
           className="acc-btn-text"
-          onClick={() => {
-            setDraft(draftOf(user));
-            setError("");
-            setSaved(false);
-          }}
+          onClick={reset}
+          disabled={saving}
         >
           {tr("acc_cancel")}
         </button>

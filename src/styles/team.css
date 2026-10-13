@@ -231,6 +231,52 @@ left: 12px;
   align-items: center;
   gap: 40px;
 }
+/* With the API's `mic_background_url` (inline background-image, see
+   TeamMemberProfile) the whole grid becomes one rounded card: the text sits
+   over the image on the right, the mic in the open space on the left, and the
+   mic's own box drops its waveform. */
+/* The uploaded backdrop carries its art (the green burst) centred ~26% from
+   the left edge. Two equal columns put the mic's column centre at the same
+   ~26% (56px padding + half of (100% − 112px − 40px) / 2), so the mic stands
+   inside the burst and the text half stays on the plain side. */
+.team-detail-grid.has-bg {
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  padding: 40px 56px;
+  border-radius: 32px;
+  overflow: hidden;
+  background-color: #f2f3e7; /* the backdrop's own edge colour */
+  background-position: center;
+  background-size: cover;
+  background-repeat: no-repeat;
+}
+.team-detail-grid.has-bg .team-detail-photo {
+  width: 100%;
+  max-width: 480px;
+  justify-self: center;
+  background: none;
+  border-radius: 0;
+  overflow: visible;
+}
+/* Stacked (mic on top, text below): the backdrop is drawn at twice the card
+   width from its top-left corner, which lands the burst behind the mic. */
+@media (max-width: 991.98px) {
+  .team-detail-grid.has-bg {
+    grid-template-columns: 1fr;
+    padding: 28px 24px;
+    background-size: 200% auto;
+    background-position: 3% 0;
+  }
+  .team-detail-grid.has-bg .team-detail-photo {
+    max-width: 360px;
+  }
+}
+@media (max-width: 575.98px) {
+  .team-detail-grid.has-bg {
+    padding: 20px 16px;
+    border-radius: 24px;
+  }
+}
+
 .team-detail-photo {
   order: 2; /* image sits on the left (visual start) in RTL */
   /* Fixed waveform backdrop; the mic portrait (cut-out PNG from the API)

@@ -31,6 +31,9 @@ export type CreatorJoinRequest = {
   notes?: string;
   /** The "أنا لست روبوت" answer (lib/recaptcha), checked by the API. */
   recaptcha_token?: string | null;
+  /** The optional photo from the modal's first step, already cropped square.
+      With one the request goes as multipart; without, as JSON as before. */
+  avatar?: File | null;
 };
 
 export type CreatorJoinResponse = {
@@ -42,13 +45,34 @@ export type CreatorJoinResponse = {
   };
 };
 
+/* Multipart in Laravel's bracket notation (content_types[0],
+   socials[0][platform]), which it parses back into the same arrays the JSON
+   body carries — so the validation rules see one shape either way. */
+function toFormData(fields: Omit<CreatorJoinRequest, "avatar">, photo: File): FormData {
+  const form = new FormData();
+  const add = (key: string, value: unknown) => {
+    if (value === null || value === undefined) return;
+    if (Array.isArray(value)) {
+      value.forEach((item, i) => add(`${key}[${i}]`, item));
+    } else if (typeof value === "object") {
+      Object.entries(value).forEach(([k, v]) => add(`${key}[${k}]`, v));
+    } else {
+      form.append(key, String(value));
+    }
+  };
+  Object.entries(fields).forEach(([key, value]) => add(key, value));
+  form.append("avatar", photo);
+  return form;
+}
+
 export function submitCreatorJoin(
   body: CreatorJoinRequest,
   signal?: AbortSignal,
 ): Promise<CreatorJoinResponse> {
+  const { avatar, ...json } = body;
   return apiFetch<CreatorJoinResponse>("/pages/creators/join", {
     method: "POST",
-    body,
+    body: avatar ? toFormData(json, avatar) : json,
     signal,
   });
 }

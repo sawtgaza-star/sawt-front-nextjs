@@ -25,6 +25,10 @@ export const AUTH_CLASS = "sawt-authed";
 const TOKEN_KEY = "sawt_token";
 const USER_KEY = "sawt_user";
 const EXPIRES_KEY = "sawt_token_expires_at";
+/** The Google account photo of a Google sign-in (see setSocialAvatar). */
+const SOCIAL_AVATAR_KEY = "sawt_social_avatar";
+/** "google" / "facebook" when this session came from a social sign-in. */
+const SOCIAL_PROVIDER_KEY = "sawt_social_provider";
 
 /** Fired on <document> whenever the session is created or cleared. */
 export const AUTH_EVENT = "sawt:authchange";
@@ -67,6 +71,9 @@ export function saveSession(session: AuthSession): void {
     localStorage.setItem(USER_KEY, JSON.stringify(session.user));
     const lifetimeMs = (Number(session.expires_in) || 3600) * 1000;
     localStorage.setItem(EXPIRES_KEY, String(Date.now() + lifetimeMs));
+    // a new session starts without the previous account's Google photo
+    localStorage.removeItem(SOCIAL_AVATAR_KEY);
+    localStorage.removeItem(SOCIAL_PROVIDER_KEY);
   } catch {
     /* storage disabled — the user stays signed out rather than half signed in */
   }
@@ -96,6 +103,58 @@ export function getUser(): AuthUser | null {
   }
 }
 
+/** Fired on <document> when the stored user is replaced (profile fetched or
+    edited) — /account and the navbar avatar re-read it. */
+export const USER_EVENT = "sawt:profilechange";
+
+/** Replace the stored user, keeping the token as it is. */
+export function setUser(user: AuthUser): void {
+  try {
+    localStorage.setItem(USER_KEY, JSON.stringify(user));
+  } catch {
+    /* storage disabled — the page still shows what it was handed */
+  }
+  try {
+    document.dispatchEvent(new CustomEvent(USER_EVENT));
+  } catch {
+    /* SSR guard */
+  }
+}
+
+/** The photo a Google sign-in came with, kept apart from the stored user:
+    GET /auth/profile replaces that user when /account opens, and may answer
+    without it. Shown only while the account has no photo of its own (see
+    account-user); dropped with the session. */
+export function setSocialAvatar(url: string | null): void {
+  try {
+    if (url) localStorage.setItem(SOCIAL_AVATAR_KEY, url);
+    else localStorage.removeItem(SOCIAL_AVATAR_KEY);
+  } catch {
+    /* storage disabled */
+  }
+}
+
+export function getSocialAvatar(): string | null {
+  return read(SOCIAL_AVATAR_KEY);
+}
+
+export type SocialProvider = "google" | "facebook";
+
+/** Remembers that this session came from a Google/Facebook sign-in — such an
+    account may have no password yet (see account-user's needsCurrentPassword). */
+export function setSocialProvider(provider: SocialProvider): void {
+  try {
+    localStorage.setItem(SOCIAL_PROVIDER_KEY, provider);
+  } catch {
+    /* storage disabled */
+  }
+}
+
+export function getSocialProvider(): SocialProvider | null {
+  const value = read(SOCIAL_PROVIDER_KEY);
+  return value === "google" || value === "facebook" ? value : null;
+}
+
 /** Forget the stored session without touching the page (no class flip, no
     event) — for a caller that is about to reload it anyway. */
 function forgetSession(): void {
@@ -103,6 +162,8 @@ function forgetSession(): void {
     localStorage.removeItem(TOKEN_KEY);
     localStorage.removeItem(USER_KEY);
     localStorage.removeItem(EXPIRES_KEY);
+    localStorage.removeItem(SOCIAL_AVATAR_KEY);
+    localStorage.removeItem(SOCIAL_PROVIDER_KEY);
     localStorage.removeItem(AUTH_KEY);
   } catch {
     /* ignore */

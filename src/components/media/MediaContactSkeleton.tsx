@@ -1,13 +1,27 @@
+import SkeletonText from "@/components/ui/SkeletonText";
+import { IconRatingStar } from "@/components/ui/icons";
+import { IconContactChevron, IconContactMail, IconContactWhatsapp } from "./media-icons";
+import { contactStyle } from "./media-contact-data";
 import { MEDIA_PHOTOS } from "./media-photos";
 import "@/styles/media-skeleton.css";
 
-/* "لنبدأ العمل سويا" as grey bars, until the payload lands — the same bargain
-   as MediaSkeleton, in this page's own `.sm-ct-row` so the still and the copy
-   column are already where they will stay.
+/* "لنبدأ العمل سويا" while GET /pages/media/contact is in flight — the same
+   elements as MediaContactSection and MediaContactCard, with the copy swapped
+   for <SkeletonText /> of the current payload's length, so the still, the
+   cards and the trust row are already where they will stay.
 
-   The photo is the design's own, not the payload's (see MediaContactSection),
-   so it is drawn for real from the first paint and only the words are bars.
+   The photos are the design's own, not the payload's (see MediaContactSection),
+   so they are drawn for real from the first paint and only the words are bars.
    The banner's own bars live in <MediaContactHero />. */
+const COPY = { title: 16, body: 119, trustValue: 4, trustLabel: 14 };
+/** key, label, hint — the channels the payload currently sends */
+const CHANNELS: [string, number, number][] = [
+  ["whatsapp", 16, 19],
+  ["email", 17, 17],
+];
+const TRUST_PHOTO = "/assets/images/Image (أحمد المنصور).png";
+const TRUST_FACES = 4;
+
 export default function MediaContactSkeleton() {
   return (
     <section className="sm-ct-body" aria-busy="true">
@@ -18,20 +32,59 @@ export default function MediaContactSkeleton() {
           </figure>
 
           <div className="sm-ct-copy" aria-hidden="true">
-            <span className="smk-title" style={{ width: "min(280px, 70%)" }} />
-            <span className="smk-line" style={{ width: "100%", marginTop: "18px" }} />
-            <span className="smk-line" style={{ width: "88%", marginTop: "10px" }} />
+            <h2 className="sm-ct-title">
+              <SkeletonText chars={COPY.title} />
+            </h2>
+            <p className="sm-ct-desc">
+              <SkeletonText chars={COPY.body} />
+            </p>
 
-            <div className="sm-ct-cards" style={{ margin: "26px 0" }}>
-              {[0, 1].map((i) => (
-                <span key={i} className="smk-block" style={{ height: 92 }} />
-              ))}
+            <div className="sm-ct-cards">
+              {CHANNELS.map(([key, label, hint], i) => {
+                const style = contactStyle(key, i);
+                return (
+                  <a className="sm-ct-card" style={{ background: style.color }} tabIndex={-1} key={key}>
+                    <span className="sm-ct-card-icon" style={{ background: style.tint }}>
+                      {style.icon === "whatsapp" ? <IconContactWhatsapp /> : <IconContactMail />}
+                    </span>
+                    <span className="sm-ct-card-text">
+                      <b>
+                        <SkeletonText chars={label} />
+                      </b>
+                      <small>
+                        <SkeletonText chars={hint} />
+                      </small>
+                    </span>
+                    <span className="sm-ct-card-go" aria-hidden="true">
+                      <IconContactChevron />
+                    </span>
+                  </a>
+                );
+              })}
             </div>
 
-            <span
-              className="smk-line"
-              style={{ width: "220px", height: "41px", borderRadius: "100px" }}
-            />
+            <div className="sm-ct-trust">
+              <span className="sm-ct-avatars" aria-hidden="true">
+                {Array.from({ length: TRUST_FACES }, (_, i) => (
+                  <img src={TRUST_PHOTO} alt="" key={i} />
+                ))}
+              </span>
+              <span className="sm-ct-trust-text">
+                <span className="sm-ct-stars" aria-hidden="true">
+                  {Array.from({ length: 5 }, (_, s) => (
+                    <IconRatingStar key={s} filled={s < 4} />
+                  ))}
+                </span>
+                <span className="sm-ct-trust-line">
+                  <b>
+                    <SkeletonText chars={COPY.trustValue} />
+                  </b>{" "}
+                  <span>
+                    <SkeletonText chars={COPY.trustLabel} />
+                  </span>
+                </span>
+              </span>
+            </div>
           </div>
         </div>
       </div>

@@ -1,0 +1,64 @@
+/* <SkeletonText /> — rounded shimmer bars, one per line of invisible filler.
+
+   The filler is set smaller than the text it stands for (with letter-spacing
+   making up most of the width), so each line's bar is a rounded pill a bit
+   shorter than the line — the lines keep their real spacing with a gap
+   between bars — and roughly as wide as the copy would run. The shimmer is
+   painted per line fragment (box-decoration-break: clone).
+
+   `.sk-shimmer` is the same fill for non-text placeholders (pictures, logos…). */
+
+.sk-text,
+.sk-shimmer {
+  background: linear-gradient(90deg, #e8ecf0 25%, #f4f6f8 45%, #e8ecf0 65%);
+  background-size: 400% 100%;
+  animation: sk-shimmer 1.6s linear infinite;
+}
+
+.sk-text {
+  font-size: 0.72em;
+  letter-spacing: 0.3em;
+  line-height: 1;
+  vertical-align: middle;
+  color: transparent !important;
+  border-radius: 8px;
+  -webkit-box-decoration-break: clone;
+  box-decoration-break: clone;
+  user-select: none;
+  pointer-events: none;
+}
+
+/* on the footer's dark card the same bars, translucent white */
+.footer-custom-bg .sk-text,
+.footer-custom-bg .sk-shimmer {
+  background: linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0.08) 25%,
+    rgba(255, 255, 255, 0.16) 45%,
+    rgba(255, 255, 255, 0.08) 65%
+  );
+  background-size: 400% 100%;
+}
+
+@keyframes sk-shimmer {
+  0% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0 50%;
+  }
+}
+
+/* kept for the placeholders that pulse rather than shimmer (account page) */
+@keyframes sk-text-pulse {
+  50% {
+    opacity: 0.55;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sk-text,
+  .sk-shimmer {
+    animation: none;
+  }
+}

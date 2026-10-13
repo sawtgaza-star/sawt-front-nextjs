@@ -1,0 +1,50 @@
+/* /support's loading skeleton (components/support/SupportSkeleton and
+   ./skeleton/*). The sections are the real markup with the copy swapped for
+   <SkeletonText /> bands; these rules only quiet what is left of the chrome,
+   without changing a single box:
+   - the glyphs keep their room but are not drawn;
+   - images keep their box (same src, so the same natural size) but show a
+     flat tint instead of the picture;
+   - nothing reacts to the pointer — no hover, no clicks on dead buttons. */
+
+.sp-sk,
+.sp-sk * {
+  pointer-events: none;
+  user-select: none;
+}
+
+.sp-sk svg {
+  visibility: hidden;
+}
+
+.sp-sk img {
+  object-position: -99999px 0;
+  background: #eceeea;
+}
+
+.sp-sk .fa-solid {
+  visibility: hidden;
+}
+
+/* The partner logo the API sends, as the marquee lays it out: a 211x117
+   mark in a row its natural height (146px) tall; on phones style.css pins
+   the marks to 50px high (90px wide for this one). */
+.sp-sk .marquee-group {
+  min-height: 146px;
+}
+.sp-sk-logo {
+  display: block;
+  width: 211px;
+  height: 117px;
+  border-radius: 12px;
+  background: #eceeea;
+}
+@media (max-width: 767.98px) {
+  .sp-sk .marquee-group {
+    min-height: 0;
+  }
+  .sp-sk-logo {
+    width: 90px;
+    height: 50px;
+  }
+}

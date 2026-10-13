@@ -19,10 +19,12 @@ import TeamDetailPhoto from "./TeamDetailPhoto";
 export default function TeamMemberProfile({
   member,
   labels,
+  micBackground,
   lang = "ar",
 }: {
   member: TeamMemberDetail;
   labels?: TeamDetailLabels;
+  micBackground?: string | null;
   lang?: string;
 }) {
   const name = localized(member.name, lang);
@@ -43,7 +45,12 @@ export default function TeamMemberProfile({
         aria-hidden="true"
       />
       <div className="container">
-        <div className="team-detail-grid">
+        {/* The API's `mic_background_url` backs the whole card — text on the
+            start side over it, the mic on the open end (see team.css). */}
+        <div
+          className={"team-detail-grid" + (micBackground ? " has-bg" : "")}
+          style={micBackground ? { backgroundImage: `url("${micBackground}")` } : undefined}
+        >
           <div className="team-detail-info">
             {/* Name/role on the start side, the experience badge pushed to the
                 opposite end of the same row (top-left in RTL) — per the mock. */}

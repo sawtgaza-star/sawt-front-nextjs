@@ -1,0 +1,81 @@
+/* Join modal — "الصورة الشخصية" (components/site/join-photo). Sits in the
+   legacy .join-* look: grey hairlines, olive pill buttons like "اضافة منصة". */
+
+.jm-photo {
+  margin-bottom: 16px;
+}
+
+.jm-photo-row {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.jm-photo-avatar {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  width: 72px;
+  height: 72px;
+  padding: 0;
+  overflow: hidden;
+  border: 1px solid #e4e4e4;
+  border-radius: 50%;
+  background: #dfe3d8;
+  color: #9aa58a;
+  cursor: pointer;
+}
+
+.jm-photo-avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.jm-photo-avatar svg {
+  width: 62%;
+  height: 62%;
+}
+
+.jm-photo-text .join-hint {
+  margin-top: 0;
+}
+
+.jm-photo-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+.jm-photo-btn {
+  padding: 6px 14px;
+  border: 1px solid #4a5738;
+  border-radius: 20px;
+  background: #fff;
+  color: #4a5738;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.jm-photo-btn:hover {
+  background: #4a5738;
+  color: #fff;
+}
+
+.jm-photo-btn-remove {
+  border-color: #e05252;
+  color: #e05252;
+}
+
+.jm-photo-btn-remove:hover {
+  background: #e05252;
+  color: #fff;
+}
+
+/* the profile page's cropper, opened over the join modal (z-index 2000) */
+.jm-photo-crop .acc-crop-backdrop {
+  z-index: 2100;
+}

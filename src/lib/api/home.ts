@@ -235,6 +235,10 @@ export type HomeReviewReel = {
   username?: string | null;
   likes?: number | null;
   comments_count?: number | null;
+  /** The reel's latest Instagram comments (up to ten — `comments_count` is the
+      full total). Shown in the thread beside the column while this reel is the
+      one on screen. */
+  comment_items?: HomeReviewComment[];
   views?: number | null;
   reach?: number | null;
   collaborators?: string[];
@@ -269,6 +273,8 @@ export type HomeReviewComment = {
   likes?: number | null;
   liked?: boolean;
   created_at?: string | null;
+  /** A reel's Instagram comment carries its date here instead. */
+  time?: string | null;
   replies?: HomeReviewReply[];
 };
 

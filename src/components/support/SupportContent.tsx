@@ -42,7 +42,7 @@ export default function SupportContent() {
         {/* anchor target for every "تبرع الآن" button further down the page */}
         <div id="support-donate"></div>
         {loading ? (
-          <SupportBodySkeleton count={3} />
+          <SupportBodySkeleton />
         ) : (
           <>
             <DonateSection plans={page?.plans} impact={page?.impact} lang={lang} />

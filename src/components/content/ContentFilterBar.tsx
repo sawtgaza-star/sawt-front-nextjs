@@ -1,4 +1,5 @@
 "use client";
+import { ContentPillsSkeleton } from "./ContentSkeleton";
 import {
   SORT_OPTIONS,
   type ContentCategoryPill,
@@ -11,6 +12,8 @@ type Props = {
   onSelect: (value: string) => void;
   sort: SortValue;
   onSortChange: (value: SortValue) => void;
+  /** The payload is still on its way — hold the pills' row with bars. */
+  loading?: boolean;
 };
 
 /* Category pills (right, RTL) + the sort dropdown (left) above the reel grid.
@@ -22,10 +25,12 @@ export default function ContentFilterBar({
   onSelect,
   sort,
   onSortChange,
+  loading = false,
 }: Props) {
   return (
     <div className="ct-filter-bar">
       <ul className="ct-tabs">
+        {loading && categories.length === 0 ? <ContentPillsSkeleton /> : null}
         {categories.map((c) => (
           <li key={c.value}>
             <button

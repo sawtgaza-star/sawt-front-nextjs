@@ -78,8 +78,8 @@ export default function Page() {
      first time) — then the same ending as the login page. */
   const onGoogle = (credential) =>
     run(async () => {
-      const { session, message } = await loginWithGoogle(credential);
-      finishSignIn(session, message);
+      const { session, message, avatar } = await loginWithGoogle(credential);
+      finishSignIn(session, message, { provider: "google", avatar });
     });
   const onGoogleUnavailable = () =>
     run(async () => {

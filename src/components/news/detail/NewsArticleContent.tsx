@@ -5,7 +5,12 @@ import NewsArticleHead from "./NewsArticleHead";
 import NewsGallery from "./NewsGallery";
 import NewsBody from "./NewsBody";
 import RelatedNews from "./RelatedNews";
-import { NewsArticleSkeleton } from "@/components/news/NewsSkeleton";
+import { NEWS_ARTICLE_HERO_LEN } from "@/components/news/NewsSkeleton";
+import {
+  NewsArticleSkeleton,
+  RelatedNewsSkeleton,
+} from "./NewsArticleSkeleton";
+import { NEWS_ARTICLE_SHAPE } from "./article-skeleton-data";
 import { blogCards } from "@/components/news/blog-cards";
 import { blogArticle } from "./blog-article";
 import { useBlog } from "@/lib/api/use-blogs";
@@ -49,12 +54,13 @@ export default function NewsArticleContent({ uuid }: { uuid: string }) {
         hero={{ title: heroTitle, desc: heroDesc }}
         image={hero?.image_url}
         loading={loading}
+        skeleton={NEWS_ARTICLE_HERO_LEN}
       />
       <main className="nws-main">
         <div className="container">
           <div className="nws-layout">
             <div className="nws-content">
-              {loading ? <NewsArticleSkeleton /> : null}
+              {loading ? <NewsArticleSkeleton shape={NEWS_ARTICLE_SHAPE} /> : null}
               {article ? (
                 <>
                   <NewsArticleHead article={article} />
@@ -69,6 +75,9 @@ export default function NewsArticleContent({ uuid }: { uuid: string }) {
           </div>
         </div>
       </main>
+      {loading ? (
+        <RelatedNewsSkeleton shape={NEWS_ARTICLE_SHAPE} card="news" moreHref="/news" />
+      ) : null}
       {related.length ? <RelatedNews items={related} /> : null}
     </>
   );

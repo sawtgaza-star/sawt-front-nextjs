@@ -1,5 +1,7 @@
 import IncubatorNav from "@/components/incubator/IncubatorNav";
 import BreadcrumbHome from "@/components/site/BreadcrumbHome";
+import SkeletonText from "@/components/ui/SkeletonText";
+import { HERO } from "./course-skeleton/skeleton-data";
 
 export type CourseHeroCopy = {
   title: string;
@@ -15,8 +17,9 @@ export type CourseHeroCopy = {
 
    Always mounted, loading or not: <IncubatorNav /> lives here and its
    `.language-btn` is bound once by initTranslate(). While the course is in
-   flight only the text is drawn as skeleton bars; if it fails (`copy` null
-   after loading) the hero is just its bar and crumb. */
+   flight its text is filler of the current copy's length
+   (./course-skeleton/skeleton-data); if it fails (`copy` null after loading)
+   the hero is just its bar and crumb. */
 export default function CourseHero({
   copy,
   loading,
@@ -35,7 +38,9 @@ export default function CourseHero({
           {copy ? (
             <span className="crs-breadcrumb-active">{copy.title}</span>
           ) : loading ? (
-            <span className="nsk-line" style={{ width: 120 }} />
+            <span className="crs-breadcrumb-active">
+              <SkeletonText chars={HERO.title} />
+            </span>
           ) : null}
         </nav>
 
@@ -48,10 +53,15 @@ export default function CourseHero({
             </div>
           ) : loading ? (
             <div className="crs-hero-copy" aria-busy="true" aria-hidden="true">
-              <span className="nsk-line" style={{ display: "block", width: 90, height: 28 }} />
-              <span className="nsk-line" style={{ display: "block", width: "min(420px, 80%)", height: 36, marginTop: 18 }} />
-              <span className="nsk-line" style={{ display: "block", width: "100%", marginTop: 18 }} />
-              <span className="nsk-line" style={{ display: "block", width: "85%", marginTop: 10 }} />
+              <span className="crs-badge">
+                <SkeletonText chars={HERO.category} />
+              </span>
+              <h1 className="crs-hero-title">
+                <SkeletonText chars={HERO.title} />
+              </h1>
+              <p className="crs-hero-desc">
+                <SkeletonText chars={HERO.desc} />
+              </p>
             </div>
           ) : null}
         </div>

@@ -1,6 +1,6 @@
 import SiteNav from "@/components/site/SiteNav";
 import BreadcrumbHome from "@/components/site/BreadcrumbHome";
-import { NewsHeroSkeleton } from "./NewsSkeleton";
+import { NewsCrumbSkeleton, NewsHeroSkeleton, type HeroSkeletonLen } from "./NewsSkeleton";
 
 /* The key fields are optional: copy that comes from the API (GET /pages/blogs,
    GET /pages/stories) is already in the reader's language, and a `data-i18n`
@@ -31,7 +31,8 @@ const NEWS_PARENT: Parent = {
 
    `parent` defaults to the news crumb; /stories passes its own. `hero` has no
    default — the pages pass the API's own title, description and collage, and
-   `loading` puts bars in their place until it lands.
+   `loading` puts placeholders of `skeleton`'s lengths in their place until it
+   lands (on an article page, in the crumb tail too).
 
    The <header> shell is NOT conditional, for the same reason CreatorsHero's is
    not: <SiteNav /> lives inside it and initHeaderPin() (lib/legacy-main) wraps
@@ -45,6 +46,7 @@ export default function NewsHero({
   hero,
   image,
   loading = false,
+  skeleton,
 }: {
   article?: Crumb;
   parent?: Parent | null;
@@ -52,6 +54,8 @@ export default function NewsHero({
   image?: string | null;
   /** The payload is still on its way — hold the hero's height with bars. */
   loading?: boolean;
+  /** Lengths of the copy `loading` holds room for (NewsSkeleton). */
+  skeleton: HeroSkeletonLen;
 }) {
   return (
     <header>
@@ -64,7 +68,9 @@ export default function NewsHero({
           <nav className="about-breadcrumb" aria-label="breadcrumb">
             <BreadcrumbHome />
             <i className="fa-solid fa-angle-left mx-2 about-breadcrumb-sep arrow"></i>
-            {article ? (
+            {loading && skeleton.crumb ? (
+              <NewsCrumbSkeleton href={(parent ?? NEWS_PARENT).href} len={skeleton} />
+            ) : article ? (
               <>
                 {parent && (
                   <>
@@ -93,7 +99,7 @@ export default function NewsHero({
             )}
           </nav>
           {loading ? (
-            <NewsHeroSkeleton />
+            <NewsHeroSkeleton len={skeleton} />
           ) : (
             <>
               {hero?.title ? (

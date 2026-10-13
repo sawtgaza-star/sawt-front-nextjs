@@ -135,6 +135,9 @@ export type TeamMemberPage = {
   member?: TeamMemberDetail;
   labels?: TeamDetailLabels;
   intro?: TeamIntro;
+  /** Backdrop behind the mic portrait; team.css keeps the built-in waveform
+      as the fallback when this is null. */
+  mic_background_url?: string | null;
   related?: TeamRelated;
 };
 
@@ -191,6 +194,7 @@ export async function fetchTeamMember(
       mic_photo_url: assetUrl(page.member.mic_photo_url),
     },
     intro: page.intro && { ...page.intro, image_url: assetUrl(page.intro.image_url) },
+    mic_background_url: assetUrl(page.mic_background_url),
     related: page.related && {
       ...page.related,
       members: mapList(page.related.members, (member) => ({

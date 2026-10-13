@@ -2,6 +2,11 @@ import { localized } from "@/lib/api/pages";
 import type { IncubatorHeroContent, IncubatorStat } from "@/lib/api/incubator-page";
 import IncubatorNav from "./IncubatorNav";
 import { STAT_ICONS } from "./hero-stats-data";
+import {
+  HeroMediaSkeleton,
+  HeroStatsSkeleton,
+  HeroTextSkeleton,
+} from "./incubator-skeleton/HeroSkeleton";
 import { INCUBATOR_ROUTES, PLACEHOLDER, sortItems, splitHeroTitle } from "./incubator-page-view";
 
 /* Hero of /incubator — headline + collage with two floating counters, and the
@@ -11,7 +16,7 @@ import { INCUBATOR_ROUTES, PLACEHOLDER, sortItems, splitHeroTitle } from "./incu
    The frame (and <IncubatorNav /> inside it) is rendered from the first paint
    whatever the request is doing — the nav's `.language-btn` is bound once by
    initTranslate() and must never be remounted — and only the text inside it
-   is drawn as bars while `loading`. */
+   is drawn as filler while `loading` (./incubator-skeleton/HeroSkeleton). */
 export default function IncubatorHero({
   data,
   stats,
@@ -46,12 +51,7 @@ export default function IncubatorHero({
         <div className="inc-hero-grid">
           <div className="inc-hero-text">
             {loading ? (
-              <>
-                <span className="nsk-line" style={{ display: "block", width: "80%", height: 40 }} />
-                <span className="nsk-line" style={{ display: "block", width: "55%", height: 40, marginTop: 14 }} />
-                <span className="nsk-line" style={{ display: "block", width: "95%", marginTop: 24 }} />
-                <span className="nsk-line" style={{ display: "block", width: "70%", marginTop: 10 }} />
-              </>
+              <HeroTextSkeleton />
             ) : (
               <>
                 <h1 className="inc-hero-title">
@@ -78,7 +78,7 @@ export default function IncubatorHero({
 
           <div className="inc-hero-media">
             {loading ? (
-              <span className="nsk-block inc-hero-img" style={{ border: 0 }} />
+              <HeroMediaSkeleton />
             ) : (
               /* `foreground_url` is a finished composite — the design's frame
                  and shadow are part of the upload — so it drops the CSS frame
@@ -109,12 +109,7 @@ export default function IncubatorHero({
         {loading || items.length ? (
           <div className="inc-stats">
             {loading
-              ? [0, 1, 2, 3].map((index) => (
-                  <div className="inc-stat" key={index}>
-                    <span className="nsk-line" style={{ display: "block", width: "60%", height: 28 }} />
-                    <span className="nsk-line" style={{ display: "block", width: "80%", marginTop: 10 }} />
-                  </div>
-                ))
+              ? <HeroStatsSkeleton />
               : items.map((stat, index) => (
                   <div className="inc-stat" key={stat.key || index}>
                     <span className="inc-stat-icon" aria-hidden="true">

@@ -3,6 +3,7 @@ import type { MediaWorksHeroContent } from "@/lib/api/media-works";
 import { ctaHref } from "./media-page-view";
 import MediaNav from "./MediaNav";
 import "@/styles/nav-skeleton.css";
+import SkeletonText from "@/components/ui/SkeletonText";
 
 /* Banner of /media/works — the صوت photo collage (heroSectionImg) under an
    olive veil, with صوت ميديا's own navbar on top of it, then the breadcrumb and
@@ -62,7 +63,7 @@ export default function MediaWorksHero({
         </nav>
         {loading ? (
           <h1 className="sm-wp-hero-title">
-            <span className="nsk-line" style={{ width: "min(520px, 80%)", height: "28px" }} />
+            <SkeletonText chars={45} />
           </h1>
         ) : title ? (
           <h1 className="sm-wp-hero-title">{title}</h1>

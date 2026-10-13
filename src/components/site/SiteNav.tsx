@@ -19,6 +19,7 @@ import NavLogoutButton from "./NavLogoutButton";
 import NavAccountAvatar from "./NavAccountAvatar";
 import NavNotifications from "./NavNotifications";
 import LogoutToast from "./LogoutToast";
+import NewsletterConfirmToast from "./NewsletterConfirmToast";
 import "@/styles/nav-skeleton.css";
 
 /* Shared top bar + navbar + mobile search (canonical version, unified across pages).
@@ -285,6 +286,9 @@ export default function SiteNav() {
       {/* Renders nothing unless the visitor arrived here from the logout
           button; position:fixed, so its place in the tree doesn't matter. */}
       <LogoutToast />
+      {/* Same idea for the newsletter's email-confirmation link: shows only
+          when the URL carries ?newsletter=… (see the component). */}
+      <NewsletterConfirmToast />
     </>
   );
 }

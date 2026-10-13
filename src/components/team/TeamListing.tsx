@@ -99,8 +99,8 @@ export default function TeamListing() {
 
             {loading ? (
               /* nothing is known about the roster on the very first load —
-                 fall back to a grid's worth of bars */
-              <TeamGridSkeleton count={empty ? 10 : expected} />
+                 fall back to the roster size it currently has */
+              <TeamGridSkeleton count={empty ? undefined : expected} />
             ) : (
               <div className="team-grid">
                 {members.map((member, index) => (

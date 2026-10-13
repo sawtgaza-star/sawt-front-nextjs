@@ -71,6 +71,7 @@ export default function Page() {
               onSelect={setCategory}
               sort={sort}
               onSortChange={setSort}
+              loading={loading}
             />
             {reelsLoading ? (
               <ContentGridSkeleton />

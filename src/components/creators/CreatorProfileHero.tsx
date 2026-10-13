@@ -4,10 +4,13 @@ import BreadcrumbHome from "@/components/site/BreadcrumbHome";
 import { localized } from "@/lib/api/pages";
 import type { CreatorsHeroContent } from "@/lib/api/creators-page";
 import type { CreatorProfile, CreatorProfileLabels } from "@/lib/api/creator-profile";
-import { CreatorsHeroSkeleton, Line } from "./CreatorsSkeleton";
+import { CreatorsHeroSkeleton } from "./CreatorsSkeleton";
+import { ProfileCardSkeleton } from "./CreatorProfileSkeleton";
 import { compact } from "./creators-text";
+import { useCallback, useState } from "react";
 import { follow, unfollow, useFollows } from "@/lib/follows";
-import { isLoggedIn, loginHref } from "@/lib/auth-state";
+import { isLoggedIn } from "@/lib/auth-state";
+import NewsletterToast, { type NewsletterNotice } from "@/components/site/NewsletterToast";
 import { pushNotification } from "@/lib/notifications";
 import { t } from "@/lib/translations";
 
@@ -36,10 +39,11 @@ const SOCIAL_ICONS: Record<string, string> = {
 
    The <header> shell is NOT conditional — <SiteNav /> lives in it and
    initHeaderPin() wraps its bar right after mount (see CreatorsHero). While
-   the profile is in flight the copy and the card are drawn as bars. "متابعة"
-   follows the creator — they then appear in /account's "صناع المحتوى" tab —
-   and flips to "إلغاء المتابعة"; a guest is sent to sign in first. Follows
-   are browser-local until the API has an endpoint (lib/follows). */
+   the profile is in flight the copy and the card are skeletons. "متابعة"
+   follows the creator (POST /pages/creators/{uuid}/follow) — they then appear
+   in /account's "صناع المحتوى" tab — and flips to "إلغاء المتابعة" (DELETE);
+   a guest stays on the page and gets a "sign in first" toast instead. Whether they are already followed comes
+   from the user's profile (GET /auth/profile, lib/follows). */
 export default function CreatorProfileHero({
   hero,
   creator,
@@ -60,26 +64,37 @@ export default function CreatorProfileHero({
   const bio = localized(creator?.bio, lang);
   const socials = (creator?.socials || []).filter((social) => social.url);
   const uuid = creator?.uuid || (creator?.id != null ? String(creator.id) : "");
-  const following = useFollows().some((c) => c.uuid === uuid);
+  const following = useFollows().creators.some((c) => c.uuid === uuid);
+  const [busy, setBusy] = useState(false);
+  const [guestNotice, setGuestNotice] = useState<NewsletterNotice | null>(null);
+  const closeGuestNotice = useCallback(() => setGuestNotice(null), []);
 
-  function toggleFollow() {
+  async function toggleFollow() {
     if (!isLoggedIn()) {
-      window.location.href = loginHref();
+      setGuestNotice({ kind: "error", message: t("follow_login_required") });
       return;
     }
-    if (following) {
-      unfollow(uuid);
-      return;
+    if (busy) return;
+    setBusy(true);
+    try {
+      if (following) {
+        await unfollow(uuid);
+      } else {
+        await follow({
+          uuid,
+          name,
+          avatar: creator?.avatar_url || null,
+          role: creator?.role,
+          followers: creator?.stats?.followers ?? null,
+          videos: creator?.stats?.videos ?? null,
+        });
+        pushNotification({ kind: "follow", params: { name }, href: "/account#creators" });
+      }
+    } catch (error) {
+      console.warn("[follow] request failed:", error);
+    } finally {
+      setBusy(false);
     }
-    follow({
-      uuid,
-      name,
-      avatar: creator?.avatar_url || null,
-      role: creator?.role,
-      followers: creator?.stats?.followers ?? null,
-      videos: creator?.stats?.videos ?? null,
-    });
-    pushNotification({ kind: "follow", params: { name }, href: "/account#creators" });
   }
 
   const stats = [
@@ -115,13 +130,7 @@ export default function CreatorProfileHero({
 
         {/* Overlapping profile card */}
         {loading ? (
-          <div className="container" aria-busy="true" aria-hidden="true">
-            <div className="cr-profile-card">
-              <Line width="40%" className="sk-line-title" />
-              <Line width="70%" />
-              <Line width="55%" />
-            </div>
-          </div>
+          <ProfileCardSkeleton />
         ) : creator && name ? (
           <div className="container">
             <div className="cr-profile-card">
@@ -166,6 +175,7 @@ export default function CreatorProfileHero({
                     className={"cr-profile-follow" + (following ? " is-following" : "")}
                     onClick={toggleFollow}
                     aria-pressed={following}
+                    aria-busy={busy}
                   >
                     {/* label first so the icon sits on the left in RTL, as in the mock */}
                     <span>
@@ -194,6 +204,10 @@ export default function CreatorProfileHero({
           </div>
         ) : null}
       </div>
+      {/* guest pressed "متابعة" — position:fixed, so where it sits doesn't matter */}
+      {guestNotice ? (
+        <NewsletterToast notice={guestNotice} onClose={closeGuestNotice} />
+      ) : null}
     </header>
   );
 }

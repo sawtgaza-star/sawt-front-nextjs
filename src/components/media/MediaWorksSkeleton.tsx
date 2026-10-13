@@ -1,20 +1,43 @@
+import SkeletonText from "@/components/ui/SkeletonText";
+import { IconCheckMark } from "@/components/ui/icons";
+import { SkTile } from "./MediaSkeletonParts";
 import "@/styles/media-skeleton.css";
 
-/* The sidebar and the project grid as grey bars, until the payload lands — the
-   same bargain as MediaSkeleton, in this page's own `.sm-wp-layout` so the two
-   columns are already in place. The banner's own bars live in
-   <MediaWorksHero />, which always renders its shell (see the note there). */
+/* The sidebar and the project grid while GET /pages/media/works is in flight —
+   MediaWorksBrowser's own `.sm-wp-layout`, both MediaWorksFilterPanel cards
+   and one MediaWorksTile per project, with the copy swapped for
+   <SkeletonText /> and the stills left as empty frames. The counts are the
+   current payload's, so the grid is already as long as the one that lands.
+   The banner's own bars live in <MediaWorksHero />, which always renders its
+   shell (see the note there). */
+const PANELS = [
+  { title: 5, options: [17, 16, 17, 13, 19] },
+  { title: 6, options: [5] },
+];
+const PROJECTS = 15;
 
-function Panel({ rows }: { rows: number }) {
+function Panel({ title, options }: { title: number; options: number[] }) {
   return (
     <section className="sm-wp-panel">
       <div className="sm-wp-panel-head">
-        <span className="smk-line" style={{ width: "88px", height: "18px" }} />
+        <h2 className="sm-wp-panel-title">
+          <SkeletonText chars={title} />
+        </h2>
+        <button type="button" className="sm-wp-panel-toggle" tabIndex={-1}>
+          —
+        </button>
       </div>
       <ul className="sm-wp-opts">
-        {Array.from({ length: rows }, (_, i) => (
+        {options.map((chars, i) => (
           <li key={i}>
-            <span className="smk-line" style={{ width: `${60 + ((i * 13) % 35)}%` }} />
+            <label className="sm-wp-opt">
+              <span className="sm-wp-box" aria-hidden="true">
+                <IconCheckMark />
+              </span>
+              <span>
+                <SkeletonText chars={chars} />
+              </span>
+            </label>
           </li>
         ))}
       </ul>
@@ -28,13 +51,13 @@ export default function MediaWorksSkeleton() {
       <div className="container">
         <div className="sm-wp-layout">
           <aside className="sm-wp-side">
-            <Panel rows={5} />
-            <Panel rows={3} />
+            {PANELS.map((panel, i) => (
+              <Panel key={i} {...panel} />
+            ))}
           </aside>
-
           <div className="sm-wp-grid">
-            {[0, 1, 2, 3].map((i) => (
-              <span key={i} className="smk-block" style={{ height: 320 }} />
+            {Array.from({ length: PROJECTS }, (_, i) => (
+              <SkTile key={i} />
             ))}
           </div>
         </div>

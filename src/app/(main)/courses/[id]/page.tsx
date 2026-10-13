@@ -15,6 +15,11 @@ import { localized } from "@/lib/api/pages";
    `output: 'export'` pre-lists every dynamic segment; a course added after the
    deploy therefore needs a rebuild before its URL exists. Same shape as
    /media/works/[slug]. */
+/* Only the pre-listed segments exist (output: export). Without this, `npm run
+   dev` throws "missing param in generateStaticParams()" for an unknown one
+   instead of showing the site 404 (global-not-found), as the export does. */
+export const dynamicParams = false;
+
 export async function generateStaticParams() {
   try {
     const slugs = await fetchCourseSlugs();

@@ -58,6 +58,9 @@ export type FieldErrors = Record<string, string[]>;
 /** Status used when the request never reached the server (offline, DNS, CORS). */
 export const NETWORK_ERROR_STATUS = 0;
 
+/** Fired on `window` when a GET can't reach the API (see apiFetch). */
+export const NETWORK_ERROR_EVENT = "sawt:network-error";
+
 export class ApiError extends Error {
   readonly status: number;
   readonly errors: FieldErrors;
@@ -126,6 +129,11 @@ export async function apiFetch<T>(
   } catch (cause) {
     // AbortError must stay an AbortError so callers can ignore it.
     if (cause instanceof DOMException && cause.name === "AbortError") throw cause;
+    // A page's content (GET) never arrived — <NetworkErrorScreen /> takes over.
+    // Form submits are left to their own error toast so typed input survives.
+    if (method === "GET" && typeof window !== "undefined") {
+      window.dispatchEvent(new Event(NETWORK_ERROR_EVENT));
+    }
     throw new ApiError(NETWORK_MESSAGE, NETWORK_ERROR_STATUS);
   }
 

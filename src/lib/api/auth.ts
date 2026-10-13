@@ -187,11 +187,27 @@ export async function fetchAuthProviders(signal?: AbortSignal): Promise<AuthProv
   };
 }
 
+/** The `picture` claim of a Google ID token — the account's Google photo —
+    or null. The token is only read here, never trusted: the API verifies it. */
+function googlePicture(credential: string): string | null {
+  try {
+    const part = credential.split(".")[1].replace(/-/g, "+").replace(/_/g, "/");
+    const bytes = Uint8Array.from(atob(part), (c) => c.charCodeAt(0));
+    const claims = JSON.parse(new TextDecoder().decode(bytes));
+    return typeof claims.picture === "string" && claims.picture ? claims.picture : null;
+  } catch {
+    return null;
+  }
+}
+
 /** Signs in (or up) with the ID token Google handed the page. Answers like
-    login(): the session plus the API's own message, defaulted the same way. */
+    login(): the session plus the API's own message, defaulted the same way —
+    and `avatar`, the photo to show for the account: the one the API answered
+    with (unless it flags it as its generated placeholder), else the Google
+    photo carried in the token itself. */
 export async function loginWithGoogle(
   credential: string,
-): Promise<{ session: AuthSession; message: string }> {
+): Promise<{ session: AuthSession; message: string; avatar: string | null }> {
   const payload = await apiFetch<Envelope<AuthSession>>("/auth/social/google", {
     method: "POST",
     body: { token: credential },
@@ -200,7 +216,13 @@ export async function loginWithGoogle(
   if (!session?.access_token) {
     throw new ApiError("تعذر إتمام تسجيل الدخول. حاول مرة أخرى.", 500);
   }
-  return { session, message: payload?.message || "تم تسجيل الدخول بنجاح." };
+  const user = session.user as AuthUser & { avatar_url?: string | null; has_avatar?: boolean };
+  const fromApi = user?.has_avatar === false ? null : user?.avatar_url || user?.avatar || null;
+  return {
+    session,
+    message: payload?.message || "تم تسجيل الدخول بنجاح.",
+    avatar: fromApi || googlePicture(credential),
+  };
 }
 
 export async function logoutRequest(token: string): Promise<void> {

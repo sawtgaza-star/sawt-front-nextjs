@@ -1,19 +1,17 @@
-/* Placeholders for /media while GET /pages/media is in flight.
+/* Placeholders for the Sawt Media pages while their GET /pages/media/* is in
+   flight.
 
-   Same idea as nav-skeleton.css: the page's own section wrappers are rendered
-   from the first paint (so the washes, the olive ground and the section
-   rhythm are already right) and only the content inside them is drawn as bars.
-   Sizes follow media.css — keep them in step if the sections change.
+   The skeletons render the real sections' own markup with the text swapped for
+   <SkeletonText /> (styles/skeleton-text.css), so almost everything is sized
+   by media.css itself. What is left here is the grey of the frames whose
+   upload hasn't arrived — photos, icons, logos, avatars — and the box of the
+   few that have no frame of their own until the <img> lands.
 
    Server-rendered as well as client-rendered: `loading` starts true on both
-   sides, so this is what ships in media.html and what hydration expects. */
+   sides, so this is what ships in the exported HTML and what hydration
+   expects. */
 
-.smk-line,
-.smk-title,
-.smk-pill,
-.smk-block,
-.smk-circle {
-  display: block;
+.smk-fill {
   background: linear-gradient(
     90deg,
     rgba(30, 30, 30, 0.06) 25%,
@@ -22,7 +20,6 @@
   );
   background-size: 400% 100%;
   animation: smk-shimmer 1.4s ease-in-out infinite;
-  border-radius: 8px;
 }
 
 @keyframes smk-shimmer {
@@ -34,64 +31,49 @@
   }
 }
 
-/* one line of body copy — .sm-head-sub, a card paragraph */
-.smk-line {
-  height: 14px;
-  margin-bottom: 12px;
+@media (prefers-reduced-motion: reduce) {
+  .smk-fill {
+    animation: none;
+  }
 }
 
-/* a heading — .sm-head-title is 40px, the card titles 24px */
-.smk-title {
-  height: 30px;
-  margin-bottom: 18px;
+/* "لماذا صوت ميديا": an empty <svg> takes `.sm-why-icon svg`'s box */
+.smk-why-icon {
+  display: block;
+  border-radius: 12px;
 }
 
-/* .sm-pill: 8px 18px padding around 15px text, fully rounded */
-.smk-pill {
-  height: 34px;
-  width: 132px;
-  border-radius: 100px;
-  margin-bottom: 16px;
-}
-
-/* a photo, a card, a panel — .sm-svc and friends are 22px-rounded */
-.smk-block {
+/* a testimonial's round avatar */
+.smk-avatar {
+  display: block;
   width: 100%;
-  border-radius: 22px;
-}
-
-.smk-circle {
+  height: 100%;
   border-radius: 50%;
 }
 
-/* A centred head (the default) centres its bars; `.sm-head-start` sections
-   keep theirs against the start edge, as the real heading sits. */
-.smk-head {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  margin-bottom: 32px;
+/* a partner logo: the row height `.sm-partners-marquee img` caps them at,
+   the width from the logo's shape (inline aspect-ratio) */
+.smk-logo {
+  display: block;
+  flex: 0 0 auto;
+  height: 56px;
+  border-radius: 8px;
 }
-.smk-head-start {
-  align-items: flex-start;
+@media (max-width: 767.98px) {
+  .smk-logo {
+    height: 40px;
+  }
 }
 
-/* the section bodies: one row of cards, sized to what replaces them */
-.smk-row {
-  display: flex;
-  gap: 24px;
-  flex-wrap: wrap;
-  justify-content: center;
-}
-.smk-row > * {
-  flex: 1 1 260px;
+/* the reCAPTCHA checkbox widget's own box */
+.smk-recaptcha {
+  display: block;
+  width: 304px;
+  height: 78px;
+  border-radius: 4px;
 }
 
-@media (max-width: 991.98px) {
-  .smk-title {
-    height: 24px;
-  }
-  .smk-row {
-    gap: 16px;
-  }
+/* `.fi` (flag-icons) is what makes the real flag an inline-block */
+.smk-flag {
+  display: inline-block;
 }

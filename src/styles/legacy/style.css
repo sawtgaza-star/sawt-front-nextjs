@@ -608,6 +608,27 @@ a {
   color: white !important;
 }
 
+/* desktop: the two hero pills a step larger than Bootstrap's px-4 py-2
+   (!important to beat those utilities); phones keep their 40px pills */
+@media (min-width: 992px) {
+  .heroOptionsBtn .btn {
+    padding: 12px 36px !important;
+    font-size: 18px;
+  }
+}
+
+/* the hero can be dragged with the mouse (components/home/hero-drag) */
+#heroCarousel.is-draggable .carousel-inner {
+  cursor: grab;
+  /* a sideways finger is the carousel's; vertical still scrolls the page */
+  touch-action: pan-y;
+}
+#heroCarousel.is-dragging,
+#heroCarousel.is-dragging .carousel-inner {
+  cursor: grabbing;
+  user-select: none;
+}
+
 .custom-placeholder::placeholder {
   color: #acacac;
   opacity: 1;
@@ -945,6 +966,24 @@ svg {
 .news-card .card-footer > span {
   margin-top: 0 !important;
   white-space: nowrap;
+}
+
+/* Every news card is the same size whatever the copy: the title keeps one
+   line and the excerpt two (room reserved even when shorter), each cut with
+   "…". Sizes are in em so the mobile/listing font-size overrides still fit. */
+.news-card .card-title {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.news-card .news-card-desc {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  overflow: hidden;
+  line-height: 1.5;
+  height: 3em;
 }
 
 .count i {

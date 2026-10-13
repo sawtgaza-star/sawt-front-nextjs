@@ -43,6 +43,7 @@ export default function TeamDetail({ uuid }: { uuid: string }) {
           <TeamMemberProfile
             member={page.member}
             labels={page.labels}
+            micBackground={page.mic_background_url}
             lang={lang}
           />
         ) : null}
