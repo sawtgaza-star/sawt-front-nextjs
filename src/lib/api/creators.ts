@@ -19,6 +19,9 @@ import { apiFetch } from "./client";
     the API rejects, so it is mapped on the way out (see lib/legacy-home). */
 export type CreatorSocial = { platform: string; url: string };
 
+/** A past collaboration from step 2's "تعاونات سابقة" rows. */
+export type CreatorCollaboration = { company_name: string; field: string };
+
 export type CreatorJoinRequest = {
   full_name: string;
   phone: string;
@@ -28,6 +31,8 @@ export type CreatorJoinRequest = {
   followers_count: number;
   content_bio: string;
   socials: CreatorSocial[];
+  /** Optional — left out when no row was filled in. */
+  collaborations?: CreatorCollaboration[];
   notes?: string;
   /** The "أنا لست روبوت" answer (lib/recaptcha), checked by the API. */
   recaptcha_token?: string | null;

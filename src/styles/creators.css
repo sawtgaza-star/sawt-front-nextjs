@@ -1267,17 +1267,18 @@ background: var(--White, #FFF);
 .cr-profile-avatar-badge {
   position: absolute;
   bottom: 8px;
-  left: 8px;
-  width: 30px;
-  height: 30px;
-  border-radius: 50%;
-  background: var(--sout-orange);
-  color: #fff;
-  border: 2px solid #fff;
+  left: -8px;
+  /* the SVG is the whole badge (blue seal + white tick) — nothing behind it */
+  width: 34px;
+  height: 34px;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 13px;
+}
+.cr-profile-avatar-badge svg {
+  width: 100%;
+  height: 100%;
+  display: block;
 }
 .cr-profile-name-row {
   display: flex;
@@ -3101,4 +3102,116 @@ display:none;
 }
 .cr-profile-follow.is-following:hover {
   background: #3d4a2c;
+}
+
+/* ---------- "ابرز التعاونات" on a creator's page (CreatorCollaborations) ----------
+   (.cr-collabs-strip-section, not the old .cr-collabs-section above — that one
+   carries the previous design's pattern background and grid). Title and
+   description on top (.cr-section-head), then a grid of cards: the company's
+   first letter on a tinted band, then its name and "مجال التعاون". */
+.cr-collabs-strip-section {
+  /* the section above already ends with its own bottom space */
+  padding: 10px 0 60px;
+}
+
+.cr-collab-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 360px));
+  justify-content: center;
+  gap: 20px;
+}
+
+/* letter square on the start side, then the name and the field's tag */
+.cr-collab-card {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  min-width: 0;
+  padding: 16px 18px;
+  background: #f6f6ef;
+  border: 1px solid #e8eadf;
+  border-radius: 18px;
+}
+
+.cr-collab-card-letter {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  width: 64px;
+  height: 64px;
+  background: #fff;
+  border-radius: 16px;
+  box-shadow: 0 2px 8px rgba(54, 65, 39, 0.06);
+  font-size: 30px;
+  font-weight: 700;
+  color: #4c5c37;
+}
+
+.cr-collab-card-text {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 8px;
+  min-width: 0;
+}
+
+.cr-collab-card-name {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 700;
+  color: #1c1c1c;
+  text-align: start;
+  overflow-wrap: anywhere;
+}
+
+.cr-collab-card-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  max-width: 100%;
+  padding: 4px 12px;
+  background: #fff;
+  border-radius: 999px;
+  font-size: 13px;
+  color: #3a3a3a;
+  overflow-wrap: anywhere;
+}
+
+.cr-collab-card-tag-icon {
+  display: inline-flex;
+  flex: 0 0 auto;
+  color: #e1723b;
+  font-size: 13px;
+}
+
+@media (max-width: 575.98px) {
+  .cr-collabs-strip-section {
+    padding: 10px 0 30px;
+  }
+
+  .cr-collab-cards {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+
+  .cr-collab-card {
+    padding: 12px 14px;
+    gap: 12px;
+  }
+
+  .cr-collab-card-letter {
+    width: 54px;
+    height: 54px;
+    font-size: 26px;
+  }
+
+  .cr-collab-card-name {
+    font-size: 16px;
+  }
+}
+
+/* loading placeholder (CollabsSkeleton) */
+.cr-collab-card.is-skeleton .cr-collab-card-letter {
+  box-shadow: none;
 }

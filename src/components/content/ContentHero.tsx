@@ -28,10 +28,13 @@ import { ContentHeroSkeleton, ContentPostersSkeleton } from "./ContentSkeleton";
    custom property the rule reads, whose fallback is the bundled image. */
 export default function ContentHero({
   data,
+  fallbackPosters = [],
   lang = "ar",
   loading = false,
 }: {
   data?: ContentHeroContent;
+  /** Covers to fan out when `hero.items` is empty — the reels' thumbnails. */
+  fallbackPosters?: string[];
   lang?: string;
   /** The payload is still on its way — hold the hero's height with bars. */
   loading?: boolean;
@@ -39,9 +42,11 @@ export default function ContentHero({
   const title = localized(data?.title, lang);
   const description = localized(data?.description, lang);
   const backdrop = data?.image_url;
-  const posters = bySortOrder(data?.items)
+  const heroPosters = bySortOrder(data?.items)
     .map((poster) => poster.image_url || "")
     .filter(Boolean);
+  // the editor's posters first; else the reels' own covers, not the stock image
+  const posters = heroPosters.length ? heroPosters : fallbackPosters.filter(Boolean);
 
   return (
     <header>

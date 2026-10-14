@@ -5,6 +5,7 @@
 /* "انضم إلينا" stepper modal (opened from the JoinUs section; logic in lib/legacy-home). */
 import { DeferredStylesheet, FLAG_ICONS_CSS } from "@/components/ui/CdnStylesheets";
 import JoinPhotoField from "./join-photo/JoinPhotoField";
+import JoinCollabField from "./join-collab/JoinCollabField";
 export default function JoinModal() {
   return (
     <>
@@ -34,7 +35,7 @@ export default function JoinModal() {
                   صحة ولياقة
                 </button> <button type="button" className="join-chip" data-i18n="jm_cat_sport">
                   رياضة وترفيه
-                </button> </div> <span className="join-hint" data-i18n="jm_multi_hint">*بإمكانك اختيار أكثر من خيار</span> </div> <div className="join-field"> <label className="join-label" data-i18n="jm_followers">عدد المتابعين التقريبي في المنصة الواحدة (الأعلى شهرة)</label> <div className="join-input-wrap"> <i className="fa-regular fa-user join-input-icon"></i> <input type="number" className="join-input" name="followers" placeholder="5000" data-i18n-placeholder="jm_followers_ph" /> </div> </div> <div className="join-field"> <label className="join-label" data-i18n="jm_about">نبذة عن محتواك</label> <textarea className="join-textarea" name="about" rows={3} placeholder="تحدث عن المحتوى الذي تقدمه وما الذي يميزك" data-i18n-placeholder="jm_about_ph"></textarea> </div> </div> {/*  Step 3: Social links  */} <div className="join-pane" data-pane="3"> <div className="join-field"> <label className="join-label" data-i18n="jm_social_links">روابط مواقع التواصل الاجتماعي</label> <div className="join-social-list" id="joinSocialList"> <div className="join-social-row"> <span className="join-platform"> <i className="fa-brands fa-instagram join-platform-icon" data-platform-icon=""></i> <select className="join-platform-select"> <option value="instagram" data-icon="fa-instagram">
+                </button> </div> <span className="join-hint" data-i18n="jm_multi_hint">*بإمكانك اختيار أكثر من خيار</span> </div> <div className="join-field"> <label className="join-label" data-i18n="jm_followers">عدد المتابعين التقريبي في المنصة الواحدة (الأعلى شهرة)</label> <div className="join-input-wrap"> <i className="fa-regular fa-user join-input-icon"></i> <input type="number" className="join-input" name="followers" placeholder="5000" data-i18n-placeholder="jm_followers_ph" /> </div> </div> <div className="join-field"> <label className="join-label" data-i18n="jm_about">نبذة عن محتواك</label> <textarea className="join-textarea" name="about" rows={3} placeholder="تحدث عن المحتوى الذي تقدمه وما الذي يميزك" data-i18n-placeholder="jm_about_ph"></textarea> </div> <JoinCollabField /> </div> {/*  Step 3: Social links  */} <div className="join-pane" data-pane="3"> <div className="join-field"> <label className="join-label" data-i18n="jm_social_links">روابط مواقع التواصل الاجتماعي</label> <div className="join-social-list" id="joinSocialList"> <div className="join-social-row"> <span className="join-platform"> <i className="fa-brands fa-instagram join-platform-icon" data-platform-icon=""></i> <select className="join-platform-select"> <option value="instagram" data-icon="fa-instagram">
                         انستقرام
                       </option> <option value="facebook" data-icon="fa-facebook-f">
                         فيسبوك

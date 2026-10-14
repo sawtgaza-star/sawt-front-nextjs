@@ -1,4 +1,5 @@
 "use client";
+import SupportCta from "@/components/site/SupportCta";
 import NewsHero from "@/components/news/NewsHero";
 import NewsShareCard from "./NewsShareCard";
 import NewsArticleHead from "./NewsArticleHead";
@@ -73,6 +74,8 @@ export default function NewsArticleContent({ uuid }: { uuid: string }) {
               <NewsShareCard />
             </aside>
           </div>
+          {/* "الحقيقة تحتاج من يمولها" → /support, under the article */}
+          {article ? <SupportCta /> : null}
         </div>
       </main>
       {loading ? (

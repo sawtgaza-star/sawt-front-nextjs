@@ -10,7 +10,7 @@
    It also re-runs the pre-paint script in app/layout.tsx, so the guest half
    of the bar is what paints on arrival. */
 
-import { useRef } from "react";
+import { useRef, type ReactNode } from "react";
 import { IconNavLogout } from "@/components/ui/icons";
 import { logout } from "@/lib/auth-state";
 import { markLoggedOut } from "./logout-flash";
@@ -19,10 +19,14 @@ type Props = {
   /** Defaults to the top-bar variant; the drawer group is already
       `.nav-authed-only`, so it passes just `nav-icon-btn`. */
   className?: string;
+  /** What the button shows — the bare icon by default; the user menu and the
+      drawer's footer pass an icon + label row instead. */
+  children?: ReactNode;
 };
 
 export default function NavLogoutButton({
   className = "nav-icon-btn nav-authed-only",
+  children,
 }: Props) {
   /* A ref, not state + `disabled`: nothing on the page may change until the
      reload below — a disabled button greys its icon out. */
@@ -50,7 +54,7 @@ export default function NavLogoutButton({
       title="تسجيل الخروج"
       data-i18n-title="nav_logout"
     >
-      <IconNavLogout />
+      {children ?? <IconNavLogout />}
     </button>
   );
 }

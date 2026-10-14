@@ -1,0 +1,34 @@
+/* One hero size for every inner page — the team page's (team.css): the box
+   takes the backdrop's 1783×592 shape, so its height follows the page width
+   and never the uploaded image (any image is cropped to it by `cover`).
+
+   Covers the three breadcrumb-hero families:
+     .cr-header     creators, creator profile, collaborate, support,
+                    support methods/checkout, team
+     .about-header  about, news, stories
+     .sm-wp-hero    صوت ميديا's inner pages (works, project, service, contact)
+   Not the home page (its own hero) and not محتوانا (.ct-header), by request;
+   nor the creator profile (.cr-detail-header), whose height is the profile
+   card that half-sits inside it.
+
+   The ratio is a floor: a long title can still grow the box rather than
+   overflow it. Desktop/tablet only, like the team rule — below 768px the
+   pages keep their own mobile headers. */
+
+@media (min-width: 768px) {
+  .cr-header:not(.ct-header):not(.cr-detail-header),
+  .about-header,
+  header.sm-wp-hero {
+    aspect-ratio: 1783 / 592;
+  }
+
+  /* The text block: the same padding on both families (the about-style one had
+     100/90 and outgrew the ratio), weighted toward the top so the breadcrumb,
+     title and description sit lower in the box — the room is moved from below
+     the text to above it, not added, so the box keeps its height. */
+  .cr-header:not(.ct-header):not(.cr-detail-header) .cr-hero,
+  .about-header .about-hero {
+    padding-top: 110px;
+    padding-bottom: 10px;
+  }
+}

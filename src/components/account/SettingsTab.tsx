@@ -1,12 +1,11 @@
 import { useLang } from "@/lib/use-lang";
 import AccountInfoForm from "./AccountInfoForm";
 import ChangePasswordForm from "./ChangePasswordForm";
-import PrivacyForm from "./PrivacyForm";
 import type { AccountUser } from "./account-user";
 
-export type SettingsView = "account" | "password" | "privacy";
+export type SettingsView = "account" | "password";
 
-/* "الإعدادات": sub-tabs إعدادات الحساب / الخصوصية. The account view is the
+/* "الإعدادات" (its sub-tab bar — إعدادات الحساب / الخصوصية — was removed). The account view is the
    personal-info form plus the password card, whose link swaps the whole view
    for "تغيير كلمة المرور". */
 export default function SettingsTab({
@@ -24,35 +23,12 @@ export default function SettingsTab({
   const head =
     view === "password"
       ? { title: "acc_pw_title", desc: "acc_pw_desc" }
-      : view === "privacy"
-        ? { title: "acc_privacy_title", desc: "acc_privacy_desc" }
-        : { title: "acc_settings_title", desc: "acc_settings_desc" };
+      : { title: "acc_settings_title", desc: "acc_settings_desc" };
 
   return (
     <section className="acc-panel">
       <h1 className="acc-title">{tr(head.title)}</h1>
       <p className="acc-desc">{tr(head.desc)}</p>
-
-      <div className="acc-subtabs" role="tablist">
-        <button
-          type="button"
-          role="tab"
-          aria-selected={view !== "privacy"}
-          className={"acc-subtab" + (view !== "privacy" ? " is-active" : "")}
-          onClick={() => onView("account")}
-        >
-          {tr("acc_sub_account")}
-        </button>
-        <button
-          type="button"
-          role="tab"
-          aria-selected={view === "privacy"}
-          className={"acc-subtab" + (view === "privacy" ? " is-active" : "")}
-          onClick={() => onView("privacy")}
-        >
-          {tr("acc_sub_privacy")}
-        </button>
-      </div>
 
       {view === "account" ? (
         <>
@@ -68,8 +44,6 @@ export default function SettingsTab({
       ) : null}
 
       {view === "password" ? <ChangePasswordForm onCancel={() => onView("account")} /> : null}
-
-      {view === "privacy" ? <PrivacyForm /> : null}
     </section>
   );
 }

@@ -55,9 +55,24 @@
    would flatten out */
 .ct-hero-swiper {
   width: 100%;
-  padding: 24px 0 10px;
+  /* room above and below for the focused poster, which comes forward in z */
+  padding: 40px 0 40px;
   overflow: hidden;
   perspective: 1300px;
+}
+/* five large 9:16 posters across: capped so they don't grow taller than the
+   hero on a wide screen (each ~250×445 at the cap) */
+@media (min-width: 992px) {
+  .ct-hero-swiper {
+    max-width: 1320px;
+    margin-inline: auto;
+  }
+  /* five across: the posters keep their slot width (the 1.1 scale below was
+     for the old nine-wide row, and here it made them overlap) — the fan's z
+     offsets alone size them, as in the reference strip */
+  .ct-hero-swiper .ct-hero-thumb {
+    transform: none;
+  }
 }
 .ct-hero-swiper .swiper-wrapper {
   transform-style: preserve-3d;

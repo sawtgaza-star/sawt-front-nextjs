@@ -206,6 +206,7 @@ export default function ReelModal({
         <video
           ref={videoRef}
           src={card.video}
+          poster={card.poster}
           loop
           playsInline
           preload="auto"

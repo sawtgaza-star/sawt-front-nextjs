@@ -6,6 +6,9 @@ import { SKIP } from "./data";
 import { fmtTime, resolveDuration } from "./video-utils";
 import { useReelVideo } from "./useReelVideo";
 
+/** Shown in place of a reel cover that can't be loaded (an expired link). */
+const FALLBACK_POSTER = "/assets/images/1.png";
+
 /* A single reel card: video paused on its first frame. Its play button opens
    the full-screen reel viewer. Elapsed time at the top and a bottom control
    bar (rewind · scrub · forward). */
@@ -23,6 +26,24 @@ export default function ContentCard({ card, index, onOpen }) {
     handleLoadedMetadata,
   } = useReelVideo();
   const [playing, setPlaying] = useState(false);
+  /* The cover the card shows until the video has a frame. Instagram's links
+     are signed and expire; when the backend's mirror falls behind the cover
+     403s and the card was a blank box — so a cover that fails to load is
+     swapped for the site's stock poster. */
+  const [poster, setPoster] = useState(card.poster);
+  useEffect(() => {
+    setPoster(card.poster);
+    if (!card.poster) return;
+    let alive = true;
+    const probe = new Image();
+    probe.onerror = () => {
+      if (alive) setPoster(FALLBACK_POSTER);
+    };
+    probe.src = card.poster;
+    return () => {
+      alive = false;
+    };
+  }, [card.poster]);
 
   // show the duration as soon as the card renders (resolved off-screen)
   useEffect(() => {
@@ -47,7 +68,7 @@ export default function ContentCard({ card, index, onOpen }) {
       <video
         ref={videoRef}
         src={card.video}
-        poster={card.poster}
+        poster={poster}
         loop
         playsInline
         preload="metadata"

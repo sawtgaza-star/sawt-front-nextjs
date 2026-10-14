@@ -1,7 +1,7 @@
 import { localized, type AboutJoinContent } from "@/lib/api/pages";
 
 /* API `join` block, and nothing else — see AboutHero. The link target is not
-   part of the payload, so it stays as the legacy markup has it; the banner
+   part of the payload: the button opens "ادعم صوت" (/support). The banner
    renders its image only once the API sends one. */
 export default function JoinUs({
   data,
@@ -30,7 +30,7 @@ export default function JoinUs({
           {title ? <h2 className="join-us-title">{title}</h2> : null}{" "}
           {description ? <p className="join-us-desc">{description}</p> : null}{" "}
           {button ? (
-            <a href="#" className="btn btn-dark-green join-us-btn">
+            <a href="/support" className="btn btn-dark-green join-us-btn">
               {" "}
               <span>{button}</span>{" "}
               <i className="fa-solid fa-angle-left arrow"></i>{" "}

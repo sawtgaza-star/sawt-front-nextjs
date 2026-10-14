@@ -6,6 +6,8 @@
                                                                per_page, total } }
      POST   /auth/profile                 (bearer, multipart) { name, email, phone,
                                                        gender, avatar? (file) } → { data: { user } }
+     POST   /auth/profile/collaborations  (bearer, JSON) { collaborations: [{ company_name,
+                                                       field }] } → { message, data: { user } }
      POST   /auth/password                (bearer) { current_password, password,
                                                        password_confirmation } → { message }
      POST   /pages/creators/{uuid}/follow (bearer)
@@ -29,7 +31,62 @@ export type ProfileUser = AuthUser & {
   has_avatar?: boolean;
   has_password?: boolean;
   following_count?: number;
+  /** A content creator's "ابرز التعاونات" (`is_content_creator`), raw — read
+      through normalizeCollaborations. GET /auth/profile may send it on the
+      user or beside it (`data.collaborations`); fetchProfile keeps it here
+      either way, so the stored user carries it. */
+  collaborations?: unknown[];
+  /** A content creator's own creator profile, when GET /auth/profile sends it
+      (on the user or beside it) — its photo is the one uploaded with the join
+      application, which the account itself doesn't get. */
+  creator?: { avatar_url?: string | null; avatar?: string | null } | null;
 };
+
+/** One of the creator's past collaborations — the same `company_name` /
+    `field` pair the join modal sends (lib/api/creators). */
+export type Collaboration = { companyName: Localized | string; field: Localized | string };
+
+/** Read defensively, like normalizeFollowed. Accepts a plain list or one
+    wrapped as `{ items: [...] }`, and rows in any of the shapes the API uses:
+    GET /auth/profile's ({ uuid, company: { uuid, name, field } }), the join
+    form's ({ company_name, field }) or the public creator profile's
+    ({ company: { name, category: [...] } }); rows without a company are
+    dropped. */
+export function normalizeCollaborations(list: unknown): Collaboration[] {
+  const rows = Array.isArray(list)
+    ? list
+    : Array.isArray((list as { items?: unknown })?.items)
+      ? (list as { items: unknown[] }).items
+      : [];
+  const out: Collaboration[] = [];
+  for (const row of rows as any[]) {
+    if (!row || typeof row !== "object") continue;
+    const company = row.company && typeof row.company === "object" ? row.company : null;
+    const companyName = row.company_name ?? company?.name ?? row.company ?? row.name ?? "";
+    if (!companyName) continue;
+    const category = Array.isArray(company?.category) ? company.category[0] : company?.category;
+    // GET /auth/profile: { uuid, company: { uuid, name, field } }
+    const field =
+      row.field ?? company?.field ?? row.field_name ?? row.category ?? category ?? "";
+    out.push({ companyName, field });
+  }
+  return out;
+}
+
+/** Wherever GET /auth/profile puts a creator's collaborations: on the user,
+    beside it, or inside the creator profile (either side). */
+function findCollaborations(data: any): unknown {
+  const user = data?.user;
+  const candidates = [
+    user?.collaborations,
+    data?.collaborations,
+    user?.creator?.collaborations,
+    user?.content_creator?.collaborations,
+    data?.creator?.collaborations,
+    data?.content_creator?.collaborations,
+  ];
+  return candidates.find((c) => normalizeCollaborations(c).length) ?? candidates.find((c) => c != null);
+}
 
 export type FollowedCreator = {
   /** The profile route segment — /creators/{uuid}. */
@@ -75,9 +132,27 @@ export async function fetchProfile(
 
   do {
     const payload = await apiFetch<
-      Envelope<{ user?: ProfileUser; following?: unknown[] }> & { meta?: PageMeta }
+      Envelope<{
+        user?: ProfileUser;
+        following?: unknown[];
+        collaborations?: unknown[];
+        creator?: ProfileUser["creator"];
+        content_creator?: ProfileUser["creator"];
+      }> & {
+        meta?: PageMeta;
+      }
     >(`/auth/profile?page=${page}`, { token, signal });
-    user ??= payload?.data?.user;
+    if (!user && payload?.data?.user) {
+      const collaborations = findCollaborations(payload.data);
+      const u = payload.data.user as ProfileUser & { content_creator?: ProfileUser["creator"] };
+      const creator =
+        u.creator ?? u.content_creator ?? payload.data.creator ?? payload.data.content_creator;
+      user = {
+        ...u,
+        ...(collaborations != null ? { collaborations: collaborations as unknown[] } : {}),
+        ...(creator && typeof creator === "object" ? { creator } : {}),
+      };
+    }
     for (const row of payload?.data?.following ?? []) {
       const creator = normalizeFollowed(row);
       if (creator && !following.some((c) => c.uuid === creator.uuid)) following.push(creator);
@@ -115,6 +190,25 @@ export async function updateProfile(token: string, input: ProfileInput): Promise
   const user = payload?.data?.user;
   if (!user) throw new ApiError("حدث خطأ غير متوقع. حاول مرة أخرى.", 500);
   return user;
+}
+
+/** A creator's "ابرز التعاونات" — the whole list replaces the saved one (an
+    empty list clears it). Resolves to the user the API answers with, its
+    collaborations read wherever the response puts them (findCollaborations),
+    and the API's own confirmation ("" if it sent none). */
+export async function saveCollaborations(
+  token: string,
+  collaborations: { company_name: string; field: string }[],
+): Promise<{ user: ProfileUser | null; collaborations: unknown; message: string }> {
+  const payload = await apiFetch<Envelope<{ user?: ProfileUser; collaborations?: unknown[] }>>(
+    "/auth/profile/collaborations",
+    { method: "POST", body: { collaborations }, token },
+  );
+  return {
+    user: payload?.data?.user ?? null,
+    collaborations: findCollaborations(payload?.data),
+    message: payload?.message ?? "",
+  };
 }
 
 /** Returns the API's own confirmation message ("" if it sent none). */

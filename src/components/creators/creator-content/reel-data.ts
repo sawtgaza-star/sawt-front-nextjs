@@ -20,6 +20,9 @@ export type ApiReelComment = {
   id?: string | number | null;
   username?: string | null;
   user?: string | null;
+  /** what GET /pages/content sends: { id, name, text, likes, time } */
+  name?: string | null;
+  time?: string | null;
   text?: string | null;
   comment?: string | null;
   timestamp?: string | null;
@@ -79,6 +82,12 @@ function count(value: number | null | undefined): number {
   return typeof value === "number" && Number.isFinite(value) ? value : 0;
 }
 
+/* Instagram writes the offset without a colon ("…T23:27:52+0000"), which not
+   every browser's Date.parse accepts — normalise it to "+00:00". */
+function isoTime(raw: string): string {
+  return raw.replace(/([+-]\d{2})(\d{2})$/, "$1:$2");
+}
+
 export function commentsFromApi(
   items: ApiReelComment[] | null | undefined,
 ): ReelComment[] {
@@ -86,9 +95,9 @@ export function commentsFromApi(
   return items
     .map((c, i) => ({
       id: String(c.id ?? i),
-      user: (c.username || c.user || "").trim(),
+      user: (c.username || c.user || c.name || "").trim(),
       text: (c.text || c.comment || "").trim(),
-      time: c.timestamp || c.created_at || "",
+      time: isoTime(c.timestamp || c.created_at || c.time || ""),
       avatar: c.avatar_url || c.avatar || DEFAULT_AVATAR,
       likes: count(c.like_count ?? c.likes),
     }))

@@ -1,0 +1,782 @@
+/* =========================================================
+   Site navbar redesign — components/site/SiteNav and its pieces.
+
+   Owned by SiteNav (imported there) rather than added to style.css, for the
+   same reason as nav-search.css: the bar renders under route groups that load
+   different legacy stylesheets. Selectors carry an extra class (`.nav-face`,
+   `.nav-drawer`…) where they must outrank a style.css rule, since the load
+   order of the two files is not guaranteed.
+   ========================================================= */
+
+/* ---------- Desktop top bar ---------- */
+
+.nav-face .nav-top-actions {
+  gap: 10px;
+}
+
+.nav-face .nav-lang-btn {
+  font-size: 18px;
+  font-weight: 700;
+  color: #1e1e1e;
+}
+
+.nav-top-divider {
+  display: block;
+  width: 1px;
+  height: 22px;
+  background: #dadada;
+}
+
+.nav-face .nav-cta {
+  height: 40px;
+  padding: 0 16px;
+  font-size: 15px;
+}
+
+.nav-face .nav-cta-login {
+  background: #f5f5f2;
+  border: 1px solid #e3e3dc;
+  color: #1e1e1e !important;
+}
+
+.nav-face .nav-cta-login:hover {
+  background: #ebebe4;
+}
+
+.nav-face .nav-cta-support {
+  background: #ffffff;
+  border: 1px solid #8f8f8f;
+  color: #1e1e1e !important;
+}
+
+.nav-face .nav-cta-support svg {
+  color: #1e1e1e;
+}
+
+.nav-face .nav-cta-support:hover {
+  background: #f2f2ee;
+}
+
+.nav-face .nav-search-btn {
+  width: 40px;
+  height: 40px;
+}
+
+.nav-face .nav-search-btn svg {
+  width: 18px;
+  height: 18px;
+}
+
+/* NavSearch was written for an LTR island; in the RTL row the field opens on
+   the button's inline-end side, so its gap moves to the other edge. */
+.nav-face .nav-search.is-open .nav-search-field {
+  margin-inline-end: 0;
+  margin-inline-start: 8px;
+}
+
+/* ---------- Desktop user menu ---------- */
+
+.nav-user {
+  position: relative;
+}
+
+.nav-user-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  height: 40px;
+  padding-block: 0;
+  padding-inline: 4px 12px;
+  border: 1px solid #d6dacb;
+  border-radius: 100px;
+  background: #f6f6f1;
+  color: #1e1e1e;
+  font-size: 15px;
+  font-weight: 600;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: background-color 0.2s ease-in-out;
+}
+
+.nav-user-pill:hover,
+.nav-user-pill.is-open {
+  background: #ececE4;
+}
+
+.nav-user-pill .nav-account-avatar,
+.nav-user-pill > svg:first-child {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  object-fit: cover;
+  flex-shrink: 0;
+}
+
+.nav-user-pill > svg:first-child {
+  padding: 4px;
+  color: #4c5c37;
+}
+
+.nav-user-pill > svg:last-child {
+  width: 16px;
+  height: 16px;
+  color: #7f7f7f;
+  transition: transform 0.2s ease;
+}
+
+.nav-user-pill.is-open > svg:last-child {
+  transform: rotate(180deg);
+}
+
+.nav-user-menu {
+  position: absolute;
+  top: calc(100% + 8px);
+  inset-inline-start: 0;
+  z-index: 1080;
+  width: 270px;
+  padding: 8px;
+  background: #ffffff;
+  border: 1px solid #ececec;
+  border-radius: 14px;
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.1);
+  text-align: start;
+}
+
+/* Same lift the bell's panel needs: `.nav-face` sits under the navbar row. */
+.nav-face:has(.nav-user-menu) {
+  z-index: 1040;
+}
+
+.nav-user-head {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 6px 8px 12px;
+  margin-bottom: 6px;
+  border-bottom: 1px solid #eeeeee;
+}
+
+.nav-user-head-avatar .nav-account-avatar,
+.nav-user-head-avatar > svg {
+  display: flex;
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.nav-user-head-avatar > svg {
+  padding: 6px;
+  background: #f2f2ee;
+  color: #4c5c37;
+}
+
+.nav-user-head-text {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.nav-user-name {
+  color: #1e1e1e;
+  font-size: 15px;
+  font-weight: 700;
+}
+
+/* An address is LTR text: laid out RTL, its ellipsis ate the start of it.
+   It wraps instead of truncating, so the whole address is always readable. */
+.nav-user-email {
+  direction: ltr;
+  text-align: right;
+  unicode-bidi: plaintext;
+  color: #7f7f7f;
+  font-size: 12px;
+  line-height: 1.4;
+  overflow-wrap: anywhere;
+}
+
+[dir="ltr"] .nav-user-email {
+  text-align: left;
+}
+
+/* the avatar never gives up width to a long name or address */
+.nav-user-head-avatar {
+  flex-shrink: 0;
+}
+
+.nav-user-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  padding: 10px 12px;
+  border: none;
+  border-radius: 8px;
+  background: none;
+  color: #1e1e1e;
+  font-size: 15px;
+  font-weight: 500;
+  text-align: start;
+  text-decoration: none;
+  cursor: pointer;
+  transition: background-color 0.15s ease;
+}
+
+.nav-user-item svg {
+  width: 20px;
+  height: 20px;
+  flex-shrink: 0;
+  color: #4c5c37;
+}
+
+.nav-user-item:hover {
+  background: #f2f2ee;
+  color: #1e1e1e;
+}
+
+.nav-user-sep {
+  height: 1px;
+  margin: 6px 0;
+  background: #eeeeee;
+}
+
+.nav-user-item.nav-user-logout,
+.nav-user-item.nav-user-logout svg {
+  color: #c0392b;
+}
+
+/* the logout icon points out of the door — mirror it with the page */
+[dir="ltr"] .nav-user-logout svg,
+[dir="ltr"] .nav-drawer-logout svg {
+  transform: scaleX(-1);
+}
+
+/* ---------- Round header buttons (phone bar, drawer) ---------- */
+
+.nav-round-btn,
+.nav-bar-mobile .nav-notif .nav-icon-btn,
+.nav-drawer-user .nav-notif .nav-icon-btn {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  padding: 0;
+  border: none;
+  border-radius: 50%;
+  background: #f2f2ee;
+  color: #1e1e1e;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+.nav-round-btn svg,
+.nav-bar-mobile .nav-notif .nav-icon-btn svg,
+.nav-drawer-user .nav-notif .nav-icon-btn svg {
+  width: 20px;
+  height: 20px;
+}
+
+.nav-round-btn .nav-account-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+/* ---------- Phone / tablet header row (<992px) ---------- */
+
+.nav-bar-mobile {
+  display: none;
+}
+
+@media (max-width: 991.98px) {
+  /* the top bar's contents all move into the drawer */
+  .nav-face {
+    display: none !important;
+  }
+
+  header nav.navbar > .container {
+    display: flex;
+    flex-wrap: nowrap;
+    align-items: center;
+    justify-content: space-between;
+    min-height: 68px;
+    margin-top: 12px;
+    border: 1px solid #e6e6e6;
+    border-radius: 14px;
+    background: #ffffff !important;
+  }
+
+  header nav.navbar .navbar-brand {
+    margin: 0 !important;
+  }
+
+  header nav.navbar .navbar-brand img {
+    height: 44px;
+  }
+
+  .nav-bar-mobile {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  /* the bell's panel drops under the header card, full width */
+  .nav-bar-mobile .nav-notif,
+  .nav-drawer-user .nav-notif {
+    position: static;
+  }
+
+  .nav-bar-mobile .nav-notif-panel {
+    position: fixed;
+    top: 92px;
+    left: 16px;
+    right: 16px;
+    width: auto;
+    max-width: none;
+  }
+
+  .nav-drawer-user .nav-notif-panel {
+    position: fixed;
+    top: 172px;
+    left: 16px;
+    right: 16px;
+    width: auto;
+    max-width: none;
+  }
+}
+
+/* ---------- Drawer ----------
+   Drops down from under the header card. It lives inside the card's
+   `.container`, so left/right 0 give it exactly the card's width. */
+
+.nav-drawer {
+  position: absolute;
+  top: calc(100% + 8px);
+  /* -1px: the offsets are measured inside the card's 1px border */
+  left: -1px;
+  right: -1px;
+  z-index: 2000;
+  max-height: calc(100vh - 110px);
+  max-height: calc(100dvh - 110px);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding: 12px;
+  border: 1px solid #e6e6e6;
+  border-radius: 14px;
+  background: #f7f7f4;
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.12);
+  color: #1e1e1e;
+  text-align: start;
+  transform-origin: top center;
+  transform: translateY(-12px) scaleY(0.96);
+  opacity: 0;
+  visibility: hidden;
+  transition:
+    transform 0.28s ease,
+    opacity 0.2s ease,
+    visibility 0s linear 0.28s;
+}
+
+/* `none`, not translateY(0): a transformed drawer would become the containing
+   block of the bell's position:fixed panel. */
+.nav-drawer.is-open {
+  transform: none;
+  opacity: 1;
+  visibility: visible;
+  transition:
+    transform 0.28s ease,
+    opacity 0.2s ease;
+}
+
+/* never on ≥992px, even if it was left open while the window was resized */
+@media (min-width: 992px) {
+  .nav-drawer {
+    display: none;
+  }
+}
+
+html.nav-drawer-open,
+html.nav-drawer-open body {
+  overflow: hidden;
+}
+
+.nav-drawer-body {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.nav-drawer-card {
+  background: #ffffff;
+  border: 1px solid #ececec;
+  border-radius: 14px;
+}
+
+/* -- welcome / user card -- */
+
+.nav-drawer-welcome {
+  padding: 16px;
+}
+
+.nav-drawer-user {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 14px 16px;
+}
+
+/* `.sawt-authed .nav-authed-only` paints it inline-flex — keep it a full row */
+.sawt-authed .nav-drawer-user.nav-authed-only {
+  display: flex !important;
+}
+
+.nav-drawer-who {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 0;
+  color: inherit;
+  text-decoration: none;
+}
+
+.nav-drawer-who:hover {
+  color: inherit;
+}
+
+.nav-drawer-avatar {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  overflow: hidden;
+  background: #f2f2ee;
+  color: #7f7f7f;
+}
+
+.nav-drawer-avatar svg {
+  width: 24px;
+  height: 24px;
+}
+
+.nav-drawer-avatar .nav-account-avatar {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  object-fit: cover;
+  font-size: 20px;
+}
+
+.nav-drawer-who-text {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.nav-drawer-who-text strong {
+  font-size: 16px;
+  font-weight: 700;
+  color: #1e1e1e;
+}
+
+.nav-drawer-who-text span {
+  font-size: 13px;
+  color: #7f7f7f;
+}
+
+.nav-drawer-auth {
+  display: flex;
+  gap: 10px;
+  margin-top: 16px;
+}
+
+.nav-drawer-btn {
+  display: inline-flex;
+  flex: 1 1 0;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  height: 44px;
+  border-radius: 100px;
+  font-size: 15px;
+  font-weight: 600;
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.nav-drawer-btn svg {
+  width: 20px;
+  height: 20px;
+}
+
+.nav-drawer .nav-drawer-btn.is-filled {
+  background: #4c5c37;
+  color: #ffffff !important;
+}
+
+.nav-drawer .nav-drawer-btn.is-filled:hover {
+  background: #323b26;
+  color: #ffffff !important;
+}
+
+.nav-drawer-btn.is-outline {
+  background: #ffffff;
+  border: 1px solid #cfcfcf;
+  color: #1e1e1e;
+}
+
+.nav-drawer-btn.is-outline:hover {
+  background: #f2f2ee;
+  color: #1e1e1e;
+}
+
+/* -- search -- */
+
+.nav-drawer-search {
+  position: relative;
+}
+
+.nav-drawer-search > svg {
+  position: absolute;
+  top: 50%;
+  inset-inline-start: 16px;
+  width: 18px;
+  height: 18px;
+  color: #7f7f7f;
+  transform: translateY(-50%);
+  pointer-events: none;
+}
+
+.nav-drawer .nav-drawer-search .search-input {
+  width: 100%;
+  height: 48px;
+  padding-inline: 44px 16px !important;
+  border: 1px solid #ececec;
+  border-radius: 14px !important;
+  background: #ffffff;
+  font-size: 15px;
+  box-shadow: none;
+}
+
+.nav-drawer .nav-drawer-search .search-input:focus {
+  border-color: rgba(76, 92, 55, 0.45);
+  box-shadow: none;
+}
+
+/* -- links -- */
+
+.nav-drawer-list {
+  padding: 8px;
+}
+
+.nav-drawer-links {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.nav-drawer-link {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 13px 14px;
+  border-radius: 10px;
+  color: #1e1e1e;
+  font-size: 16px;
+  font-weight: 500;
+  text-decoration: none;
+}
+
+.nav-drawer-link:hover {
+  background: #f7f7f4;
+  color: #1e1e1e;
+}
+
+.nav-drawer-dot {
+  display: none;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #4c5c37;
+}
+
+.nav-drawer-link.active {
+  background: #eef0e6;
+  color: #4c5c37;
+  font-weight: 700;
+}
+
+.nav-drawer-link.active .nav-drawer-dot {
+  display: block;
+}
+
+/* -- brand pills, side by side -- */
+
+.nav-drawer .nav-pills-group {
+  display: flex;
+  flex-wrap: nowrap;
+  justify-content: stretch;
+  gap: 10px;
+  width: 100%;
+  margin: 0;
+}
+
+.nav-drawer .nav-pill {
+  flex: 1 1 0;
+  justify-content: center;
+  height: 46px;
+  background: #ededE8;
+  color: #1e1e1e !important;
+  font-size: 15px;
+}
+
+/* -- language -- */
+
+.nav-drawer-lang {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 4px;
+  color: #7f7f7f;
+  font-size: 15px;
+  font-weight: 500;
+}
+
+.nav-lang-seg {
+  display: inline-flex;
+  padding: 4px;
+  border-radius: 100px;
+  background: #ededE8;
+}
+
+.nav-lang-seg button {
+  padding: 7px 18px;
+  border: none;
+  border-radius: 100px;
+  background: none;
+  color: #1e1e1e;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+/* The lit half is the current language — and inert, so only a tap on the
+   other half reaches toggleLanguage(). */
+[dir="rtl"] .nav-lang-seg-ar,
+[dir="ltr"] .nav-lang-seg-en {
+  background: #ffffff;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+  pointer-events: none;
+}
+
+/* -- foot: support + socials -- */
+
+.nav-drawer-foot {
+  padding-top: 18px;
+}
+
+.nav-drawer-support {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  height: 52px;
+  border: 1px solid #8f8f8f;
+  border-radius: 100px;
+  background: #ffffff;
+  color: #1e1e1e;
+  font-size: 16px;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.nav-drawer-support svg {
+  width: 20px;
+  height: 20px;
+}
+
+.nav-drawer-support:hover {
+  background: #f2f2ee;
+  color: #1e1e1e;
+}
+
+/* signed in, it is the drawer's main action */
+.sawt-authed .nav-drawer .nav-drawer-support {
+  border-color: #4c5c37;
+  background: #4c5c37;
+  color: #ffffff !important;
+}
+
+.sawt-authed .nav-drawer .nav-drawer-support:hover {
+  background: #323b26;
+  color: #ffffff !important;
+}
+
+.nav-drawer-social {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: 18px;
+  padding-top: 16px;
+  border-top: 1px solid #e4e4e4;
+}
+
+.nav-drawer-follow {
+  color: #7f7f7f;
+  font-size: 13px;
+  font-weight: 500;
+}
+
+.nav-drawer-social-icons {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+}
+
+.nav-drawer-social-icons a {
+  display: inline-flex;
+  color: #4c5c37;
+}
+
+.nav-drawer-social-icons svg {
+  display: block;
+  width: 18px;
+  height: 18px;
+}
+
+.nav-drawer-social-icons i {
+  font-size: 17px;
+}
+
+.nav-drawer-logout {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 0;
+  border: none;
+  background: none;
+  color: #c0392b;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.nav-drawer-logout svg {
+  width: 20px;
+  height: 20px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .nav-drawer,
+  .nav-drawer.is-open {
+    transition: none;
+  }
+}

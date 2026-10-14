@@ -18,8 +18,8 @@ const LEN = { title: 32, desc: 155, rowHead: 8, rowTail: 6, viewMore: 11 };
 const PILLS = [4, 12, 11];
 /** How many reels the API returns now. */
 const REELS = 6;
-/** HeroReelsSlider shows nine posters across at its widest. */
-const POSTERS = 9;
+/** HeroReelsSlider shows five posters across at its widest. */
+const POSTERS = 5;
 
 /** The hero's headline and lead — the same h1 + p as ContentHero renders. */
 export function ContentHeroSkeleton() {

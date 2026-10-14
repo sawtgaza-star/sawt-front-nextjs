@@ -8,7 +8,7 @@ import type { ReelMeta } from "@/components/creators/creator-content/data";
 /* the viewer needs the reel's id + video, and its API details for the info
    bar / likes / comments — `Reel` (محتوانا) and the creator page's cards
    both carry them */
-type ViewerReel = Pick<Reel, "id" | "video" | "details">;
+type ViewerReel = Pick<Reel, "id" | "video" | "details"> & { poster?: string };
 
 type Props = {
   reels: ViewerReel[];

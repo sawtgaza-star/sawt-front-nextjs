@@ -6,6 +6,8 @@ import "owl.carousel/dist/assets/owl.carousel.min.css";
 import "owl.carousel/dist/assets/owl.theme.default.min.css";
 /* holds the home sliders' layout until Owl boots — after owl's own CSS */
 import "@/styles/owl-preinit.css";
+/* every inner page's hero at the team hero's size */
+import "@/styles/hero-size.css";
 import SiteFooter from "@/components/site/SiteFooter";
 
 export default function MainLayout({
