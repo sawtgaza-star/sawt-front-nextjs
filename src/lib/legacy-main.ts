@@ -21,7 +21,9 @@ export function runCounters() {
 
     // نبحث عن العقدة النصية التي تحتوي على الرقم، حتى لا نمسح أي عنصر
     // فرعي مثل span الخاص بكلمة "ألف"
-    const textNode = [...element.childNodes].find(
+    // الرقم في الصفحة الرئيسية داخل span.counter-figure (اتجاه ltr حتى تبقى "+" مكانها)
+    const holder = element.querySelector(".counter-figure") || element;
+    const textNode = [...holder.childNodes].find(
       (node) => node.nodeType === Node.TEXT_NODE && /\d/.test(node.nodeValue)
     );
     if (!textNode) return;
@@ -32,26 +34,36 @@ export function runCounters() {
     }
 
     // نفصل ما قبل الرقم (مثل "+") والرقم وما بعده لنحافظ على مكان كل جزء
-    const match = element.dataset.counterFrom.match(/(\D*)(\d+)(\D*)/);
+    const match = element.dataset.counterFrom.match(/^(\D*)(\d[\d,]*(?:\.\d+)?)(.*)$/);
     if (!match) return;
 
     const prefix = match[1];
-    const targetNumber = parseInt(match[2], 10);
+    const digits = match[2];
+    const targetNumber = parseFloat(digits.replace(/,/g, ""));
+    const decimals = (digits.split(".")[1] || "").length;
+    const grouped = digits.includes(",");
     const suffix = match[3];
 
-    let currentNumber = 0;
+    // العدّ مبني على الوقت (ثانيتان مع تباطؤ في النهاية) بدل +1 كل خطوة،
+    // حتى لا تستغرق الأرقام الكبيرة دقائق
     const duration = 2000;
-    const stepTime = Math.max(Math.floor(duration / targetNumber), 20);
+    const start = performance.now();
+    const format = (n) => {
+      const fixed = n.toFixed(decimals);
+      return grouped
+        ? Number(fixed).toLocaleString("en-US", { minimumFractionDigits: decimals })
+        : fixed;
+    };
 
     (element as any).__counterTimer = setInterval(() => {
-      currentNumber += 1;
-      if (currentNumber >= targetNumber) {
-        currentNumber = targetNumber;
+      const progress = Math.min((performance.now() - start) / duration, 1);
+      const eased = 1 - Math.pow(1 - progress, 3);
+      textNode.nodeValue = prefix + format(targetNumber * eased) + suffix;
+      if (progress >= 1) {
         clearInterval((element as any).__counterTimer);
         (element as any).__counterTimer = null;
       }
-      textNode.nodeValue = prefix + currentNumber + suffix;
-    }, stepTime);
+    }, 16);
   });
 }
 
