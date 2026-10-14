@@ -45,7 +45,12 @@ export function StatIcon({ statKey }: { statKey?: string }) {
   return <Icon />;
 }
 
-/* "+30" and "+10" arrive without their unit: the design puts "ألف" / "K" after
-   the views and followers figures through the shared `one_thousand` key, which
-   the DOM translator fills. Only those two carry it, exactly as before. */
-export const STAT_KEYS_WITH_THOUSANDS = ["views", "followers"];
+/* The API sends each figure as one string, unit included: "20+", "+140",
+   "30 مليون". Split it into the figure the counter animates (digits plus the
+   symbols stuck to them) and the trailing word, which is shown as sent. */
+export function splitStatValue(value?: string | null): { figure: string; word: string } {
+  const text = (value || "").trim();
+  const match = /^(\D*\d[\d.,]*[^\s\d\p{L}]*)\s*(.*)$/u.exec(text);
+  if (!match) return { figure: text, word: "" };
+  return { figure: match[1], word: match[2] };
+}

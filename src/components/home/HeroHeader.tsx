@@ -4,7 +4,7 @@ import SiteNav from "@/components/site/SiteNav";
 import { localized } from "@/lib/api/pages";
 import type { HomeHero, HomeStats } from "@/lib/api/home";
 import { bySortOrder } from "./home-text";
-import { StatIcon, STAT_KEYS_WITH_THOUSANDS } from "./stat-icons";
+import { StatIcon, splitStatValue } from "./stat-icons";
 import { HeroSlideSkeleton, StatsBarSkeleton } from "./HomeSkeleton";
 
 /* Slides, copy and figures all come from the API's `hero` + `stats` blocks;
@@ -101,11 +101,12 @@ function HeroSlide({ slide, index, trust, support, collaborate, lang }) {
 }
 
 /** One figure of the bar. `.counter` is what runCounters() animates, and it
-    reads the number straight out of this text node — so the value stays a
-    bare string here, with the "ألف"/"K" unit in its own translated span. */
+    reads the number out of `.counter-figure` — which holds only the figure
+    ("+140", "20+"), while any word the API sends with it ("مليون") sits in
+    its own span that stays still. */
 function StatColumn({ stat, lang }) {
   const label = localized(stat.label, lang);
-  const showThousands = STAT_KEYS_WITH_THOUSANDS.includes(stat.key);
+  const { figure, word } = splitStatValue(stat.value);
 
   return (
     <div className="col count">
@@ -114,11 +115,15 @@ function StatColumn({ stat, lang }) {
         <StatIcon statKey={stat.key} />
       </i>{" "}
       <h3 className="counter font-mob-22">
-        {stat.value || ""}
-        {showThousands ? (
+        {/* LTR island: in the RTL heading a trailing "+" would otherwise be
+            flipped to the number's other side ("20+" painting as "+20"). */}
+        <span className="counter-figure" dir="ltr">
+          {figure}
+        </span>
+        {word ? (
           <>
             {" "}
-            <span data-i18n="one_thousand"></span>
+            <span className="counter-word">{word}</span>
           </>
         ) : null}
       </h3>{" "}
