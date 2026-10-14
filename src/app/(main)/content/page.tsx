@@ -61,7 +61,12 @@ export default function Page() {
   return (
     <div className="ct-page">
       <LegacyInit page="content" />
-      <ContentHero data={page?.hero} lang={lang} loading={loading} />
+      <ContentHero
+        data={page?.hero}
+        fallbackPosters={reels.map((reel) => reel.poster || "")}
+        lang={lang}
+        loading={loading}
+      />
       <main>
         <section className="ct-grid-section">
           <div className="container">

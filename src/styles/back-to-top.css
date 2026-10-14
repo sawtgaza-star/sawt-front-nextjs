@@ -15,12 +15,13 @@
   width: 48px;
   height: 48px;
   padding: 0;
-  /* the white ring keeps it apart from the olive footer it ends up over */
-  border: 2px solid #fff;
+  /* a white disc with a thin dark chevron; the shadow keeps it apart from
+     white page backgrounds */
+  border: none;
   border-radius: 50%;
-  background: #4c5c37;
-  color: #fff;
-  box-shadow: 0 6px 18px rgba(28, 28, 28, 0.22);
+  background: #fff;
+  color: #1c1c1c;
+  box-shadow: 0 4px 14px rgba(28, 28, 28, 0.2);
   cursor: pointer;
   opacity: 0;
   visibility: hidden;
@@ -47,7 +48,7 @@
 }
 
 .back-to-top:hover {
-  background: #3d4a2c;
+  background: #f1f1ee;
 }
 
 .back-to-top:focus-visible {

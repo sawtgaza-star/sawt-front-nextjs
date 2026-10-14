@@ -15,6 +15,7 @@
    matched back to a key by its text (lib/api/messages.ts). */
 
 import { useEffect, useState } from "react";
+import { createPortal } from "react-dom";
 import { IconCircleCheck } from "@/components/ui/icons";
 import { useLang } from "@/lib/use-lang";
 import { apiMessage } from "@/lib/api/messages";
@@ -55,7 +56,9 @@ export default function LogoutToast() {
       ? tr("logout_toast")
       : (apiMessage(notice.message) ?? notice.message);
 
-  return (
+  // into <body>, out of the navbar's stacking context (see NewsletterToast);
+  // `notice` is only ever set after mount, so document exists here
+  return createPortal(
     <div className="logout-toast" role="status" aria-live="polite">
       <span className="logout-toast-icon" aria-hidden="true">
         <IconCircleCheck />
@@ -70,6 +73,7 @@ export default function LogoutToast() {
         <span aria-hidden="true">&times;</span>
         <span className="logout-toast-sr-only">{tr("logout_toast_close")}</span>
       </button>
-    </div>
+    </div>,
+    document.body,
   );
 }

@@ -6,16 +6,17 @@
    creators.css, and the copy is <SkeletonText /> (skeleton-text.css). The one
    thing left here is the poster row, which Swiper would lay out: with no
    Swiper instance the slides are a flat flex row whose widths follow
-   HeroReelsSlider's breakpoints (9 / 5 / 2.2 / 1.6 across, 12px apart),
+   HeroReelsSlider's breakpoints (5 / 5 / 2.2 / 1.6 across; 24px apart from
+   992px up, 12px below),
    centred like its centredSlides strip. */
 
 .ct-posters-row {
   justify-content: center;
-  gap: 12px;
+  gap: 24px;
 }
 
 .ct-poster-block {
-  flex: 0 0 calc((100% - 8 * 12px) / 9);
+  flex: 0 0 calc((100% - 4 * 24px) / 5);
   border-radius: 14px;
 }
 
@@ -43,6 +44,9 @@
 }
 
 @media (max-width: 991.98px) {
+  .ct-posters-row {
+    gap: 12px;
+  }
   .ct-poster-block {
     flex-basis: calc((100% - 4 * 12px) / 5);
   }

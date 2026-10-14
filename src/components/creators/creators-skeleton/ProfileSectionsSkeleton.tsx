@@ -1,17 +1,15 @@
 import SkeletonText from "@/components/ui/SkeletonText";
-import { blank, times } from "./sk-utils";
+import { times } from "./sk-utils";
 
 /* CreatorContent and CreatorCollaborations while GET /pages/creators/{id} is
-   in flight: their real markup — the reel slider's cards, the company list,
-   the reel card and the quote card — with each text swapped for a
+   in flight: their real markup — the reel slider's cards, and the
+   collaborations' heading and grid of cards — with each text swapped for a
    <SkeletonText /> (~1.25x the current copy) and each picture for a shimmer
    of its box. Keep it in step with those two components. */
 
 const CONTENT = { title: 9, more: 14, reels: 2 };
-const COLLABS = { title: 18, description: 73, reelTitle: 11, company: 6 };
+const COLLABS = { title: 18, description: 73 };
 const COMPANIES = [6, 5, 4, 14];
-/** The collaboration reel's proportions (the phone layout shows it whole). */
-const REEL = { width: 370, height: 507 };
 
 export function ContentDetailSkeleton() {
   return (
@@ -45,66 +43,29 @@ export function ContentDetailSkeleton() {
 }
 
 export function CollabsSkeleton() {
+  // the layout of CreatorCollaborations: centered heading, then a grid of cards
   return (
-    <section className="cr-collabs-section">
+    <section className="cr-collabs-strip-section">
       <div className="container">
-        <div className="cr-collabs-grid">
-          <div className="cr-collabs-intro">
-            <h2 className="cr-collabs-title">
-              <SkeletonText chars={COLLABS.title} />
-            </h2>
-            <p className="cr-collabs-desc">
-              <SkeletonText chars={COLLABS.description} />
-            </p>
-          </div>
-
-          {/* --m-order: the phone layout's stacking, as in CreatorCollaborations
-              with the first company selected */}
-          <ul className="cr-collabs-list">
-            {COMPANIES.map((chars, i) => (
-              <li key={i} style={{ "--m-order": i > 0 ? i + 2 : 1 } as React.CSSProperties}>
-                <div className={"cr-collab-item" + (i === 0 ? " active" : "")}>
-                  <span className="cr-collab-item-dot sk-shimmer"></span>
-                  <span className="cr-collab-item-text">
-                    <span className="cr-collab-item-name">
-                      <SkeletonText chars={chars} />
-                    </span>
-                  </span>
-                  <span className="cr-collab-item-status"></span>
-                </div>
-              </li>
-            ))}
-          </ul>
-
-          <div className="cr-collabs-media" style={{ "--m-order": 2 } as React.CSSProperties}>
-            <div className="review-reels cr-collabs-reel">
-              <div className="reel-item">
-                <div className="reel-media">
-                  <video className="sk-shimmer" poster={blank(REEL.width, REEL.height)} />
-                </div>
-                <div className="reel-caption">
-                  <p className="reel-title">
-                    <SkeletonText chars={COLLABS.reelTitle} />
-                  </p>
-                </div>
+        <div className="cr-section-head">
+          <h2 className="cr-section-title">
+            <SkeletonText chars={COLLABS.title} />
+          </h2>
+          <p className="cr-section-sub">
+            <SkeletonText chars={COLLABS.description} />
+          </p>
+        </div>
+        <div className="cr-collab-cards">
+          {COMPANIES.slice(0, 3).map((chars, i) => (
+            <div className="cr-collab-card is-skeleton" key={i}>
+              <span className="cr-collab-card-letter sk-shimmer" aria-hidden="true"></span>
+              <div className="cr-collab-card-text">
+                <h3 className="cr-collab-card-name">
+                  <SkeletonText chars={chars} />
+                </h3>
               </div>
             </div>
-          </div>
-
-          <div className="cr-collabs-quote">
-            <div className="cr-collab-quote-card">
-              <div className="cr-collab-quote-head">
-                <h4 className="cr-collab-quote-company">
-                  <SkeletonText chars={COLLABS.company} />
-                </h4>
-                <div className="cr-collab-quote-stars">
-                  {times(5).map((i) => (
-                    <i key={i} className="fa-regular fa-star"></i>
-                  ))}
-                </div>
-              </div>
-            </div>
-          </div>
+          ))}
         </div>
       </div>
     </section>

@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next";
 import DocumentShell from "@/components/DocumentShell";
 import NetworkErrorScreen from "@/components/site/NetworkErrorScreen";
 import BackToTop from "@/components/site/BackToTop";
+import SessionKeepAlive from "@/components/site/SessionKeepAlive";
 
 /* The title here doubles as the home page's: (main)/page.tsx is a Client
    Component, and Next.js reads `metadata` from Server Components only, so `/`
@@ -32,6 +33,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <DocumentShell>
       {children}
       <BackToTop />
+      <SessionKeepAlive />
       <NetworkErrorScreen />
     </DocumentShell>
   );

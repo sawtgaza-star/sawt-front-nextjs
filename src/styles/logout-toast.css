@@ -5,7 +5,9 @@
 
 .logout-toast {
   position: fixed;
-  z-index: 1200;
+  /* above everything — the pinned navbar, the join modal (2000) and the
+     page's other overlays (up to 30000) */
+  z-index: 2147483000;
   top: 24px;
   inset-inline: 16px;
   margin-inline: auto;
@@ -103,4 +105,10 @@
 
 .logout-toast.is-error .logout-toast-icon {
   color: rgba(225, 114, 59, 1);
+}
+
+/* Several messages can share one toast, a line each (account forms'
+   use-account-toast joins them with line breaks); single-line text is unaffected. */
+.logout-toast-text {
+  white-space: pre-line;
 }

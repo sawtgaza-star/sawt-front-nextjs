@@ -83,6 +83,8 @@ export const API_SORT: Record<SortValue, ContentApiSort> = {
 export type Reel = {
   id: number | string;
   video: string;
+  /** the reel's cover (`thumbnail`) — shown until the video has a frame */
+  poster?: string;
   details?: ReelDetails;
   /** what the "الأكثر مشاهدة" sort reads — see `reelsFromApi` */
   views?: number;
@@ -116,6 +118,7 @@ export function reelsFromApi(items: ContentReel[] | undefined): Reel[] {
     .map((item, index) => ({
       id: item.id ?? index,
       video: item.video_url || "",
+      poster: item.thumbnail || undefined,
       details: reelDetails(item),
       views: item.views ?? item.likes ?? undefined,
       publishedAt: item.posted_at ?? undefined,

@@ -1,0 +1,46 @@
+/* Join modal — "تعاونات سابقة" (components/site/join-collab). Same rhythm as
+   step 3's social rows (.join-social-list / .join-social-row in style.css):
+   two boxes side by side, the red delete button trailing. */
+
+.join-collab-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.join-collab-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.join-collab-wrap {
+  flex: 1 1 0;
+  min-width: 0;
+}
+
+.join-collab-row.has-error .join-input {
+  border-color: #e05252;
+}
+
+/* under all of the rows, lined up with the boxes (past the delete button) */
+.join-collab-error {
+  margin: -2px 0 0;
+  margin-inline-end: 48px;
+}
+
+@media (max-width: 575.98px) {
+  .join-collab-row {
+    gap: 6px;
+  }
+
+  .join-collab-error {
+    margin-inline-end: 40px;
+  }
+}
+
+/* the SVG icons sit where the Font Awesome glyphs do in the other boxes */
+.join-collab-icon {
+  display: inline-flex;
+  font-size: 17px;
+}

@@ -2,8 +2,9 @@
 /* /account — "حسابي". Reached from the account icon in the signed-in top bar.
 
    Three tabs, addressed by the URL hash so a link (or a notification) can open
-   one directly: #profile (default), #creators, #settings — with #password and
-   #privacy as the settings sub-views. A guest is sent to sign in and brought
+   one directly: #profile (default), #creators, #settings — plus
+   #collaborations ("ابرز التعاونات") for a content creator — with #password as
+   the settings sub-view (an old #privacy link lands on #settings). A guest is sent to sign in and brought
    back here.
 
    The <header> shell is not conditional: SiteNav lives in it and
@@ -19,13 +20,16 @@ import { useAccountUser } from "./account-user";
 import ProfileTab from "./ProfileTab";
 import { ProfileTabSkeleton } from "./AccountSkeleton";
 import CreatorsTab from "./CreatorsTab";
+import CollaborationsTab from "./CollaborationsTab";
 import SettingsTab, { type SettingsView } from "./SettingsTab";
 
-type Tab = "profile" | "creators" | "settings";
+type Tab = "profile" | "collaborations" | "creators" | "settings";
 type Route = { tab: Tab; view: SettingsView };
 
 const TABS: { id: Tab; label: string }[] = [
   { id: "profile", label: "acc_tab_profile" },
+  // only for a content creator (see `tabs` below)
+  { id: "collaborations", label: "acc_tab_collabs" },
   { id: "creators", label: "acc_tab_creators" },
   { id: "settings", label: "acc_tab_settings" },
 ];
@@ -34,12 +38,13 @@ function routeFromHash(hash: string): Route {
   switch (hash.replace(/^#/, "")) {
     case "creators":
       return { tab: "creators", view: "account" };
+    case "collaborations":
+      return { tab: "collaborations", view: "account" };
     case "settings":
+    case "privacy":
       return { tab: "settings", view: "account" };
     case "password":
       return { tab: "settings", view: "password" };
-    case "privacy":
-      return { tab: "settings", view: "privacy" };
     default:
       return { tab: "profile", view: "account" };
   }
@@ -51,8 +56,8 @@ function hashOf(route: Route): string {
 }
 
 export default function AccountContent() {
-  const { tr } = useLang();
-  const { user, save } = useAccountUser();
+  const { lang, tr } = useLang();
+  const { user, save, saveCollaborations } = useAccountUser();
   const follows = useFollows();
   const followingCount = follows.loaded
     ? follows.creators.length
@@ -69,6 +74,11 @@ export default function AccountContent() {
     window.addEventListener("hashchange", sync);
     return () => window.removeEventListener("hashchange", sync);
   }, []);
+
+  const isCreator = user?.isCreator === true;
+  const tabs = TABS.filter((tab) => tab.id !== "collaborations" || isCreator);
+  // a #collaborations link opened by someone who isn't a creator: the default tab
+  const activeTab: Tab = route.tab === "collaborations" && user && !isCreator ? "profile" : route.tab;
 
   function go(next: Route) {
     setRoute(next);
@@ -88,13 +98,13 @@ export default function AccountContent() {
 
       <main className="acc-main container">
         <div className="acc-tabs" role="tablist">
-          {TABS.map((tab) => (
+          {tabs.map((tab) => (
             <button
               key={tab.id}
               type="button"
               role="tab"
-              aria-selected={route.tab === tab.id}
-              className={"acc-tab" + (route.tab === tab.id ? " is-active" : "")}
+              aria-selected={activeTab === tab.id}
+              className={"acc-tab" + (activeTab === tab.id ? " is-active" : "")}
               onClick={() => go({ tab: tab.id, view: "account" })}
             >
               {tr(tab.label)}
@@ -104,7 +114,7 @@ export default function AccountContent() {
 
         {user ? (
           <>
-            {route.tab === "profile" ? (
+            {activeTab === "profile" ? (
               <ProfileTab
                 user={user}
                 followingCount={followingCount}
@@ -112,8 +122,16 @@ export default function AccountContent() {
                 onShowCreators={() => go({ tab: "creators", view: "account" })}
               />
             ) : null}
-            {route.tab === "creators" ? <CreatorsTab creators={follows.creators} loaded={follows.loaded} expected={followingCount} /> : null}
-            {route.tab === "settings" ? (
+            {activeTab === "collaborations" ? (
+              <CollaborationsTab
+                collaborations={user.collaborations}
+                lang={lang}
+                tr={tr}
+                onSave={saveCollaborations}
+              />
+            ) : null}
+            {activeTab === "creators" ? <CreatorsTab creators={follows.creators} loaded={follows.loaded} expected={followingCount} /> : null}
+            {activeTab === "settings" ? (
               <SettingsTab
                 view={route.view}
                 onView={(view) => go({ tab: "settings", view })}

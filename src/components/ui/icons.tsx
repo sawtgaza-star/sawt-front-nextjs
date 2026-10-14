@@ -821,6 +821,46 @@ export const IconNavLogout = () => (
   </svg>
 );
 
+/* Navbar redesign: login pill, user menu, phone header + drawer. */
+
+export const IconNavLogin = () => (
+  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none">
+    <path d="M14.75 2.75H15C17.8995 2.75 19.25 4.10051 19.25 7V17C19.25 19.8995 17.8995 21.25 15 21.25H14.75" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+    <path d="M4 12H14.5M14.5 12L11 8.5M14.5 12L11 15.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+  </svg>
+);
+
+export const IconNavBookmark = () => (
+  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none">
+    <path d="M6 5.75C6 4.64543 6.89543 3.75 8 3.75H16C17.1046 3.75 18 4.64543 18 5.75V20.25L12 16.25L6 20.25V5.75Z" stroke="currentColor" strokeWidth="1.5" strokeLinejoin="round" />
+  </svg>
+);
+
+export const IconNavSettings = () => (
+  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none">
+    <circle cx="12" cy="12" r="3.25" stroke="currentColor" strokeWidth="1.5" />
+    <path d="M12 2.75V5M12 19V21.25M21.25 12H19M5 12H2.75M18.54 5.46L16.95 7.05M7.05 16.95L5.46 18.54M18.54 18.54L16.95 16.95M7.05 7.05L5.46 5.46" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+  </svg>
+);
+
+export const IconNavChevronDown = () => (
+  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none">
+    <path d="M6 9L12 15L18 9" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+  </svg>
+);
+
+export const IconNavClose = () => (
+  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none">
+    <path d="M6 6L18 18M18 6L6 18" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+  </svg>
+);
+
+export const IconNavMenu = () => (
+  <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none">
+    <path d="M14 18C14.5523 18 15 18.4477 15 19C15 19.5523 14.5523 20 14 20H4C3.44772 20 3 19.5523 3 19C3 18.4477 3.44772 18 4 18H14ZM20 11C20.5523 11 21 11.4477 21 12C21 12.5523 20.5523 13 20 13H4C3.44772 13 3 12.5523 3 12C3 11.4477 3.44772 11 4 11H20ZM20 4C20.5523 4 21 4.44772 21 5C21 5.55228 20.5523 6 20 6H10C9.44772 6 9 5.55228 9 5C9 4.44772 9.44772 4 10 4H20Z" fill="currentColor" />
+  </svg>
+);
+
 /* Multi-colour brand marks — literal fills on purpose. */
 
 export const IconNavIncubator = () => (
@@ -925,5 +965,26 @@ export const IconSocialLinkedin = () => (
 export const IconSocialYoutube = () => (
   <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none">
     <path fillRule="evenodd" clipRule="evenodd" d="M4.5 4H15.5C17.433 4 19 5.567 19 7.5V12.5C19 14.433 17.433 16 15.5 16H4.5C2.567 16 1 14.433 1 12.5V7.5C1 5.567 2.567 4 4.5 4ZM8.25 7.25V12.75L13.5 10L8.25 7.25Z" fill="currentColor"/>
+  </svg>
+);
+
+/* "تعاونات سابقة" / "ابرز التعاونات" — company and field (not in the Font Awesome subset) */
+export const IconBuilding = () => (
+  <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+    <path d="M4 21V5a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v16M16 9h2a2 2 0 0 1 2 2v10M2.5 21h19M8 7.5h4M8 11.5h4M8 15.5h4" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
+  </svg>
+);
+
+export const IconBriefcase = () => (
+  <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+    <path d="M8 7V5.5A1.5 1.5 0 0 1 9.5 4h5A1.5 1.5 0 0 1 16 5.5V7M4.5 7h15A1.5 1.5 0 0 1 21 8.5v9a2.5 2.5 0 0 1-2.5 2.5h-13A2.5 2.5 0 0 1 3 17.5v-9A1.5 1.5 0 0 1 4.5 7ZM3 12.5h18M12 11v3" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
+  </svg>
+);
+
+/* "ابرز التعاونات" card — the field's tag (not in the Font Awesome subset) */
+export const IconTag = () => (
+  <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+    <path d="M3 12.6V4.5A1.5 1.5 0 0 1 4.5 3h8.1a1.5 1.5 0 0 1 1.06.44l6.9 6.9a1.5 1.5 0 0 1 0 2.12l-8.1 8.1a1.5 1.5 0 0 1-2.12 0l-6.9-6.9A1.5 1.5 0 0 1 3 12.6Z" stroke="currentColor" strokeWidth="1.8" strokeLinejoin="round" />
+    <circle cx="8" cy="8" r="1.6" fill="currentColor" />
   </svg>
 );

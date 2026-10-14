@@ -3,6 +3,7 @@
 import { localized } from "@/lib/api/pages";
 import type { HomePartners } from "@/lib/api/home";
 import { splitHeading, bySortOrder } from "./home-text";
+import "@/styles/home-partners.css";
 
 /* The API's `partners` block. The marquee scrolls one group of logos twice —
    the second copy is what makes the loop seamless, so it is rendered from the

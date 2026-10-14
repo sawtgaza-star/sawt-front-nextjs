@@ -186,6 +186,24 @@ export function initHomeInline() {
             }
             requireField("followers", t("jm_err_followers", "عدد المتابعين مطلوب"));
             requireField("about", t("jm_err_about", "نبذة عن محتواك مطلوبة"));
+            /* "تعاونات سابقة" is optional — but a row with only one of its two
+               boxes filled is a mistake, flagged on that row */
+            clearCollabErrors();
+            const halfRows = Array.from(
+              pane.querySelectorAll(".join-collab-row"),
+            ).filter(function (row) {
+              const filled = Array.from(row.querySelectorAll("input")).filter(
+                (input) => input.value.trim(),
+              ).length;
+              return filled === 1;
+            });
+            if (halfRows.length) {
+              halfRows.forEach((row) => row.classList.add("has-error"));
+              showCollabError([
+                t("jm_err_collab", "أدخل اسم الجهة ومجال التعاون لكل تعاون"),
+              ]);
+              ok = false;
+            }
           } else if (step === 3) {
             const urls = Array.from(
               pane.querySelectorAll(".join-link-wrap input"),
@@ -201,7 +219,9 @@ export function initHomeInline() {
           }
 
           if (!ok) {
-            const firstErr = pane.querySelector(".join-field.has-error");
+            const firstErr = pane.querySelector(
+              ".join-field.has-error, .join-collab-error",
+            );
             if (firstErr)
               firstErr.scrollIntoView({ block: "nearest", behavior: "smooth" });
           }
@@ -263,10 +283,14 @@ export function initHomeInline() {
         ).map((chip) => chip.dataset.i18n);
         const INITIAL_SOCIAL_ROWS =
           overlay.querySelectorAll(".join-social-row").length;
+        const INITIAL_COLLAB_ROWS =
+          overlay.querySelectorAll(".join-collab-row").length;
 
         /* The rows behind the `socials` array of the last submission, in the
            order the API sees them. */
         let sentSocialRows = [];
+        /* Same for `collaborations` (collaborations.0.company_name). */
+        let sentCollabRows = [];
 
         function collectJoinForm() {
           const val = function (name) {
@@ -294,6 +318,20 @@ export function initHomeInline() {
             sentSocialRows.push(row);
           });
 
+          /* "تعاونات سابقة": only complete rows go (step 2 refuses half-filled
+             ones), and the key is left out entirely when there are none */
+          const collaborations = [];
+          sentCollabRows = [];
+          overlay.querySelectorAll(".join-collab-row").forEach(function (row) {
+            const company = row.querySelector('[data-collab="company_name"]');
+            const field = row.querySelector('[data-collab="field"]');
+            const companyName = company ? company.value.trim() : "";
+            const fieldName = field ? field.value.trim() : "";
+            if (!companyName || !fieldName) return;
+            collaborations.push({ company_name: companyName, field: fieldName });
+            sentCollabRows.push(row);
+          });
+
           return {
             full_name: val("fullname"),
             phone: val("phone"),
@@ -306,6 +344,7 @@ export function initHomeInline() {
             followers_count: Number(val("followers")) || 0,
             content_bio: val("about"),
             socials: socials,
+            collaborations: collaborations.length ? collaborations : undefined,
             notes: val("notes"),
             recaptcha_token: captchaToken,
             // the framed square from step 1's optional photo (JoinPhotoField)
@@ -436,6 +475,11 @@ export function initHomeInline() {
             },
           );
 
+          // form.reset() already emptied the boxes; only the added rows go
+          overlay.querySelectorAll(".join-collab-row").forEach(function (row, index) {
+            if (index >= INITIAL_COLLAB_ROWS) row.remove();
+          });
+
           overlay.querySelectorAll(".join-chip").forEach(function (chip) {
             chip.classList.toggle(
               "is-selected",
@@ -460,6 +504,27 @@ export function initHomeInline() {
           overlay
             .querySelectorAll(".join-social-row.has-error")
             .forEach((row) => row.classList.remove("has-error"));
+          clearCollabErrors();
+        }
+
+        /* "تعاونات سابقة" errors, step 2's and the API's alike: the rows in
+           red, and one block of messages under the whole list. */
+        function clearCollabErrors() {
+          overlay
+            .querySelectorAll(".join-collab-error")
+            .forEach((el) => el.remove());
+          overlay
+            .querySelectorAll(".join-collab-row.has-error")
+            .forEach((row) => row.classList.remove("has-error"));
+        }
+        function showCollabError(messages) {
+          const line = document.createElement("span");
+          line.className = "join-field-error join-collab-error";
+          messages.forEach(function (message, index) {
+            if (index) line.appendChild(document.createElement("br"));
+            line.appendChild(document.createTextNode(message));
+          });
+          collabList.appendChild(line);
         }
 
         /* Whatever the API rejected, said under the box it is about — the
@@ -475,6 +540,7 @@ export function initHomeInline() {
              it says about a link (socials.0.url) goes under the whole list of
              them, below the last row, whatever the number of rows. */
           const linkMessages = [];
+          const collabMessages = [];
 
           Object.keys(errors).forEach(function (key) {
             const message = apiMessage(errors[key][0]) || errors[key][0];
@@ -489,6 +555,15 @@ export function initHomeInline() {
                 overlay.querySelectorAll(".join-social-row")[index];
               if (row && row.isConnected) row.classList.add("has-error");
               if (linkMessages.indexOf(message) === -1) linkMessages.push(message);
+              return;
+            }
+
+            // "collaborations" itself or one of its rows (collaborations.0.field)
+            const collab = /^collaborations(?:\.(\d+)\.)?/.exec(key);
+            if (collab) {
+              const row = collab[1] !== undefined && sentCollabRows[Number(collab[1])];
+              if (row && row.isConnected) row.classList.add("has-error");
+              if (collabMessages.indexOf(message) === -1) collabMessages.push(message);
               return;
             }
 
@@ -508,12 +583,17 @@ export function initHomeInline() {
             });
             socialList.appendChild(line);
           }
+          if (collabMessages.length) showCollabError(collabMessages);
 
           /* Nothing was marked: the failure names no field the modal shows —
              an offline request, a 500, a rejection of the submission as a
              whole. Say it under the last box of the step on screen, which is
              where the reader is looking. */
-          if (!linkMessages.length && !overlay.querySelector(".join-field.has-error")) {
+          if (
+            !linkMessages.length &&
+            !collabMessages.length &&
+            !overlay.querySelector(".join-field.has-error")
+          ) {
             const pane = overlay.querySelector(
               '.join-pane[data-pane="' + TOTAL + '"]',
             );
@@ -535,7 +615,9 @@ export function initHomeInline() {
              phone the format check refuses, an email already applied with).
              So walk back to the earliest step it complained about. */
           const errorPanes = Array.from(
-            overlay.querySelectorAll(".join-field.has-error, .join-social-error"),
+            overlay.querySelectorAll(
+              ".join-field.has-error, .join-social-error, .join-collab-error",
+            ),
           )
             .map(function (el) {
               const pane = el.closest(".join-pane");
@@ -555,7 +637,8 @@ export function initHomeInline() {
 
           const selector =
             '.join-pane[data-pane="' + current + '"] .join-field.has-error, ' +
-            '.join-pane[data-pane="' + current + '"] .join-social-error';
+            '.join-pane[data-pane="' + current + '"] .join-social-error, ' +
+            '.join-pane[data-pane="' + current + '"] .join-collab-error';
           const box = overlay.querySelector(selector);
           if (box) box.scrollIntoView({ block: "nearest", behavior: "smooth" });
         }
@@ -1103,6 +1186,46 @@ export function initHomeInline() {
             icon.className = "fa-brands fa-instagram join-platform-icon";
             socialList.appendChild(clone);
             bindRow(clone);
+          });
+        }
+
+        /* "تعاونات سابقة" (components/site/join-collab): the same add / delete
+           as the social rows — the last row left is emptied, not removed. */
+        const collabList = document.getElementById("joinCollabList");
+        const addCollabBtn = document.getElementById("joinAddCollab");
+
+        function bindCollabRow(row) {
+          const del = row.querySelector(".join-row-del");
+          if (!del) return;
+          del.addEventListener("click", function () {
+            if (collabList.querySelectorAll(".join-collab-row").length > 1) {
+              row.remove();
+            } else {
+              row.querySelectorAll("input").forEach((input) => (input.value = ""));
+              row.classList.remove("has-error");
+            }
+          });
+        }
+
+        if (collabList) {
+          collabList
+            .querySelectorAll(".join-collab-row")
+            .forEach((row) => bindCollabRow(row));
+        }
+
+        if (addCollabBtn && collabList) {
+          addCollabBtn.addEventListener("click", function () {
+            const clone = collabList
+              .querySelector(".join-collab-row")
+              .cloneNode(true);
+            clone.classList.remove("has-error");
+            clone.querySelectorAll("input").forEach((input) => (input.value = ""));
+            // before the error block, if one is showing, so it stays last
+            const error = collabList.querySelector(".join-collab-error");
+            collabList.insertBefore(clone, error);
+            bindCollabRow(clone);
+            const first = clone.querySelector("input");
+            if (first) first.focus();
           });
         }
       })();

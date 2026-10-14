@@ -61,7 +61,6 @@
 /* ---- tabs ------------------------------------------------------------------ */
 .acc-main {
   padding-top: 28px;
-  padding-bottom: 80px;
 }
 
 .acc-tabs {
@@ -161,6 +160,13 @@
 .acc-btn-edit:hover {
   background: var(--acc-olive-dark);
   color: #fff;
+}
+
+/* as a link ("تصفّح صنّاع المحتوى"), style.css's global
+   `a { color: black !important }` would win over the white above */
+a.acc-btn-primary,
+a.acc-btn-primary:hover {
+  color: #fff !important;
 }
 
 .acc-btn-text {
@@ -780,10 +786,8 @@ ul.acc-msg {
   color: var(--acc-text);
 }
 
-/* Several errors share one toast, a line each (see use-account-toast). */
-.acc-page .logout-toast-text {
-  white-space: pre-line;
-}
+/* (one line per error in a toast: now in logout-toast.css — the toast is
+   portalled to <body>, outside .acc-page) */
 
 /* ---- photo cropper (AvatarCropper) ---------------------------------------- */
 .acc-crop-backdrop {
@@ -909,4 +913,91 @@ ul.acc-msg {
   margin: 12px 0 0;
   font-size: 15px;
   color: #ab1c1e;
+}
+
+/* ---- "ابرز التعاونات" (CollaborationsTab) ---------------------------------------- */
+.acc-collab-rows {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.acc-collab-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.acc-collab-input {
+  position: relative;
+  flex: 1 1 0;
+  min-width: 0;
+  margin: 0;
+}
+
+.acc-collab-input .acc-input {
+  padding-inline-start: 40px;
+}
+
+.acc-collab-input-icon {
+  position: absolute;
+  inset-inline-start: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+  display: inline-flex;
+  color: #9a9a9a;
+  font-size: 17px;
+  pointer-events: none;
+}
+
+.acc-collab-del {
+  flex: 0 0 auto;
+  width: 40px;
+  height: 40px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  border-radius: 20px;
+  background: transparent;
+  color: #e05252;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background 0.18s ease;
+}
+
+.acc-collab-del:hover {
+  background: rgba(224, 82, 82, 0.1);
+}
+
+.acc-collab-add {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 14px;
+  padding: 8px 16px;
+  border: 1px solid var(--acc-olive);
+  border-radius: 20px;
+  background: #fff;
+  color: var(--acc-olive);
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.18s ease;
+}
+
+.acc-collab-add:hover {
+  background: var(--acc-olive);
+  color: #fff;
+}
+
+@media (max-width: 575.98px) {
+  .acc-collab-row {
+    flex-wrap: wrap;
+  }
+
+  /* the two boxes stack; the delete button sits beside the second */
+  .acc-collab-input:first-child {
+    flex-basis: 100%;
+  }
 }

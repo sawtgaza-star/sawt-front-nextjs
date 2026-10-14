@@ -1,0 +1,22 @@
+/* Home "شركاؤنا في صوت" (components/home/MidBanner) — every uploaded logo
+   gets the same box whatever the file's own size: the legacy
+   `.marquee img { height: 80% }` resolves against an auto-height row, so it
+   fell back to the image's natural size and one big upload dwarfed the rest.
+   The logo is fitted inside the box (contain), never cropped or stretched.
+   Scoped to this section — the support page's marquee keeps its own sizing. */
+
+.partners-section + .marquee img {
+  flex: 0 0 auto;
+  width: 180px;
+  height: 90px;
+  object-fit: contain;
+  margin-inline: 20px;
+}
+
+@media (max-width: 767.98px) {
+  .partners-section + .marquee img {
+    width: 100px;
+    height: 50px;
+    margin-inline: 12px;
+  }
+}

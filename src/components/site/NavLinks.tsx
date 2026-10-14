@@ -12,7 +12,7 @@ import { usePathname } from "next/navigation";
    CLAUDE.md, "CSS groups".
 
    Still a client leaf: it reads the current path to set the active class. */
-export default function NavLinks({ links, loading }) {
+export default function NavLinks({ links, loading, variant = "bar", onNavigate }) {
   const pathname = usePathname();
   // Static export (output: 'export') serves every route as /team/index.html, so
   // in production usePathname() returns "/team/" and a strict === "/team" test
@@ -20,6 +20,48 @@ export default function NavLinks({ links, loading }) {
   // trailing slash ("/" itself must keep it).
   const path = pathname?.replace(/\/+$/, "") || "/";
   const isActive = (href) => (path === href ? " active" : "");
+
+  // The phone drawer's own list: a card of plain rows, the current page on an
+  // olive-tinted plate with a dot. ادعم صوت is not in it — the drawer shows it
+  // as the big button further down.
+  if (variant === "drawer") {
+    return (
+      <ul className="nav-drawer-links">
+        {loading
+          ? ["44px", "48px", "52px", "40px", "56px"].map((width, index) => (
+              <li key={index}>
+                <span className="nav-drawer-link">
+                  <span className="nsk-line" style={{ width }} />
+                </span>
+              </li>
+            ))
+          : links
+              .filter((link) => !link.mobileOnly)
+              .map((link, index) => {
+                const className = "nav-drawer-link" + isActive(link.url);
+                const body = (
+                  <>
+                    <span>{link.label}</span>
+                    <span className="nav-drawer-dot" aria-hidden="true" />
+                  </>
+                );
+                return (
+                  <li key={index}>
+                    {link.soft ? (
+                      <Link className={className} href={link.url} onClick={onNavigate}>
+                        {body}
+                      </Link>
+                    ) : (
+                      <a className={className} href={link.url} onClick={onNavigate}>
+                        {body}
+                      </a>
+                    )}
+                  </li>
+                );
+              })}
+      </ul>
+    );
+  }
 
   // Six rows, the length of the list the API sends once the support entry is in
   // — so the collapsed menu doesn't grow when the response lands.

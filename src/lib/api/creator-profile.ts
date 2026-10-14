@@ -108,7 +108,10 @@ export type CreatorCollaborationItem = {
   sort_order?: number;
   company?: {
     uuid?: string;
-    name?: Localized;
+    /** A plain string now (the creator's own entry), a { ar, en } pair before. */
+    name?: Localized | string;
+    /** What the collaboration was in — the creator's own wording. */
+    field?: Localized | string | null;
     /** A list of categories — strings or { ar, en } pairs; the first is shown. */
     category?: (string | Localized)[];
     logo_url?: string | null;

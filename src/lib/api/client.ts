@@ -102,6 +102,20 @@ export type RequestOptions = {
   signal?: AbortSignal;
 };
 
+/** Renews an expired/rejected bearer token: given the token a request was
+    sent with, resolves to a fresh one, or null when the session can't be
+    renewed. Registered by lib/auth-state (kept out of here to avoid an import
+    cycle — auth-state's own requests go through apiFetch). */
+type TokenRenewer = (staleToken: string) => Promise<string | null>;
+let renewToken: TokenRenewer | null = null;
+
+export function setTokenRenewer(renewer: TokenRenewer): void {
+  renewToken = renewer;
+}
+
+/** The session endpoints themselves never trigger a renewal. */
+const NO_RENEW_PATHS = ["/auth/refresh", "/auth/logout", "/auth/login"];
+
 /** Shown when fetch itself rejects — no server message exists in that case. */
 const NETWORK_MESSAGE = "تعذر الاتصال بالخادم. تحقق من اتصالك بالإنترنت.";
 /** Shown for a non-JSON / empty error body (502 from the CDN, maintenance…). */
@@ -109,8 +123,11 @@ const UNEXPECTED_MESSAGE = "حدث خطأ غير متوقع. حاول مرة أ�
 
 export async function apiFetch<T>(
   path: string,
-  { method = "GET", body, token, signal }: RequestOptions = {},
+  options: RequestOptions = {},
+  /** Internal: this is the retry after a renewal — never renew twice. */
+  retried = false,
 ): Promise<T> {
+  const { method = "GET", body, token, signal } = options;
   const multipart = typeof FormData !== "undefined" && body instanceof FormData;
 
   const headers: Record<string, string> = { Accept: "application/json" };
@@ -146,6 +163,14 @@ export async function apiFetch<T>(
     } catch {
       payload = null;
     }
+  }
+
+  /* The token outlived its hour (or was rotated): renew it once and replay
+     the same request, so a signed-in visitor isn't thrown out to /login. Only
+     if the renewal is refused does the 401 reach the caller (→ sign in). */
+  if (response.status === 401 && token && renewToken && !retried && !NO_RENEW_PATHS.includes(path)) {
+    const fresh = await renewToken(token);
+    if (fresh && fresh !== token) return apiFetch<T>(path, { ...options, token: fresh }, true);
   }
 
   if (!response.ok) {

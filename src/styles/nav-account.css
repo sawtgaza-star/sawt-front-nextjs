@@ -8,3 +8,16 @@
   object-fit: cover;
   flex-shrink: 0;
 }
+
+/* No photo: the name's first letter on the brand olive. */
+.nav-account-initial {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: #4c5c37;
+  color: #ffffff;
+  font-size: 16px;
+  font-weight: 700;
+  line-height: 1;
+}

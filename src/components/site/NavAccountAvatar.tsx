@@ -1,12 +1,13 @@
 "use client";
 /* The account button's face: the signed-in user's photo when they have one,
-   the outline person icon otherwise (and on the server, before the browser's
-   stored session has been read).
+   the first letter of their name on an olive disc otherwise, and the outline
+   person icon when there is no name either (and on the server, before the
+   browser's stored session has been read).
 
    The photo is the same one /account shows — the session user's `avatar` with
    the "المعلومات الشخصية" overlay on top (account-user.ts) — so a photo
    changed there shows up here at once. A photo URL that fails to load falls
-   back to the icon rather than leaving a broken image in the bar. */
+   back to the letter rather than leaving a broken image in the bar. */
 
 import { useEffect, useState } from "react";
 import { IconNavAccount } from "@/components/ui/icons";
@@ -21,15 +22,26 @@ export default function NavAccountAvatar() {
 
   useEffect(() => setFailed(false), [src]);
 
-  if (!src || failed) return <IconNavAccount />;
+  if (src && !failed) {
+    return (
+      <img
+        className="nav-account-avatar"
+        src={src}
+        alt={user?.name || ""}
+        referrerPolicy="no-referrer"
+        onError={() => setFailed(true)}
+      />
+    );
+  }
 
-  return (
-    <img
-      className="nav-account-avatar"
-      src={src}
-      alt={user?.name || ""}
-      referrerPolicy="no-referrer"
-      onError={() => setFailed(true)}
-    />
-  );
+  const initial = (user?.name || "").trim().charAt(0);
+  if (initial) {
+    return (
+      <span className="nav-account-avatar nav-account-initial" aria-hidden="true">
+        {initial}
+      </span>
+    );
+  }
+
+  return <IconNavAccount />;
 }

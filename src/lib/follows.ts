@@ -62,7 +62,17 @@ export function refreshProfile(force = false): Promise<ProfileUser | null> {
     })
     .catch((error) => {
       inflight = null;
-      if (handleAuthError(error)) return null;
+      /* A session that can't be renewed (lib/auth-state → renewSession) ends
+         here. Only /account needs a signed-in visitor, so only it is sent to
+         sign in; a public page (a creator's, with its follow button) just
+         carries on as a guest instead of being thrown out to /login. */
+      if (error instanceof ApiError && error.isUnauthorized) {
+        if (window.location.pathname.startsWith("/account")) handleAuthError(error);
+        else clearSession();
+        loaded = true;
+        publish([]);
+        return null;
+      }
       console.warn("[profile] could not load:", error);
       // settle the loading state on whatever list is held
       loaded = true;
