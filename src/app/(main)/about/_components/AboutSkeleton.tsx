@@ -63,7 +63,7 @@ function IntroSkeleton() {
             <div className="about-sec-img-wrapper">
               <span className="about-sec-img ask-intro-img" />
               <div className="member-card about-sec-leaf" dir="rtl">
-                <img src="/assets/images/شعار صوت اخضر.svg" alt="" width="100" height="100" />
+                <img src={encodeURI("/assets/images/شعار صوت اخضر.svg")} alt="" width="100" height="100" />
               </div>
             </div>
           </div>

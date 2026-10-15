@@ -5,35 +5,49 @@ import type { Swiper as SwiperClass } from "swiper";
 import "swiper/css";
 import "swiper/css/autoplay";
 
-/* The fan is a fixed table, not a formula: one exact transform per position
-   away from the focused poster. Key = steps from the focused slide; the page is
-   steps are Swiper's slide progress, which is POSITIVE for the posters to the
-   RIGHT here (measured — despite the page being dir="rtl").
+/* The fan: one pose per whole step away from the focused poster (FAN_STEPS),
+   blended between steps. Steps are Swiper's slide progress, which is POSITIVE
+   for the posters to the RIGHT here (measured — despite the page being
+   dir="rtl").
 
    Matched to the reference strip: the focused poster upright and a little in
    front; its neighbours almost flat, barely set back; the outer pair smaller,
    their OUTER edge turned away so the row faces the middle (a poster on the
    right takes a positive rotateY, its mirror on the left a negative one).
-   Five show at once, so only ±2 is used; ±3/±4 continue the same curve. */
+   Five show at once, so ±2 is the last full pose; step 3 only exists for a
+   poster fading in or out past the edge. */
 const FAN_MAX = 2;
 
 /** Shown in place of a cover that can't be loaded (an expired link). */
 const FALLBACK_POSTER = "/assets/images/1.png";
-const FAN: Record<number, string> = {
-  4: "translateX(140px) translateZ(-260px) rotateY(16deg)",
-  3: "translateX(90px) translateZ(-190px) rotateY(14deg)",
+
+/* One pose per whole step away from the focus, for a poster on the RIGHT
+   (x px, z px, rotateY deg); the left side mirrors it. Between two steps the
+   pose is interpolated from the slide's exact progress, so while the strip is
+   dragged every poster turns and recedes continuously — written as fixed
+   poses snapped to the nearest step, the row slid as one rigid block and then
+   all jumped at once at the halfway point. */
+const FAN_STEPS = [
+  // the focused poster stands a little out of the row, toward the viewer
+  { x: 0, z: 40, r: 0 },
+  { x: 0, z: -14, r: 4 },
   /* pushed back to ~0.9 of the focused size; moving back in z also draws a
      poster toward the middle, so translateX takes it out again to the
      reference's wider outer gap */
-  2: "translateX(30px) translateZ(-120px) rotateY(10deg)",
-  1: "translateZ(-14px) rotateY(4deg)",
-  // the focused poster stands a little out of the row, toward the viewer
-  0: "translateZ(40px) rotateY(0deg)",
-  [-1]: "translateZ(-14px) rotateY(-4deg)",
-  [-2]: "translateX(-30px) translateZ(-120px) rotateY(-10deg)",
-  [-3]: "translateX(-90px) translateZ(-190px) rotateY(-14deg)",
-  [-4]: "translateX(-140px) translateZ(-260px) rotateY(-16deg)",
-};
+  { x: 30, z: -120, r: 10 },
+  { x: 90, z: -190, r: 14 },
+];
+
+function fanTransform(progress: number): string {
+  const distance = Math.min(Math.abs(progress), FAN_STEPS.length - 1);
+  const lower = Math.floor(distance);
+  const upper = Math.min(lower + 1, FAN_STEPS.length - 1);
+  const t = distance - lower;
+  const mix = (key: "x" | "z" | "r") =>
+    FAN_STEPS[lower][key] + (FAN_STEPS[upper][key] - FAN_STEPS[lower][key]) * t;
+  const sign = progress < 0 ? -1 : 1;
+  return `translateX(${sign * mix("x")}px) translateZ(${mix("z")}px) rotateY(${sign * mix("r")}deg)`;
+}
 
 type FanSlide = HTMLElement & { progress?: number };
 
@@ -46,22 +60,29 @@ type FanSlide = HTMLElement & { progress?: number };
    neighbours, ±2 for theirs …
 
    Sign note: a POSITIVE progress is a slide to the RIGHT of the focused one
-   (see FAN).
+   (see FAN_STEPS).
 
    `slides` are the poster URLs the API's `hero.items` sent, already padded out
    for the loop by heroSlides() — see content-data. */
 export default function HeroReelsSlider({ slides }: { slides: string[] }) {
   const fan = (swiper: SwiperClass) => {
     (swiper.slides as FanSlide[]).forEach((slide) => {
-      /* round to the nearest position so a slide always wears one of the exact
-         transforms above */
-      const raw = Math.round(slide.progress ?? 0);
-      const steps = Math.max(-FAN_MAX, Math.min(FAN_MAX, raw));
-      slide.style.transform = FAN[steps];
+      const progress = slide.progress ?? 0;
+      slide.style.transform = fanTransform(progress);
       /* the fan is only five posters wide (the focused one plus two a side);
-         anything past that would peek in at the edges, so hide it —
+         a sixth fades in/out over the next step instead of popping —
          opacity, not display, so Swiper's own layout is untouched */
-      slide.style.opacity = Math.abs(raw) > FAN_MAX ? "0" : "1";
+      const beyond = Math.abs(progress) - FAN_MAX;
+      slide.style.opacity = String(Math.max(0, Math.min(1, 1 - beyond)));
+    });
+  };
+
+  /* The poses follow the strip frame by frame, so they move on Swiper's own
+     clock: none while dragging (a CSS transition there would lag behind the
+     finger), Swiper's speed when it settles or autoplays. */
+  const syncTransition = (swiper: SwiperClass, duration: number) => {
+    (swiper.slides as FanSlide[]).forEach((slide) => {
+      slide.style.transitionDuration = `${duration}ms`;
     });
   };
 
@@ -93,6 +114,7 @@ export default function HeroReelsSlider({ slides }: { slides: string[] }) {
         onProgress={fan}
         onSetTranslate={fan}
         onResize={fan}
+        onSetTransition={syncTransition}
       >
         {slides.map((src, index) => (
           <SwiperSlide key={index} className="ct-hero-slide">

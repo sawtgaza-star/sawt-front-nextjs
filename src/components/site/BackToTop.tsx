@@ -40,15 +40,19 @@ export default function BackToTop() {
       tabIndex={shown ? 0 : -1}
       aria-hidden={!shown}
     >
+      {/* Two chevrons: at rest only the first shows, centred; on hover it
+          rises and the second slides in under it (back-to-top.css). */}
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="20" height="20" aria-hidden="true">
-        <path
-          d="M6 15l6-6 6 6"
+        <g
           fill="none"
           stroke="currentColor"
           strokeWidth="2"
           strokeLinecap="round"
           strokeLinejoin="round"
-        />
+        >
+          <path className="back-to-top-chevron" d="M6 15l6-6 6 6" />
+          <path className="back-to-top-chevron back-to-top-chevron-2" d="M6 15l6-6 6 6" />
+        </g>
       </svg>
     </button>
   );

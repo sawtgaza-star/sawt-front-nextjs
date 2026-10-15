@@ -1,0 +1,32 @@
+$kind: http-request
+url: "{{Base_Url}}/pages/courses/graphic-design/subscribe"
+method: POST
+headers:
+  Accept: application/json
+  Content-Type: application/json
+body:
+  type: json
+  content: "{\r
+
+    \  \"full_name\": \"محمد مصطفى\",\r
+
+    \  \"phone\": \"59999999\",\r
+
+    \  \"phone_country_code\": \"+970\",\r
+
+    \  \"email\": \"0597558483m@gmail.com\",\r
+
+    \  \"academic_level\": \"طالب جامعي\",\r
+
+    \  \"attended_similar_course\": false,\r
+
+    \  \"goals_interests\": \"optional\",\r
+
+    \  \"join_goal\": \"تطوير مهاراتي\",\r
+
+    \  \"additional_notes\": \"optional\",\r
+
+    \  \"recaptcha_token\":\"\"\r
+
+    }"
+order: 3000

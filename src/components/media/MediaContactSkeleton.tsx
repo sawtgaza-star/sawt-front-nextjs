@@ -19,7 +19,7 @@ const CHANNELS: [string, number, number][] = [
   ["whatsapp", 16, 19],
   ["email", 17, 17],
 ];
-const TRUST_PHOTO = "/assets/images/Image (أحمد المنصور).png";
+const TRUST_PHOTO = encodeURI("/assets/images/Image (أحمد المنصور).png");
 const TRUST_FACES = 4;
 
 export default function MediaContactSkeleton() {

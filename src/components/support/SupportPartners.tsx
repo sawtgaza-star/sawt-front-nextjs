@@ -7,7 +7,7 @@ import SupportSectionHead from "./SupportSectionHead";
    placeholder (the Sawt wordmark, repeated) stands in. */
 
 const PLACEHOLDER_LOGOS = Array.from({ length: 5 }, () => ({
-  src: "/assets/images/صوت 8.png",
+  src: encodeURI("/assets/images/صوت 8.png"),
   alt: "sout",
 }));
 

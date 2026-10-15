@@ -33,7 +33,7 @@ export default function AuthShell({
           <div className="form-wrapper postion-relative">
             {mobileTopBar ? (
               <div className="auth-mobile-topbar d-md-none">
-                <img src="/assets/images/صوت 1.png" alt="Sawt Logo" />
+                <img src={encodeURI("/assets/images/صوت 1.png")} alt="Sawt Logo" />
                 <button type="button" className="language-btn auth-lang-btn" aria-label="تغيير اللغة">
                   <IconGlobe />
                   <span data-i18n="auth_lang_label">En</span>
@@ -41,7 +41,7 @@ export default function AuthShell({
               </div>
             ) : (
               <div className="text-center mobile-logo d-md-none">
-                <img src="/assets/images/صوت 1.png" alt="Sawt Logo" />
+                <img src={encodeURI("/assets/images/صوت 1.png")} alt="Sawt Logo" />
               </div>
             )}
             {children}

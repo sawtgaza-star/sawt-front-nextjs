@@ -15,7 +15,7 @@ import { pushNotification } from "@/lib/notifications";
 import { t } from "@/lib/translations";
 
 const HERO_IMAGE = "/assets/images/heroSectionImg.jpeg";
-const AVATAR_FALLBACK = "/assets/images/Image (أحمد المنصور).png";
+const AVATAR_FALLBACK = encodeURI("/assets/images/Image (أحمد المنصور).png");
 
 /* Font Awesome glyph per `socials[].platform`; anything unknown gets a link. */
 const SOCIAL_ICONS: Record<string, string> = {

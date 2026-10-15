@@ -19,7 +19,7 @@ import { MEDIA_PHOTOS } from "./media-photos";
    reuses one stock portrait for the four faces in the trust row which isn't
    exported from the design file yet, so the site's placeholder stands in (same
    as the testimonials cards). */
-const TRUST_PHOTO = "/assets/images/Image (أحمد المنصور).png";
+const TRUST_PHOTO = encodeURI("/assets/images/Image (أحمد المنصور).png");
 const TRUST_FACES = 4;
 
 export default function MediaContactSection({

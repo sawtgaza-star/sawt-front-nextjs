@@ -81,8 +81,8 @@
 .ct-hero-slide {
   height: 262px;
   transform-style: preserve-3d;
-  /* the fan transform is a fixed value per position, so it changes in one jump
-     when a poster moves to the next position — ease it to match the autoplay */
+  /* the fan pose follows the strip frame by frame; HeroReelsSlider sets the
+     duration from Swiper (0 while dragging, its speed when settling) */
   transition: transform 0.4s ease;
 }
 /* the poster itself — the ring, the focus scale and the blur all live here so
@@ -104,6 +104,13 @@
   object-fit: cover;
   display: block;
 }
+/* style.css gives EVERY active swiper slide an orange ring + orange glow
+   (.swiper-slide-active); here both are white */
+.ct-hero-swiper .swiper-slide-active {
+  box-shadow:
+    0 0 0 2px #fff,
+    0 0 30px 5px rgba(255, 255, 255, 0.7);
+}
 /* out of focus: smaller and softly blurred, as in the mock */
 .ct-hero-slide:not(.swiper-slide-active) .ct-hero-thumb {
   filter: blur(1.5px);
@@ -111,8 +118,7 @@
 /* in focus: scaled up out of the row with the orange ring */
 .ct-hero-slide.swiper-slide-active .ct-hero-thumb {
 stroke-width: 5px;
-stroke: #FE712B;
-filter: drop-shadow(4px 4px 10px #FF7420) drop-shadow(0 4px 10px #000);
+filter: drop-shadow(0 0 12px rgba(255, 255, 255, 0.75)) drop-shadow(0 4px 10px #000);
 }
 
 /* ---------- Filter + sort bar ---------- */
@@ -414,10 +420,11 @@ filter: drop-shadow(4px 4px 10px #FF7420) drop-shadow(0 4px 10px #000);
   .ct-hero-slide:not(.swiper-slide-active) .ct-hero-thumb {
     filter: blur(2px);
   }
-  /* the focused poster carries the orange ring of the mock */
+  /* the focused poster carries a white ring */
   .ct-hero-slide.swiper-slide-active .ct-hero-thumb {
-    border: 3px solid #fe712b;
-    filter: drop-shadow(0 4px 14px rgba(255, 116, 32, 0.55))
+    border: 3px solid #fff;
+    /* white glow around the focused poster (was orange) */
+    filter: drop-shadow(0 0 14px rgba(255, 255, 255, 0.7))
       drop-shadow(0 4px 10px rgba(0, 0, 0, 0.6));
   }
   .ct-grid {

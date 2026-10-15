@@ -408,17 +408,7 @@ margin-top:20px !important;
   height: 100%;
   object-fit: cover;
 }
-.cr-join-banner::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(
-    90deg,
-    rgba(41, 49, 30, 0.92) 0%,
-    rgba(56, 66, 42, 0.78) 100%
-  );
-  z-index: 1;
-}
+/* (overlay removed on request: the banner image shows untinted) */
 .cr-join-content {
   position: relative;
   z-index: 2;

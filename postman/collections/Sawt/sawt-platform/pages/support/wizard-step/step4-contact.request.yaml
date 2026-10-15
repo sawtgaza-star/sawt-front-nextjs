@@ -1,0 +1,20 @@
+$kind: http-request
+url: http://127.0.0.1:8000/api/v1/support/requests/735231eb-7808-4bc9-bb14-1533b3aca32b/contact
+method: POST
+headers:
+  Accept: application/json
+  Content-Type: application/json
+body:
+  type: json
+  content: "{\r
+
+    \  \"donor_name\": \"محمد\",\r
+
+    \  \"donor_phone\": \"0597558483\",\r
+
+    \  \"donor_email\": \"0597558483@gmail.com\",\r
+
+    \  \"notes\": \"\"\r
+
+    }"
+order: 4000

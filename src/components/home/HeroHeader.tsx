@@ -106,7 +106,9 @@ function HeroSlide({ slide, index, trust, support, collaborate, lang }) {
     its own span that stays still. */
 function StatColumn({ stat, lang }) {
   const label = localized(stat.label, lang);
-  const { figure, word } = splitStatValue(stat.value);
+  const value =
+    stat.value && typeof stat.value === "object" ? localized(stat.value, lang) : stat.value;
+  const { figure, word } = splitStatValue(value);
 
   return (
     <div className="col count">

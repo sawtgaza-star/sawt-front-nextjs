@@ -96,7 +96,7 @@ export default function CollaborationSteps({
   const mediaSub = localized(diagram?.media?.subtitle, lang);
   const mediaImage =
     diagram?.media?.image_url ||
-    "/assets/images/شعار الحاضنة 2 [Vectorized].png";
+    encodeURI("/assets/images/شعار الحاضنة 2 [Vectorized].png");
   const creatorsTitle = localized(diagram?.creators?.title, lang);
   const creatorsSub = localized(diagram?.creators?.subtitle, lang);
 

@@ -780,3 +780,37 @@ html.nav-drawer-open body {
     transition: none;
   }
 }
+
+/* ---------- Pinned navbar row (initHeaderPin → pinNavbarRow) ----------
+   Past the row, only <nav class="navbar"> follows the scroll, flush to the
+   top; `header .navbar` rules still match, it stays inside <header>. */
+.navbar.is-pinned {
+  position: fixed !important;
+  top: 0 !important;
+  left: 0;
+  right: 0;
+  margin: 0 !important;
+  padding-top: 0 !important;
+  z-index: 1030;
+  animation: navPinIn 0.3s ease;
+}
+
+.navbar.is-pinned > .container {
+  margin-top: 0 !important;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.08);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .navbar.is-pinned {
+    animation: none;
+  }
+}
+
+@keyframes navPinIn {
+  from {
+    transform: translateY(-100%);
+  }
+  to {
+    transform: translateY(0);
+  }
+}

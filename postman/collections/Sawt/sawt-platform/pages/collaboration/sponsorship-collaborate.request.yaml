@@ -1,0 +1,44 @@
+$kind: http-request
+url: http://127.0.0.1:8000/api/v1/pages/collaborate/sponsorship
+method: POST
+headers:
+  Accept: application/json
+  Content-Type: application/json
+body:
+  type: formdata
+  content:
+    - type: text
+      key: company_name
+      value: شركة حمص
+    - type: text
+      key: email
+      value: 0597558483m@gmail.com
+    - type: text
+      key: phone
+      value: "059999999"
+    - type: text
+      key: country_code
+      value: '"+970"'
+    - type: text
+      key: website
+      value: '"www.example.com"'
+    - type: text
+      key: support_types
+      value: نبذة عن محتواك
+    - type: text
+      key: socials
+      value: '["direct_financial", "in_kind", "marketing_media"]'
+    - type: text
+      key: additional_notes
+      value: ملاحظات إضافية
+    - type: text
+      key: terms_accepted
+      value: "true"
+    - type: file
+      key: attachment
+      src:
+        - /C:/Users/HP-R5/Desktop/avatars/150-1.jpg
+    - type: text
+      key: recaptcha_token
+      value: ""
+order: 2000

@@ -3,7 +3,7 @@ import type { FollowedCreator } from "@/lib/follows";
 import { compact } from "@/components/creators/creators-text";
 import { IconUserPlus } from "./account-icons";
 
-const AVATAR_FALLBACK = "/assets/images/Image (أحمد المنصور).png";
+const AVATAR_FALLBACK = encodeURI("/assets/images/Image (أحمد المنصور).png");
 
 /* One followed creator: follower badge, ringed photo, name, story count (or
    the role when the count is unknown) and "إلغاء المتابعة". Photo and name
