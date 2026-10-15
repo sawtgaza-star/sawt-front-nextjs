@@ -68,6 +68,9 @@
 /* ---------- Member card: portrait + green name/role badge ---------- */
 .team-member-card {
   position: relative;
+  /* matches .team-member-photo so the hover box-shadow (animations.css)
+     follows the rounded corners instead of leaving white notches */
+  border-radius: 14px;
 }
 /* The portrait box carries the loading shimmer UNDER the <img>, not instead of
    it: by the time a card exists the JSON has landed — the grid, the pills and
@@ -85,6 +88,8 @@
   aspect-ratio: 1 / 1.12;
   border-radius: 14px;
   overflow: hidden;
+  /* own compositing layer: keeps the rounded clip exact while the img scales */
+  transform: translateZ(0);
   background: linear-gradient(90deg, #e2e5e8 25%, #eef1f3 37%, #e2e5e8 63%);
   background-size: 400% 100%;
   animation: sk-shimmer 1.4s ease-in-out infinite;
@@ -120,7 +125,9 @@
   left: 0;
   width: 100%;
   aspect-ratio: 1 / 1.12;
-  clip-path: inset(-45% 0 100% 0);
+  /* overlaps the frame by 3px so the head covers the frame's top edge seam;
+     inside the frame the cutout lines up 1:1 with the photo, so it's invisible */
+  clip-path: inset(-45% 0 calc(100% - 3px) 0);
   pointer-events: none;
   z-index: 2;
 }
@@ -142,7 +149,13 @@
     transform:rotate(60deg)
   }
 
-/* Hover: the portrait zooms in while staying clipped inside the card. */
+/* Hover: the portrait zooms in while staying clipped inside the card.
+   The light loading shimmer is dropped so it can't bleed through the
+   anti-aliased clip edge (a pale line along the top, pale bottom corners). */
+.team-member-card:hover .team-member-photo {
+  background: none;
+  animation: none;
+}
 .team-member-card:hover .team-member-photo img,
 .team-member-card:hover .team-member-pop img {
   transform: scale(1.16);

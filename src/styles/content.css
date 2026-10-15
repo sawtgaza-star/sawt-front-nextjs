@@ -60,12 +60,12 @@
   overflow: hidden;
   perspective: 1300px;
 }
-/* five large 9:16 posters across: capped so they don't grow taller than the
-   hero on a wide screen (each ~250×445 at the cap) */
+/* the strip runs the full page width, but each poster keeps the size it had
+   when five filled a strip capped at 1320px (18px gaps) — the extra width
+   shows more posters, not bigger or smaller ones (slidesPerView: "auto") */
 @media (min-width: 992px) {
-  .ct-hero-swiper {
-    max-width: 1320px;
-    margin-inline: auto;
+  .ct-hero-swiper .ct-hero-slide {
+    width: calc((min(100%, 1320px) - 72px) / 5);
   }
   /* five across: the posters keep their slot width (the 1.1 scale below was
      for the old nine-wide row, and here it made them overlap) — the fan's z
@@ -105,15 +105,44 @@
   display: block;
 }
 /* style.css gives EVERY active swiper slide an orange ring + orange glow
-   (.swiper-slide-active); here both are white */
+   (.swiper-slide-active) drawn outside a 3px TRANSPARENT border — which left
+   a visible gap between the ring and the poster. The border is dropped so
+   the white ring sits flush on the poster; the radius matches .ct-hero-thumb
+   so the ring follows its corners. */
 .ct-hero-swiper .swiper-slide-active {
+  border: 0;
+  border-radius: 14px;
   box-shadow:
     0 0 0 2px #fff,
     0 0 30px 5px rgba(255, 255, 255, 0.7);
 }
-/* out of focus: smaller and softly blurred, as in the mock */
+/* Entrance spin (HeroReelsSlider introSpin): every frame is placed by the
+   script, so nothing may transition on its own — a CSS transition would lag
+   one frame behind and make the glide judder. */
+.ct-hero-swiper[data-spinning] .swiper-wrapper,
+.ct-hero-swiper[data-spinning] .ct-hero-slide,
+.ct-hero-swiper[data-spinning] .ct-hero-thumb {
+  transition: none !important;
+}
+.ct-hero-swiper[data-spinning] .swiper-wrapper,
+.ct-hero-swiper[data-spinning] .ct-hero-slide {
+  will-change: transform;
+}
+/* no focus styling while it spins: the "active" poster changes every few
+   frames and is rarely the centred one, so the ring, glow and sharp/blurred
+   split would jump around the row. They come back once it stops — the glow
+   and blur fade in over the thumb's own 0.4s transition. */
+.ct-hero-swiper[data-spinning] .swiper-slide-active {
+  box-shadow: none !important;
+}
+.ct-hero-swiper[data-spinning] .ct-hero-slide .ct-hero-thumb {
+  filter: none !important;
+  border-color: transparent !important;
+}
+/* out of focus: softer the further from the focus — graded per poster by
+   HeroReelsSlider (FAN_BLUR) */
 .ct-hero-slide:not(.swiper-slide-active) .ct-hero-thumb {
-  filter: blur(1.5px);
+  filter: blur(var(--fan-blur, 1.5px));
 }
 /* in focus: scaled up out of the row with the orange ring */
 .ct-hero-slide.swiper-slide-active .ct-hero-thumb {
@@ -417,8 +446,11 @@ filter: drop-shadow(0 0 12px rgba(255, 255, 255, 0.75)) drop-shadow(0 4px 10px #
     transform: scale(1);
     border-radius: 12px;
   }
+  .ct-hero-swiper .swiper-slide-active {
+    border-radius: 12px;
+  }
   .ct-hero-slide:not(.swiper-slide-active) .ct-hero-thumb {
-    filter: blur(2px);
+    filter: blur(max(2px, var(--fan-blur, 2px)));
   }
   /* the focused poster carries a white ring */
   .ct-hero-slide.swiper-slide-active .ct-hero-thumb {

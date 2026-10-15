@@ -91,6 +91,21 @@ export default function SawtStory({
   const pinned = cards.slice(0, PINNED_COUNT);
   const rest = cards.slice(PINNED_COUNT);
 
+  const head =
+    title || subtitle ? (
+      <div className="text-center sawt-story-head">
+        {" "}
+        {title ? (
+          <h2 className="sawt-story-title">
+            {" "}
+            <span>{titleHead} </span>{" "}
+            <span className="sawt-story-highlight">{titleTail}</span>{" "}
+          </h2>
+        ) : null}{" "}
+        {subtitle ? <p className="sawt-story-subtitle">{subtitle}</p> : null}{" "}
+      </div>
+    ) : null;
+
   return (
     <section className="sawt-story-section">
       {" "}
@@ -101,22 +116,12 @@ export default function SawtStory({
       />{" "}
       <div className="container" dir="rtl">
         {" "}
-        <div className="text-center sawt-story-head">
-          {" "}
-          {title ? (
-            <h2 className="sawt-story-title">
-              {" "}
-              <span>{titleHead} </span>{" "}
-              <span className="sawt-story-highlight">{titleTail}</span>{" "}
-            </h2>
-          ) : null}{" "}
-          {subtitle ? (
-            <p className="sawt-story-subtitle">{subtitle}</p>
-          ) : null}{" "}
-        </div>{" "}
+        {pinned.length ? null : head}{" "}
         {pinned.length ? (
           <div className="sawt-story-map">
             {" "}
+            {/* the heading sits on the cards' panel, sharing its background */}
+            {head}{" "}
             <div className="sawt-story-map-frame">
               {" "}
               <img

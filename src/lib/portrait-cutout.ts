@@ -19,6 +19,8 @@
 const MAX_HEIGHT = 900;
 const NEUTRAL_SPREAD = 24; // max channel spread for a "gray" pixel
 const TONE_TOLERANCE = 22; // how far from the backdrop tone still counts
+const EDGE_BAND = 3; // px cleared along the top/sides (JPEG edge lines)
+const ERODE = 2; // px the subject is shrunk by, so no backdrop fringe rings the hair
 
 const cache = new Map<string, Promise<string>>();
 
@@ -72,8 +74,10 @@ export function clearBackdrop(px: Uint8ClampedArray, w: number, h: number): void
     return Math.max(px[o], px[o + 1], px[o + 2]) - Math.min(px[o], px[o + 1], px[o + 2]) <= NEUTRAL_SPREAD;
   };
 
+  // sample a few rows down: the very first row is often an edge artifact
+  const row = Math.min(h - 1, EDGE_BAND + 1) * w;
   const top: number[] = [];
-  for (let x = 0; x < w; x++) top.push(lightness(x));
+  for (let x = 0; x < w; x++) top.push(lightness(row + x));
   top.sort((a, b) => a - b);
   const tone = top[top.length >> 1];
   const isBackdrop = (i: number) => neutral(i) && Math.abs(lightness(i) - tone) <= TONE_TOLERANCE;
@@ -92,6 +96,28 @@ export function clearBackdrop(px: Uint8ClampedArray, w: number, h: number): void
     if (x < w - 1) stack.push(i + 1);
     if (i >= w) stack.push(i - w);
     if (i < total - w) stack.push(i + w);
+  }
+
+  // a thin frame along the top and sides is always backdrop — a stray edge
+  // line there would otherwise show as a border above the head
+  for (let y = 0; y < h; y++) {
+    for (let x = 0; x < w; x++) {
+      if (y < EDGE_BAND || x < EDGE_BAND || x >= w - EDGE_BAND) mark[y * w + x] = 1;
+    }
+  }
+
+  // erode the subject: the hair's anti-aliased edge still carries backdrop
+  // gray (outside TONE_TOLERANCE), which read as an outline above the frame
+  for (let pass = 0; pass < ERODE; pass++) {
+    const grow: number[] = [];
+    for (let i = 0; i < total; i++) {
+      if (mark[i]) continue;
+      const x = i % w;
+      if ((x > 0 && mark[i - 1]) || (x < w - 1 && mark[i + 1]) || (i >= w && mark[i - w]) || (i < total - w && mark[i + w])) {
+        grow.push(i);
+      }
+    }
+    for (const i of grow) mark[i] = 1;
   }
 
   // alpha = share of the 3×3 neighbourhood that is NOT backdrop: a 1px feather
