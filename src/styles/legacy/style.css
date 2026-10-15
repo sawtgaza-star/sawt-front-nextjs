@@ -5830,6 +5830,19 @@ svg {
   width: 100%;
   position: relative;
 }
+/* ≥992px the photo starts level with the first line of the paragraph (under
+   the "من صوت" heading) instead of centring on the text column: top-align the
+   row and drop the photo by the text's offset — .about-sec-content's 20px pad
+   + the title's 50px margin-top, ~48px line and 26px margin-bottom, plus ~6px
+   so it meets the letters rather than the line box. */
+@media (min-width: 992px) {
+  .about-sec > .row {
+    align-items: flex-start !important;
+  }
+  .about-sec-img-col {
+    margin-top: 150px !important;
+  }
+}
 
 .about-sec-img {
   width: 100%;
@@ -5888,6 +5901,17 @@ svg {
   line-height: 1.7;
   /* font-weight: 600; */
   margin-bottom: 0;
+}
+/* the CMS's rich-text intro: paragraphs spaced, the last one flush */
+.about-sec-desc p {
+  margin-bottom: 0.8em;
+}
+.about-sec-desc p:last-child {
+  margin-bottom: 0;
+}
+.about-sec-desc strong {
+  font-weight: 700;
+  color: #2f2f2f;
 }
 
 /* About the Platform Section */
@@ -6327,7 +6351,7 @@ svg {
       0 0 5px 2px rgba(240, 180, 50, 1),
       0 0 14px 6px rgba(226, 158, 30, 0.75),
       0 0 28px 12px rgba(214, 140, 20, 0.35);
-    animation: sawt-story-glow 2.8s ease-in-out infinite;
+    animation: sawt-story-glow 0.8s ease-in-out infinite;
   }
   .sawt-story-pin .sawt-story-card-title {
     font-size: 23px;
