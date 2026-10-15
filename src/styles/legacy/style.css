@@ -5988,8 +5988,10 @@ svg {
   .about-the-platform-visual {
     overflow: visible;
   }
+  /* 1.17 (was 1.25) with the shift to match: the logo keeps clear of the
+     text beside it (~80px) and of the card's edges, tail included */
   .about-platform-img {
-    transform: translateX(40%) scale(1.25);
+    transform: translateX(42%) scale(1.17);
     transform-origin: 24% 15%;
   }
 }
@@ -6163,6 +6165,11 @@ svg {
   margin: 0 auto 70px;
 }
 
+.sawt-story-title,
+.sawt-story-title .sawt-story-highlight {
+  color: rgba(76, 92, 55, 1);
+}
+
 .sawt-story-title {
   font-size: 40px;
   font-weight: 900;
@@ -6259,6 +6266,12 @@ svg {
     padding: 4px 0 48px;
     background: #eeece8;
     border-radius: 24px;
+  }
+  /* the heading on the panel: a top pad in place of the gap that used to
+     separate it from the panel; the image's faded top edge picks up under it */
+  .sawt-story-map .sawt-story-head {
+    padding: 48px 16px 0;
+    margin-bottom: 0;
   }
   .sawt-story-map-frame {
     position: relative;
