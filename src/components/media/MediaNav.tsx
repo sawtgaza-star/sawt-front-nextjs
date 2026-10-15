@@ -4,7 +4,10 @@ import { useMediaNavbar } from "@/lib/api/use-media-navbar";
 import { useLang } from "@/lib/use-lang";
 import { resolveMediaNav } from "./media-nav-data";
 import MediaNavMobile from "./MediaNavMobile";
+import NavUserMenu from "@/components/site/NavUserMenu";
 import "@/styles/nav-skeleton.css";
+// the user menu's styles (.nav-user-*); every rule there is .nav-* scoped
+import "@/styles/site-nav.css";
 
 /* صوت ميديا's own navbar — a white rounded card floating over the hero's peach
    wash, with "العودة لمنصة صوت" sitting above it (outside the card, as in the
@@ -112,6 +115,9 @@ export default function MediaNav({ base = "" }: { base?: string }) {
                   {nav.cta.label}
                 </a>
               )}
+              {/* signed in: the site bar's [avatar · أهلاً ˅] menu, with
+                  تسجيل الخروج — hidden for guests by `.nav-authed-only` */}
+              <NavUserMenu />
             </div>
           </div>
         </nav>

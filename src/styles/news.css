@@ -343,9 +343,11 @@
 
 .nws-gallery-stage img {
   display: block;
+  /* fixed 16:9 frame, and the WHOLE picture stretched to fill it edge to
+     edge — nothing cropped, no bars (a square post gets widened to fit) */
   width: 100%;
   aspect-ratio: 16 / 9;
-  object-fit: cover;
+  object-fit: fill;
 }
 
 /* bottom-left in the mock, i.e. the end corner of this RTL page */
@@ -429,7 +431,9 @@
   border-right: 4px solid var(--Primary-oliveGreen-500, #4C5C37);
   background: var(--Primary-oliveGreen-50, #EDEFEB);
   padding: 20px 24px;
-  margin: 0 0 22px;
+  /* space above too: the CMS text before it is often bare text (no <p>), so
+     nothing else separates it from the box */
+  margin: 28px 0;
 }
 
 .nws-quote-text {
@@ -514,8 +518,8 @@
    3/3.5 crop made the row tall enough to push the section's tail off-screen.
    Only the stories pages match these selectors — /news/[id] fills the same
    strip with white news cards. */
-.nws-related .rs-card-bg,
-.news-page .stories-grid .rs-card-bg {
+.nws-related .rs-card,
+.news-page .stories-grid .rs-card {
   aspect-ratio: 3 / 3.15;
 }
 

@@ -127,6 +127,7 @@ export type CreatorsJoinContent = {
 /** A creator as a partner company lists them — the card shows the avatars
     only, but the rest of the profile comes with them. */
 export type CreatorsPartnerCreator = {
+  id?: number;
   uuid?: string;
   username?: string;
   name?: string | null;
@@ -140,7 +141,10 @@ export type CreatorsPartnerCreator = {
 
 export type CreatorsPartnerCompany = {
   uuid?: string;
-  name?: Localized;
+  /** a plain string in the current payload; older ones sent { ar, en } */
+  name?: Localized | string;
+  /** the company's line of business ("تصميم") — plain string, like `name` */
+  field?: Localized | string;
   logo_url?: string | null;
   url?: string | null;
   sort_order?: number;

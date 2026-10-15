@@ -13,8 +13,14 @@
 
    The image keeps its full frame (no crop), so it lines up 1:1 with the
    original under the same object-fit. Returns a blob: URL of a PNG; results
-   are cached per URL. The API serves /media with
-   `Access-Control-Allow-Origin: *`, which is what lets the canvas be read. */
+   are cached per URL.
+
+   REQUIRES the image host to send `Access-Control-Allow-Origin` on the photo
+   itself (not just on the JSON API): without it the canvas is tainted, the
+   pixel read throws and TeamMemberPop silently keeps the plain zoom. As of
+   2026-10-15 api.sawtgaza.com/media/* (served by the hosting CDN, not
+   Laravel) sends no such header — that is why the pop-out works locally but
+   not in production. The fix is server-side (a header rule for /media). */
 
 const MAX_HEIGHT = 900;
 const NEUTRAL_SPREAD = 24; // max channel spread for a "gray" pixel

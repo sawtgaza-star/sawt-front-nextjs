@@ -18,9 +18,12 @@ import { splitEnds } from "./creators-text";
    by creators.css, not content the API knows about. */
 export default function CreatorsGrid({
   data,
+  contentTypes,
   lang = "ar",
 }: {
   data?: CreatorsGridContent;
+  /** join.form.content_types — turns a creator's role key into its label */
+  contentTypes?: { key?: string; label?: unknown }[];
   lang?: string;
 }) {
   const title = localized(data?.title, lang);
@@ -33,6 +36,7 @@ export default function CreatorsGrid({
   const creators = creatorCards(data?.creators, lang, {
     experienceTitle,
     followersSuffix,
+    contentTypes,
   });
 
   if (!title && !subtitle && !creators.length) return null;

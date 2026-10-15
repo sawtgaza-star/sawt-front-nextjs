@@ -60,3 +60,12 @@
     animation: none;
   }
 }
+
+/* the story poster's placeholder fills the whole card (the card holds the
+   poster shape; a real .rs-card-bg photo takes only its own height) */
+.rs-card > .rs-card-bg.nph-block {
+  height: 100%;
+  max-height: none;
+  -webkit-mask-image: none;
+  mask-image: none;
+}

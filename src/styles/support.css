@@ -1031,6 +1031,29 @@ font-weight: 900;
   object-fit: cover;
   object-position: center top;
 }
+
+/* Whole photo, never cropped: uploads are often wide (landscape) and the card
+   is a tall poster, so `cover` cut their sides away. The card now holds the
+   poster shape itself (aspect-ratio + dark backdrop); the photo takes its own
+   height (capped at the card's, `contain` for a tall one), sits at the top,
+   and its lower edge fades into the dark — where badge/title/teaser sit. */
+.rs-card {
+  aspect-ratio: 3 / 3.5;
+}
+/* the dark backdrop only behind a real photo — not behind a loading
+   skeleton (a placeholder span, or the transparent-pixel cover) */
+.rs-card:has(> img.rs-card-bg:not([src^="data:"])) {
+  background: #1b2414;
+}
+.rs-card-bg {
+  aspect-ratio: auto;
+  height: auto;
+  max-height: 100%;
+  object-fit: contain;
+  object-position: center top;
+  -webkit-mask-image: linear-gradient(to bottom, #000 72%, transparent 100%);
+  mask-image: linear-gradient(to bottom, #000 72%, transparent 100%);
+}
 .rs-card::after {
   content: "";
   position: absolute;
@@ -1844,7 +1867,7 @@ color:#4C5C37 !important;
     flex: 0 0 100%;
   }
   /* mock: the mobile card is shorter than the desktop 3/3.5 portrait */
-  .sp-story-slide .rs-card-bg {
+  .sp-story-slide .rs-card {
     aspect-ratio: 3 / 3.15;
   }
   /* --- Untold stories, per the mobile mock: the chevrons go away in favour

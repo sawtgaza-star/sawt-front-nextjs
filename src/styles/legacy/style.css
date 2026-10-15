@@ -7354,6 +7354,29 @@ svg {
   object-position: center top;
 }
 
+/* Whole photo, never cropped: uploads are often wide (landscape) and the card
+   is a tall poster, so `cover` cut their sides away. The card now holds the
+   poster shape itself (aspect-ratio + dark backdrop); the photo takes its own
+   height (capped at the card's, `contain` for a tall one), sits at the top,
+   and its lower edge fades into the dark — where badge/title/teaser sit. */
+.rs-card {
+  aspect-ratio: 3 / 3.5;
+}
+/* the dark backdrop only behind a real photo — not behind a loading
+   skeleton (a placeholder span, or the transparent-pixel cover) */
+.rs-card:has(> img.rs-card-bg:not([src^="data:"])) {
+  background: #1b2414;
+}
+.rs-card-bg {
+  aspect-ratio: auto;
+  height: auto;
+  max-height: 100%;
+  object-fit: contain;
+  object-position: center top;
+  -webkit-mask-image: linear-gradient(to bottom, #000 72%, transparent 100%);
+  mask-image: linear-gradient(to bottom, #000 72%, transparent 100%);
+}
+
 .rs-card-text {
   text-align: start;
 }
@@ -8540,7 +8563,7 @@ svg {
     font-size: 13px;
   }
 
-  .rs-card-bg {
+  .rs-card {
     aspect-ratio: 3 / 3.23;
   }
 

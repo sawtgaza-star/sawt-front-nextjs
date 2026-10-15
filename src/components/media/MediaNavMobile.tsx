@@ -2,6 +2,8 @@
 
 import { useEffect, useRef, useState } from "react";
 import NavSocialLinks from "@/components/site/NavSocialLinks";
+import NavLogoutButton from "@/components/site/NavLogoutButton";
+import { IconNavLogout } from "@/components/ui/icons";
 import { resolveNavbar } from "@/components/site/navbar-data";
 import { useNavbar } from "@/lib/api/use-navbar";
 import { useLang } from "@/lib/use-lang";
@@ -34,7 +36,7 @@ export default function MediaNavMobile({
      the same GET /layout/navbar row SiteNav renders, which the media endpoint
      does not carry. This page uses MediaNav instead of SiteNav, so the request
      is made here. */
-  const { lang } = useLang();
+  const { lang, tr } = useLang();
   const { data, loading: socialsLoading } = useNavbar();
   const site = resolveNavbar(data, lang);
 
@@ -176,6 +178,13 @@ export default function MediaNavMobile({
             <span data-i18n="sm_cta_consult">احجز استشارة</span>
           </a>
         </div>
+
+        {/* signed in only (`.nav-authed-only`): this page has no site
+            drawer, so the sign-out lives here */}
+        <NavLogoutButton className="sm-drawer-logout nav-authed-only">
+          <IconNavLogout />
+          <span>{tr("nav_logout")}</span>
+        </NavLogoutButton>
 
         <div className="sm-drawer-social">
           <NavSocialLinks

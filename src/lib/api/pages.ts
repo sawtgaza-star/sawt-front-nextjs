@@ -136,7 +136,7 @@ export async function fetchAboutPage(signal?: AbortSignal): Promise<AboutPage | 
     section is better shown in Arabic than left blank when `en` is still empty.
     Returns "" for a missing field, which every section reads as "keep what the
     static markup says". */
-export function localized(value: Localized | null | undefined, lang: string): string {
+export function localized(value: Localized | string | null | undefined, lang: string): string {
   return htmlToLines(localizedRich(value, lang));
 }
 
@@ -144,8 +144,14 @@ export function localized(value: Localized | null | undefined, lang: string): st
     as rich text on purpose (AboutIntro's body). Everything else goes through
     `localized`, so editor markup like '<p dir="rtl">…&nbsp;</p>' never shows
     up as literal tags. */
-export function localizedRich(value: Localized | null | undefined, lang: string): string {
+export function localizedRich(
+  value: Localized | string | null | undefined,
+  lang: string,
+): string {
   if (!value) return "";
+  // some fields arrive as one plain string for both languages
+  // (partners.companies[].name / .field) — used as is
+  if (typeof value === "string") return value.trim();
   const preferred = lang === "en" ? value.en : value.ar;
   return (preferred || value.ar || value.en || "").trim();
 }

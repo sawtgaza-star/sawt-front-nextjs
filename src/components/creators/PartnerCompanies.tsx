@@ -1,6 +1,7 @@
 // @ts-nocheck
 /* eslint-disable */
 import { localized } from "@/lib/api/pages";
+import { creatorHref } from "@/lib/api/creator-profile";
 import type {
   CreatorsPartnerCompany,
   CreatorsPartnersContent,
@@ -14,7 +15,11 @@ import { bySortOrder, splitEnds } from "./creators-text";
    are drawn — the row overlaps by 8px per avatar (creators.css), so a company
    with seven collaborators stays inside the card.
 
-   `url` comes with every company and is NOT used: the legacy card is a plain
+   `name` and `field` arrive as plain strings (one value for both languages);
+   `localized` passes a string through. `field` is the company's line of
+   business, a small grey line under the name.
+
+   `url`, when it comes, is NOT used: the legacy card is a plain
    <div>, and turning it into a link would change the design. The heading's
    accents are the legacy markup's — orange on the second word, green on the
    brand at the end. */
@@ -26,6 +31,7 @@ function CompanyCard({
   lang: string;
 }) {
   const name = localized(company.name, lang);
+  const field = localized(company.field, lang);
   const creators = bySortOrder(company.creators);
 
   return (
@@ -33,11 +39,24 @@ function CompanyCard({
       {company.logo_url ? (
         <img className="cr-company-logo" src={company.logo_url} alt="" />
       ) : null}
-      <div className="cr-company-name">{name}</div>
+      <div className="cr-company-name">
+        {name}
+        {/* above the name's divider line, so the card keeps one rule */}
+        {field ? <span className="cr-company-field">{field}</span> : null}
+      </div>
       <div className="cr-company-avatars">
+        {/* each avatar opens that creator's profile (/creators/{uuid}) */}
         {creators.map((creator, i) =>
           creator.avatar_url ? (
-            <img key={creator.uuid || i} src={creator.avatar_url} alt="" />
+            <a
+              key={creator.uuid || i}
+              className="cr-company-avatar"
+              href={creatorHref(creator)}
+              title={creator.name || undefined}
+              aria-label={creator.name || undefined}
+            >
+              <img src={creator.avatar_url} alt="" />
+            </a>
           ) : null,
         )}
       </div>

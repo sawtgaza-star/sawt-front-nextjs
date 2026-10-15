@@ -54,7 +54,11 @@ export default function CreatorsContent() {
           <CreatorsSkeleton />
         ) : (
           <>
-            <CreatorsGrid data={page?.grid} lang={lang} />
+            <CreatorsGrid
+              data={page?.grid}
+              contentTypes={page?.join?.form?.content_types}
+              lang={lang}
+            />
             <CreatorsStats data={page?.stats} lang={lang} />
             <JoinUs creator={"creator"} data={page?.join} lang={lang} />
             <PartnerCompanies data={page?.partners} lang={lang} />
