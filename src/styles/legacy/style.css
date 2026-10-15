@@ -6270,11 +6270,16 @@ svg {
   /* the heading on the panel: a top pad in place of the gap that used to
      separate it from the panel; the image's faded top edge picks up under it */
   .sawt-story-map .sawt-story-head {
-    padding: 48px 16px 0;
+    padding: 28px 16px 0;
     margin-bottom: 0;
+  }
+  .sawt-story-map .sawt-story-title {
+    margin-bottom: 8px;
   }
   .sawt-story-map-frame {
     position: relative;
+    /* pull the image up under the subtitle; its top edge is faded out */
+    margin-top: -24px;
     display: flex;
     align-items: center;
     min-height: 410px;

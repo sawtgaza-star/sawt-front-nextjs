@@ -4,7 +4,8 @@
 import { IconArrowUpLeft } from "@/components/ui/icons";
 import { localized } from "@/lib/api/pages";
 import type { CreatorsCollaborationContent } from "@/lib/api/creators-page";
-import { splitTail, stepNumber } from "./creators-text";
+import { htmlToLines, splitTail, splitWord, stepNumber } from "./creators-text";
+import { STEPS } from "./collaboration-steps-data";
 
 /* "كيف يبدأ التعاون مع صناع محتوى صوت؟" — flow diagram + steps + CTA.
 
@@ -17,30 +18,8 @@ import { splitTail, stepNumber } from "./creators-text";
    THE STEP TITLES ("ابحث واختر"…) ARE CHROME, not content: `steps` sends a
    number and a body, no title, so the three titles stay in the markup and keep
    their keys even when the bodies come from the payload. A fourth step the
-   editor adds therefore shows its number and text with no title. */
-const STEPS = [
-  {
-    num: "01",
-    title: "ابحث واختر",
-    titleKey: "creators_step_1_title",
-    text: "استعرض ملفات صنّاعنا وفلتر حسب التخصص والميزانية والوصول الجماهيري",
-    key: "creators_step_1",
-  },
-  {
-    num: "02",
-    title: "تواصل وتفاهم",
-    titleKey: "creators_step_2_title",
-    text: "فريق صوت ميديا يتولى التنسيق الكامل بينك وبين صانع المحتوى — من التفاصيل حتى العقد",
-    key: "creators_step_2",
-  },
-  {
-    num: "03",
-    title: "أطلق وقس",
-    titleKey: "creators_step_3_title",
-    text: "المحتوى يُنتج ويُنشر، وتحصل على تقرير تفصيلي بالنتائج والوصول والتفاعل",
-    key: "creators_step_3",
-  },
-];
+   editor adds therefore shows its number and text with no title (titles and
+   fallback bodies: ./collaboration-steps-data). */
 
 /* Six graduated dots: index 0 = nearest the centre (big / solid orange),
    index 5 = farthest (small / faint). `flip` reverses the visual order so the
@@ -101,6 +80,7 @@ export default function CollaborationSteps({
   const creatorsSub = localized(diagram?.creators?.subtitle, lang);
 
   const stepsTitle = localized(data?.steps_title, lang);
+  const [stepsPre, stepsAccent, stepsPost] = splitWord(stepsTitle, 1); // accent: "التعاون"
   const ctaLabel = localized(data?.cta?.label, lang);
 
   const apiSteps = Array.isArray(data?.steps) ? data.steps : [];
@@ -109,7 +89,7 @@ export default function CollaborationSteps({
         num: stepNumber(step.number, i),
         title: STEPS[i]?.title,
         titleKey: STEPS[i]?.titleKey,
-        text: localized(step.text, lang),
+        text: htmlToLines(localized(step.text, lang)),
         key: undefined,
       }))
     : STEPS;
@@ -212,9 +192,16 @@ export default function CollaborationSteps({
         </div>
 
         <div className="cr-steps-divider">
-          <span data-i18n={stepsTitle ? undefined : "creators_steps_title"}>
-            {stepsTitle || "خطوات التعاون"}
-          </span>
+          {stepsTitle ? (
+            <span>
+              {stepsPre && `${stepsPre} `}<span className="cr-steps-accent">{stepsAccent}</span>
+              {stepsPost && ` ${stepsPost}`}
+            </span>
+          ) : (
+            <span data-i18n-html="creators_steps_title_html">
+              خطوات <span className="cr-steps-accent">التعاون</span>
+            </span>
+          )}
         </div>
 
         <div className="cr-steps-grid">

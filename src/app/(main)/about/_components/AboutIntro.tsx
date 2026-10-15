@@ -1,4 +1,4 @@
-import { localized, type AboutIntroContent } from "@/lib/api/pages";
+import { localized, localizedRich, type AboutIntroContent } from "@/lib/api/pages";
 
 /* API `intro` block, and nothing else — see AboutHero for why there is no
    built-in copy and no data-i18n key left in this file. The section, its text
@@ -11,7 +11,7 @@ export default function AboutIntro({
   lang?: string;
 }) {
   const title = localized(data?.title, lang);
-  const body = localized(data?.body, lang);
+  const body = localizedRich(data?.body, lang);
   const image = data?.image_url;
 
   if (!title && !body && !image) return null;

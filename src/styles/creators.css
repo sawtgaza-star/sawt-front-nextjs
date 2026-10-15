@@ -651,6 +651,73 @@ background: rgba(237, 239, 235, 0.50);
   opacity: 0.18;
 }
 
+/* Flowing gradient: each dot carries its own stop of a deep-orange → warm
+   gold ramp, and a pulse runs along the row from the faint end (5) to the big
+   one (0), then the arrow head nudges forward — a signal travelling towards
+   the next node. `scale` / `translate` (not `transform`) so the mobile
+   rotation of the head is left alone. */
+.cr-flow-dot-0 { background: #e1723b; }
+.cr-flow-dot-1 { background: #e8823f; }
+.cr-flow-dot-2 { background: #ee9446; opacity: 0.7; }
+.cr-flow-dot-3 { background: #f2a54f; opacity: 0.55; }
+.cr-flow-dot-4 { background: #f5b65b; opacity: 0.42; }
+.cr-flow-dot-5 { background: #f7c66a; opacity: 0.32; }
+
+.cr-flow-dot {
+  --flow-step: 0.14s;
+  animation: cr-flow-pulse 2.2s cubic-bezier(0.45, 0, 0.3, 1) infinite;
+}
+.cr-flow-dot-5 { animation-delay: calc(var(--flow-step) * 0); }
+.cr-flow-dot-4 { animation-delay: calc(var(--flow-step) * 1); }
+.cr-flow-dot-3 { animation-delay: calc(var(--flow-step) * 2); }
+.cr-flow-dot-2 { animation-delay: calc(var(--flow-step) * 3); }
+.cr-flow-dot-1 { animation-delay: calc(var(--flow-step) * 4); }
+.cr-flow-dot-0 { animation-delay: calc(var(--flow-step) * 5); }
+
+.cr-flow-head {
+  --flow-nudge: -4px 0;
+  animation: cr-flow-nudge 2.2s cubic-bezier(0.45, 0, 0.3, 1) infinite;
+  animation-delay: 0.84s;
+}
+.cr-flow-arrow-right .cr-flow-head {
+  --flow-nudge: 4px 0;
+}
+
+@keyframes cr-flow-pulse {
+  0%,
+  45%,
+  100% {
+    scale: 1;
+    filter: none;
+    box-shadow: 0 0 0 0 rgba(225, 114, 59, 0);
+  }
+  18% {
+    scale: 1.55;
+    opacity: 1;
+    filter: saturate(1.25) brightness(1.05);
+    box-shadow: 0 0 10px 2px rgba(225, 114, 59, 0.45);
+  }
+}
+@keyframes cr-flow-nudge {
+  0%,
+  40%,
+  100% {
+    translate: 0 0;
+    opacity: 1;
+  }
+  16% {
+    translate: var(--flow-nudge);
+    opacity: 0.85;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cr-flow-dot,
+  .cr-flow-head {
+    animation: none;
+  }
+}
+
 /* steps */
 .cr-steps-divider {
   display: flex;
@@ -680,6 +747,20 @@ background: rgba(237, 239, 235, 0.50);
   font-weight: 500;
   color: #1c1c1c;
 }
+/* heading in the site's green, its accent word ("التعاون") in orange; the
+   side rules pick up the orange */
+.cr-steps-divider span {
+  color: #4C5C37;
+}
+.cr-steps-divider .cr-steps-accent {
+  color: #FF7420;
+}
+.cr-steps-divider::before {
+  background: linear-gradient(to left, transparent, rgba(255, 116, 32, 0.4));
+}
+.cr-steps-divider::after {
+  background: linear-gradient(to right, transparent, rgba(255, 116, 32, 0.4));
+}
 .cr-steps-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
@@ -704,6 +785,73 @@ background: rgba(237, 239, 235, 0.50);
   color: #4a4a4a;
   line-height: 1.8;
   font-weight: 700;
+}
+/* Glass step cards: a frosted, faintly tinted pane (warm orange from the
+   number's side, olive from the other) with a light rim, an inner top
+   highlight and a soft drop — lifts a little on hover. */
+.cr-step-card {
+  background:
+    linear-gradient(135deg, rgba(255, 255, 255, 0.75) 0%, rgba(255, 255, 255, 0.35) 100%),
+    linear-gradient(to left, rgba(255, 116, 32, 0.1), rgba(76, 92, 55, 0.08));
+  border: 1px solid rgba(255, 255, 255, 0.8);
+  outline: 1px solid rgba(76, 92, 55, 0.18);
+  outline-offset: -1px;
+  border-radius: 16px;
+  -webkit-backdrop-filter: blur(14px) saturate(160%);
+  backdrop-filter: blur(14px) saturate(160%);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.9),
+    inset 0 -1px 0 rgba(76, 92, 55, 0.06),
+    0 8px 24px rgba(76, 92, 55, 0.1);
+  overflow: hidden;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+/* the sheen: a soft diagonal light across the top of the pane */
+.cr-step-card::before {
+  content: "";
+  position: absolute;
+  inset: 0 0 45% 0;
+  background: linear-gradient(160deg, rgba(255, 255, 255, 0.55), rgba(255, 255, 255, 0) 70%);
+  pointer-events: none;
+}
+/* hover: the site's olive green runs in along the top edge (a bar, not a
+   border, so the card doesn't shift; the card's rounding clips its ends) */
+.cr-step-card::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: #4C5C37;
+  transform: scaleX(0);
+  transition: transform 0.35s ease;
+  pointer-events: none;
+}
+.cr-step-card:hover::after,
+.cr-step-card:nth-child(2)::after {
+  transform: scaleX(1);
+}
+/* …but the middle card hands it over while one of the others is hovered */
+.cr-steps-grid:has(.cr-step-card:hover) .cr-step-card:nth-child(2):not(:hover)::after {
+  transform: scaleX(0);
+}
+.cr-step-card:hover {
+  transform: translateY(-3px);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.9),
+    0 14px 32px rgba(255, 116, 32, 0.16);
+}
+.cr-step-num {
+  z-index: 1;
+  box-shadow: 0 4px 12px rgba(255, 116, 32, 0.35);
+}
+
+/* the API body is one line per paragraph (htmlToLines) */
+.cr-step-title,
+.cr-step-text {
+  position: relative; /* above the card's sheen */
+  white-space: pre-line;
 }
 /* Step title is a mobile-only element (see the mobile mock); the desktop
    step cards keep their number + single description line unchanged. */
@@ -735,7 +883,7 @@ background: rgba(237, 239, 235, 0.50);
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  background: #4C5C37;
+  background: #FF7420;
   color: #fff !important;
   border-radius: 30px;
   padding: 12px 30px;
@@ -744,7 +892,41 @@ background: rgba(237, 239, 235, 0.50);
   transition: background 0.2s ease;
 }
 .cr-collab-cta a:hover {
-  background: #38422a;
+  background: #e5621a;
+}
+/* the number circles' orange with a soft glass sheen on its top half and a
+   warm glow; white text. On hover the orange deepens and it lifts a touch. */
+.cr-collab-cta a {
+  position: relative;
+  overflow: hidden;
+  color: #fff !important;
+  background: #FF7420;
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  -webkit-backdrop-filter: blur(10px) saturate(160%);
+  backdrop-filter: blur(10px) saturate(160%);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.45),
+    inset 0 -1px 4px rgba(170, 60, 0, 0.18),
+    0 6px 18px rgba(255, 116, 32, 0.3);
+  transition: transform 0.3s ease, box-shadow 0.3s ease, background 0.3s ease;
+}
+.cr-collab-cta a::before {
+  content: "";
+  position: absolute;
+  inset: 0 0 50% 0;
+  background: linear-gradient(to bottom, rgba(255, 255, 255, 0.25), rgba(255, 255, 255, 0));
+  pointer-events: none;
+}
+.cr-collab-cta a > * {
+  position: relative; /* above the sheen */
+}
+.cr-collab-cta a:hover {
+  background: #e5621a;
+  transform: translateY(-2px);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.45),
+    inset 0 -1px 4px rgba(170, 60, 0, 0.22),
+    0 10px 24px rgba(255, 116, 32, 0.4);
 }
 .cr-collab-cta a i {
   font-size: 13px;
@@ -1099,6 +1281,10 @@ background: rgba(237, 239, 235, 0.50);
   }
   .cr-flow-arrow-right .cr-flow-head {
     transform: rotate(90deg);
+  }
+  /* the heads point down here: nudge them down instead of sideways */
+  .cr-flow-arrow .cr-flow-head {
+    --flow-nudge: 0 4px;
   }
   [dir = 'ltr'] .cr-collab-cta a svg{
     transform: rotate(145deg) !important

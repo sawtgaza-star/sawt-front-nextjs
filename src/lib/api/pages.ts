@@ -14,6 +14,7 @@
    ========================================================= */
 
 import { API_ORIGIN, apiFetch } from "./client";
+import { htmlToLines } from "@/lib/html-text";
 
 /** One string in both languages; either side may be missing. */
 export type Localized = { ar?: string | null; en?: string | null };
@@ -136,6 +137,14 @@ export async function fetchAboutPage(signal?: AbortSignal): Promise<AboutPage | 
     Returns "" for a missing field, which every section reads as "keep what the
     static markup says". */
 export function localized(value: Localized | null | undefined, lang: string): string {
+  return htmlToLines(localizedRich(value, lang));
+}
+
+/** `localized` without the HTML clean-up — only for a field that is rendered
+    as rich text on purpose (AboutIntro's body). Everything else goes through
+    `localized`, so editor markup like '<p dir="rtl">…&nbsp;</p>' never shows
+    up as literal tags. */
+export function localizedRich(value: Localized | null | undefined, lang: string): string {
   if (!value) return "";
   const preferred = lang === "en" ? value.en : value.ar;
   return (preferred || value.ar || value.en || "").trim();
