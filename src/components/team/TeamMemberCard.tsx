@@ -1,5 +1,6 @@
 import Link from "next/link";
 import type { TeamCardMember } from "./team-data";
+import TeamMemberPop from "./TeamMemberPop";
 
 /* Team member card: portrait photo with a green name/role badge overlaid near
    the bottom (matches the /team mock). The circular arrow links to the
@@ -32,6 +33,8 @@ export default function TeamMemberCard({
           <div className="team-member-role">{member.role}</div>
         </div>
       </div>
+      {/* hover: the head rises out of the frame (see TeamMemberPop) */}
+      <TeamMemberPop src={member.photo} />
     </article>
   );
 }

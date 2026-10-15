@@ -29,7 +29,15 @@ export default function AboutIntro({
           <div className="col-12 col-lg-6 about-sec-content" dir="rtl">
             {" "}
             {title ? <h2 className="about-sec-title">{title}</h2> : null}{" "}
-            {body ? <p className="about-sec-desc">{body}</p> : null}{" "}
+            {body ? (
+              /<[a-z][^>]*>/i.test(body) ? (
+                /* rich text from the CMS editor (<p>, <strong>…) — trusted the
+                   same way as the news body (see news/detail/NewsBody) */
+                <div className="about-sec-desc" dangerouslySetInnerHTML={{ __html: body }} />
+              ) : (
+                <p className="about-sec-desc">{body}</p>
+              )
+            ) : null}{" "}
           </div>{" "}
           {image ? (
             <div className="col-12 col-lg-6 mt-4 about-sec-img-col">
