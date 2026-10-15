@@ -94,6 +94,10 @@ type FanSlide = HTMLElement & { progress?: number };
 const SPIN_MIN_STEPS = 18;
 const SPIN_DURATION = 3400; // ms for the whole spin
 const SPIN_DELAY = 300; // ms before it starts, so the page has painted
+/* The ease's tail crawls the last few dozen px for ~400ms, which already
+   reads as stopped. So once the strip slows under SPIN_LAND_SPEED it lands:
+   the ring and blur switch on at once, and the rest is a short CSS glide. */
+const SPIN_LAND_SPEED = 0.18; // px per ms (~3px a frame)
 
 /** cubic-bezier(x1, y1, x2, y2) as a function of time — the CSS curve. */
 function cubicBezier(x1: number, y1: number, x2: number, y2: number) {
@@ -144,17 +148,43 @@ export default function HeroReelsSlider({ slides }: { slides: string[] }) {
     let start = 0;
     let done = 0; // posters already moved past the centre
     let stopped = false;
+    let last: { now: number; px: number } | undefined; // the previous frame
 
-    const finish = (settle: boolean) => {
+    /** `glide`: px still to go and the speed (px/ms) to carry into them. */
+    const finish = (settle: boolean, glide?: { px: number; speed: number }) => {
       if (stopped) return;
       stopped = true;
       window.cancelAnimationFrame(spinFrame.current ?? 0);
+      /* the ring, glow and blur come back in the same frame the strip lands —
+         `data-landing` keeps their transitions off while they switch on (else
+         they faded in over the thumb's 0.4s), then lets go two frames later
+         so autoplay's own slides animate as usual. The strip's own movement
+         (wrapper + slide transforms) still transitions, for the glide. */
+      el.dataset.landing = "";
       delete el.dataset.spinning;
-      if (swiper.destroyed) return;
+      const land = () => {
+        void el.offsetWidth; // commit the end state before transitions return
+        window.requestAnimationFrame(() =>
+          window.requestAnimationFrame(() => delete el.dataset.landing),
+        );
+      };
+      if (swiper.destroyed) return land();
       // rebalance the loop on both sides (instant) and land exactly on the slot
       (swiper as LoopSwiper).loopFix();
-      if (settle) swiper.slideTo(swiper.activeIndex, 0, false);
+      if (settle && glide && glide.px > 0.5) {
+        // put the strip back where it visibly is, then glide the rest home
+        const rest = -(swiper.snapGrid[swiper.snapIndex] ?? 0);
+        (swiper as LoopSwiper).setTransition(0);
+        swiper.setTranslate(rest + glide.px);
+        void el.offsetWidth;
+        // an ease-out starts at ~2x its average speed: match the spin's
+        const ms = Math.min(450, Math.max(120, (2 * glide.px) / glide.speed));
+        swiper.slideTo(swiper.activeIndex, ms, false);
+      } else if (settle) {
+        swiper.slideTo(swiper.activeIndex, 0, false);
+      }
       fan(swiper);
+      land();
       swiper.autoplay?.start();
     };
 
@@ -168,10 +198,20 @@ export default function HeroReelsSlider({ slides }: { slides: string[] }) {
         swiper.slideNext(0, false);
         done++;
       }
-      if (t >= 1) return finish(true);
       // the part of the way to the next poster: one slot = its width + the gap
       const slot =
         (swiper.slidesSizesGrid[swiper.activeIndex] ?? 0) + Number(swiper.params.spaceBetween ?? 0);
+      const px = pos * slot;
+      const speed = last && now > last.now ? (px - last.px) / (now - last.now) : Infinity;
+      last = { now, px };
+      if (t >= 1 || (t > 0.5 && speed < SPIN_LAND_SPEED)) {
+        const remaining = (steps - pos) * slot;
+        while (done < steps) {
+          swiper.slideNext(0, false);
+          done++;
+        }
+        return finish(true, { px: remaining, speed: Math.max(speed, 0.05) });
+      }
       // measured from the active poster's own resting position, not the last
       // frame's (that already carries a fraction)
       const rest = -(swiper.snapGrid[swiper.snapIndex] ?? 0);
@@ -246,7 +286,7 @@ export default function HeroReelsSlider({ slides }: { slides: string[] }) {
              (width set in content.css) and as many as fit fill the page */
           992: { slidesPerView: "auto", spaceBetween: 18 },
         }}
-        autoplay={{ delay: 4500, disableOnInteraction: false }}
+        autoplay={{ delay: 2000, disableOnInteraction: false }}
         onAfterInit={(swiper) => {
           fan(swiper);
           introSpin(swiper);

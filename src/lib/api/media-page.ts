@@ -22,6 +22,7 @@
 
 import { apiFetch } from "./client";
 import { assetUrl, type Localized } from "./pages";
+import { htmlToLines } from "@/lib/html-text";
 
 type Envelope<T> = { message?: string; data?: T };
 
@@ -280,7 +281,8 @@ export async function fetchMediaPage(signal?: AbortSignal): Promise<MediaPage | 
 export function localizedList(value: LocalizedList | null | undefined, lang: string): string[] {
   if (!value) return [];
   const preferred = lang === "en" ? value.en : value.ar;
-  return preferred?.length ? preferred : value.ar?.length ? value.ar : value.en || [];
+  const list = preferred?.length ? preferred : value.ar?.length ? value.ar : value.en || [];
+  return list.map(htmlToLines); // editor HTML → plain text, as `localized` does
 }
 
 /** Bundle features, which the API flattens per language rather than per field. */

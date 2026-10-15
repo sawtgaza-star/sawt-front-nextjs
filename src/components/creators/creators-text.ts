@@ -43,6 +43,20 @@ export function splitEnds(
   ];
 }
 
+/** [before, word, after] — the word at `index` alone carries the accent
+    ("خطوات التعاون مع صنّاع المحتوى", 1 → التعاون). A heading shorter than
+    that accents its last word. */
+export function splitWord(text: string, index: number): [string, string, string] {
+  const parts = words(text);
+  if (!parts.length) return ["", "", ""];
+  const at = Math.min(index, parts.length - 1);
+  return [
+    parts.slice(0, at).join(" "),
+    parts[at],
+    parts.slice(at + 1).join(" "),
+  ];
+}
+
 function words(text: string): string[] {
   return (text || "").trim().split(/\s+/).filter(Boolean);
 }
@@ -121,3 +135,6 @@ export function captionTitle(caption: string | null | undefined): string {
   }
   return "";
 }
+
+/* moved to lib so every API string gets it (see lib/api/pages `localized`) */
+export { htmlToLines } from "@/lib/html-text";

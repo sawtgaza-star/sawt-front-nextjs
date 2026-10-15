@@ -292,6 +292,7 @@ export const translations: any = {
     creators_flow_creators: "صناع المحتوى",
     creators_flow_creators_sub: "مبدعو غزة وفلسطين",
     creators_steps_title: "خطوات التعاون",
+    creators_steps_title_html: 'خطوات <span class="cr-steps-accent">التعاون</span>',
     creators_step_1_title: "ابحث واختر",
     creators_step_1:
       "استعرض ملفات صنّاعنا وفلتر حسب التخصص والميزانية والوصول الجماهيري",
@@ -2559,6 +2560,7 @@ export const translations: any = {
     creators_flow_creators: "Content Creators",
     creators_flow_creators_sub: "Creators of Gaza & Palestine",
     creators_steps_title: "Collaboration steps",
+    creators_steps_title_html: '<span class="cr-steps-accent">Collaboration</span> steps',
     creators_step_1_title: "Search & choose",
     creators_step_1:
       "Browse our creators' profiles and filter by specialty, budget, and audience reach",
