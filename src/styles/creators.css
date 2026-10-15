@@ -528,6 +528,10 @@ background: rgba(237, 239, 235, 0.50);
   background: #EDEFEB;
   border-radius: 20px;
   padding: 46px 40px;
+  /* lifts the panel off the patterned frame behind it */
+  box-shadow:
+    0 10px 22px rgba(55, 76, 28, 0.12),
+    0 2px 6px rgba(0, 0, 0, 0.05);
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -582,9 +586,54 @@ background: rgba(237, 239, 235, 0.50);
 
 }
 .cr-flow-center-circle img {
-  width: 60px;
-  height: 60px;
+  width: 80px;
+  height: 80px;
  
+}
+/* no fill of its own inside the ring — so the title takes the site green
+   instead of white */
+.cr-flow-center .cr-flow-center-circle {
+  background: transparent;
+  color: #374C1C;
+}
+/* a gradient ring around the centre circle (orange → pale → olive), set off
+   from it by a small gap, turning slowly. The ring is the ::before's padding
+   box with its content box masked out. */
+.cr-flow-center-circle {
+  position: relative;
+  margin-bottom: 26px;
+}
+.cr-flow-center-circle::before {
+  content: "";
+  position: absolute;
+  inset: -11px;
+  border-radius: 50%;
+  padding: 4px;
+  background: conic-gradient(
+    #e1723b 0deg,
+    #f0a77c 70deg,
+    rgba(240, 167, 124, 0.15) 130deg,
+    rgba(143, 163, 111, 0.25) 190deg,
+    #8fa36f 260deg,
+    #4c5c37 310deg,
+    #e1723b 360deg
+  );
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  mask-composite: exclude;
+  animation: cr-ring-spin 2.5s linear infinite;
+  pointer-events: none;
+}
+@keyframes cr-ring-spin {
+  to {
+    rotate: 360deg;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .cr-flow-center-circle::before {
+    animation: none;
+  }
 }
 .cr-flow-center-circle span {
   font-size: 18px;
@@ -1250,11 +1299,15 @@ background: rgba(237, 239, 235, 0.50);
   .cr-flow-center-circle {
     width: 112px;
     height: 112px;
-    margin-bottom: 12px;
+    margin-bottom: 20px;
+  }
+  .cr-flow-center-circle::before {
+    inset: -9px;
+    padding: 3px;
   }
   .cr-flow-center-circle img {
-    width: 46px;
-    height: 46px;
+    width: 62px;
+    height: 62px;
   }
   .cr-flow-center-circle span {
     font-size: 14px;

@@ -1,33 +1,4 @@
 $kind: collection
 description: ""
 variables:
-  - key: json_web_token_0bof
-    value: ""
-    disabled: false
-  - key: json_web_token_18v3
-    value: ""
-    disabled: false
-  - key: json_web_token_0sbx
-    secret: true
-    disabled: false
-  - key: json_web_token_07xn
-    secret: true
-    disabled: false
-  - key: json_web_token_19y9
-    secret: true
-    disabled: false
-  - key: json_web_token_0bre
-    secret: true
-    disabled: false
-  - key: json_web_token_176g
-    secret: true
-    disabled: false
-  - key: json_web_token_0dxz
-    secret: true
-    disabled: false
-  - key: json_web_token_0wd2
-    secret: true
-    disabled: false
-  - key: json_web_token_0qq5
-    secret: true
-    disabled: false
+  Base_Url: ""
