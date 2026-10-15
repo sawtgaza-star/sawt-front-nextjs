@@ -15,8 +15,8 @@ import ReelViewer from "@/components/content/ReelViewer";
    cards) with circular prev/next nav arrows, from the profile payload's
    `content` block. The reels come from the creator's Instagram; while that is
    switched off in the admin (`status: "disabled"`) or nothing is synced, the
-   list is empty and the section keeps its heading with a "no content yet"
-   panel in place of the slider. A reel without a
+   list is empty and the whole section is left out (heading included). A
+   reel without a
    playable URL is skipped. The payload has no categories, so the mock's
    filter pills are gone. "رؤية المزيد" opens the creator's Instagram.
 
@@ -85,6 +85,10 @@ export default function CreatorContent({ content, creator, lang }) {
     avatar: creator.avatar_url || undefined,
     profile: creatorHref(creator) !== "#" ? creatorHref(creator) : undefined,
   };
+
+  // no reels (Instagram off in the admin, or nothing synced): no section at
+  // all — after every hook above, so the hook order never changes
+  if (isEmpty) return null;
 
   return (
     <section className="cr-content-detail-section ">

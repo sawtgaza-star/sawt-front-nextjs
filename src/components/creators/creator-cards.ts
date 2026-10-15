@@ -15,11 +15,34 @@ import { creatorHref } from "@/lib/api/creator-profile";
 import type { CreatorsGridCreator } from "@/lib/api/creators-page";
 import type { Creator } from "./CreatorCard";
 import { followersLabel } from "./creators-text";
+import { CONTENT_CATEGORIES } from "@/components/collaborate/creator/creator-form-data";
+import { translations } from "@/lib/translations";
+
+/* A creator's `role` is the content-type KEY they joined under ("art",
+   "other"), not words. It is shown as that type's label: from the payload's
+   own `join.form.content_types` when the page has them (/creators), else from
+   the site's category list (/creators/all sends none). A role that is not a
+   known key is shown as it came — an editor-typed title. */
+type ContentType = { key?: string; label?: Parameters<typeof localized>[0] };
+
+function roleLabel(role: string, lang: string, types?: ContentType[]): string {
+  const key = role.trim().toLowerCase();
+  const fromApi = types?.find((type) => type.key === key);
+  if (fromApi?.label) return localized(fromApi.label, lang) || role;
+  const known = CONTENT_CATEGORIES.find((category) => category.value === key);
+  if (!known) return role;
+  const dict = (translations as Record<string, Record<string, string>>)[lang];
+  return dict?.[known.labelKey] || known.label;
+}
 
 export function creatorCards(
   creators: CreatorsGridCreator[] | undefined,
   lang: string,
-  labels: { experienceTitle?: string; followersSuffix?: string } = {},
+  labels: {
+    experienceTitle?: string;
+    followersSuffix?: string;
+    contentTypes?: ContentType[];
+  } = {},
 ): (Creator & { key: string | number })[] {
   if (!Array.isArray(creators)) return [];
 
@@ -28,7 +51,7 @@ export function creatorCards(
     id: creator.id,
     photo: creator.avatar_url || "",
     name: creator.name || "",
-    role: localized(creator.role, lang),
+    role: roleLabel(localized(creator.role, lang), lang, labels.contentTypes),
     followers: followersLabel(creator.followers_count, labels.followersSuffix || ""),
     experienceTitle: labels.experienceTitle || "",
     excerpt: localized(creator.experience_excerpt, lang),

@@ -342,6 +342,25 @@ background-color: rgb(229, 233, 223);
   gap: 14px;
   flex: 0 0 auto;
 }
+/* sign-out row in the phone drawer (MediaNavMobile) — signed in only */
+.sm-drawer-logout {
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+  margin-top: 12px;
+  padding: 11px 16px;
+  border: 1px solid #e5484d;
+  border-radius: 24px;
+  background: transparent;
+  color: #e5484d;
+  font-size: 15px;
+  font-weight: 600;
+}
+.sm-drawer-logout svg {
+  width: 20px;
+  height: 20px;
+}
 .sm-nav-lang {
   border: 0;
   background: transparent;

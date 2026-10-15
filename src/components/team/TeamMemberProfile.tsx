@@ -1,3 +1,4 @@
+import type { CSSProperties } from "react";
 import { localized } from "@/lib/api/pages";
 import type { TeamDetailLabels, TeamMemberDetail } from "@/lib/api/team";
 import { toSocialLinks } from "./team-data";
@@ -45,11 +46,17 @@ export default function TeamMemberProfile({
         aria-hidden="true"
       />
       <div className="container">
-        {/* The API's `mic_background_url` backs the whole card — text on the
-            start side over it, the mic on the open end (see team.css). */}
+        {/* The API's `mic_background_url` backs the whole card — the mic on
+            its green burst, the text beside it on the plain side. Passed as a
+            variable so team.css can draw it on a ::before and mirror it in
+            English, keeping the burst under the mic in both directions. */}
         <div
           className={"team-detail-grid" + (micBackground ? " has-bg" : "")}
-          style={micBackground ? { backgroundImage: `url("${micBackground}")` } : undefined}
+          style={
+            micBackground
+              ? ({ "--mic-bg": `url("${micBackground}")` } as CSSProperties)
+              : undefined
+          }
         >
           <div className="team-detail-info">
             {/* Name/role on the start side, the experience badge pushed to the

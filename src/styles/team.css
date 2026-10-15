@@ -271,31 +271,65 @@ left: 12px;
   align-items: center;
   gap: 40px;
 }
-/* With the API's `mic_background_url` (inline background-image, see
-   TeamMemberProfile) the whole grid becomes one rounded card: the text sits
-   over the image on the right, the mic in the open space on the left, and the
-   mic's own box drops its waveform. */
-/* The uploaded backdrop carries its art (the green burst) centred ~26% from
-   the left edge. Two equal columns put the mic's column centre at the same
-   ~26% (56px padding + half of (100% − 112px − 40px) / 2), so the mic stands
-   inside the burst and the text half stays on the plain side. */
+/* With the API's `mic_background_url` (TeamMemberProfile passes it as
+   --mic-bg) the whole grid becomes one rounded card.
+
+   The uploaded backdrop (2089×832) carries its art — the green burst — between
+   ~10% and ~56% of its width, centred at ~32.5%; the rest is plain white. It is
+   drawn at the card's full width (100% auto, so those percentages hold at any
+   card height; extra height is white like the image's own edges), and:
+   - the text column starts at 58% of the card, clear of the burst;
+   - the mic column spans the other 58%, padded on its outer side so the mic's
+     centre lands on the burst's ~32.5%.
+   In RTL the text is on the right and the mic on the left, matching the image.
+   In LTR the grid flips, so the image is mirrored too (scaleX(-1) on the
+   ::before) — the burst follows the mic to the right. */
 .team-detail-grid.has-bg {
-  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
-  padding: 40px 56px;
+  position: relative;
+  isolation: isolate;
+  grid-template-columns: minmax(0, 42fr) minmax(0, 58fr);
+  gap: 0;
+  padding: 40px 0;
   border-radius: 32px;
   overflow: hidden;
-  background-color: #f2f3e7; /* the backdrop's own edge colour */
-  background-position: center;
-  background-size: cover;
+  background-color: #fefefe; /* the backdrop's own edge colour */
+}
+.team-detail-grid.has-bg::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background-image: var(--mic-bg);
+  background-size: 100% auto;
+  background-position: left center;
   background-repeat: no-repeat;
+  pointer-events: none;
+}
+[dir="ltr"] .team-detail-grid.has-bg::before {
+  transform: scaleX(-1);
+}
+.team-detail-grid.has-bg .team-detail-info {
+  padding-inline: 56px 24px;
 }
 .team-detail-grid.has-bg .team-detail-photo {
   width: 100%;
-  max-width: 480px;
-  justify-self: center;
+  max-width: none;
+  justify-self: stretch;
+  /* the column is wide now: a fixed height instead of the 6/5 box */
+  aspect-ratio: auto;
+  height: 420px;
   background: none;
   border-radius: 0;
   overflow: visible;
+}
+/* the mic is centred in the column minus 12% on its outer side: 12% of this
+   58% column ≈ 7% of the card, so its centre lands at (7% + 58%) / 2 ≈ 32.5%
+   — the burst's centre (outer side = right in LTR, left in RTL) */
+.team-detail-grid.has-bg .team-detail-photo img {
+  inset: 0 12% 0 0;
+}
+[dir="rtl"] .team-detail-grid.has-bg .team-detail-photo img {
+  inset: 0 0 0 12%;
 }
 /* Stacked (mic on top, text below): the backdrop is drawn at twice the card
    width from its top-left corner, which lands the burst behind the mic. */
@@ -303,11 +337,23 @@ left: 12px;
   .team-detail-grid.has-bg {
     grid-template-columns: 1fr;
     padding: 28px 24px;
+  }
+  .team-detail-grid.has-bg::before {
     background-size: 200% auto;
     background-position: 3% 0;
   }
+  .team-detail-grid.has-bg .team-detail-info {
+    padding-inline: 0;
+  }
   .team-detail-grid.has-bg .team-detail-photo {
     max-width: 360px;
+    justify-self: center;
+    aspect-ratio: 6 / 5;
+    height: auto;
+  }
+  .team-detail-grid.has-bg .team-detail-photo img,
+  [dir="rtl"] .team-detail-grid.has-bg .team-detail-photo img {
+    inset: 0;
   }
 }
 @media (max-width: 575.98px) {
@@ -418,6 +464,13 @@ left: 12px;
   text-decoration: none;
   margin: 0 0 26px;
   transition: background 0.2s ease;
+}
+/* at the start of its line in both directions (right in Arabic, left in
+   English), whatever text-align the column inherits */
+.team-detail-work-btn {
+  display: flex;
+  width: fit-content;
+  margin-inline: 0 auto;
 }
 .team-detail-work-btn:hover {
   background: #3c4a2b;
