@@ -46,7 +46,7 @@ export const LogoIncubator = ({ size = 36 }: { size?: number }) => (
    ratio instead of the square `w-100 h-100` the card used before). */
 export const LogoPlatform = ({ size = 38 }: { size?: number }) => (
   <img
-    src="/assets/images/شعار صوت اخضر.svg"
+    src={encodeURI("/assets/images/شعار صوت اخضر.svg")}
     alt="شعار منصة صوت"
     width={size}
     height={(size * 75) / 136}

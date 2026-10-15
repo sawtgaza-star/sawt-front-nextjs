@@ -1,0 +1,9 @@
+$kind: http-request
+url: "{{Base_Url}}/reels?extras=1"
+method: GET
+headers:
+  Accept: application/json
+  Content-Type: application/json
+queryParams:
+  extras: "1"
+order: 1000

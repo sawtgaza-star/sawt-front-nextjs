@@ -126,6 +126,45 @@ export function initHeaderPin() {
   bar.classList.remove("is-fixed");
   const spacer = bar.parentNode.querySelector(":scope > .header-bar-spacer");
   if (spacer && spacer.parentNode) spacer.parentNode.removeChild(spacer);
+
+  pinNavbarRow(navbar);
+}
+
+/* Only the navbar row (logo · links · pills) follows the scroll: once the
+   page scrolls past it, it is fixed flush to the top of the viewport
+   (.navbar.is-pinned, site-nav.css); the top bar (.nav-face) stays behind.
+   A placeholder of the row's height holds its place so nothing jumps, and it
+   is what's measured while pinned to know when to let the row go again. */
+function pinNavbarRow(navbar) {
+  const placeholder = document.createElement("div");
+  placeholder.className = "navbar-pin-placeholder";
+  let pinned = false;
+
+  const update = () => {
+    const anchor = pinned ? placeholder : navbar;
+    const shouldPin = window.scrollY > 0 && anchor.getBoundingClientRect().top < 0;
+    if (shouldPin === pinned) return;
+    if (shouldPin) {
+      placeholder.style.height = navbar.offsetHeight + "px";
+      navbar.parentNode.insertBefore(placeholder, navbar);
+      navbar.classList.add("is-pinned");
+    } else {
+      navbar.classList.remove("is-pinned");
+      placeholder.remove();
+    }
+    pinned = shouldPin;
+  };
+
+  window.addEventListener("scroll", update, { passive: true });
+  window.addEventListener("resize", update);
+  update();
+
+  (window as any).__headerPinCleanup = () => {
+    window.removeEventListener("scroll", update);
+    window.removeEventListener("resize", update);
+    navbar.classList.remove("is-pinned");
+    placeholder.remove();
+  };
 }
 
 export function initMainScripts() {

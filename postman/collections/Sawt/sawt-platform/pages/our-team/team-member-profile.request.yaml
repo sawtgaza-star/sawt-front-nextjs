@@ -1,0 +1,7 @@
+$kind: http-request
+url: "{{Base_Url}}/pages/team/kent1"
+method: GET
+headers:
+  Accept: application/json
+  Content-Type: application/json
+order: 3000

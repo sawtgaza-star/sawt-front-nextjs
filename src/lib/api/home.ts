@@ -51,10 +51,11 @@ export type HomeHero = {
 /* --------------------------------------------------------------- stats */
 
 /** `key` picks the icon (see components/home/stat-icons); `value` is the
-    number the counter animates up to, exactly as the editor typed it. */
+    number the counter animates up to, exactly as the editor typed it — now
+    per language ({ ar, en }); a plain string/number is still accepted. */
 export type HomeStat = {
   key?: string;
-  value?: string;
+  value?: Localized | string | number;
   label?: Localized;
 };
 

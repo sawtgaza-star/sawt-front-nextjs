@@ -1,0 +1,16 @@
+$kind: http-request
+url: http://127.0.0.1:8000/api/v1/support/requests
+method: POST
+headers:
+  Content-Type: application/json
+  Accept: application/json
+body:
+  type: json
+  content: "{\r
+
+    \  \"method_uuid\": \"0t00i\",\r
+
+    \  \"recaptcha_token\":\"\"\r
+
+    }"
+order: 1000

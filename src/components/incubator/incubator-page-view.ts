@@ -62,7 +62,7 @@ export const PLACEHOLDER = {
   heroImage: "/assets/images/tree.jpg",
   whyImage: "/assets/images/story.png",
   card: "/assets/images/Rectangle 596.png",
-  person: "/assets/images/Image (أحمد المنصور).png",
+  person: encodeURI("/assets/images/Image (أحمد المنصور).png"),
   faq: "/assets/images/Frame 1984080629.png",
   join: "/assets/images/join-img.jpg",
   album: "/assets/images/042ae163aa0d78003024d720046b35cdf2cea552.jpg",

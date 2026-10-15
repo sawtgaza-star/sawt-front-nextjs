@@ -1821,13 +1821,7 @@ border: 1px solid  #4C5C37;
    the mock swaps the faint black overlay for a flat olive tint
    and shows the collage uncropped-cover instead of stretched.
    ============================================================ */
-.inc-join .join-us-banner::after {
-  background: linear-gradient(
-    0deg,
-    rgba(58, 79, 51, 0.55) 0%,
-    rgba(58, 79, 51, 0.55) 100%
-  );
-}
+/* (overlay removed on request: the banner image shows untinted) */
 .inc-join .join-us-bg {
   object-fit: cover;
 }

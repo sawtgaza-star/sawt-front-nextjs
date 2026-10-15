@@ -1135,13 +1135,7 @@ svg {
   justify-content: center;
 }
 
-.join-us-banner-about::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background: rgba(0, 0, 0, 0.5);
-  z-index: 1;
-}
+/* (overlay removed on request: the banner image shows untinted) */
 
 .join-us-bg-about {
   position: absolute;
@@ -1161,13 +1155,7 @@ svg {
   z-index: 0;
 }
 
-.join-us-banner::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background: rgba(0, 0, 0, 0.15);
-  z-index: 1;
-}
+/* (overlay removed on request: the banner image shows untinted) */
 
 .join-us-content {
   position: relative;
@@ -5756,6 +5744,11 @@ svg {
   }
 
   /* Sawt story — heading + stacked cards with inline icon */
+  /* a roomier side gutter than the 10px container; heading and cards share it */
+  .sawt-story-section .container {
+    padding-left: 20px !important;
+    padding-right: 20px !important;
+  }
   .sawt-story-head {
     margin-bottom: 28px !important;
   }
@@ -5958,6 +5951,22 @@ svg {
   .about-platform-img {
     width: 90%;
     transform: none;
+  }
+}
+
+/* Desktop: the logo fills only the left ~48% of the upload, so it read small.
+   Scale it up from just under the leaf tip (24% across, 15% down — it grows
+   downward, where the card has room) — a transform, so the
+   column and the text beside it keep their size and place — and let the
+   column overflow so the leaf tips aren't cut. The rest of the upload is
+   white, which `mix-blend-mode: multiply` makes invisible. */
+@media (min-width: 992px) {
+  .about-the-platform-visual {
+    overflow: visible;
+  }
+  .about-platform-img {
+    transform: translateX(40%) scale(1.25);
+    transform-origin: 24% 15%;
   }
 }
 
@@ -6201,6 +6210,150 @@ svg {
 }
 .sawt-story-section {
   position: relative;
+}
+
+/* Cards over the background's glowing dots (SawtStory → STORY_COLUMNS).
+   Below 992px the image is hidden, the two columns dissolve into the grid and
+   the cards stack as before. */
+.sawt-story-map-bg,
+.sawt-story-card-dot {
+  display: none;
+}
+.sawt-story-stack {
+  display: contents;
+}
+
+@media (min-width: 992px) {
+  /* The image is too wide and short to span the cards' full height, so the
+     panel behind it carries on in the image's own light tone and the image's
+     top/bottom edges fade into it: one background under every card. */
+  /* The panel hugs the cards: a slim even pad, the frame as tall as the
+     taller column (min-height) with the image centred in it. */
+  .sawt-story-map {
+    /* the columns sit a touch below the frame's centre (the dots' y), so
+       the pad is weighted to the bottom to even the space around them */
+    padding: 4px 0 48px;
+    background: #eeece8;
+    border-radius: 24px;
+  }
+  .sawt-story-map-frame {
+    position: relative;
+    display: flex;
+    align-items: center;
+    min-height: 410px;
+  }
+  .sawt-story-map-bg {
+    display: block;
+    width: 100%;
+    height: auto;
+    -webkit-mask-image: linear-gradient(to bottom, transparent 0, #000 18%, #000 82%, transparent 100%);
+    mask-image: linear-gradient(to bottom, transparent 0, #000 18%, #000 82%, transparent 100%);
+  }
+  /* exactly the image's box (centred in the frame), so --pin-x/-y stay % of
+     the image even when the frame is taller than it */
+  .sawt-story-map .sawt-story-grid {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    aspect-ratio: 2400 / 536;
+    margin: 0;
+    padding: 0;
+  }
+  /* one column per side, centred on the midpoint of that side's two dots */
+  .sawt-story-stack {
+    position: absolute;
+    left: var(--pin-x);
+    top: var(--pin-y);
+    transform: translate(-50%, -50%);
+    width: 360px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+  .sawt-story-pin {
+    width: 100%;
+    padding: 0;
+    /* `.row.g-4 > *` adds a 24px top margin */
+    margin: 0;
+  }
+
+  /* The mock's card: clear glass with a thin grey rim, the icon in a small
+     beige tile at the start corner and an outline circle at the far one. */
+  .sawt-story-pin .sawt-story-card {
+    background: rgba(255, 255, 255, 0.32);
+    border: 1px solid rgba(110, 108, 98, 0.45);
+    border-radius: 14px;
+    -webkit-backdrop-filter: blur(5px);
+    backdrop-filter: blur(5px);
+    padding: 14px 18px 16px;
+    text-align: start;
+    /* icon tile and title on one row, the description under both */
+    display: grid;
+    grid-template-columns: 44px 1fr;
+    column-gap: 12px;
+    align-items: center;
+  }
+  .sawt-story-pin .sawt-story-icon {
+    position: static;
+    transform: none;
+    width: 44px;
+    height: 44px;
+    border-radius: 10px;
+    background: rgba(224, 218, 202, 0.9);
+    box-shadow: none;
+  }
+  /* the uploads are white line icons (drawn for the green circle): tint them
+     the olive of the mock's tiles */
+  .sawt-story-pin .sawt-story-icon img {
+    width: 26px;
+    height: 26px;
+    filter: brightness(0) saturate(100%) invert(30%) sepia(19%) saturate(860%)
+      hue-rotate(44deg) brightness(92%);
+  }
+  /* a soft golden glow (echoing the background's lit dots) in place of the
+     mock's outline circle */
+  .sawt-story-pin .sawt-story-card-dot {
+    display: block;
+    position: absolute;
+    top: 20px;
+    inset-inline-end: 20px;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: radial-gradient(circle, #fff6d6 0%, #f2c14e 45%, #d99a1e 100%);
+    box-shadow:
+      0 0 5px 2px rgba(240, 180, 50, 1),
+      0 0 14px 6px rgba(226, 158, 30, 0.75),
+      0 0 28px 12px rgba(214, 140, 20, 0.35);
+    animation: sawt-story-glow 2.8s ease-in-out infinite;
+  }
+  .sawt-story-pin .sawt-story-card-title {
+    font-size: 23px;
+    margin: 0;
+    /* clear of the glow at the far end */
+    padding-inline-end: 28px;
+  }
+  .sawt-story-pin .sawt-story-card-desc {
+    grid-column: 1 / -1;
+    margin-top: 10px;
+    font-size: 15.5px;
+    line-height: 1.7;
+  }
+  .sawt-story-grid-rest {
+    padding-top: 60px;
+  }
+}
+
+@keyframes sawt-story-glow {
+  0%, 100% { opacity: 0.85; transform: scale(0.92); }
+  50% { opacity: 1; transform: scale(1.12); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .sawt-story-pin .sawt-story-card-dot {
+    animation: none;
+  }
 }
 
 @media (max-width: 991px) {
@@ -8108,6 +8261,15 @@ svg {
 
   .creators-carousel .news-card img {
     height: 230px;
+  }
+
+  /* .card's `align-items: center` sizes the body to its one-line title, wider
+     than the narrow mobile card, so the text spilled out of both edges.
+     Stretch it to the card's width so the title/excerpt "…" cut lands inside. */
+  .creators-carousel .news-card .card-body,
+  .creators-carousel .news-card .card-footer {
+    align-self: stretch;
+    min-width: 0;
   }
 
   .creators-carousel .news-card .card-title {

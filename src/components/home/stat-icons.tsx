@@ -47,10 +47,16 @@ export function StatIcon({ statKey }: { statKey?: string }) {
 
 /* The API sends each figure as one string, unit included: "20+", "+140",
    "30 مليون". Split it into the figure the counter animates (digits plus the
-   symbols stuck to them) and the trailing word, which is shown as sent. */
-export function splitStatValue(value?: string | null): { figure: string; word: string } {
-  const text = (value || "").trim();
+   symbols stuck to them) and the trailing word, which is shown as sent.
+   Every figure carries a "+" whatever the API sends: one is added when the
+   value has none ("30 مليون" → "30+" · "مليون"). */
+export function splitStatValue(
+  value?: string | number | null,
+): { figure: string; word: string } {
+  // the API sometimes sends a bare number (140) instead of a string
+  const text = String(value ?? "").trim();
   const match = /^(\D*\d[\d.,]*[^\s\d\p{L}]*)\s*(.*)$/u.exec(text);
   if (!match) return { figure: text, word: "" };
-  return { figure: match[1], word: match[2] };
+  const figure = match[1].includes("+") ? match[1] : `${match[1]}+`;
+  return { figure, word: match[2] };
 }
