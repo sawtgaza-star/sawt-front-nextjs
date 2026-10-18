@@ -15,12 +15,14 @@
    original under the same object-fit. Returns a blob: URL of a PNG; results
    are cached per URL.
 
-   REQUIRES the image host to send `Access-Control-Allow-Origin` on the photo
-   itself (not just on the JSON API): without it the canvas is tainted, the
-   pixel read throws and TeamMemberPop silently keeps the plain zoom. As of
-   2026-10-15 api.sawtgaza.com/media/* (served by the hosting CDN, not
-   Laravel) sends no such header — that is why the pop-out works locally but
-   not in production. The fix is server-side (a header rule for /media). */
+   Reading the pixels needs the photo host to send `Access-Control-Allow-
+   Origin`. As of 2026-10-18 api.sawtgaza.com/media/* still sends none, so
+   the image is loaded through lib/cors-image: directly when the host allows
+   it, else via a public CORS image proxy — the pop-out works in every
+   visitor's browser either way. The proper fix stays server-side (a header
+   rule for /media), after which the proxy is never used. */
+
+import { loadCorsImage } from "./cors-image";
 
 const MAX_HEIGHT = 900;
 const NEUTRAL_SPREAD = 24; // max channel spread for a "gray" pixel
@@ -40,15 +42,8 @@ export function cutoutPortrait(url: string): Promise<string> {
   return job;
 }
 
-function loadImage(url: string): Promise<HTMLImageElement> {
-  return new Promise((resolve, reject) => {
-    const img = new Image();
-    img.crossOrigin = "anonymous";
-    img.onload = () => resolve(img);
-    img.onerror = () => reject(new Error(`portrait failed: ${url}`));
-    img.src = url;
-  });
-}
+/* readable even from a host that sends no CORS header — see lib/cors-image */
+const loadImage = loadCorsImage;
 
 async function run(url: string): Promise<string> {
   const img = await loadImage(url);

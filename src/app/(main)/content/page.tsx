@@ -140,6 +140,8 @@ export default function Page() {
                 message={page?.reels?.message || ""}
                 focus={focus}
                 open={open}
+                onFocusDone={() => setFocus(null)}
+                onOpenDone={() => setOpen(null)}
               />
             )}
           </div>

@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>حاضنة صوت - Cinematic Hero</title>
+    
+    <!-- Google Fonts: Cairo -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;800;900&display=swap" rel="stylesheet">
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            olive: '#4b5e40',
+                            orange: '#e85d04',
+                            dark: '#0a0a0a'
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Cairo', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        body {
+            font-family: 'Cairo', sans-serif;
+            background-color: #0a0a0a;
+            color: white;
+            overflow-x: hidden;
+        }
+
+        /* --- Background Slow Zoom Animation --- */
+        .bg-zoom-container {
+            position: absolute;
+            inset: 0;
+            overflow: hidden;
+            z-index: 0;
+        }
+        
+        .bg-zoom-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transform: scale(1.05);
+            animation: slowZoom 20s ease-out forwards;
+        }
+
+        @keyframes slowZoom {
+            0% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+
+        /* Dark Cinematic Overlay */
+        .cinematic-overlay {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(
+                to bottom, 
+                rgba(10, 10, 10, 0.4) 0%, 
+                rgba(10, 10, 10, 0.7) 50%, 
+                rgba(10, 10, 10, 0.95) 100%
+            );
+            z-index: 1;
+        }
+
+        /* --- Cinematic Text Reveal --- */
+        .reveal-wrapper {
+            overflow: hidden;
+            display: inline-block;
+        }
+
+        .reveal-text {
+            display: block;
+            transform: translateY(110%);
+            animation: revealUp 1.2s cubic-bezier(0.77, 0, 0.175, 1) forwards;
+        }
+
+        @keyframes revealUp {
+            0% { transform: translateY(110%); opacity: 0; }
+            100% { transform: translateY(0); opacity: 1; }
+        }
+
+        /* --- Fade Up Animations --- */
+        .fade-up {
+            opacity: 0;
+            transform: translateY(30px);
+            animation: fadeUpAnim 1s ease-out forwards;
+        }
+
+        .delay-1 { animation-delay: 0.8s; }
+        .delay-2 { animation-delay: 1.2s; }
+        .delay-3 { animation-delay: 1.6s; }
+
+        @keyframes fadeUpAnim {
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* --- Custom Buttons --- */
+        .btn-primary {
+            background-color: #4b5e40;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.4s ease;
+            box-shadow: 0 4px 15px rgba(75, 94, 64, 0.4);
+        }
+        
+        .btn-primary::before {
+            content: '';
+            position: absolute;
+            top: 0; left: -100%;
+            width: 100%; height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: all 0.6s ease;
+        }
+
+        .btn-primary:hover {
+            background-color: #e85d04;
+            box-shadow: 0 8px 25px rgba(232, 93, 4, 0.5);
+            transform: translateY(-3px);
+        }
+
+        .btn-primary:hover::before {
+            left: 100%;
+        }
+
+        .btn-glass {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            transition: all 0.4s ease;
+        }
+
+        .btn-glass:hover {
+            background: rgba(255, 255, 255, 0.15);
+            border-color: #4b5e40;
+            transform: translateY(-3px);
+        }
+
+        /* --- Floating Glass Stats Bar --- */
+        .glass-panel {
+            background: rgba(20, 20, 20, 0.4);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            box-shadow: 0 25px 50px rgba(0,0,0,0.5);
+            border-radius: 24px;
+        }
+
+        /* Sequential Stat Reveal */
+        .stat-item {
+            opacity: 0;
+            transform: scale(0.9);
+            animation: popIn 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+        }
+
+        .stat-delay-1 { animation-delay: 1.8s; }
+        .stat-delay-2 { animation-delay: 2.0s; }
+        .stat-delay-3 { animation-delay: 2.2s; }
+        .stat-delay-4 { animation-delay: 2.4s; }
+        .stat-delay-5 { animation-delay: 2.6s; }
+
+        @keyframes popIn {
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        .stat-icon {
+            color: #e85d04;
+            transition: transform 0.3s ease;
+        }
+        
+        .stat-item:hover .stat-icon {
+            transform: translateY(-5px) scale(1.1);
+            color: #4b5e40;
+        }
+    </style>
+</head>
+<body class="antialiased">
+
+    <!-- Hero Section -->
+    <header class="relative h-screen w-full flex flex-col justify-center items-center">
+        
+        <!-- Cinematic Background -->
+        <div class="bg-zoom-container">
+            <!-- Professional Camera/Studio Placeholder Image -->
+            <img src="https://images.unsplash.com/photo-1595675024853-0f3ec9098ac7?q=80&w=2000&auto=format&fit=crop" alt="Cinematic Studio Background" class="bg-zoom-image">
+        </div>
+        <div class="cinematic-overlay"></div>
+
+        <!-- Main Content (Z-Index 10 for layering) -->
+        <div class="relative z-10 text-center px-4 w-full max-w-5xl mx-auto -mt-20">
+            
+            <!-- Title -->
+            <h1 class="text-6xl md:text-8xl font-black mb-6 text-transparent bg-clip-text bg-gradient-to-b from-white to-gray-400">
+                <span class="reveal-wrapper">
+                    <span class="reveal-text drop-shadow-2xl">حاضنة صوت</span>
+                </span>
+            </h1>
+            
+            <!-- Subtitle -->
+            <p class="fade-up delay-1 text-xl md:text-3xl text-gray-300 font-light mb-12 max-w-3xl mx-auto leading-relaxed">
+                مساحة لتمكين صُناع المحتوى وصناعة <span class="text-brand-orange font-bold">التأثير</span>
+            </p>
+            
+            <!-- Buttons -->
+            <div class="fade-up delay-2 flex flex-col sm:flex-row items-center justify-center gap-6">
+                <a href="#" class="btn-primary px-10 py-4 rounded-full text-lg font-bold flex items-center gap-3 w-full sm:w-auto justify-center">
+                    إدعم صوت
+                    <svg class="w-5 h-5 rtl:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
+                </a>
+                
+                <a href="#" class="btn-glass px-10 py-4 rounded-full text-lg font-semibold flex items-center gap-3 w-full sm:w-auto justify-center hover:text-brand-orange">
+                    تعاون معنا
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8h2a2 2 0 012 2v6a2 2 0 01-2 2h-2v4l-4-4H9a1.994 1.994 0 01-1.414-.586m0 0L11 14h4a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2v4l.586-.586z"></path></svg>
+                </a>
+            </div>
+        </div>
+
+        <!-- Floating Stats Bar (Positioned absolute at the bottom) -->
+        <div class="absolute bottom-8 md:bottom-12 left-0 w-full px-4 z-20">
+            <div class="glass-panel max-w-6xl mx-auto py-6 px-4 md:px-10">
+                <div class="flex flex-wrap justify-between items-center gap-6 md:gap-4 text-center">
+                    
+                    <!-- Stat 1 -->
+                    <div class="stat-item stat-delay-1 flex-1 min-w-[100px]">
+                        <div class="flex justify-center mb-3 stat-icon">
+                            <!-- Users Icon -->
+                            <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
+                        </div>
+                        <h3 class="text-3xl md:text-4xl font-black text-white mb-1"><span class="counter" data-target="20">0</span>+</h3>
+                        <p class="text-sm md:text-base text-gray-400 font-medium uppercase tracking-wider">أعضاء الفريق</p>
+                    </div>
+
+                    <!-- Divider (Hidden on mobile) -->
+                    <div class="hidden md:block w-px h-12 bg-white/10"></div>
+
+                    <!-- Stat 2 -->
+                    <div class="stat-item stat-delay-2 flex-1 min-w-[100px]">
+                        <div class="flex justify-center mb-3 stat-icon">
+                            <!-- Book/Story Icon -->
+                            <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path></svg>
+                        </div>
+                        <h3 class="text-3xl md:text-4xl font-black text-white mb-1"><span class="counter" data-target="10">0</span>+</h3>
+                        <p class="text-sm md:text-base text-gray-400 font-medium uppercase tracking-wider">قصة</p>
+                    </div>
+
+                    <!-- Divider -->
+                    <div class="hidden md:block w-px h-12 bg-white/10"></div>
+
+                    <!-- Stat 3 -->
+                    <div class="stat-item stat-delay-3 flex-1 min-w-[100px]">
+                        <div class="flex justify-center mb-3 stat-icon">
+                            <!-- Eye/Views Icon -->
+                            <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path></svg>
+                        </div>
+                        <h3 class="text-3xl md:text-4xl font-black text-white mb-1"><span class="counter" data-target="30">0</span>+</h3>
+                        <p class="text-sm md:text-base text-gray-400 font-medium uppercase tracking-wider">مشاهدة</p>
+                    </div>
+
+                    <!-- Divider -->
+                    <div class="hidden md:block w-px h-12 bg-white/10"></div>
+
+                    <!-- Stat 4 -->
+                    <div class="stat-item stat-delay-4 flex-1 min-w-[100px]">
+                        <div class="flex justify-center mb-3 stat-icon">
+                            <!-- Video/Play Icon -->
+                            <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                        </div>
+                        <h3 class="text-3xl md:text-4xl font-black text-white mb-1"><span class="counter" data-target="3">0</span>+</h3>
+                        <p class="text-sm md:text-base text-gray-400 font-medium uppercase tracking-wider">فيديو</p>
+                    </div>
+
+                    <!-- Divider -->
+                    <div class="hidden md:block w-px h-12 bg-white/10"></div>
+
+                    <!-- Stat 5 -->
+                    <div class="stat-item stat-delay-5 flex-1 min-w-[100px]">
+                        <div class="flex justify-center mb-3 stat-icon">
+                            <!-- Followers/Star Icon -->
+                            <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z"></path></svg>
+                        </div>
+                        <h3 class="text-3xl md:text-4xl font-black text-white mb-1"><span class="counter" data-target="10">0</span>+</h3>
+                        <p class="text-sm md:text-base text-gray-400 font-medium uppercase tracking-wider">متابع</p>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+    </header>
+
+    <!-- JavaScript for Counter Animation -->
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            const counters = document.querySelectorAll('.counter');
+            
+            // Wait for the CSS animations to mostly finish before starting the count
+            setTimeout(() => {
+                counters.forEach(counter => {
+                    const updateCount = () => {
+                        const target = +counter.getAttribute('data-target');
+                        const count = +counter.innerText;
+                        
+                        // Calculate speed (lower is slower)
+                        const inc = target / 40; 
+
+                        if (count < target) {
+                            counter.innerText = Math.ceil(count + inc);
+                            setTimeout(updateCount, 40);
+                        } else {
+                            counter.innerText = target;
+                        }
+                    };
+                    updateCount();
+                });
+            }, 2000); // 2 seconds delay
+        });
+    </script>
+</body>
+</html>

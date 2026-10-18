@@ -92,6 +92,11 @@ async function restartHeroCarousel() {
     touch: false,
   });
   carousel.cycle();
+  // The copy's entrance plays only on landing: from the first slide change
+  // on, home-hero.css shows every slide's copy as is.
+  element.addEventListener("slide.bs.carousel", () => element.classList.add("hero-has-slid"), {
+    once: true,
+  });
   // drag / swipe (see hero-drag); re-wired with the carousel
   (element as any).__heroDragOff?.();
   (element as any).__heroDragOff = enableHeroDrag(element, carousel);
