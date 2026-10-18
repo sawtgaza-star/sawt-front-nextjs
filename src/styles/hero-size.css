@@ -46,3 +46,19 @@
     padding-bottom: 30px;
   }
 }
+
+/* ---------- Hero titles: the home hero's colour ----------
+   Every dark hero's headline gets the home title's fill (home-hero.css
+   `.hero-reveal-text`): white fading to grey, painted through the glyphs.
+   text-fill beats each title's own `color`. Left out on purpose: the
+   incubator and the media landing heroes, whose titles are dark ink on a
+   light background — a white fill would vanish there. */
+.cr-hero-title,
+.crs-hero-title,
+.about-hero-title,
+.sm-wp-hero-title {
+  background-image: linear-gradient(to bottom, #fff, #9ca3af);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
