@@ -16,6 +16,7 @@ import {
   type ReelDetails,
 } from "@/components/creators/creator-content/reel-data";
 import type {
+  ContentAccount,
   ContentApiSort,
   ContentCategory,
   ContentReel,
@@ -111,12 +112,20 @@ export function sortReels(list: Reel[], sort: SortValue): Reel[] {
    `views` is the reel's own view count when the backend's token is scoped for
    insights and `likes` when it isn't — the payload nulls `views` in that case,
    and the sort labelled "الأكثر مشاهدة" would otherwise have nothing to order
-   by. Neither number is rendered; this only decides the order. */
+   by. Neither number is rendered; this only decides the order.
+
+   `account` is the Instagram account the list is mirrored from: its picture
+   becomes every reel's avatar in the viewer, and its profile link the name's
+   link on the reels it posted itself. */
 export function reelsFromApi(
   items: ContentReel[] | undefined,
   categories: ContentCategory[] = [],
   lang = "ar",
+  account?: ContentAccount | null,
 ): Reel[] {
+  const avatar = (account?.profile_picture || "").trim();
+  const handle = (account?.username || "").trim().toLowerCase();
+  const profile = (account?.profile_url || "").trim();
   // a reel's category slugs → the pills' names (unknown slugs are dropped)
   const names = new Map(
     categories
@@ -129,6 +138,10 @@ export function reelsFromApi(
       details.categoryLabels = details.categories
         .map((slug) => names.get(slug) || "")
         .filter(Boolean);
+      if (avatar) details.avatar = avatar;
+      if (profile && handle && details.username.toLowerCase() === handle) {
+        details.profile = profile;
+      }
       return { item, index, details };
     })
     .map(({ item, index, details }) => ({

@@ -4,6 +4,7 @@ import { localized } from "@/lib/api/pages";
 import type { HomeTeam } from "@/lib/api/home";
 import { splitHeading } from "./home-text";
 import MicCutouts from "./MicCutouts";
+import { micCutoutPath } from "@/lib/mic-cutout-file";
 
 /* The API's `team` block. Each card shows the member's `mic_image` (the photo
    already composited inside the mic) — or, when it is null, the bare `image`
@@ -25,8 +26,10 @@ function TeamCard({ member, profileCta }) {
       <div className="mic-container">
         {member.mic ? (
           <div className="mic-composed-box">
-            {/* src is filled in by <MicCutouts> once the backdrop is cut away */}
-            <img data-mic-src={member.mic} className="mic-frame-composed" alt="" />
+            {/* The build's ready-made cutout (lib/mic-cutout-file) is in the HTML
+                from the start; for a mic uploaded after the deploy it is missing
+                and <MicCutouts> cuts the upload in the browser instead. */}
+            <img data-mic-src={member.mic} src={micCutoutPath(member.mic) ?? undefined} className="mic-frame-composed is-ready" alt="" />
           </div>
         ) : (
           <>

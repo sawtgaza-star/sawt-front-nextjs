@@ -26,6 +26,8 @@
    clones too. */
 
 import { loadCorsImage } from "./cors-image";
+import { micCutoutPath } from "./mic-cutout-file";
+import { fromStore, toStore } from "./mic-cutout-store";
 
 const MAX_HEIGHT = 800; // enough for a ~500px card on a 1.5x screen
 const NEUTRAL_SPREAD = 22; // max channel spread for a "gray/white" pixel
@@ -40,10 +42,33 @@ const cache = new Map<string, Promise<string>>();
 export function cutoutMic(url: string): Promise<string> {
   let job = cache.get(url);
   if (!job) {
-    job = run(url);
+    job = fromBuild(url)
+      .then((hit) => hit ?? fromStore(url))
+      .then(
+        (hit) =>
+          hit ??
+          run(url).then((src) => {
+            void toStore(url, src); // in the background — the mic shows now
+            return src;
+          })
+      );
     cache.set(url, job);
   }
   return job;
+}
+
+/* The cutout the build already made (see lib/mic-cutout-file): a plain
+   same-origin image, so this is just its download — no proxy, no pixel work.
+   Missing for a mic uploaded after the deploy. */
+function fromBuild(url: string): Promise<string | null> {
+  const path = micCutoutPath(url);
+  if (!path) return Promise.resolve(null);
+  return new Promise((resolve) => {
+    const img = new Image();
+    img.onload = () => resolve(path);
+    img.onerror = () => resolve(null);
+    img.src = path;
+  });
 }
 
 /* readable even from a host that sends no CORS header — see lib/cors-image */

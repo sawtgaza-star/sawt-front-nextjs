@@ -5,6 +5,7 @@ import "@/styles/content.css";
 import LegacyInit from "@/components/LegacyInit";
 import ContentHero from "@/components/content/ContentHero";
 import ContentFilterBar from "@/components/content/ContentFilterBar";
+import ContentAccountBar from "@/components/content/ContentAccountBar";
 import ContentGrid from "@/components/content/ContentGrid";
 import MostWatchedSection from "@/components/content/MostWatchedSection";
 import { ContentGridSkeleton } from "@/components/content/ContentSkeleton";
@@ -51,7 +52,7 @@ export default function Page() {
 
   // only reels whose cover loads are shown anywhere (see useLoadedThumbs)
   const { list: reels, pending } = useLoadedThumbs(
-    reelsFromApi(page?.reels?.items, page?.categories, lang),
+    reelsFromApi(page?.reels?.items, page?.categories, lang, page?.reels?.account),
   );
   const visible = sortReels(reels, sort);
   // covers still on their way and none in yet: hold the skeletons
@@ -124,6 +125,12 @@ export default function Page() {
       <main>
         <section className="ct-grid-section">
           <div className="container">
+            {!loading && (
+              <ContentAccountBar
+                account={page?.reels?.account}
+                total={page?.categories?.find((c) => c.slug === "all")?.count}
+              />
+            )}
             <ContentFilterBar
               categories={categories}
               active={category}
