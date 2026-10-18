@@ -97,9 +97,10 @@ export default function ReelModal({
   const username = details?.username || "";
   const info = {
     user: meta?.user || username,
-    avatar: meta?.avatar || DEFAULT_AVATAR,
+    avatar: meta?.avatar || details?.avatar || DEFAULT_AVATAR,
     profile:
       meta?.profile ||
+      details?.profile ||
       (username ? `https://www.instagram.com/${encodeURIComponent(username)}/` : ""),
     caption: details?.caption || card.caption || "",
     posted: timeAgo(details?.postedAt || "", lang),

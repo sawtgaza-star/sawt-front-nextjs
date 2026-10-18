@@ -95,6 +95,15 @@ export type ContentReel = {
   sort_order?: number;
 };
 
+/** The Instagram account the reels are mirrored from. `profile_picture` is a
+    signed Instagram CDN link (it expires like the reels' files do). */
+export type ContentAccount = {
+  username?: string | null;
+  name?: string | null;
+  profile_picture?: string | null;
+  profile_url?: string | null;
+};
+
 export type ContentReels = {
   title?: Localized;
   /** Label of the "رؤية المزيد" link beside the heading. */
@@ -105,6 +114,8 @@ export type ContentReels = {
   /** the category / sort the backend applied */
   category?: string | null;
   sort?: string | null;
+  /** who posted the reels — its picture is the viewer's avatar */
+  account?: ContentAccount | null;
   items?: ContentReel[];
 };
 

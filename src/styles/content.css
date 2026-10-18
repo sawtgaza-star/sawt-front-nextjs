@@ -721,3 +721,144 @@ body.ct-focus-mode::after {
     transition: transform 0.26s cubic-bezier(0.22, 0.61, 0.36, 1);
   }
 }
+
+/* ---------- Instagram account bar (reels.account), above the filter bar ---------- */
+.ct-account {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 14px 18px;
+  margin-bottom: 26px;
+  background: #fff;
+  border: 1px solid #ececec;
+  border-radius: 16px;
+  box-shadow: 0 6px 22px rgba(0, 0, 0, 0.05);
+}
+/* the picture inside Instagram's gradient ring, a white gap between them */
+.ct-account-avatar {
+  flex: 0 0 auto;
+  display: block;
+  width: 64px;
+  height: 64px;
+  padding: 3px;
+  border-radius: 50%;
+  background: conic-gradient(from 210deg, #feda75, #fa7e1e, #d62976, #962fbf, #4f5bd5, #feda75);
+}
+.ct-account-avatar img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 3px solid #fff;
+  background: #fff;
+}
+.ct-account-avatar img.is-brand {
+  object-fit: contain;
+  padding: 8px;
+}
+.ct-account-text {
+  flex: 1 1 auto;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  text-align: start;
+}
+/* style.css paints every <a> `color: black !important` — the name keeps the
+   page's dark ink and only turns green on hover */
+.ct-account-name,
+.ct-account-name:focus-visible {
+  font-size: 18px;
+  font-weight: 700;
+  color: #1c1c1c !important;
+  text-decoration: none;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.ct-account-name:hover {
+  color: #4c5c37 !important;
+}
+.ct-account-meta {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 6px;
+  font-size: 14px;
+  font-weight: 500;
+  color: #7a7a7a;
+}
+.ct-account-dot {
+  color: #c4c4c4;
+}
+.ct-account-follow,
+.ct-account-follow:focus-visible {
+  flex: 0 0 auto;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 20px;
+  border-radius: 999px;
+  background: #4c5c37;
+  color: #fff !important;
+  font-size: 14px;
+  font-weight: 700;
+  text-decoration: none;
+  white-space: nowrap;
+  transition: background-color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
+}
+.ct-account-follow i {
+  font-size: 18px;
+}
+.ct-account-follow:hover {
+  background: #3d4a2c;
+  color: #fff !important;
+  transform: translateY(-1px);
+  box-shadow: 0 6px 16px rgba(76, 92, 55, 0.3);
+}
+.ct-account-follow:focus-visible {
+  outline: 3px solid rgba(76, 92, 55, 0.35);
+  outline-offset: 2px;
+}
+@media (max-width: 767.98px) {
+  .ct-account {
+    gap: 12px;
+    padding: 12px;
+    margin-bottom: 18px;
+    border-radius: 14px;
+  }
+  .ct-account-avatar {
+    width: 52px;
+    height: 52px;
+  }
+  .ct-account-name {
+    font-size: 16px;
+  }
+  .ct-account-meta {
+    font-size: 12px;
+  }
+  /* the button shrinks to the Instagram glyph */
+  .ct-account-follow {
+    width: 42px;
+    height: 42px;
+    padding: 0;
+    justify-content: center;
+  }
+  .ct-account-follow span {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    white-space: nowrap;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .ct-account-follow {
+    transition: none;
+  }
+  .ct-account-follow:hover {
+    transform: none;
+  }
+}

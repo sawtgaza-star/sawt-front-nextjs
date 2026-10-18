@@ -78,6 +78,10 @@ export type ReelDetails = {
   /** category slugs; the page resolves them to names (`categoryLabels`) */
   categories: string[];
   categoryLabels?: string[];
+  /** the posting account's picture / profile link, when the list's payload
+      names the account (محتوانا's `reels.account`) */
+  avatar?: string;
+  profile?: string;
 };
 
 /** Stand-in picture for an account the API sends no avatar for. */

@@ -201,32 +201,6 @@ export default function HeroHeader({
                 ))
               )}{" "}
             </div>{" "}
-            <button
-              className="carousel-control-prev hero-arrow"
-              type="button"
-              data-bs-target="#heroCarousel"
-              data-bs-slide="prev"
-            >
-              {" "}
-              <span className="hero-arrow-icon" aria-hidden="true">
-                {" "}
-                <i className="fa-solid fa-chevron-left"></i>{" "}
-              </span>{" "}
-              <span className="visually-hidden">Previous</span>{" "}
-            </button>{" "}
-            <button
-              className="carousel-control-next hero-arrow"
-              type="button"
-              data-bs-target="#heroCarousel"
-              data-bs-slide="next"
-            >
-              {" "}
-              <span className="hero-arrow-icon" aria-hidden="true">
-                {" "}
-                <i className="fa-solid fa-chevron-right"></i>{" "}
-              </span>{" "}
-              <span className="visually-hidden">Next</span>{" "}
-            </button>{" "}
           </div>{" "}
         </div>{" "}
         <div className="stats-bar">

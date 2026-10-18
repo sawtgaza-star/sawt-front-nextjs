@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import type { PointerEvent as ReactPointerEvent, ReactNode, RefObject } from "react";
 import type { ReelMeta } from "./data";
 import { DEFAULT_AVATAR } from "./reel-data";
@@ -38,8 +38,11 @@ export default function ReelInfo({
   const [following, setFollowing] = useState(false);
   // a long caption opens to its full length on demand
   const [expanded, setExpanded] = useState(false);
-  // no picture of its own: the platform's mark, not the stock silhouette
-  const brandAvatar = !meta.avatar || meta.avatar === DEFAULT_AVATAR;
+  /* no picture of its own — or one that fails to load (Instagram's links are
+     signed and expire): the platform's mark, not the stock silhouette */
+  const [avatarFailed, setAvatarFailed] = useState(false);
+  useEffect(() => setAvatarFailed(false), [meta.avatar]);
+  const brandAvatar = !meta.avatar || meta.avatar === DEFAULT_AVATAR || avatarFailed;
   /* Rendered from tr(), not data-i18n — the viewer mounts long after
      applyTranslations() has walked the page. Same as ReelActions. */
   const { tr } = useLang();
@@ -50,7 +53,12 @@ export default function ReelInfo({
         {brandAvatar ? (
           <img src={SAWT_MARK} alt={meta.user} className="is-brand" />
         ) : (
-          <img src={meta.avatar} alt={meta.user} />
+          <img
+            src={meta.avatar}
+            alt={meta.user}
+            referrerPolicy="no-referrer"
+            onError={() => setAvatarFailed(true)}
+          />
         )}
         {/* Plain <a>: the reel viewer runs inside the creators and content
             route groups, which load different stylesheets — the same reason
