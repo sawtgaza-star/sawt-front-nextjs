@@ -1,0 +1,262 @@
+/* "أخر أخبارنا" (home) — the card look of the owner's reference
+   sawt_platform_sections.html, applied to the shared <NewsCard /> markup
+   without touching it (the /news pages render the same card, so everything
+   here is scoped to .latest-news):
+
+   - soft blurred colour blobs floating behind the section;
+   - white 24px-rounded cards with a whisper shadow that lift 12px on hover
+     into a deep olive shadow;
+   - the photo gets a dark bottom gradient and zooms on hover;
+   - the date turns orange on hover;
+   - "اقرأ المزيد" becomes a solid olive button.
+   On wide screens the MIDDLE visible card sits lower and rises above the
+   others on hover. */
+
+.latest-news {
+  position: relative;
+  isolation: isolate;
+}
+
+/* ---------- floating blobs ---------- */
+
+.latest-news .ln-shape {
+  position: absolute;
+  z-index: -1;
+  border-radius: 50%;
+  filter: blur(70px);
+  pointer-events: none;
+  animation: ln-float 15s infinite ease-in-out alternate;
+}
+
+.latest-news .ln-shape-1 {
+  top: 5%;
+  right: -5%;
+  width: 400px;
+  height: 400px;
+  background: rgba(232, 93, 4, 0.15);
+}
+
+.latest-news .ln-shape-2 {
+  bottom: 10%;
+  left: -10%;
+  width: 500px;
+  height: 500px;
+  background: rgba(75, 94, 64, 0.15);
+  animation-delay: -7s;
+}
+
+.latest-news .ln-shape-3 {
+  top: 40%;
+  left: 30%;
+  width: 300px;
+  height: 300px;
+  background: rgba(255, 200, 100, 0.1);
+  animation-duration: 20s;
+}
+
+@keyframes ln-float {
+  0% { transform: translate(0, 0) scale(1) rotate(0deg); }
+  33% { transform: translate(30px, -50px) scale(1.1) rotate(10deg); }
+  66% { transform: translate(-20px, 20px) scale(0.9) rotate(-5deg); }
+  100% { transform: translate(0, 0) scale(1) rotate(0deg); }
+}
+
+/* ---------- carousel room ---------- */
+
+/* Room above for the 12px hover lift + shadow, and below for the shadow
+   (Owl clips at .owl-stage-outer). */
+.latest-news .owl-carousel .owl-stage-outer {
+  padding: 20px 0 30px;
+}
+
+/* "عرض جميع الأخبار" — the markup's inline 50px top margin left a wide gap
+   under the cards. */
+.latest-news .owl-carousel + .text-center {
+  margin-top: 10px !important;
+}
+
+/* ---------- card ---------- */
+
+.latest-news .news-card {
+  position: relative;
+  border: 1px solid #f3f4f6 !important;
+  border-radius: 24px !important;
+  background: #fff;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.04);
+  transition:
+    transform 0.5s cubic-bezier(0.4, 0, 0.2, 1),
+    box-shadow 0.5s cubic-bezier(0.4, 0, 0.2, 1),
+    border-color 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.latest-news .news-card:hover {
+  transform: translateY(-12px);
+  border-color: rgba(75, 94, 64, 0.2) !important;
+  border-width: 1px !important;
+  box-shadow: 0 25px 50px -12px rgba(75, 94, 64, 0.25);
+}
+
+/* photo: cover-cropped, zooms on hover */
+.latest-news .news-card .card-img-top {
+  height: 224px;
+  object-fit: cover;
+  transition: transform 0.7s ease;
+}
+
+.latest-news .news-card:hover .card-img-top {
+  transform: scale(1.08);
+}
+
+/* dark gradient over the bottom of the photo */
+.latest-news .news-card::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 224px;
+  z-index: 1;
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.5), transparent);
+  pointer-events: none;
+}
+
+/* the body sits above the zoomed photo, so the zoom never spills into it */
+.latest-news .news-card .card-body,
+.latest-news .news-card .card-footer {
+  position: relative;
+  z-index: 2;
+  background: #fff;
+}
+
+.latest-news .news-card .card-body {
+  padding: 1.75rem 1.75rem 0;
+}
+
+.latest-news .news-card .card-footer {
+  padding: 0.5rem 1.75rem 1.75rem;
+}
+
+.latest-news .news-card .card-title {
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: #111827;
+  transition: color 0.3s ease;
+}
+
+/* the date (icon + text) turns orange on hover — the card writes its grey
+   inline, hence !important */
+.latest-news .news-card .card-footer > span:first-child i,
+.latest-news .news-card .card-footer > span:first-child span {
+  transition: color 0.3s ease;
+}
+
+.latest-news .news-card:hover .card-footer > span:first-child i,
+.latest-news .news-card:hover .card-footer > span:first-child span {
+  color: #e85d04 !important;
+}
+
+.latest-news .news-card .card-text {
+  border-bottom-color: #f0f0f0;
+}
+
+/* ---------- "اقرأ المزيد" as an olive button ---------- */
+
+.latest-news .news-card .readmore a {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.6rem 1.25rem;
+  border-radius: 999px;
+  background: #4b5e40;
+  color: #fff;
+  font-weight: 700;
+  text-decoration: none;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.1);
+}
+
+/* cancel the legacy beige .readmore:hover wrapper (the button's own hover
+   animation is below) */
+.latest-news .news-card .readmore,
+.latest-news .news-card .readmore:hover {
+  background: none;
+  padding: 0;
+}
+
+/* hover: the button lifts, darkens and the arrow slides toward the reading
+   direction (left in RTL) */
+.latest-news .news-card .readmore a {
+  transition:
+    transform 0.3s ease,
+    background-color 0.3s ease,
+    box-shadow 0.3s ease;
+}
+
+.latest-news .news-card .readmore a:hover {
+  background: #3a4a31;
+  transform: translateY(-3px);
+  box-shadow: 0 10px 20px -6px rgba(75, 94, 64, 0.5);
+}
+
+.latest-news .news-card .readmore a:active {
+  transform: translateY(0) scale(0.97);
+}
+
+html.sawt-anim .latest-news .news-card .readmore .arrow,
+.latest-news .news-card .readmore .arrow {
+  translate: none;
+  transition: transform 0.3s ease;
+}
+
+html.sawt-anim .latest-news .news-card .readmore:hover .arrow,
+.latest-news .news-card .readmore a:hover .arrow {
+  translate: none;
+  transform: translateX(-5px);
+}
+
+[dir="ltr"] .latest-news .news-card .readmore a:hover .arrow {
+  transform: translateX(5px);
+}
+
+/* the card writes these colours inline */
+.latest-news .news-card .readmore a span,
+.latest-news .news-card .readmore a i {
+  color: #fff !important;
+}
+
+.latest-news .news-card .readmore a i {
+  margin: 0 !important;
+}
+
+/* ---------- staggered middle card (3 cards visible) ----------
+   The middle of three consecutive .active items sits 5rem lower — exactly
+   the item right after the FIRST active one, so the two outer cards always
+   match even if Owl marks a fourth item active; hovering it
+   carries it up past the row to the usual -12px lift. The offset is on the
+   card (not the .owl-item) so the drop and the lift are ONE transform and
+   animate as one move. Owl re-marks .active on every slide, so the drop
+   follows the slider. */
+@media (min-width: 1000px) {
+  .latest-news .owl-carousel .owl-stage-outer {
+    padding-bottom: calc(5rem + 24px);
+  }
+
+  .latest-news .owl-item.active:not(.owl-item.active + .owl-item.active) + .owl-item.active:has(+ .owl-item.active) .news-card {
+    transform: translateY(5rem);
+  }
+
+  .latest-news .owl-item.active:not(.owl-item.active + .owl-item.active) + .owl-item.active:has(+ .owl-item.active) .news-card:hover {
+    transform: translateY(-12px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .latest-news .ln-shape {
+    animation: none;
+  }
+  .latest-news .news-card,
+  .latest-news .news-card .card-img-top,
+  .latest-news .news-card .readmore a,
+  .latest-news .news-card .readmore .arrow {
+    transition: none;
+  }
+}

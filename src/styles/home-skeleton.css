@@ -161,3 +161,27 @@
     animation: none;
   }
 }
+
+/* "أقسام المنصة": three equal pills (platform-accordion.css). */
+.sk-ps-row {
+  display: flex;
+  gap: 1.5rem;
+  max-width: 1200px;
+  height: 550px;
+  margin: 0 auto;
+}
+
+.sk-ps-pill {
+  flex: 1;
+  border-radius: 100px;
+}
+
+@media (max-width: 768px) {
+  .sk-ps-row {
+    flex-direction: column;
+    height: 800px;
+  }
+  .sk-ps-pill {
+    border-radius: 40px;
+  }
+}

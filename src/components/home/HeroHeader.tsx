@@ -1,5 +1,6 @@
 // @ts-nocheck
 /* eslint-disable */
+import "@/styles/home-stats.css";
 import SiteNav from "@/components/site/SiteNav";
 import { localized } from "@/lib/api/pages";
 import type { HomeHero, HomeStats } from "@/lib/api/home";

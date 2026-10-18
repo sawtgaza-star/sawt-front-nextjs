@@ -1,5 +1,6 @@
 // @ts-nocheck
 /* eslint-disable */
+import "@/styles/home-news.css";
 import NewsCard from "@/components/news/NewsCard";
 import { localized } from "@/lib/api/pages";
 import type { HomeNews } from "@/lib/api/home";
@@ -42,6 +43,10 @@ export default function LatestNews({
 
   return (
     <section className="latest-news py-5 position-relative">
+      {/* soft floating colour blobs — see home-news.css */}
+      <div className="ln-shape ln-shape-1" aria-hidden="true" />
+      <div className="ln-shape ln-shape-2" aria-hidden="true" />
+      <div className="ln-shape ln-shape-3" aria-hidden="true" />
       <div className="bg-icon bg-icon-right"><img loading="lazy" decoding="async" src="/assets/images/fa-solid_microphone-alt.png" alt="" /></div>
       <div className="bg-icon bg-icon-left"><img loading="lazy" decoding="async" src="/assets/images/fa-solid_microphone-alt (1).png" alt="" /></div>
       <div className="container">
