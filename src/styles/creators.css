@@ -2191,9 +2191,16 @@ background: var(--White, #FFF);
   right: 0;
   bottom: 0;
   z-index: 3;
-  padding: 40px 16px 14px;
+  padding: 70px 16px 14px;
   color: #fff;
-  background: linear-gradient(180deg, rgba(17, 17, 17, 0.00) 0%, #1E1E1E 61.87%);
+  /* a longer, softer shade so the caption reads over any frame */
+  background: linear-gradient(
+    180deg,
+    rgba(0, 0, 0, 0) 0%,
+    rgba(0, 0, 0, 0.55) 30%,
+    rgba(20, 20, 20, 0.9) 70%,
+    #1e1e1e 100%
+  );
 
 
   text-align: right;
@@ -2211,6 +2218,12 @@ background: var(--White, #FFF);
   border-radius: 50%;
   object-fit: cover;
   border: 2px solid rgba(255, 255, 255, 0.8);
+}
+/* the platform's own mark on a white disc, for an account with no picture */
+.cr-reel-user img.is-brand {
+  object-fit: contain;
+  padding: 6px;
+  background: #fff;
 }
 .cr-reel-user span {
   font-size: 18px;
@@ -2299,11 +2312,125 @@ background: var(--White, #FFF);
   }
 }
 .cr-reel-caption {
-  font-size: 16px;
+  font-size: 15px;
   line-height: 1.7;
-  margin: 0 0 12px;
-  color: #eaeaea;
+  margin: 0 0 10px;
+  color: #f2f2f2;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+  /* two lines until tapped (ReelInfo), then the whole caption */
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  overflow: hidden;
+  cursor: pointer;
 }
+.cr-reel-caption.is-open {
+  display: block;
+  -webkit-line-clamp: unset;
+  line-clamp: unset;
+  max-height: 30vh;
+  overflow-y: auto;
+}
+.cr-reel-caption-link,
+.cr-reel-caption-link:hover {
+  /* style.css paints every <a> black !important */
+  color: #fff !important;
+  font-weight: 600;
+  text-decoration: none;
+  unicode-bidi: isolate;
+}
+.cr-reel-caption-link {
+  opacity: 0.85;
+}
+.cr-reel-caption-link:hover {
+  opacity: 1;
+  text-decoration: underline;
+}
+
+/* ReelExtra — one quiet line under the caption: category chips, insights,
+   how long ago, and a round Instagram button at the far end */
+.cr-reel-extra {
+  margin: 0 0 12px;
+}
+.cr-reel-extra .cr-reel-collab {
+  margin: 0 0 8px;
+}
+.cr-reel-extra-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px 12px;
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.72);
+}
+.cr-reel-tag {
+  padding: 2px 10px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.16);
+  color: #fff;
+  font-size: 11.5px;
+  font-weight: 600;
+  line-height: 1.6;
+}
+.cr-reel-stat {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+}
+/* a dot between the pieces of the line */
+.cr-reel-extra-row > .cr-reel-stat + .cr-reel-stat::before,
+.cr-reel-extra-row > .cr-reel-tag + .cr-reel-stat::before {
+  content: "";
+  width: 3px;
+  height: 3px;
+  border-radius: 50%;
+  background: currentColor;
+  opacity: 0.6;
+  margin-inline-end: 7px;
+}
+.cr-reel-stat i {
+  font-size: 11px;
+  opacity: 0.85;
+}
+.cr-reel-collab {
+  font-size: 12.5px;
+  color: rgba(255, 255, 255, 0.8);
+}
+.cr-reel-collab i {
+  margin-inline-end: 6px;
+  font-size: 11px;
+}
+.cr-reel-collab a,
+.cr-reel-collab a:hover {
+  color: #fff !important;
+  font-weight: 600;
+  text-decoration: none;
+  unicode-bidi: isolate;
+}
+.cr-reel-ig,
+.cr-reel-ig:hover {
+  color: #fff !important;
+}
+.cr-reel-ig {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  width: 30px;
+  height: 30px;
+  margin-inline-start: auto;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.14);
+  font-size: 15px;
+  text-decoration: none;
+  transition: background 0.2s ease, transform 0.2s ease;
+}
+.cr-reel-ig:hover {
+  background: linear-gradient(45deg, #f9a03f, #e1306c 55%, #833ab4);
+  transform: scale(1.06);
+}
+
 .cr-reel-progress-row {
   display: flex;
   align-items: center;
@@ -2472,21 +2599,44 @@ background: var(--White, #FFF);
 .cr-reel-comment-list {
   flex: 1 1 auto;
   overflow-y: auto;
+  overflow-x: hidden;
   overscroll-behavior: contain;
   /* the content page sets `touch-action: none` on the reel for the swipe
      gesture — the list has to opt back in or it cannot be scrolled on a phone */
   touch-action: pan-y;
   list-style: none;
   margin: 0;
-  padding: 12px 14px;
+  padding: 6px 8px;
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: 2px;
 }
 .cr-reel-comment-list::-webkit-scrollbar { width: 4px; }
 .cr-reel-comment-list::-webkit-scrollbar-thumb {
   background: rgba(255, 255, 255, 0.25);
   border-radius: 999px;
+}
+.cr-reel-comments-more {
+  padding: 8px 8px 4px;
+  text-align: center;
+}
+.cr-reel-comments-more a,
+.cr-reel-comments-empty a {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  color: #fff;
+  font-size: 13px;
+  font-weight: 600;
+  text-decoration: none;
+  padding: 7px 14px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.1);
+  transition: background 0.2s ease;
+}
+.cr-reel-comments-more a:hover,
+.cr-reel-comments-empty a:hover {
+  background: var(--sout-orange);
 }
 .cr-reel-comments-empty {
   flex: 1 1 auto;
@@ -2502,15 +2652,32 @@ background: var(--White, #FFF);
 .cr-reel-comment {
   display: flex;
   align-items: flex-start;
-  gap: 10px;
+  gap: 12px;
+  padding: 10px 8px;
+  border-radius: 12px;
+  transition: background 0.2s ease;
+}
+.cr-reel-comment:hover {
+  background: rgba(255, 255, 255, 0.04);
 }
 .cr-reel-comment-avatar {
   flex: 0 0 auto;
-  width: 34px;
-  height: 34px;
+  width: 36px;
+  height: 36px;
   border-radius: 50%;
   object-fit: cover;
   background: #333;
+}
+/* no picture from the API: the name's first letter on a tinted circle */
+.cr-reel-comment-avatar.is-letter {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  font-size: 15px;
+  font-weight: 700;
+  line-height: 1;
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.12);
 }
 .cr-reel-comment-body {
   flex: 1 1 auto;
@@ -2518,24 +2685,36 @@ background: var(--White, #FFF);
 }
 .cr-reel-comment-meta {
   display: flex;
-  align-items: center;
-  gap: 8px;
-  margin-bottom: 2px;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 2px 8px;
+  margin-bottom: 3px;
 }
 .cr-reel-comment-user {
   font-size: 13px;
   font-weight: 700;
+  color: #fff;
+  /* Latin handles in an Arabic thread keep their own direction */
+  unicode-bidi: plaintext;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 .cr-reel-comment-time {
   font-size: 11px;
-  color: #9a9a9a;
+  color: #8f8f8f;
 }
 .cr-reel-comment-text {
   margin: 0;
-  font-size: 13.5px;
-  line-height: 1.6;
-  color: #e8e8e8;
+  font-size: 14px;
+  line-height: 1.65;
+  color: #e6e6e6;
   overflow-wrap: anywhere;
+  /* each comment reads in its own language's direction */
+  unicode-bidi: plaintext;
+  text-align: start;
+  white-space: pre-line;
 }
 .cr-reel-comment-like {
   flex: 0 0 auto;
@@ -2543,7 +2722,8 @@ background: var(--White, #FFF);
   flex-direction: column;
   align-items: center;
   gap: 2px;
-  padding: 0;
+  min-width: 24px;
+  padding: 4px 0 0;
   border: none;
   background: transparent;
   color: #bdbdbd;
@@ -3374,15 +3554,18 @@ display:none;
    null) — and the loading skeleton has none either — so whichever section
    comes first under the profile card — the collaborations, or the
    collaboration steps — has to clear the card's
-   overhanging bottom half itself, as .cr-content-detail-section does. */
-.cr-page main > section:first-child:not(.cr-content-detail-section),
-.cr-page main > [aria-busy] > section:first-child {
+   overhanging bottom half itself, as .cr-content-detail-section does.
+   Scoped to the profile page (the header holding .cr-detail-header): the
+   /creators listing shares .cr-page, and its grid — also main's first
+   section — was getting the 270px too. */
+.cr-page header:has(.cr-detail-header) + main > section:first-child:not(.cr-content-detail-section),
+.cr-page header:has(.cr-detail-header) + main > [aria-busy] > section:first-child {
   padding-top: 270px;
 }
 @media (max-width: 767.98px) {
   /* no overlap on phones (the card sits in the flow) */
-  .cr-page main > section:first-child:not(.cr-content-detail-section),
-  .cr-page main > [aria-busy] > section:first-child {
+  .cr-page header:has(.cr-detail-header) + main > section:first-child:not(.cr-content-detail-section),
+  .cr-page header:has(.cr-detail-header) + main > [aria-busy] > section:first-child {
     padding-top: 40px;
   }
 }

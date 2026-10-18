@@ -90,6 +90,8 @@ export type ContentReel = {
   collaborators?: string[];
   /** ISO 8601, e.g. "2026-09-11T11:07:11+0000". */
   posted_at?: string | null;
+  /** the category slugs the reel is filed under (what `?category=` matches) */
+  categories?: string[];
   sort_order?: number;
 };
 

@@ -1,0 +1,94 @@
+/* The "back to the platform · or go to the sister brand" line above the
+   حاضنة صوت (IncubatorNav) and صوت ميديا (MediaNav) bars.
+
+   Both links reuse their bar's own back-link class (.inc-nav-back /
+   .sm-nav-back), so colours, sizes, the hover pill and the dark-hero
+   overrides (course hero, works hero) apply to the new link unchanged. Those
+   classes cancel their hover padding with negative margins; inside this
+   group the links sit side by side, so the margins move to the group. */
+
+.nav-switch {
+  display: inline-flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 4px 6px;
+  min-width: 0;
+}
+
+.nav-switch > .inc-nav-back,
+.nav-switch > .sm-nav-back {
+  margin: 0;
+}
+
+.inc-nav-top .nav-switch {
+  margin: -8px -14px;
+}
+
+.sm-nav-back-row .nav-switch {
+  margin: -6px -12px;
+}
+
+/* "أو" */
+.nav-switch-or {
+  font-size: 12px;
+  font-weight: 500;
+  color: #9a9a9a;
+}
+
+/* the cross link looks exactly like the back link (its bar's own class);
+   only its trailing chevron is laid out here */
+.nav-switch > .nav-switch-cross {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.nav-switch > .nav-switch-cross i {
+  font-size: 11px;
+  color: inherit !important;
+  transition: transform 0.2s ease;
+}
+
+.nav-switch > .nav-switch-cross:hover i {
+  transform: translateX(-3px);
+}
+
+/* English: the chevron points the other way */
+[dir="ltr"] .nav-switch > .nav-switch-cross i {
+  transform: scaleX(-1);
+}
+
+[dir="ltr"] .nav-switch > .nav-switch-cross:hover i {
+  transform: translateX(3px) scaleX(-1);
+}
+
+/* dark heroes (works listing; course hero below lg) already turn the back
+   links white — soften "أو" to match */
+.sm-wp-hero .nav-switch-or {
+  color: rgba(255, 255, 255, 0.7);
+}
+
+@media (max-width: 991.98px) {
+  .crs-hero .nav-switch-or {
+    color: rgba(255, 255, 255, 0.7);
+  }
+}
+
+/* phones: smaller pill */
+@media (max-width: 575.98px) {
+  .nav-switch {
+    gap: 4px;
+  }
+  .nav-switch > .inc-nav-back,
+  .nav-switch > .sm-nav-back {
+    padding: 6px 10px;
+    font-size: 12.5px;
+  }
+  .inc-nav-top .nav-switch,
+  .sm-nav-back-row .nav-switch {
+    margin: -6px -10px;
+  }
+  .nav-switch-or {
+    font-size: 11px;
+  }
+}

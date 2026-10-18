@@ -9,6 +9,7 @@ import "@/styles/owl-preinit.css";
 /* every inner page's hero at the team hero's size */
 import "@/styles/hero-size.css";
 import SiteFooter from "@/components/site/SiteFooter";
+import HeroRatioSync from "@/components/site/HeroRatioSync";
 
 export default function MainLayout({
   children,
@@ -19,6 +20,7 @@ export default function MainLayout({
     <>
       {children}
       <SiteFooter />
+      <HeroRatioSync />
     </>
   );
 }

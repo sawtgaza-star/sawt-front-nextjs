@@ -242,9 +242,18 @@ export type HomeReviewReel = {
   comment_items?: HomeReviewComment[];
   views?: number | null;
   reach?: number | null;
-  collaborators?: string[];
+  /** The reel's Instagram collab invites. The API sends objects
+      (`{ id, username, invite_status: "Accepted" | "Pending" }`); a bare
+      username string is accepted too. */
+  collaborators?: (string | HomeReelCollaborator)[];
   posted_at?: string | null;
   sort_order?: number;
+};
+
+export type HomeReelCollaborator = {
+  id?: string | number;
+  username?: string | null;
+  invite_status?: string | null;
 };
 
 /** A reply under a comment. Same provisional-names caveat as the comment. */

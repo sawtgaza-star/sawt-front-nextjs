@@ -19,16 +19,30 @@
   .cr-header:not(.ct-header):not(.cr-detail-header),
   .about-header,
   header.sm-wp-hero {
-    aspect-ratio: 1783 / 592;
+    /* the API image's own ratio (HeroRatioSync), so `cover` shows all of it */
+    aspect-ratio: var(--hero-ratio, 1783 / 592);
   }
 
   /* The text block: the same padding on both families (the about-style one had
      100/90 and outgrew the ratio), weighted toward the top so the breadcrumb,
      title and description sit lower in the box — the room is moved from below
      the text to above it, not added, so the box keeps its height. */
+  /* The text block sits vertically centred in the room left under the nav:
+     the box is a column and the text takes equal auto margins above/below. */
+  .cr-header:not(.ct-header):not(.cr-detail-header),
+  .about-header {
+    display: flex;
+    flex-direction: column;
+  }
   .cr-header:not(.ct-header):not(.cr-detail-header) .cr-hero,
   .about-header .about-hero {
-    padding-top: 110px;
-    padding-bottom: 10px;
+    margin-block: auto;
+    padding-top: 30px;
+    padding-bottom: 30px;
+  }
+  header.sm-wp-hero .sm-wp-hero-text {
+    margin-block: auto;
+    padding-top: 30px;
+    padding-bottom: 30px;
   }
 }

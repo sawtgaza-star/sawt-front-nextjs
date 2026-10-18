@@ -21,7 +21,7 @@ export default function AboutIntro({
       {" "}
       <div
         className="about-sec container"
-        style={{ marginTop: "50px", zIndex: 1 }}
+        style={{ marginTop: "20px", zIndex: 1 }}
       >
         {" "}
         <div className="row align-items-center">

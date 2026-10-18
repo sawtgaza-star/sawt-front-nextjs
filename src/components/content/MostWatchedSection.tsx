@@ -190,6 +190,7 @@ export default function MostWatchedSection({
                 card={reel}
                 index={i}
                 onOpen={setOpenIndex}
+                fallbackPoster={null}
               />
             ))
           )}

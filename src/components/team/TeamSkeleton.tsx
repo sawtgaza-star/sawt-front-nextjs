@@ -101,6 +101,12 @@ export function TeamProfileSkeleton() {
                 </span>
               </p>
             </div>
+            <h2 className="team-detail-about-title">
+              <SkeletonText chars={8} />
+            </h2>
+            <p className="team-detail-bio">
+              <SkeletonText chars={420} />
+            </p>
             <span className="team-detail-work-btn">
               <span>
                 <SkeletonText chars={30} />
@@ -108,7 +114,10 @@ export function TeamProfileSkeleton() {
               <i className="fa-solid fa-chevron-left"></i>
             </span>
           </div>
-          <div className="team-detail-photo" />
+          <div className="team-detail-photo">
+            {/* a light mic-shaped placeholder where the portrait lands */}
+            <span className="team-detail-mic-sk" />
+          </div>
         </div>
       </div>
     </section>
