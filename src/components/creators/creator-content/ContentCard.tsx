@@ -12,7 +12,9 @@ const FALLBACK_POSTER = "/assets/images/1.png";
 /* A single reel card: video paused on its first frame. Its play button opens
    the full-screen reel viewer. Elapsed time at the top and a bottom control
    bar (rewind · scrub · forward). */
-export default function ContentCard({ card, index, onOpen }) {
+/* `fallbackPoster`: what replaces a cover that fails to load — the stock
+   poster by default; null (محتوانا) shows only the API's image or nothing. */
+export default function ContentCard({ card, index, onOpen, fallbackPoster = FALLBACK_POSTER }) {
   const {
     videoRef,
     progressRef,
@@ -37,7 +39,7 @@ export default function ContentCard({ card, index, onOpen }) {
     let alive = true;
     const probe = new Image();
     probe.onerror = () => {
-      if (alive) setPoster(FALLBACK_POSTER);
+      if (alive) setPoster(fallbackPoster || undefined);
     };
     probe.src = card.poster;
     return () => {

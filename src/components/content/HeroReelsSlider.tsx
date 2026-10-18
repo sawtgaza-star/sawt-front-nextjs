@@ -5,6 +5,7 @@ import { Autoplay } from "swiper/modules";
 import type { Swiper as SwiperClass } from "swiper";
 import "swiper/css";
 import "swiper/css/autoplay";
+import type { HeroSlide } from "./content-data";
 
 /* The fan: a size GRADIENT out from the focused poster. Each whole step away
    (Swiper's slide progress: 0 for the focus, ±1 its neighbours, ±2 …; POSITIVE
@@ -74,9 +75,6 @@ function fanPose(progress: number, width: number, gap: number, centres: number[]
   };
 }
 
-/** Shown in place of a cover that can't be loaded (an expired link). */
-const FALLBACK_POSTER = "/assets/images/1.png";
-
 type FanSlide = HTMLElement & { progress?: number };
 
 /* Entrance spin: on arriving at the page the strip rolls through at least
@@ -134,9 +132,17 @@ type LoopSwiper = SwiperClass & { loopFix: () => void; setTransition: (ms: numbe
    Sign note: a POSITIVE progress is a slide to the RIGHT of the focused one
    (see FAN_STEPS).
 
-   `slides` are the poster URLs the API's `hero.items` sent, already padded out
-   for the loop by heroSlides() — see content-data. */
-export default function HeroReelsSlider({ slides }: { slides: string[] }) {
+   `slides` are the reels' thumbnails (else the API's `hero.items`), already
+   padded out for the loop by heroSlides() — see content-data. A tap on a
+   reel's poster calls `onSelect` with its id; Swiper's own click event only
+   fires for a tap, never at the end of a drag. */
+export default function HeroReelsSlider({
+  slides,
+  onSelect,
+}: {
+  slides: HeroSlide[];
+  onSelect?: (reelId: string) => void;
+}) {
   const spinFrame = useRef<number | undefined>(undefined);
   useEffect(() => () => window.cancelAnimationFrame(spinFrame.current ?? 0), []);
 
@@ -295,17 +301,25 @@ export default function HeroReelsSlider({ slides }: { slides: string[] }) {
         onSetTranslate={fan}
         onResize={fan}
         onSetTransition={syncTransition}
+        onClick={(swiper) => {
+          const id = (swiper.clickedSlide as HTMLElement | undefined)?.dataset.reelId;
+          if (id && onSelect) onSelect(id);
+        }}
       >
-        {slides.map((src, index) => (
-          <SwiperSlide key={index} className="ct-hero-slide">
+        {slides.map(({ src, reelId }, index) => (
+          <SwiperSlide
+            key={index}
+            className={"ct-hero-slide" + (reelId && onSelect ? " is-link" : "")}
+            data-reel-id={reelId}
+          >
             <div className="ct-hero-thumb">
-              {/* an expired Instagram cover falls back to the stock poster */}
+              {/* only the API's image: one that fails to load is hidden, not
+                  swapped for a stock poster */}
               <img
                 src={src}
                 alt=""
                 onError={(e) => {
-                  const img = e.currentTarget;
-                  if (!img.src.endsWith(FALLBACK_POSTER)) img.src = FALLBACK_POSTER;
+                  e.currentTarget.style.visibility = "hidden";
                 }}
               />
             </div>

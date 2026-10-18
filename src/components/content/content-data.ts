@@ -1,8 +1,8 @@
 /* Local data for the "محتوانا" page.
 
    The hero's copy, its backdrop and its poster strip come from
-   GET /pages/content (see lib/api/content) — HERO_SLIDES below is only the
-   fallback the strip shows when the payload carries no posters.
+   GET /pages/content (see lib/api/content). Nothing is bundled: with no
+   posters in the payload the strip is simply not drawn.
 
    The reels are the API's too, now that it serves them: the bundled demo reel
    and the rows built out of it are gone, and `reelsFromApi` below is the one
@@ -22,21 +22,20 @@ import type {
 } from "@/lib/api/content";
 import { bySortOrder } from "./content-text";
 
-/* hero coverflow fallback — the bundled poster, repeated enough times that the
-   carousel can loop with nine of them on screen */
-export const HERO_SLIDES = Array.from({ length: 20 }, () => "/assets/images/1.png");
-
 /* Swiper's loop needs more slides than it shows at once, and the widest
    breakpoint shows nine; the API sends nine posters. So the strip repeats the
-   payload until it is at least this long — the same trick HERO_SLIDES uses,
-   and what keeps the fan turning instead of snapping back at the last poster. */
+   payload until it is at least this long — what keeps the fan turning instead of snapping back at the last poster. */
 const MIN_HERO_SLIDES = 20;
 
-/** The poster URLs the hero strip cycles, padded out for the loop. */
-export function heroSlides(images: string[]): string[] {
-  const posters = images.filter(Boolean);
-  if (posters.length === 0) return HERO_SLIDES;
-  const padded: string[] = [];
+/** One poster of the hero strip: its image, and the reel it stands for when
+    it is a reel's thumbnail (a tap on it then scrolls to that reel). */
+export type HeroSlide = { src: string; reelId?: string };
+
+/** The posters the hero strip cycles, padded out for the loop. */
+export function heroSlides(slides: HeroSlide[]): HeroSlide[] {
+  const posters = slides.filter((slide) => slide.src);
+  if (posters.length === 0) return [];
+  const padded: HeroSlide[] = [];
   while (padded.length < MIN_HERO_SLIDES) padded.push(...posters);
   return padded;
 }
@@ -113,13 +112,30 @@ export function sortReels(list: Reel[], sort: SortValue): Reel[] {
    insights and `likes` when it isn't — the payload nulls `views` in that case,
    and the sort labelled "الأكثر مشاهدة" would otherwise have nothing to order
    by. Neither number is rendered; this only decides the order. */
-export function reelsFromApi(items: ContentReel[] | undefined): Reel[] {
+export function reelsFromApi(
+  items: ContentReel[] | undefined,
+  categories: ContentCategory[] = [],
+  lang = "ar",
+): Reel[] {
+  // a reel's category slugs → the pills' names (unknown slugs are dropped)
+  const names = new Map(
+    categories
+      .filter((c) => c.slug && c.slug !== "all")
+      .map((c) => [c.slug as string, localized(c.name, lang)]),
+  );
   return bySortOrder(items)
-    .map((item, index) => ({
+    .map((item, index) => {
+      const details = reelDetails(item);
+      details.categoryLabels = details.categories
+        .map((slug) => names.get(slug) || "")
+        .filter(Boolean);
+      return { item, index, details };
+    })
+    .map(({ item, index, details }) => ({
       id: item.id ?? index,
       video: item.video_url || "",
       poster: item.thumbnail || undefined,
-      details: reelDetails(item),
+      details,
       views: item.views ?? item.likes ?? undefined,
       publishedAt: item.posted_at ?? undefined,
     }))

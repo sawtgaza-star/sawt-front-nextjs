@@ -55,6 +55,12 @@ export function formatFollowers(count: number | null | undefined): string {
   return `${trimZero(thousands)}K`;
 }
 
+/* Instagram timestamps end in "+0000", which Safari can't parse until it
+   reads "+00:00". */
+export function instagramIso(raw: string | null | undefined): string {
+  return (raw || "").replace(/([+-]\d{2})(\d{2})$/, "$1:$2");
+}
+
 /* A reel's view count is compacted the same way — "200k مشاهدة" is how the
    design writes it, and the API sends the raw number. */
 export function formatViews(count: number | null | undefined): string {

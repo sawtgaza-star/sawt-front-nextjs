@@ -5,7 +5,7 @@ import BreadcrumbHome from "@/components/site/BreadcrumbHome";
 import { localized } from "@/lib/api/pages";
 import type { ContentHeroContent } from "@/lib/api/content";
 import { bySortOrder } from "./content-text";
-import { heroSlides } from "./content-data";
+import { heroSlides, type HeroSlide } from "./content-data";
 import { ContentHeroSkeleton, ContentPostersSkeleton } from "./ContentSkeleton";
 
 /* Breadcrumb hero for the محتوانا page. Reuses the creators/team hero classes
@@ -28,13 +28,16 @@ import { ContentHeroSkeleton, ContentPostersSkeleton } from "./ContentSkeleton";
    custom property the rule reads, whose fallback is the bundled image. */
 export default function ContentHero({
   data,
-  fallbackPosters = [],
+  reelPosters = [],
+  onSelectReel,
   lang = "ar",
   loading = false,
 }: {
   data?: ContentHeroContent;
-  /** Covers to fan out when `hero.items` is empty — the reels' thumbnails. */
-  fallbackPosters?: string[];
+  /** The reels' thumbnails — what the strip fans out; a tap on one scrolls
+      down to that reel (`onSelectReel`). */
+  reelPosters?: HeroSlide[];
+  onSelectReel?: (reelId: string) => void;
   lang?: string;
   /** The payload is still on its way — hold the hero's height with bars. */
   loading?: boolean;
@@ -42,11 +45,13 @@ export default function ContentHero({
   const title = localized(data?.title, lang);
   const description = localized(data?.description, lang);
   const backdrop = data?.image_url;
-  const heroPosters = bySortOrder(data?.items)
-    .map((poster) => poster.image_url || "")
-    .filter(Boolean);
-  // the editor's posters first; else the reels' own covers, not the stock image
-  const posters = heroPosters.length ? heroPosters : fallbackPosters.filter(Boolean);
+  const heroPosters: HeroSlide[] = bySortOrder(data?.items)
+    .map((poster) => ({ src: poster.image_url || "" }))
+    .filter((poster) => poster.src);
+  // the reels' own thumbnails first (each leads to its video below); else the
+  // editor's `hero.items`; else no strip
+  const reels = reelPosters.filter((poster) => poster.src);
+  const posters = reels.length ? reels : heroPosters;
 
   return (
     <header>
@@ -82,9 +87,9 @@ export default function ContentHero({
           <div className="ct-hero-slider">
             <ContentPostersSkeleton />
           </div>
-        ) : (
-          <HeroReelsSlider slides={heroSlides(posters)} />
-        )}
+        ) : posters.length ? (
+          <HeroReelsSlider slides={heroSlides(posters)} onSelect={onSelectReel} />
+        ) : null}
       </div>
     </header>
   );

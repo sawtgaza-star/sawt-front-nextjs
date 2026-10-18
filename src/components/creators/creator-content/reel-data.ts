@@ -42,6 +42,13 @@ export type ApiReelSocial = {
   comments_count?: number | null;
   comment_items?: ApiReelComment[] | null;
   posted_at?: string | null;
+  /** Instagram insights — null unless the backend's token is scoped for them */
+  views?: number | null;
+  reach?: number | null;
+  /** usernames of the post's collaborators */
+  collaborators?: string[] | null;
+  /** category slugs the reel is filed under */
+  categories?: string[] | null;
 };
 
 export type ReelComment = {
@@ -64,6 +71,13 @@ export type ReelDetails = {
   comments: ReelComment[];
   /** ISO date */
   postedAt: string;
+  /** null when the API has no insight for it (not 0 — unknown) */
+  views: number | null;
+  reach: number | null;
+  collaborators: string[];
+  /** category slugs; the page resolves them to names (`categoryLabels`) */
+  categories: string[];
+  categoryLabels?: string[];
 };
 
 /** Stand-in picture for an account the API sends no avatar for. */
@@ -80,6 +94,35 @@ export function cleanCaption(raw: string): string {
 
 function count(value: number | null | undefined): number {
   return typeof value === "number" && Number.isFinite(value) ? value : 0;
+}
+
+function maybeCount(value: number | null | undefined): number | null {
+  return typeof value === "number" && Number.isFinite(value) ? value : null;
+}
+
+function names(list: string[] | null | undefined): string[] {
+  return Array.isArray(list)
+    ? list.map((n) => String(n || "").trim()).filter(Boolean)
+    : [];
+}
+
+/** 14095 → "14K" / "14 ألف" — Latin digits in Arabic too. */
+export function formatCount(n: number, lang: string): string {
+  return new Intl.NumberFormat(lang === "en" ? "en" : "ar-u-nu-latn", {
+    notation: "compact",
+    maximumFractionDigits: 1,
+  }).format(n);
+}
+
+/** "24 أغسطس 2026" / "Aug 24, 2026"; "" without a valid date. */
+export function formatDate(iso: string, lang: string): string {
+  const t = Date.parse(iso);
+  if (!iso || Number.isNaN(t)) return "";
+  return new Intl.DateTimeFormat(lang === "en" ? "en" : "ar-u-nu-latn", {
+    day: "numeric",
+    month: "long",
+    year: "numeric",
+  }).format(t);
 }
 
 /* Instagram writes the offset without a colon ("…T23:27:52+0000"), which not
@@ -116,6 +159,10 @@ export function reelDetails(item: ApiReelSocial, lang = "ar"): ReelDetails {
     commentsCount: Math.max(count(item.comments_count), comments.length),
     comments,
     postedAt: item.posted_at || "",
+    views: maybeCount(item.views),
+    reach: maybeCount(item.reach),
+    collaborators: names(item.collaborators),
+    categories: names(item.categories),
   };
 }
 

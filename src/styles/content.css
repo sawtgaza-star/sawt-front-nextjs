@@ -241,6 +241,121 @@ filter: drop-shadow(0 0 12px rgba(255, 255, 255, 0.75)) drop-shadow(0 4px 10px #
   aspect-ratio: 9 / 16;
   border-radius: 18px;
 }
+/* the grid's thumbnail card (ReelThumbCard): the whole card opens the viewer,
+   and the play cue shows on keyboard focus as it does on hover; on touch
+   screens (no hover) it stays visible so the card reads as playable */
+.ct-thumb-card {
+  cursor: pointer;
+  background: #e9ece4;
+}
+.ct-thumb-card:focus-visible {
+  outline: 3px solid #e85d04;
+  outline-offset: 3px;
+}
+.ct-thumb-card:focus-visible .cr-content-play {
+  opacity: 1;
+}
+@media (hover: none) {
+  .ct-thumb-card .cr-content-play {
+    opacity: 1;
+  }
+}
+
+/* the thumbnail card's overlays: how long ago (top corner) and the reel's
+   numbers on a soft shade along the bottom */
+.ct-thumb-age {
+  position: absolute;
+  top: 10px;
+  inset-inline-start: 10px;
+  z-index: 2;
+  padding: 3px 9px;
+  border-radius: 999px;
+  background: rgba(0, 0, 0, 0.45);
+  color: #fff;
+  font-size: 11px;
+  font-weight: 600;
+  line-height: 1.4;
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+}
+.ct-thumb-stats {
+  position: absolute;
+  inset: auto 0 0 0;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 36px 14px 12px;
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.62), transparent);
+  color: #fff;
+  font-size: 13px;
+  font-weight: 700;
+  pointer-events: none;
+}
+.ct-thumb-stats span {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  direction: ltr;
+}
+.ct-thumb-stats i {
+  font-size: 12px;
+  opacity: 0.9;
+}
+
+/* a hero-strip poster that stands for a reel leads to its card below */
+.ct-hero-slide.is-link .ct-hero-thumb {
+  cursor: pointer;
+}
+
+/* The card a hero-strip tap scrolled to (~3s, ContentGrid): no border — the
+   whole page goes very softly out of focus (a fixed blur layer from
+   body.ct-focus-mode) while a sharp copy of the card (.ct-focus-clone, pinned
+   over the real one by ContentGrid) sits above it, a touch raised. */
+body::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  /* over the pinned header (1000) too, under the join modal (2000) */
+  z-index: 1500;
+  pointer-events: none;
+  backdrop-filter: blur(3px);
+  -webkit-backdrop-filter: blur(3px);
+  background: rgba(20, 24, 16, 0.06);
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.3s ease, visibility 0s linear 0.3s;
+}
+body.ct-focus-mode::after {
+  opacity: 1;
+  visibility: visible;
+  transition: opacity 0.22s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+.ct-focus-clone {
+  position: fixed;
+  z-index: 1501;
+  margin: 0;
+  border-radius: 18px;
+  pointer-events: none;
+  box-shadow: 0 24px 50px -12px rgba(0, 0, 0, 0);
+  /* a quick spring-like rise: fast start, soft landing */
+  transition:
+    transform 0.28s cubic-bezier(0.2, 0.8, 0.2, 1),
+    box-shadow 0.28s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+.ct-focus-clone.is-shown {
+  transform: translateY(-4px) scale(1.04);
+  box-shadow: 0 24px 50px -12px rgba(0, 0, 0, 0.35);
+}
+.ct-focus-clone .cr-content-play {
+  opacity: 1;
+}
+@media (prefers-reduced-motion: reduce) {
+  .ct-focus-clone.is-shown {
+    transform: none;
+  }
+}
+
 /* mock badge is a dark translucent pill, not the green one */
 .ct-page .cr-content-time {
   background: rgba(0, 0, 0, 0.45);

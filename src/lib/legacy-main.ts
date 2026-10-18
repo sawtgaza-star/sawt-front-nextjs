@@ -976,7 +976,12 @@ function initReelSeek() {
     };
 
     video.addEventListener("loadedmetadata", updateTime);
+    /* أثناء السحب على الشريط نحن من يرسم التقدّم، فلا ندع timeupdate يعيده
+       إلى الخلف ويُحدث ارتجافاً */
+    let scrubbing = false;
+
     video.addEventListener("timeupdate", () => {
+      if (scrubbing) return;
       if (video.duration) {
         fill.style.width = (video.currentTime / video.duration) * 100 + "%";
       }
@@ -984,63 +989,66 @@ function initReelSeek() {
     });
     updateTime();
 
-    const seek = (clientX) => {
+    /* تقديم/ترجيع سلس: الضغط على الشريط يبدأ السحب فوراً ويمسك المؤشر، فلا
+       يتحول أي انحراف عمودي إلى تبديل للريلز (حاوية الريلز تتجاهل الضغط على
+       .reel-seekbar). الشريط والوقت يُرسمان مع كل حركة، أما currentTime فيُضبط
+       مرة واحدة لكل إطار، والفيديو يتوقف أثناء السحب ثم يعود كما كان. */
+    let wasPlaying = false;
+    let raf = 0;
+    let target = 0;
+
+    const ratioAt = (clientX) => {
       const rect = bar.getBoundingClientRect();
-      let ratio = (clientX - rect.left) / rect.width;
-      ratio = Math.min(Math.max(ratio, 0), 1);
-      if (video.duration) {
-        video.currentTime = ratio * video.duration;
-        fill.style.width = ratio * 100 + "%";
-        updateTime();
-      }
+      if (!rect.width) return 0;
+      return Math.min(Math.max((clientX - rect.left) / rect.width, 0), 1);
     };
 
-    /* الضغط على الشريط لم يعد ينقل الوقت فوراً: قد تكون بدايةَ سحبٍ عمودي
-       لتبديل الريل. ننتظر اتجاه الحركة — أفقي ⇒ تقديم/ترجيع، عمودي ⇒ نترك
-       الحركة لسحب الريلز فلا يتغيّر موضع الفيديو. النقرة المجرّدة (بلا حركة)
-       تبقى تنقل الوقت كما كانت. */
-    let seeking = false;
-    let pending = false;
-    let downX = 0;
-    let downY = 0;
+    const applySeek = () => {
+      raf = 0;
+      if (video.duration) video.currentTime = target * video.duration;
+    };
+
+    const scrubTo = (clientX) => {
+      target = ratioAt(clientX);
+      fill.style.width = target * 100 + "%";
+      if (timeEl && video.duration) {
+        timeEl.textContent = formatTime(target * video.duration);
+      }
+      if (!raf) raf = requestAnimationFrame(applySeek);
+    };
+
+    const endScrub = (e) => {
+      if (!scrubbing) return;
+      scrubbing = false;
+      if (raf) cancelAnimationFrame(raf);
+      applySeek();
+      bar.classList.remove("scrubbing");
+      try {
+        bar.releasePointerCapture(e.pointerId);
+      } catch (err) {}
+      if (wasPlaying) video.play().catch(() => {});
+    };
 
     bar.addEventListener("pointerdown", (e) => {
-      pending = true;
-      seeking = false;
-      downX = e.clientX;
-      downY = e.clientY;
+      if (e.pointerType === "mouse" && e.button !== 0) return;
+      e.preventDefault();
+      scrubbing = true;
+      wasPlaying = !video.paused;
+      if (wasPlaying) video.pause();
+      bar.classList.add("scrubbing");
+      try {
+        bar.setPointerCapture(e.pointerId);
+      } catch (err) {}
+      scrubTo(e.clientX);
     });
 
     bar.addEventListener("pointermove", (e) => {
-      if (seeking) {
-        seek(e.clientX);
-        return;
-      }
-      if (!pending) return;
-      const dx = e.clientX - downX;
-      const dy = e.clientY - downY;
-      if (Math.abs(dy) > 4 && Math.abs(dy) >= Math.abs(dx)) {
-        pending = false; // سحب عمودي — يخصّ تبديل الريلز وحده
-        return;
-      }
-      if (Math.abs(dx) > 4) {
-        seeking = true;
-        try {
-          bar.setPointerCapture(e.pointerId);
-        } catch (err) {}
-        seek(e.clientX);
-      }
+      if (scrubbing) scrubTo(e.clientX);
     });
 
-    bar.addEventListener("pointerup", (e) => {
-      if (pending && !seeking) seek(e.clientX);
-      pending = false;
-      seeking = false;
-    });
-    bar.addEventListener("pointercancel", () => {
-      pending = false;
-      seeking = false;
-    });
+    bar.addEventListener("pointerup", endScrub);
+    bar.addEventListener("pointercancel", endScrub);
+    bar.addEventListener("lostpointercapture", endScrub);
   });
 }
 
@@ -1112,8 +1120,8 @@ function initReelsDrag(container) {
   container.addEventListener("pointerdown", (e) => {
     moved = false;
     if (e.pointerType !== "mouse" || e.button !== 0) return;
-    // الضغط على أزرار الحفظ/الإعجاب/المشاركة ليس سحباً
-    if (e.target.closest(".reel-actions")) return;
+    // الضغط على أزرار الحفظ/الإعجاب/المشاركة أو على شريط التقدّم ليس سحباً
+    if (e.target.closest(".reel-actions") || e.target.closest(".reel-seekbar")) return;
     dragging = true;
     startX = e.clientX;
     startY = e.clientY;

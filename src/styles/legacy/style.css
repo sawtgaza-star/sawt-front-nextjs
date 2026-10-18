@@ -5833,14 +5833,14 @@ svg {
 /* ≥992px the photo starts level with the first line of the paragraph (under
    the "من صوت" heading) instead of centring on the text column: top-align the
    row and drop the photo by the text's offset — .about-sec-content's 20px pad
-   + the title's 50px margin-top, ~48px line and 26px margin-bottom, plus ~6px
+   + the title's 10px margin-top, ~48px line and 26px margin-bottom, plus ~6px
    so it meets the letters rather than the line box. */
 @media (min-width: 992px) {
   .about-sec > .row {
     align-items: flex-start !important;
   }
   .about-sec-img-col {
-    margin-top: 150px !important;
+    margin-top: 110px !important;
   }
 }
 
@@ -5885,7 +5885,7 @@ svg {
   font-weight: 800;
   color: rgba(30, 30, 30, 1);
   margin-bottom: 26px;
-  margin-top: 50px;
+  margin-top: 10px;
   /* ..... */
 
   background-image: url("/assets/images/stroke_peach_top_transparent.png");

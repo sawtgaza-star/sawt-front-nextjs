@@ -12,7 +12,7 @@
    photo for a plain white header, so this stays desktop/tablet-only. */
 @media (min-width: 768px) {
   .team-page .cr-header {
-    aspect-ratio: 1783 / 592;
+    aspect-ratio: var(--hero-ratio, 1783 / 592);
     background-position: center bottom !important;
   }
 }
@@ -274,8 +274,8 @@ left: 12px;
 /* With the API's `mic_background_url` (TeamMemberProfile passes it as
    --mic-bg) the whole grid becomes one rounded card.
 
-   The uploaded backdrop (2089×832) carries its art — the green burst — between
-   ~10% and ~56% of its width, centred at ~32.5%; the rest is plain white. It is
+   The uploaded backdrop (2179×832) carries its art — the green burst — between
+   ~13% and ~58% of its width, centred at ~36%; the rest is plain white. It is
    drawn at the card's full width (100% auto, so those percentages hold at any
    card height; extra height is white like the image's own edges), and:
    - the text column starts at 58% of the card, clear of the burst;
@@ -322,14 +322,15 @@ left: 12px;
   border-radius: 0;
   overflow: visible;
 }
-/* the mic is centred in the column minus 12% on its outer side: 12% of this
-   58% column ≈ 7% of the card, so its centre lands at (7% + 58%) / 2 ≈ 32.5%
-   — the burst's centre (outer side = right in LTR, left in RTL) */
+/* the mic is centred in the column minus 23% on its outer side: 23% of this
+   58% column ≈ 13.4% of the card, so its centre lands at (13.4% + 58%) / 2 ≈
+   35.7% — the burst's centre in the current 2179×832 upload (outer side =
+   right in LTR, left in RTL) */
 .team-detail-grid.has-bg .team-detail-photo img {
-  inset: 0 12% 0 0;
+  inset: 0 23% 0 0;
 }
 [dir="rtl"] .team-detail-grid.has-bg .team-detail-photo img {
-  inset: 0 0 0 12%;
+  inset: 0 0 0 23%;
 }
 /* Stacked (mic on top, text below): the backdrop is drawn at twice the card
    width from its top-left corner, which lands the burst behind the mic. */
@@ -385,7 +386,7 @@ left: 12px;
   margin: auto;
   width: auto;
   max-width: 100%;
-  height: 92%;
+  height: 86%;
   object-fit: contain;
   display: block;
   transition: opacity 0.3s ease;

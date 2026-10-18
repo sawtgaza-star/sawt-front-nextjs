@@ -1,11 +1,14 @@
 "use client";
 import { useState } from "react";
-import type { PointerEvent as ReactPointerEvent, RefObject } from "react";
+import type { PointerEvent as ReactPointerEvent, ReactNode, RefObject } from "react";
 import type { ReelMeta } from "./data";
 import { DEFAULT_AVATAR } from "./reel-data";
 import { fmtTime } from "./video-utils";
 import { IconFollow, IconFollowCheck } from "./reel-icons";
 import { useLang } from "@/lib/use-lang";
+import { linkifyCaption } from "./ReelExtra";
+
+const SAWT_MARK = encodeURI("/assets/images/شعار صوت اخضر.svg");
 
 type Props = {
   current: number;
@@ -15,6 +18,8 @@ type Props = {
   onProgressPointerDown: (e: ReactPointerEvent<HTMLDivElement>) => void;
   /** Who posted the reel, its caption and when — see ReelModal. */
   meta: ReelMeta;
+  /** the rest of the reel's details, under the caption (ReelExtra) */
+  extra?: ReactNode;
 };
 
 /* The bar across the bottom of the reel: creator + follow, caption, scrubber
@@ -27,9 +32,14 @@ export default function ReelInfo({
   progressRef,
   onProgressPointerDown,
   meta,
+  extra,
 }: Props) {
   const external = /^https?:/.test(meta.profile);
   const [following, setFollowing] = useState(false);
+  // a long caption opens to its full length on demand
+  const [expanded, setExpanded] = useState(false);
+  // no picture of its own: the platform's mark, not the stock silhouette
+  const brandAvatar = !meta.avatar || meta.avatar === DEFAULT_AVATAR;
   /* Rendered from tr(), not data-i18n — the viewer mounts long after
      applyTranslations() has walked the page. Same as ReelActions. */
   const { tr } = useLang();
@@ -37,7 +47,11 @@ export default function ReelInfo({
   return (
     <div className="cr-reel-info">
       <div className="cr-reel-user">
-        <img src={meta.avatar || DEFAULT_AVATAR} alt={meta.user} />
+        {brandAvatar ? (
+          <img src={SAWT_MARK} alt={meta.user} className="is-brand" />
+        ) : (
+          <img src={meta.avatar} alt={meta.user} />
+        )}
         {/* Plain <a>: the reel viewer runs inside the creators and content
             route groups, which load different stylesheets — the same reason
             the links in SiteNav are not <Link>. */}
@@ -67,7 +81,19 @@ export default function ReelInfo({
           </span>
         )}
       </div>
-      {meta.caption && <p className="cr-reel-caption">{meta.caption}</p>}
+      {meta.caption && (
+        <p
+          className={"cr-reel-caption" + (expanded ? " is-open" : "")}
+          onClick={(e) => {
+            e.stopPropagation();
+            setExpanded((x) => !x);
+          }}
+          title={expanded ? undefined : tr("reel_caption_more")}
+        >
+          {linkifyCaption(meta.caption)}
+        </p>
+      )}
+      {extra}
       <div className="cr-reel-progress-row">
         <span>{fmtTime(current)}</span>
         <div
@@ -82,7 +108,8 @@ export default function ReelInfo({
         </div>
         <span>{duration > 0 ? fmtTime(duration) : "--:--"}</span>
       </div>
-      {meta.posted && <span className="cr-reel-posted">{meta.posted}</span>}
+      {/* ReelExtra already carries the date (and how long ago) */}
+      {!extra && meta.posted && <span className="cr-reel-posted">{meta.posted}</span>}
     </div>
   );
 }

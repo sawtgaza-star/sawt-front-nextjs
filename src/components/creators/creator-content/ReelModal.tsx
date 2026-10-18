@@ -10,6 +10,7 @@ import ReelActions from "./ReelActions";
 import ReelComments from "./ReelComments";
 import ReelShare from "./ReelShare";
 import ReelInfo from "./ReelInfo";
+import ReelExtra from "./ReelExtra";
 import {
   IconRewind10,
   IconForward10,
@@ -295,6 +296,7 @@ export default function ReelModal({
           progressRef={progressRef}
           onProgressPointerDown={onProgressPointerDown}
           meta={info}
+          extra={<ReelExtra details={details} />}
         />
 
         {/* the sheet the rail opens, over the info bar */}

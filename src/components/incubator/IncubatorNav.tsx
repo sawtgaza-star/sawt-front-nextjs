@@ -7,6 +7,7 @@ import { resolveIncubatorNav } from "./incubator-nav-data";
 import IncubatorNavLinks from "./IncubatorNavLinks";
 import IncubatorNavSocial from "./IncubatorNavSocial";
 import "@/styles/nav-skeleton.css";
+import "@/styles/nav-switch.css";
 
 /* The incubator's own navbar — a white floating card over the hero gradient.
    Deliberately NOT SiteNav: the mock gives this page a reduced bar (back to
@@ -45,14 +46,24 @@ export default function IncubatorNav() {
       <div className="container">
         <div className="inc-nav">
           <div className="inc-nav-top">
-            <a className="inc-nav-back" href={nav.back.href}>
-              <i className="fa-solid fa-angle-right"></i>
-              {loading ? (
-                <span className="nsk-line" style={{ width: "112px" }} />
-              ) : (
-                <span>{nav.back.label}</span>
-              )}
-            </a>
+            {/* back to the platform · or across to the sister brand */}
+            <div className="nav-switch">
+              <a className="inc-nav-back" href={nav.back.href}>
+                <i className="fa-solid fa-angle-right"></i>
+                {loading ? (
+                  <span className="nsk-line" style={{ width: "112px" }} />
+                ) : (
+                  <span>{nav.back.label}</span>
+                )}
+              </a>
+              <span className="nav-switch-or" data-i18n="nav_switch_or">
+                أو
+              </span>
+              <a className="inc-nav-back nav-switch-cross" href="/media">
+                <span data-i18n="inc_nav_to_media">الذهاب إلى صوت ميديا</span>
+                <i className="fa-solid fa-angle-left"></i>
+              </a>
+            </div>
 
             {social}
           </div>

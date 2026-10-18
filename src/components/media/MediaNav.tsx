@@ -6,6 +6,7 @@ import { resolveMediaNav } from "./media-nav-data";
 import MediaNavMobile from "./MediaNavMobile";
 import NavUserMenu from "@/components/site/NavUserMenu";
 import "@/styles/nav-skeleton.css";
+import "@/styles/nav-switch.css";
 // the user menu's styles (.nav-user-*); every rule there is .nav-* scoped
 import "@/styles/site-nav.css";
 
@@ -33,13 +34,23 @@ export default function MediaNav({ base = "" }: { base?: string }) {
     <div className="sm-nav-wrap">
       <div className="container">
         <div className="sm-nav-back-row">
-          <a className="sm-nav-back" href={nav.back.href}>
-            {loading ? (
-              <span className="nsk-line" style={{ width: "112px" }} />
-            ) : (
-              <span>{nav.back.label}</span>
-            )}
-          </a>
+          {/* back to the platform · or across to the sister brand */}
+          <div className="nav-switch">
+            <a className="sm-nav-back" href={nav.back.href}>
+              {loading ? (
+                <span className="nsk-line" style={{ width: "112px" }} />
+              ) : (
+                <span>{nav.back.label}</span>
+              )}
+            </a>
+            <span className="nav-switch-or" data-i18n="nav_switch_or">
+              أو
+            </span>
+            <a className="sm-nav-back nav-switch-cross" href="/incubator">
+              <span data-i18n="sm_nav_to_incubator">الذهاب إلى حاضنة صوت</span>
+              <i className="fa-solid fa-angle-left"></i>
+            </a>
+          </div>
         </div>
 
         <nav className="sm-nav">

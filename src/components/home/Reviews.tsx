@@ -1,10 +1,13 @@
 // @ts-nocheck
 "use client";
 /* eslint-disable */
+import "@/styles/home-reels.css";
 import { useEffect } from "react";
 import { localized } from "@/lib/api/pages";
 import type { HomeReviews, HomeReviewReel } from "@/lib/api/home";
-import { bySortOrder, formatViews, splitHeading } from "./home-text";
+import { bySortOrder, splitHeading } from "./home-text";
+import ReviewReel from "./reviews/ReviewReel";
+import ReelsEmpty from "./reviews/ReelsEmpty";
 import { reviewComments } from "./reviews-data";
 import { useNearViewport } from "./use-near-viewport";
 
@@ -49,6 +52,17 @@ export default function Reviews({
     data?.reels_enabled === false
       ? []
       : bySortOrder(data?.reels).filter((reel) => reel.video_url);
+
+  /* Empty column: a feed failure (any `reels_status` but "ok", or no payload
+     at all) gets the error note, an empty but healthy feed the "no reels"
+     one — see ReelsEmpty. The API's raw `reels_message` is for developers. */
+  const reelsError =
+    !data || (data.reels_enabled !== false && !!data.reels_status && data.reels_status !== "ok");
+  useEffect(() => {
+    if (reelsError && data?.reels_message) {
+      console.warn("[reviews] reels unavailable:", data.reels_status, data.reels_message);
+    }
+  }, [reelsError, data]);
 
   /* The posters are attached only once the column nears the viewport — see
      use-near-viewport for why. Until then each reel is its own dark frame,
@@ -104,85 +118,15 @@ export default function Reviews({
             <div className="col-lg-3 col-md-6">
               <div className="review-reels reels-container" id="reelsContainer" ref={reelsRef}>
                 {reels.map((reel, index) => (
-                  <div className="reel-item" data-index={index} key={reel.id ?? index}>
-                    <div className="reel-media">
-                      <video
-                        src={reel.video_url}
-                        poster={(reelsNear && reel.thumbnail) || undefined}
-                        /* the poster stands in until a tap: no Instagram bytes
-                           are spent on reels nobody plays */
-                        preload="none"
-                        loop
-                        playsInline
-                        onClick={(e) => {
-                          (window as any).toggleVideoPlay(e.currentTarget);
-                        }}
-                      ></video>
-                      <div className="reel-overlay"></div>
-                      <div className="reel-actions">
-                        <span
-                          onClick={(e) => {
-                            (window as any).toggleSave(e.currentTarget);
-                          }}
-                        >
-                          <i>
-                            <svg xmlns="http://www.w3.org/2000/svg" width="1.5em" height="1.2em" viewBox="0 0 24 24">
-                              <path d="M0 0h24v24H0z" fill="none"></path>
-                              <path fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M4 17.98V9.709c0-3.634 0-5.45 1.172-6.58S8.229 2 12 2s5.657 0 6.828 1.129C20 4.257 20 6.074 20 9.708v8.273c0 2.306 0 3.459-.773 3.871c-1.497.8-4.304-1.867-5.637-2.67c-.773-.465-1.16-.698-1.59-.698s-.817.233-1.59.698c-1.333.803-4.14 3.47-5.637 2.67C4 21.44 4 20.287 4 17.981"></path>
-                            </svg>
-                          </i>
-                        </span>
-                        <span
-                          onClick={(e) => {
-                            (window as any).toggleLike(e.currentTarget);
-                          }}
-                        >
-                          <i>
-                            <svg xmlns="http://www.w3.org/2000/svg" width="1.5em" height="1.2em" viewBox="0 0 24 24">
-                              <path d="M0 0h24v24H0z" fill="none"></path>
-                              <path fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M10.41 19.968C7.59 17.858 2 13.035 2 8.694C2 5.826 4.105 3.5 7 3.5c1.5 0 3 .5 5 2.5c2-2 3.5-2.5 5-2.5c2.895 0 5 2.326 5 5.194c0 4.34-5.59 9.164-8.41 11.274c-.95.71-2.23.71-3.18 0"></path>
-                            </svg>
-                          </i>
-                        </span>
-                        <span
-                          onClick={(e) => {
-                            (window as any).shareVideo(e.currentTarget);
-                          }}
-                        >
-                          <i>
-                            <svg xmlns="http://www.w3.org/2000/svg" width="1.5em" height="1.5em" viewBox="0 0 24 24">
-                              <path d="M0 0h24v24H0z" fill="none"></path>
-                              <path fill="currentColor" d="M6.616 21q-.691 0-1.153-.462T5 19.385v-8.77q0-.69.463-1.152T6.616 9H8.23q.213 0 .357.143t.143.357t-.143.357T8.23 10H6.616q-.231 0-.424.192T6 10.616v8.769q0 .23.192.423t.423.192h10.77q.23 0 .423-.192t.192-.423v-8.77q0-.23-.192-.423T17.384 10H15.77q-.213 0-.357-.143T15.27 9.5t.143-.357T15.77 9h1.615q.691 0 1.153.463T19 10.616v8.769q0 .69-.463 1.153T17.385 21zm5.027-5.643Q11.5 15.214 11.5 15V4.614L9.754 6.36q-.146.146-.344.153q-.199.006-.364-.16q-.16-.164-.162-.353t.162-.354l2.388-2.388q.132-.131.268-.184q.137-.053.298-.053t.298.053t.268.184l2.388 2.388q.14.14.15.342q.01.2-.15.366q-.166.165-.357.165t-.357-.165l-1.74-1.74V15q0 .214-.143.357T12 15.5t-.357-.143"></path>
-                            </svg>
-                          </i>
-                        </span>
-                      </div>
-                      <div className="reel-seekbar">
-                        <span className="reel-time">0:00</span>
-                        <div className="reel-progress">
-                          <div className="reel-progress-fill"></div>
-                        </div>
-                      </div>
-                      <div
-                        className="play-overlay"
-                        onClick={(e) => {
-                          (window as any).togglePlay(e.currentTarget);
-                        }}
-                      >
-                        <i className="fa-solid fa-play"></i>
-                      </div>
-                    </div>
-                    <div className="reel-caption">
-                      <p className="reel-title">{reel.caption || ""}</p>{" "}
-                      {typeof reel.views === "number" ? (
-                        <span className="reel-views">
-                          {formatViews(reel.views)}{" "}
-                          <span data-i18n="reel_views_word">مشاهدة</span>
-                        </span>
-                      ) : null}
-                    </div>
-                  </div>
+                  <ReviewReel
+                    key={reel.id ?? index}
+                    reel={reel}
+                    index={index}
+                    near={reelsNear}
+                    lang={lang}
+                  />
                 ))}
+                {!reels.length ? <ReelsEmpty error={reelsError} /> : null}
               </div>
             </div>
 
