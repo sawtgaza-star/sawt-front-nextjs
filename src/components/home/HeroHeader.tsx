@@ -1,6 +1,7 @@
 // @ts-nocheck
 /* eslint-disable */
 import "@/styles/home-stats.css";
+import "@/styles/home-hero.css";
 import SiteNav from "@/components/site/SiteNav";
 import { localized } from "@/lib/api/pages";
 import type { HomeHero, HomeStats } from "@/lib/api/home";
@@ -68,7 +69,12 @@ function HeroSlide({ slide, index, trust, support, collaborate, lang }) {
             ) : null}{" "}
           </div>{" "}
           {title ? (
-            <h1 className="fw-bold text-white font-60">{title}</h1>
+            <h1 className="fw-bold text-white font-60">
+              {/* inner line carries the title's gradient colour (home-hero.css) */}
+              <span className="hero-reveal">
+                <span className="hero-reveal-text">{title}</span>
+              </span>
+            </h1>
           ) : null}{" "}
           {subtitle ? (
             <p className="mb-4 text-white font-24">{subtitle}</p>

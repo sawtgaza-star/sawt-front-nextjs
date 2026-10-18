@@ -19,10 +19,13 @@
    2. Crop to the bounding box of what is left, so the caller can lay every
       mic out at the same size no matter how the upload was framed.
 
-   The result is a blob: URL of a transparent PNG. The API serves /media with
-   `Access-Control-Allow-Origin: *`, which is what lets the canvas be read.
+   The result is a blob: URL of a transparent PNG. Reading the canvas needs
+   the image host to allow CORS, which api.sawtgaza.com/media does not (as of
+   2026-10-18) — lib/cors-image falls back to a public CORS proxy for that.
    Results are cached per URL — the home carousel shows each mic in Owl's
    clones too. */
+
+import { loadCorsImage } from "./cors-image";
 
 const MAX_HEIGHT = 800; // enough for a ~500px card on a 1.5x screen
 const NEUTRAL_SPREAD = 22; // max channel spread for a "gray/white" pixel
@@ -43,15 +46,8 @@ export function cutoutMic(url: string): Promise<string> {
   return job;
 }
 
-function loadImage(url: string): Promise<HTMLImageElement> {
-  return new Promise((resolve, reject) => {
-    const img = new Image();
-    img.crossOrigin = "anonymous";
-    img.onload = () => resolve(img);
-    img.onerror = () => reject(new Error(`mic image failed: ${url}`));
-    img.src = url;
-  });
-}
+/* readable even from a host that sends no CORS header — see lib/cors-image */
+const loadImage = loadCorsImage;
 
 async function run(url: string): Promise<string> {
   const img = await loadImage(url);

@@ -2267,15 +2267,18 @@ background: var(--White, #FFF);
 .cr-reel-follow:hover {
   background: rgba(255, 255, 255, 0.16);
 }
-/* following: filled with the brand orange */
+/* following: the real verified badge — a blue seal with a white tick. The
+   tick is cut out of the seal (evenodd), so a small white disc behind it is
+   what shows through; no ring around the button any more. */
 .cr-reel-follow.is-following {
-  background: var(--sout-orange);
-  border-color: var(--sout-orange);
-  color: #fff;
+  border-color: transparent;
+  color: #0095f6;
+  background: radial-gradient(circle, #fff 0 34%, transparent 36%);
+  filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.35));
 }
 .cr-reel-follow.is-following:hover {
-  background: #e5651c;
-  border-color: #e5651c;
+  color: #1877f2;
+  background: radial-gradient(circle, #fff 0 34%, transparent 36%);
 }
 .cr-reel-follow svg {
   display: block;
@@ -2283,8 +2286,8 @@ background: var(--White, #FFF);
 /* the seal reads smaller than the person+ glyph at the same box, so the
    followed state gets a bigger one — still inside the 34px button */
 .cr-reel-follow.is-following svg {
-  width: 24px;
-  height: 24px;
+  width: 28px;
+  height: 28px;
 }
 /* "تمت المتابعة", beside the button once it is on. Selector carries
    .cr-reel-user so it beats the 18px/700 of `.cr-reel-user span` above. */

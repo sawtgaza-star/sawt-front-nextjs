@@ -1,0 +1,97 @@
+/* Slide titles (منصة صوت / حاضنة صوت / صوت ميديا) carry a soft, deep drop
+   shadow — Tailwind's drop-shadow-2xl — so they lift off the photo. */
+.carousel-caption-custom h1 {
+  filter: drop-shadow(0 25px 25px rgb(0 0 0 / 0.15));
+}
+
+/* Text entrance, from cinematic_hero_section.html: the title stays still
+   (by request) while the subtitle and the buttons fade up in turn — on the
+   first slide, when the page opens; see .hero-has-slid below. */
+.hero-reveal {
+  display: inline-block;
+}
+.hero-reveal-text {
+  display: block;
+  /* title colour from the same file: white fading to grey (Tailwind's
+     from-white to-gray-400), painted through the glyphs. text-fill beats the
+     h1's .text-white !important colour. */
+  background-image: linear-gradient(to bottom, #fff, #9ca3af);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
+}
+.carousel-caption-custom p.font-24,
+.carousel-caption-custom .heroOptionsBtn {
+  opacity: 0;
+  transform: translateY(30px);
+}
+
+.carousel-item.active .carousel-caption-custom p.font-24 {
+  animation: hero-fade-up 1s ease-out 0.8s forwards;
+}
+.carousel-item.active .carousel-caption-custom .heroOptionsBtn {
+  animation: hero-fade-up 1s ease-out 1.2s forwards;
+}
+
+/* The entrance plays once, on landing: once the slider has moved
+   (HomeContent adds .hero-has-slid) every slide's copy simply shows. */
+#heroCarousel.hero-has-slid .carousel-caption-custom p.font-24,
+#heroCarousel.hero-has-slid .carousel-caption-custom .heroOptionsBtn {
+  animation: none;
+  opacity: 1;
+  transform: none;
+}
+
+@keyframes hero-fade-up {
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .carousel-caption-custom p.font-24,
+  .carousel-caption-custom .heroOptionsBtn {
+    animation: none !important;
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* Desktop/tablet: the caption matches the hero mock (1600×844) — the copy
+   sits over the image's left side (the person is on the right) in both
+   languages, so the margins are physical, not logical. The block spans the
+   left 60% of the hero and is centred in it, i.e. centred at 30% of the
+   width, which leaves the subtitle room for its one line. No trust row in
+   the mock. Below 768px the caption keeps its centred mobile layout. */
+@media (min-width: 768px) {
+  .carousel-caption-custom {
+    top: 53%;
+  }
+  .carousel-caption-custom .container {
+    width: 60%;
+    max-width: none;
+    margin-left: 0;
+    margin-right: auto;
+  }
+  .carousel-caption-custom .d-md-flex {
+    display: none !important;
+  }
+  .carousel-caption-custom h1.font-60 {
+    font-size: 60px;
+    line-height: 1.2;
+    margin-bottom: 0;
+  }
+  .carousel-caption-custom p.font-24 {
+    font-size: 20px;
+    line-height: 1.5;
+    margin-bottom: 20px !important;
+  }
+  .carousel-caption-custom .heroOptionsBtn {
+    gap: 16px !important;
+  }
+  /* 46px pills: 16px text + 10px/34px padding + 1px border */
+  .carousel-caption-custom .heroOptionsBtn .btn {
+    padding: 10px 34px !important;
+    font-size: 16px;
+    line-height: 1.5;
+  }
+}

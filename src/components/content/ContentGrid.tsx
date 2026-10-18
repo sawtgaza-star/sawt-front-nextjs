@@ -17,6 +17,8 @@ export default function ContentGrid({
   message = "",
   focus = null,
   open = null,
+  onFocusDone,
+  onOpenDone,
 }: {
   reels: Reel[];
   /** the API's own explanation of an empty list, already localized */
@@ -26,6 +28,11 @@ export default function ContentGrid({
   focus?: { id: string; n: number } | null;
   /** a reel to open straight in the viewer (the share link's `?reel=`) */
   open?: { id: string; n: number } | null;
+  /* Each request is handled once and then cleared by the page — the grid
+     unmounts while a new filter / sort loads, and a request still set when it
+     mounts again would replay the scroll + blur (or reopen the viewer). */
+  onFocusDone?: () => void;
+  onOpenDone?: () => void;
 }) {
   const [openIndex, setOpenIndex] = useState<number | null>(null);
   const gridRef = useRef<HTMLDivElement>(null);
@@ -39,6 +46,7 @@ export default function ContentGrid({
     if (openIndexReq < 0) return;
     reveal(openIndexReq);
     setOpenIndex(openIndexReq);
+    onOpenDone?.();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [open?.n, openIndexReq]);
 
@@ -49,14 +57,22 @@ export default function ContentGrid({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [focus?.n, focusIndex]);
 
-  // 2) once it is, bring it to the middle of the screen and flash it
+  /* 2) once it is, bring it to the middle of the screen and highlight it.
+     The highlight's teardown lives in a ref, not in the effect's cleanup: the
+     page clears `focus` right after (onFocusDone), and that dependency change
+     must not cut the highlight short. It runs on the next highlight or when
+     the grid unmounts. */
+  const stopHighlight = useRef<(() => void) | null>(null);
+  useEffect(() => () => stopHighlight.current?.(), []);
   useEffect(() => {
     if (!focus || focusIndex < 0 || focusIndex >= shown) return;
     const card = gridRef.current?.querySelector<HTMLElement>(
       `[data-reel-id="${CSS.escape(focus.id)}"]`,
     );
     if (!card) return;
+    stopHighlight.current?.();
     card.scrollIntoView({ behavior: "smooth", block: "center" });
+    onFocusDone?.();
     /* `ct-focus-mode` on <body> lays a page-wide blur; the card itself can't
        rise above it (an ancestor's stacking context caps its z-index), so a
        sharp copy of it is pinned over the blur at exactly the card's spot.
@@ -115,7 +131,8 @@ export default function ContentGrid({
     window.addEventListener("scrollend", begin);
     settle = window.setTimeout(begin, 120);
     const cap = window.setTimeout(begin, 900);
-    return () => {
+    stopHighlight.current = () => {
+      stopHighlight.current = null;
       window.removeEventListener("scroll", waitScroll);
       window.removeEventListener("scrollend", begin);
       window.clearTimeout(settle);
