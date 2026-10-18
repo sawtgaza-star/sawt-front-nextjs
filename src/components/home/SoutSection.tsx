@@ -49,11 +49,11 @@ export default function SoutSection({
 
   return (
     <>
-      <section className="sout-section py-5">
+      <section className="sout-section pt-3 pb-5">
         {" "}
         <div className="container">
           {" "}
-          <div className="text-center" style={{ marginBottom: "70px" }}>
+          <div className="text-center" style={{ marginBottom: "20px" }}>
             {" "}
             {sectionTitle ? (
               <h1 className="fw-bold who-us font-42">{sectionTitle}</h1>

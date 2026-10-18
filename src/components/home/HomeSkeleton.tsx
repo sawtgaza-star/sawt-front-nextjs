@@ -78,9 +78,9 @@ export default function HomeSkeleton() {
   return (
     <div aria-busy="true" aria-hidden="true">
       {/* who we are */}
-      <section className="sout-section py-5">
+      <section className="sout-section pt-3 pb-5">
         <div className="container">
-          <div className="text-center sk-center" style={{ marginBottom: "70px" }}>
+          <div className="text-center sk-center" style={{ marginBottom: "20px" }}>
             <Head titleWidth="20%" />
           </div>
           <div className="row align-items-center">
@@ -123,7 +123,11 @@ export default function HomeSkeleton() {
           <div className="text-center mb-5 sk-center">
             <Head titleWidth="30%" />
           </div>
-          <CardRow count={3} col="col-md-4" />
+          <div className="sk-ps-row">
+            <span className="sk-block sk-ps-pill" />
+            <span className="sk-block sk-ps-pill" />
+            <span className="sk-block sk-ps-pill" />
+          </div>
         </div>
       </section>
 
