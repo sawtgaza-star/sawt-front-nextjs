@@ -2,7 +2,9 @@
 "use client";
 /* eslint-disable */
 
+import { useId } from "react";
 import { IconEyeAuth, IconEyeSlashAuth } from "@/components/ui/icons";
+import RequiredMark from "@/components/ui/RequiredMark";
 
 /* Auth form input with a leading icon and optional trailing toggle icon
    (password eye — wired by lib/legacy-login via its id).
@@ -16,26 +18,42 @@ import { IconEyeAuth, IconEyeSlashAuth } from "@/components/ui/icons";
 
    The wrapper is always rendered, error or not: adding a level around the
    <input> only when a message appears would remount it, and an uncontrolled
-   input loses what the user typed when it remounts. */
+   input loses what the user typed when it remounts.
+
+   The label above the box reads the placeholder's words — and takes its
+   `data-i18n-placeholder` key, so the language toggle swaps both — unless a
+   `label` is passed. A required box gets the red star beside its label. */
 export default function IconInput({
   icon,
   toggleId,
   className = "mb-3",
   error,
+  label,
   ...inputProps
 }: {
   icon: React.ReactNode;
   toggleId?: string;
   className?: string;
   error?: string | string[];
+  label?: string;
 } & React.InputHTMLAttributes<HTMLInputElement>) {
   const messages = Array.isArray(error) ? error : error ? [error] : [];
+  const generatedId = useId();
+  const inputId = inputProps.id || generatedId;
+  const labelText = label ?? inputProps.placeholder;
+  const labelKey = label ? undefined : inputProps["data-i18n-placeholder"];
 
   return (
     <div className={className}>
+      {labelText ? (
+        <label className="auth-field-label" htmlFor={inputId}>
+          <span data-i18n={labelKey}>{labelText}</span>
+          {inputProps.required ? <RequiredMark /> : null}
+        </label>
+      ) : null}
       <div className="input-group-custom">
         <i className="input-icon-main">{icon}</i>
-        <input className="form-control" aria-invalid={messages.length ? true : undefined} {...inputProps} />
+        <input className="form-control" aria-invalid={messages.length ? true : undefined} {...inputProps} id={inputId} />
         {/* fa-eye/fa-eye-slash toggled by legacy-login.ts — CSS shows the matching eye state */}
         {toggleId && (
           <i className="fa-eye input-icon-left" id={toggleId} style={{ cursor: "pointer" }}>

@@ -16,6 +16,7 @@ import MediaCountrySelect from "./MediaCountrySelect";
 import MediaFormToast from "./MediaFormToast";
 import Recaptcha, { useRecaptcha } from "@/components/ui/Recaptcha";
 import { RECAPTCHA_ACTIONS } from "@/lib/recaptcha";
+import RequiredMark from "@/components/ui/RequiredMark";
 
 /* The "احجز الأن" card — the booking that lands in صوت ميديا's inbox.
 
@@ -56,6 +57,8 @@ export default function MediaConsultForm({
 
   const fields = form?.fields;
   const label = (key: string) => localized(fields?.[key]?.label, pageLang);
+  /* the payload flags each field required or not; a flagged one gets the red star */
+  const requiredMark = (key: string) => (fields?.[key]?.required ? <RequiredMark /> : null);
   /* the API's own field keys, which are what a 422 names its errors by */
   const nameKey = fields?.name?.key || "name";
   const phoneKey = fields?.phone?.key || "phone";
@@ -105,7 +108,10 @@ export default function MediaConsultForm({
       <h3 className="sm-form-title">{localized(form?.title, pageLang)}</h3>
 
       <div className="sm-field">
-        <label className="sm-label">{label("name")}</label>
+        <label className="sm-label">
+          {label("name")}
+          {requiredMark("name")}
+        </label>
         <div className="sm-input-wrap">
           <i className="sm-input-icon">
             <IconUser />
@@ -125,7 +131,10 @@ export default function MediaConsultForm({
       </div>
 
       <div className="sm-field">
-        <label className="sm-label">{label("phone")}</label>
+        <label className="sm-label">
+          {label("phone")}
+          {requiredMark("phone")}
+        </label>
         <div className="sm-phone-wrap">
           <MediaCountrySelect name={codeKey} />
           <div className="sm-input-wrap sm-phone-num">
@@ -149,7 +158,10 @@ export default function MediaConsultForm({
       </div>
 
       <div className="sm-field">
-        <label className="sm-label">{label("email")}</label>
+        <label className="sm-label">
+          {label("email")}
+          {requiredMark("email")}
+        </label>
         <div className="sm-input-wrap">
           <i className="sm-input-icon">
             <IconMail />
@@ -169,7 +181,10 @@ export default function MediaConsultForm({
       </div>
 
       <div className="sm-field">
-        <label className="sm-label">{label("service")}</label>
+        <label className="sm-label">
+          {label("service")}
+          {requiredMark("service")}
+        </label>
         <div className="sm-input-wrap sm-select-wrap">
           <i className="fa-solid fa-chevron-down sm-select-caret"></i>
           <select

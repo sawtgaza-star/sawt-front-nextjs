@@ -248,6 +248,11 @@ filter: drop-shadow(0 0 12px rgba(255, 255, 255, 0.75)) drop-shadow(0 4px 10px #
   cursor: pointer;
   background: #e9ece4;
 }
+.ct-thumb-card img.ct-thumb-fallback {
+  object-fit: contain;
+  padding: 32%;
+  opacity: 0.55;
+}
 .ct-thumb-card:focus-visible {
   outline: 3px solid #e85d04;
   outline-offset: 3px;

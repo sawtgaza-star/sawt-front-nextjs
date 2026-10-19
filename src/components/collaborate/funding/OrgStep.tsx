@@ -5,6 +5,7 @@ import {
   IconFieldPhone,
 } from "@/components/collaborate/collaborate-icons";
 import CollabCountrySelect from "@/components/collaborate/creator/CollabCountrySelect";
+import RequiredMark from "@/components/ui/RequiredMark";
 
 /* Step 1 — "بيانات الجهة": who is offering the support. Name, e-mail and
    phone are the ones the team writes back on; the website is optional.
@@ -34,6 +35,7 @@ export default function OrgStep({
       <div className="cl-field">
         <label className="cl-label" htmlFor="collab-org">
           <span data-i18n="collab_fu_f_org">اسم الشركة / المؤسسة</span>
+          <RequiredMark />
         </label>
         {/* the icon sits inside the border, so the frame is on the wrapper and
             the input itself is chrome-less */}
@@ -57,6 +59,7 @@ export default function OrgStep({
       <div className="cl-field">
         <label className="cl-label" htmlFor="collab-org-email">
           <span data-i18n="collab_fu_f_email">البريد الالكتروني</span>
+          <RequiredMark />
         </label>
         <div className={"cl-input-wrap" + (errors.email ? " is-invalid" : "")}>
           <span className="cl-input-icon" aria-hidden="true">
@@ -80,6 +83,7 @@ export default function OrgStep({
           <span data-i18n="collab_fu_f_site">
             موقع الشركة / المؤسسة الإلكتروني
           </span>
+          <RequiredMark />
         </label>
         <div className={"cl-input-wrap" + (errors.site ? " is-invalid" : "")}>
           <span className="cl-input-icon" aria-hidden="true">
@@ -101,6 +105,7 @@ export default function OrgStep({
       <div className="cl-field">
         <label className="cl-label" htmlFor="collab-org-phone">
           <span data-i18n="collab_fu_f_phone">رقم الهاتف للتواصل</span>
+          <RequiredMark />
         </label>
         <div className="cl-phone-row">
           <CollabCountrySelect

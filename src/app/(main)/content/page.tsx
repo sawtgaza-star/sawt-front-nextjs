@@ -17,56 +17,106 @@ import { applyTranslations, getCurrentLang } from "@/lib/translations";
 import {
   API_SORT,
   categoriesFromApi,
+  filterReels,
   reelsFromApi,
   sortReels,
   type HeroSlide,
   type SortValue,
 } from "@/components/content/content-data";
 
-/* The client boundary for /content: GET /pages/content for the whole page, one
-   `lang` subscription, and the category / sort state the filter bar drives —
-   changing either asks the API again (`?category=` / `?sort=`) for the reels.
+/* The client boundary for /content: GET /pages/content, one `lang`
+   subscription, and the category / sort state the filter bar drives.
 
    EVERYTHING ON THIS PAGE IS THE PAYLOAD'S
    ----------------------------------------
-   The hero — backdrop, headline, lead and the fanned poster strip — and the
-   reels: `reels.items` is the one list the API sends, so the grid under the
-   filter bar and the "الأكثر مشاهدة" row below it are both drawn from it, the
-   row also taking its heading and its "رؤية المزيد" label from that block.
-   Nothing is bundled any more; while the request is in flight the grid is a
-   skeleton, and if it comes back with no reels the page is hero + filter bar.
+   The hero — backdrop, headline, lead and the fanned poster strip — the
+   account bar, the filter pills and the reels. Nothing is bundled; while a
+   request is in flight its part of the page is a skeleton.
 
-   The category pills are the payload's `categories`; picking one refetches
-   with `?category={slug}`. The sort maps to the API's `latest` / `oldest`;
-   "الأكثر مشاهدة" has no server sort, so it is ordered here (`sortReels`). */
+   TWO LISTS, KEPT APART
+   ---------------------
+   - The FILTER section (pills + sort + grid) has its own request:
+     `?category={slug}` and `?sort=latest|oldest`. The slug is also written
+     into the page URL (`/content?category=economy`), so a filtered view can be
+     shared or reloaded. "الأكثر مشاهدة" in the sort has no server sort, so it
+     is ordered here (`sortReels`).
+   - The "الأكثر مشاهدة" ROW below is its own, unfiltered request — every
+     reel, ordered by views (likes when the payload has no view counts). A pick
+     in the filter never reloads it, never empties it, never reorders it. The
+     hero strip and the pills come from this same unfiltered answer.
+   With the filter on "all" / newest the two would ask the same URL, so the
+   grid then reuses the unfiltered answer instead of sending a second request. */
 export default function Page() {
   const { lang } = useLang();
   const [category, setCategory] = useState("all");
   const [sort, setSort] = useState<SortValue>("newest");
-  const { page, loading, reelsLoading } = useContentPage({
+
+  /* The slug lives in the URL too. It is read after mount (the page is
+     prerendered, so the first render must be "all" to hydrate) and written
+     back on every pick with replaceState — other params (`?reel=`) are kept. */
+  const urlRead = useRef(false);
+  useEffect(() => {
+    if (!urlRead.current) {
+      urlRead.current = true;
+      const slug = new URLSearchParams(window.location.search).get("category");
+      if (slug && slug !== category) {
+        setCategory(slug);
+        return;
+      }
+    }
+    const url = new URL(window.location.href);
+    if (category === "all") url.searchParams.delete("category");
+    else url.searchParams.set("category", category);
+    window.history.replaceState(window.history.state, "", url);
+  }, [category]);
+
+  // the unfiltered answer: hero, pills, account, and the "الأكثر مشاهدة" row
+  const { page, loading } = useContentPage();
+  // the filter's own answer — skipped while it would be the same request
+  const filtered = category !== "all" || API_SORT[sort] !== "latest";
+  const gridQuery = useContentPage({
     category,
     sort: API_SORT[sort],
+    skip: !filtered,
   });
+  const gridPage = filtered ? gridQuery.page : page;
+  const reelsLoading = filtered ? gridQuery.reelsLoading : loading;
 
-  const categories = categoriesFromApi(page?.categories, lang);
+  // a slug the payload doesn't list (an old or mistyped link) falls back to "all"
+  const slugs = page?.categories?.map((c) => c.slug).join(",");
+  useEffect(() => {
+    if (slugs && category !== "all" && !slugs.split(",").includes(category)) {
+      setCategory("all");
+    }
+  }, [slugs, category]);
 
-  // only reels whose cover loads are shown anywhere (see useLoadedThumbs)
-  const { list: reels, pending } = useLoadedThumbs(
+  /* The hero strip and the "الأكثر مشاهدة" row show only reels whose cover
+     loads (see useLoadedThumbs) — a dead cover in a carousel is an empty box.
+     The GRID shows exactly what the API returned for the slug, so it always
+     matches the pill's count; a reel whose Instagram link expired is drawn
+     with a placeholder and links out to Instagram (see ReelThumbCard). */
+  const all = useLoadedThumbs(
     reelsFromApi(page?.reels?.items, page?.categories, lang, page?.reels?.account),
   );
-  const visible = sortReels(reels, sort);
-  // covers still on their way and none in yet: hold the skeletons
-  const probing = pending > 0 && reels.length === 0;
+  const gridReels = reelsFromApi(
+    gridPage?.reels?.items,
+    page?.categories,
+    lang,
+    page?.reels?.account,
+  );
+  // the API already narrowed the list to the slug; the local match only
+  // guards against a stale answer drawn for a moment under the new pill
+  const visible = sortReels(filterReels(gridReels, category), sort);
+  // covers still on their way and none in yet: hold the row's skeletons
+  const rowProbing = all.pending > 0 && all.list.length === 0;
 
-  /* The hero strip fans out the reels' thumbnails. It keeps the list from the
-     unfiltered first load, so picking a category below doesn't reshuffle the
-     strip; once covers stop arriving it is fixed. */
-  const heroReels = useRef<HeroSlide[]>([]);
-  if (category === "all" && reels.length >= heroReels.current.length) {
-    heroReels.current = reels
-      .filter((reel) => reel.poster)
-      .map((reel) => ({ src: reel.poster as string, reelId: String(reel.id) }));
-  }
+  const heroReels: HeroSlide[] = all.list
+    .filter((reel) => reel.poster)
+    .map((reel) => ({ src: reel.poster as string, reelId: String(reel.id) }));
+  const mostViewed = sortReels(all.list, "views");
+
+  // the pills carry the API's own counts — the grid lists every reel they count
+  const categories = categoriesFromApi(page?.categories, lang);
 
   /* A tap on a strip poster scrolls down to that reel's card. A reel the
      current category hides brings the grid back to "all" first, and the
@@ -74,7 +124,7 @@ export default function Page() {
   const [focus, setFocus] = useState<{ id: string; n: number } | null>(null);
   const [wanted, setWanted] = useState<string | null>(null);
   const selectReel = (id: string) => {
-    if (reels.some((reel) => String(reel.id) === id)) {
+    if (visible.some((reel) => String(reel.id) === id)) {
       setFocus((f) => ({ id, n: (f?.n ?? 0) + 1 }));
     } else {
       setWanted(id);
@@ -91,33 +141,33 @@ export default function Page() {
     }
     const id = deepLink.current;
     if (!id || reelsLoading) return;
-    if (reels.some((reel) => String(reel.id) === id)) {
+    if (visible.some((reel) => String(reel.id) === id)) {
       deepLink.current = null;
       setOpen({ id, n: 1 });
     }
-  }, [reelsLoading, reels]);
+  }, [reelsLoading, visible]);
 
   useEffect(() => {
-    if (wanted && !reelsLoading && reels.some((reel) => String(reel.id) === wanted)) {
+    if (wanted && !reelsLoading && visible.some((reel) => String(reel.id) === wanted)) {
       setFocus((f) => ({ id: wanted, n: (f?.n ?? 0) + 1 }));
       setWanted(null);
     }
-  }, [wanted, reelsLoading, reels]);
+  }, [wanted, reelsLoading, visible]);
 
   const rowTitle = localized(page?.reels?.title, lang);
   const rowViewMore = localized(page?.reels?.view_more, lang);
 
   // the empty-grid line mounts after the page was translated
   useEffect(() => {
-    if (!reelsLoading && !probing) applyTranslations(getCurrentLang());
-  }, [reelsLoading, probing]);
+    if (!reelsLoading) applyTranslations(getCurrentLang());
+  }, [reelsLoading]);
 
   return (
     <div className="ct-page">
       <LegacyInit page="content" />
       <ContentHero
         data={page?.hero}
-        reelPosters={heroReels.current}
+        reelPosters={heroReels}
         onSelectReel={selectReel}
         lang={lang}
         loading={loading}
@@ -128,7 +178,10 @@ export default function Page() {
             {!loading && (
               <ContentAccountBar
                 account={page?.reels?.account}
-                total={page?.categories?.find((c) => c.slug === "all")?.count}
+                total={
+                  Number(page?.reels?.account?.media_count) ||
+                  page?.categories?.find((c) => c.slug === "all")?.count
+                }
               />
             )}
             <ContentFilterBar
@@ -139,12 +192,12 @@ export default function Page() {
               onSortChange={setSort}
               loading={loading}
             />
-            {reelsLoading || probing ? (
+            {reelsLoading ? (
               <ContentGridSkeleton />
             ) : (
               <ContentGrid
                 reels={visible}
-                message={page?.reels?.message || ""}
+                message={gridPage?.reels?.message || ""}
                 focus={focus}
                 open={open}
                 onFocusDone={() => setFocus(null)}
@@ -154,12 +207,13 @@ export default function Page() {
           </div>
         </section>
 
-        {(loading || probing || reels.length > 0) && (
+        {(loading || rowProbing || mostViewed.length > 0) && (
           <MostWatchedSection
-            reels={reels}
+            reels={mostViewed}
             title={rowTitle}
             viewMore={rowViewMore}
-            loading={loading || probing}
+            moreHref={page?.reels?.account?.profile_url || ""}
+            loading={loading || rowProbing}
           />
         )}
       </main>

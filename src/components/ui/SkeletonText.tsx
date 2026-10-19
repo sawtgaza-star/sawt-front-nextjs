@@ -25,7 +25,9 @@ function filler(chars: number): string {
 export default function SkeletonText({ chars }: { chars: number }) {
   return (
     <span className="sk-text-line" aria-hidden="true">
-      <span className="sk-text">{filler(chars)}</span>
+      <span className="sk-text">
+        <span className="sk-text__fill">{filler(chars)}</span>
+      </span>
     </span>
   );
 }

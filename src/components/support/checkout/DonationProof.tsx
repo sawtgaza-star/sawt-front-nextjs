@@ -5,6 +5,7 @@ import { checkAttachment } from "@/lib/attachment";
 import DonationAmountFields from "./DonationAmountFields";
 import { PROOF_ACCEPT } from "./currencies-data";
 import type { ProofErrors, ProofValues } from "./checkout-flow";
+import RequiredMark from "@/components/ui/RequiredMark";
 
 /* "إثبات تبرعك" — amount + currency + the receipt drop zone. The values and
    errors live in the wizard (they are what POST /support/requests/{uuid}/proof
@@ -45,8 +46,10 @@ export default function DonationProof({
 
   return (
     <div className="sp-proof">
-      <h2 className="sp-pay-title" data-i18n="checkout_proof_title">
-        إثبات تبرعك
+      {/* the receipt is required on every platform (checkout-flow) */}
+      <h2 className="sp-pay-title">
+        <span data-i18n="checkout_proof_title">إثبات تبرعك</span>
+        <RequiredMark />
       </h2>
 
       {withAmount && (

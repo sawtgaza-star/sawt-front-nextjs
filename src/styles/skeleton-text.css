@@ -21,6 +21,9 @@
   line-height: 1;
   vertical-align: middle;
   color: transparent !important;
+  /* some legacy rules set -webkit-text-fill-color, which beats `color` */
+  -webkit-text-fill-color: transparent !important;
+  text-shadow: none !important;
   border-radius: 8px;
   -webkit-box-decoration-break: clone;
   box-decoration-break: clone;
@@ -28,16 +31,10 @@
   pointer-events: none;
 }
 
-/* on the footer's dark card the same bars, translucent white */
-.footer-custom-bg .sk-text,
-.footer-custom-bg .sk-shimmer {
-  background: linear-gradient(
-    90deg,
-    rgba(255, 255, 255, 0.08) 25%,
-    rgba(255, 255, 255, 0.16) 45%,
-    rgba(255, 255, 255, 0.08) 65%
-  );
-  background-size: 400% 100%;
+/* the filler keeps its room but never paints — page rules that recolour text
+   (!important colours, -webkit-text-fill-color) can't bring it back */
+.sk-text__fill {
+  visibility: hidden !important;
 }
 
 @keyframes sk-shimmer {

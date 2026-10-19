@@ -1,7 +1,7 @@
 /* components/site/BackToTop — bottom 23px, 50px in from the side (20px on
-   phones), the legacy .theme-toggle-and-up spacing. On the reading side
-   (right in RTL, left in LTR): the opposite corner is where the footer's
-   social icons end up at the bottom of the page. Self-contained: the button is
+   phones), the legacy .theme-toggle-and-up spacing. At the end of the
+   reading line (left in RTL, right in LTR), clear of the copyright line in
+   the footer's bottom strip. Self-contained: the button is
    on every route group, and only (main) loads style.css. */
 
 .back-to-top {
@@ -42,11 +42,11 @@
 }
 
 [dir="rtl"] .back-to-top {
-  right: 50px;
+  left: 50px;
 }
 
 [dir="ltr"] .back-to-top {
-  left: 50px;
+  right: 50px;
 }
 
 .back-to-top.is-shown {
@@ -136,10 +136,10 @@
   }
 
   [dir="rtl"] .back-to-top {
-    right: 20px;
+    left: 20px;
   }
 
   [dir="ltr"] .back-to-top {
-    left: 20px;
+    right: 20px;
   }
 }

@@ -1,0 +1,16 @@
+/* ui/RequiredMark — same red as the donation checkout's own required star */
+.required-mark {
+  color: #c0392b;
+  font-weight: 700;
+  margin-inline-start: 4px;
+}
+
+/* ui/IconInput (auth pages): the label over each box */
+.auth-field-label {
+  display: block;
+  margin-bottom: 6px;
+  font-size: 14px;
+  font-weight: 600;
+  color: #2e3b2e;
+  text-align: start;
+}

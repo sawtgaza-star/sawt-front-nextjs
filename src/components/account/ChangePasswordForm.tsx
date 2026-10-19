@@ -9,6 +9,7 @@ import { handleAuthError } from "@/lib/follows";
 import NewsletterToast from "@/components/site/NewsletterToast";
 import { useAccountToast } from "./use-account-toast";
 import { markHasPassword, needsCurrentPassword } from "./account-user";
+import RequiredMark from "@/components/ui/RequiredMark";
 
 /* "تغيير كلمة المرور": current / new / confirm, checked against the same
    policy /register uses (lib/password-policy), then sent as
@@ -84,7 +85,10 @@ export default function ChangePasswordForm({ onCancel }: { onCancel: () => void 
     <form className="acc-card" onSubmit={submit} noValidate>
       {fields.filter((field) => askCurrent || field.key !== "current").map((field) => (
         <label className="acc-field" key={field.key}>
-          <span className="acc-label">{tr(field.label)}</span>
+          <span className="acc-label">
+            {tr(field.label)}
+            <RequiredMark />
+          </span>
           <input
             className="acc-input"
             type="password"

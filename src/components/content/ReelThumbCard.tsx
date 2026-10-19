@@ -4,6 +4,8 @@ import { useLang } from "@/lib/use-lang";
 import { formatCount, timeAgo } from "@/components/creators/creator-content/reel-data";
 import type { Reel } from "./content-data";
 
+const SAWT_MARK = encodeURI("/assets/images/شعار صوت اخضر.svg");
+
 /* A grid card of the محتوانا page: the reel's cover (`thumbnail`) only — no
    <video> is mounted in the grid, so a page of reels costs a page of JPEGs,
    not a page of video requests. Clicking anywhere on the card (or Enter /
@@ -11,26 +13,43 @@ import type { Reel } from "./content-data";
    plays. Same look as the creator page's ContentCard (.cr-content-card styles
    its <img> exactly like its <video>).
 
-   Only the API's own cover is ever shown: with no `thumbnail`, or one that
-   fails to load (Instagram's links are signed and expire), the card keeps its
-   plain backdrop — no stock image stands in for it. */
+   The grid lists every reel the API returns for the slug, including ones
+   whose Instagram links have expired (the cover fails to load). Such a card
+   shows the Sawt mark in place of the cover, and a click takes it to the
+   reel on Instagram (`permalink`) — its video link has expired with the
+   cover, so the viewer would have nothing to play. `onBroken` tells the grid,
+   which keeps that reel out of the viewer. */
 export default function ReelThumbCard({
   reel,
   index,
   onOpen,
+  onBroken,
 }: {
   reel: Reel;
   index: number;
   onOpen: (index: number) => void;
+  onBroken?: (id: string) => void;
 }) {
   const [failed, setFailed] = useState(false);
   useEffect(() => setFailed(false), [reel.poster]);
+  const broken = !reel.poster || failed;
+  useEffect(() => {
+    if (broken) onBroken?.(String(reel.id));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [broken, reel.id]);
 
   const { lang } = useLang();
   const d = reel.details;
   const caption = d?.caption || "";
   const posted = d ? timeAgo(d.postedAt, lang) : "";
-  const open = () => onOpen(index);
+  const permalink = d?.permalink || "";
+  const open = () => {
+    if (broken && permalink) {
+      window.open(permalink, "_blank", "noopener,noreferrer");
+    } else {
+      onOpen(index);
+    }
+  };
   const onKeyDown = (e: KeyboardEvent<HTMLDivElement>) => {
     if (e.key === "Enter" || e.key === " ") {
       e.preventDefault();
@@ -48,7 +67,14 @@ export default function ReelThumbCard({
       onClick={open}
       onKeyDown={onKeyDown}
     >
-      {reel.poster && !failed ? (
+      {broken ? (
+        <img
+          className="ct-thumb-fallback"
+          src={SAWT_MARK}
+          alt={caption}
+          draggable={false}
+        />
+      ) : (
         <img
           src={reel.poster}
           alt={caption}
@@ -57,7 +83,7 @@ export default function ReelThumbCard({
           draggable={false}
           onError={() => setFailed(true)}
         />
-      ) : null}
+      )}
 
       {/* how long ago it was posted, top corner */}
       {posted ? <span className="ct-thumb-age">{posted}</span> : null}
@@ -90,7 +116,7 @@ export default function ReelThumbCard({
         tabIndex={-1}
         aria-hidden="true"
       >
-        <i className="fa-solid fa-play"></i>
+        <i className={broken && permalink ? "fa-brands fa-instagram" : "fa-solid fa-play"}></i>
       </button>
     </div>
   );

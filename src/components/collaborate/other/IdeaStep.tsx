@@ -1,6 +1,7 @@
 import { IconCloudUpload, IconInfoCircle } from "@/components/ui/icons";
 import { dropZoneProps } from "@/lib/attachment";
 import { FILE_ACCEPT, NOTE_MAX } from "./other-form-data";
+import RequiredMark from "@/components/ui/RequiredMark";
 
 /* Step 2 — "شرح الفكرة": the pitch itself, an optional attachment and any last
    notes, then the info panel "تسليم الطلب" submits from. Nothing on this step
@@ -34,6 +35,7 @@ export default function IdeaStep({
           <span data-i18n="collab_ot_f_idea">
             ما هي فكرة التعاون التي تقترحها؟
           </span>
+          <RequiredMark />
         </label>
         <textarea
           id="collab-ot-idea"

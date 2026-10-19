@@ -74,8 +74,10 @@ export default function LegacyInit({ page }: { page: string }) {
       }
       // The incubator and صوت ميديا stat strips reuse the same counters.
       if (page === "incubator" || page === "media") {
-        const { runCounters } = await import("@/lib/legacy-main");
+        const { runCounters, initHeaderPin } = await import("@/lib/legacy-main");
         runCounters();
+        // their own navbars hide on scroll down / show on scroll up too
+        initHeaderPin();
       }
     })();
   }, [page]);

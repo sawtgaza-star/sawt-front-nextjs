@@ -34,7 +34,16 @@ export default function ContentGrid({
   onFocusDone?: () => void;
   onOpenDone?: () => void;
 }) {
+  /* `openIndex` indexes `reels` (the grid). The viewer only gets the reels
+     that can play — a card whose cover failed (expired Instagram link) goes
+     to Instagram instead — so its index is mapped through `playable`. */
   const [openIndex, setOpenIndex] = useState<number | null>(null);
+  const [broken, setBroken] = useState<ReadonlySet<string>>(new Set());
+  const markBroken = (id: string) =>
+    setBroken((s) => (s.has(id) ? s : new Set(s).add(id)));
+  const playable = reels.filter((r) => !broken.has(String(r.id)));
+  const toViewer = (i: number) =>
+    playable.findIndex((r) => r.id === reels[i]?.id);
   const gridRef = useRef<HTMLDivElement>(null);
   const { shown, reveal } = useReelBatches(reels.length, gridRef, {
     resetKey: reels.map((r) => r.id).join(","),
@@ -162,17 +171,19 @@ export default function ContentGrid({
             reel={reel}
             index={i}
             onOpen={setOpenIndex}
+            onBroken={markBroken}
           />
         ))}
       </div>
 
-      {openIndex !== null && (
+      {openIndex !== null && toViewer(openIndex) >= 0 && (
         <ReelViewer
-          reels={reels}
-          index={openIndex}
+          reels={playable}
+          index={toViewer(openIndex)}
           onNavigate={(i) => {
-            setOpenIndex(i);
-            reveal(i);
+            const at = reels.findIndex((r) => r.id === playable[i]?.id);
+            setOpenIndex(at);
+            reveal(at);
           }}
           onClose={() => setOpenIndex(null)}
         />

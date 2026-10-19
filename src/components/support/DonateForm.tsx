@@ -13,6 +13,7 @@ import {
   type SupportCheckoutInterval,
 } from "@/lib/api/support-checkout";
 import { resolveDonate, type PlanValue, type ResolvedDonate } from "./donate-data";
+import RequiredMark from "@/components/ui/RequiredMark";
 
 /* Plan tab glyphs — kept here (not in donate-data.ts) since that file is
    plain .ts and can't hold JSX. */
@@ -117,8 +118,9 @@ export default function DonateForm({
           }
         }}
       >
-        <label className="sp-field-label" data-i18n="support_choose_amount">
-          اختر المبلغ
+        <label className="sp-field-label">
+          <span data-i18n="support_choose_amount">اختر المبلغ</span>
+          <RequiredMark />
         </label>
         <div className="sp-amounts">
           {activePlan.amounts.map((a) => (

@@ -2,6 +2,7 @@
 import type { ReactNode } from "react";
 import type { Option } from "./register-data";
 import { IconCaretDown } from "./enroll-icons";
+import RequiredMark from "@/components/ui/RequiredMark";
 
 /* The enrollment form's building blocks. They render the join modal's field
    classes — `style.css` defines them and this route loads it — so a labelled
@@ -10,19 +11,24 @@ import { IconCaretDown } from "./enroll-icons";
    character counter) wears `crs-en-*` classes defined in course.css. */
 
 /** A labelled field; `error` is the API's note for it, painted the join
-    modal's way (red box + message under it). */
+    modal's way (red box + message under it). `required` adds the red star. */
 export function Field({
   label,
   error,
+  required,
   children,
 }: {
   label: string;
   error?: string;
+  required?: boolean;
   children: ReactNode;
 }) {
   return (
     <div className={"join-field" + (error ? " has-error" : "")}>
-      <label className="join-label">{label}</label>
+      <label className="join-label">
+        {label}
+        {required ? <RequiredMark /> : null}
+      </label>
       {children}
       {error ? <span className="join-field-error">{error}</span> : null}
     </div>

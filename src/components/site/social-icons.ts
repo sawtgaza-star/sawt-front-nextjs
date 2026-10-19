@@ -1,5 +1,5 @@
 /* Platform → mark, shared by the two pieces of site chrome that render an
-   editor-managed social row: the footer's bottom bar and the navbar's top bar.
+   editor-managed social row: the footer's brand column and the navbar's top bar.
    Both are fed the same { platform, url } shape by the API (SocialLink in
    lib/api/layout.ts), so the mapping lives in one place rather than drifting
    between them.

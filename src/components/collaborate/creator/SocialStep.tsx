@@ -10,6 +10,7 @@ import {
   SOCIAL_PLATFORMS,
   VIDEO_ACCEPT,
 } from "./creator-form-data";
+import RequiredMark from "@/components/ui/RequiredMark";
 
 /* Step 3 — "مواقع التواصل": one row per social profile (platform + link, with
    a row that can be removed and "اضافة منصة" to add another), free-text notes,
@@ -51,8 +52,9 @@ export default function SocialStep({
   return (
     <div className="cl-form">
       <div className="cl-field">
-        <span className="cl-label" data-i18n="collab_f_social">
-          روابط مواقع التواصل الاجتماعي
+        <span className="cl-label">
+          <span data-i18n="collab_f_social">روابط مواقع التواصل الاجتماعي</span>
+          <RequiredMark />
         </span>
 
         {values.rows.map((row) => {

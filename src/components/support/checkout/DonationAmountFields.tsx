@@ -2,6 +2,7 @@
 import { IconChevronDownBold } from "@/components/ui/icons";
 import { CURRENCIES } from "./currencies-data";
 import type { ProofErrors, ProofValues } from "./checkout-flow";
+import RequiredMark from "@/components/ui/RequiredMark";
 
 /* "مبلغ التبرع" + "نوع العملة المراد التبرع بيها". Drawn on "إثبات تبرعك" —
    or, for the electronic flow, on screen 1 under the platform picker. The
@@ -22,6 +23,7 @@ export default function DonationAmountFields({
       <div className="sp-proof-field">
         <label className="sp-proof-label" htmlFor="proof-amount">
           <span data-i18n="checkout_proof_amount">مبلغ التبرع</span>
+          <RequiredMark />
         </label>
         <input
           id="proof-amount"
@@ -45,6 +47,7 @@ export default function DonationAmountFields({
           <span data-i18n="checkout_proof_currency">
             نوع العملة المراد التبرع بيها
           </span>
+          <RequiredMark />
         </label>
         <div className="sp-proof-select-wrap">
           <select

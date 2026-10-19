@@ -266,6 +266,48 @@ html.sawt-anim .latest-news .news-card .readmore:hover .arrow,
   }
 }
 
+/* ---------- narrow phones ----------
+   style.css holds the date and the button on one row (nowrap !important);
+   on a ~250px card the two didn't fit and the button was pushed out past the
+   card's edge. Smaller type and a tighter footer keep them side by side. */
+/* phone: a wider card (style.css sets 70vw, capped at 322px) — the next one
+   still peeks in. Owl's autoWidth reads this width when it builds the slider. */
+@media (max-width: 599.98px) {
+  .latest-news .creators-carousel .item {
+    width: 80vw;
+  }
+
+  .latest-news .creators-carousel .news-card {
+    max-width: 360px;
+  }
+}
+
+@media (max-width: 575.98px) {
+  .latest-news .news-card .card-footer {
+    padding-inline: 0.9rem;
+    gap: 6px;
+  }
+
+  .latest-news .news-card .card-footer > span:first-child {
+    gap: 4px;
+  }
+
+  .latest-news .news-card .card-footer > span:first-child,
+  .latest-news .news-card .card-footer > span:first-child span {
+    font-size: 12px !important;
+  }
+
+  .latest-news .news-card .readmore a {
+    padding: 0.45rem 0.8rem;
+    gap: 0.25rem;
+  }
+
+  .latest-news .news-card .readmore a span,
+  .latest-news .news-card .readmore a i {
+    font-size: 12px !important;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .latest-news .ln-shape {
     animation: none;

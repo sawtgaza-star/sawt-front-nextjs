@@ -47,7 +47,6 @@ export function runCounters() {
     // العدّ مبني على الوقت (ثانيتان مع تباطؤ في النهاية) بدل +1 كل خطوة،
     // حتى لا تستغرق الأرقام الكبيرة دقائق
     const duration = 2000;
-    const start = performance.now();
     const format = (n) => {
       const fixed = n.toFixed(decimals);
       return grouped
@@ -55,15 +54,38 @@ export function runCounters() {
         : fixed;
     };
 
-    (element as any).__counterTimer = setInterval(() => {
-      const progress = Math.min((performance.now() - start) / duration, 1);
-      const eased = 1 - Math.pow(1 - progress, 3);
-      textNode.nodeValue = prefix + format(targetNumber * eased) + suffix;
-      if (progress >= 1) {
-        clearInterval((element as any).__counterTimer);
-        (element as any).__counterTimer = null;
-      }
-    }, 16);
+    // العدّاد يبقى على الصفر حتى يظهر عنصره في الشاشة، ثم يعدّ مرة واحدة
+    (element as any).__counterObserver?.disconnect();
+    textNode.nodeValue = prefix + format(0) + suffix;
+
+    const animate = () => {
+      const start = performance.now();
+      (element as any).__counterTimer = setInterval(() => {
+        const progress = Math.min((performance.now() - start) / duration, 1);
+        const eased = 1 - Math.pow(1 - progress, 3);
+        textNode.nodeValue = prefix + format(targetNumber * eased) + suffix;
+        if (progress >= 1) {
+          clearInterval((element as any).__counterTimer);
+          (element as any).__counterTimer = null;
+        }
+      }, 16);
+    };
+
+    if (typeof IntersectionObserver === "undefined") {
+      animate();
+      return;
+    }
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (!entries.some((entry) => entry.isIntersecting)) return;
+        observer.disconnect();
+        (element as any).__counterObserver = null;
+        animate();
+      },
+      { threshold: 0.5 }
+    );
+    (element as any).__counterObserver = observer;
+    observer.observe(element);
   });
 }
 
@@ -91,9 +113,9 @@ export function replayComments() {
 }
 
 /* Group the top contact bar (nav-face) + navbar into one .header-bar wrapper.
-   The header does NOT follow the scroll: it sits at the top of the document and
-   leaves the viewport with the rest of the page, so there is no pinning, no
-   spacer and no scroll listener here anymore. The wrapper still matters — it
+   The wrapper itself does NOT follow the scroll — only the navbar row does,
+   hiding on scroll down and coming back on scroll up (autoHideBar below).
+   The wrapper still matters — it
    keeps the two rows as one block for the hero's negative-margin overlap, and
    the phone breakpoint positions the whole card over the hero through it.
    Exported so LegacyInit can re-run it on every visit: each page renders its
@@ -107,7 +129,13 @@ export function initHeaderPin() {
   }
 
   const navbar = document.querySelector("header .navbar");
-  if (!navbar) return;
+  if (!navbar) {
+    // The incubator (and course) and صوت ميديا pages carry their own bar
+    // instead of SiteNav — same hide-on-scroll behaviour, applied to its wrap.
+    const ownBar = document.querySelector(".inc-nav-wrap, .sm-nav-wrap");
+    if (ownBar) autoHideBar(ownBar);
+    return;
+  }
   const navFace = document.querySelector("header .nav-face");
 
   // Reuse the wrapper if this header is already wrapped (double-init guard).
@@ -127,32 +155,66 @@ export function initHeaderPin() {
   const spacer = bar.parentNode.querySelector(":scope > .header-bar-spacer");
   if (spacer && spacer.parentNode) spacer.parentNode.removeChild(spacer);
 
-  pinNavbarRow(navbar);
+  autoHideBar(navbar);
 }
 
-/* Only the navbar row (logo · links · pills) follows the scroll: once the
-   page scrolls past it, it is fixed flush to the top of the viewport
-   (.navbar.is-pinned, site-nav.css); the top bar (.nav-face) stays behind.
-   A placeholder of the row's height holds its place so nothing jumps, and it
-   is what's measured while pinned to know when to let the row go again. */
-function pinNavbarRow(navbar) {
+/* Hide on scroll down, show on scroll up. Only the navbar row (logo · links ·
+   pills) does this; the top bar (.nav-face) stays behind.
+   At the top of the page the bar sits in the flow as usual. Scrolling down it
+   leaves with the page; once it is fully out of view it is fixed to the top of
+   the viewport (.is-pinned) but slid up out of sight (.is-scroll-hidden), and
+   the first scroll up slides it back in. Back at its own place it drops into
+   the flow again. A placeholder of the bar's height holds that place while it
+   is pinned so nothing jumps, and is what's measured to know when to let go.
+   Styles: site-nav.css (.navbar), incubator.css, media.css. */
+const SCROLL_DELTA = 6;
+
+function autoHideBar(bar) {
   const placeholder = document.createElement("div");
   placeholder.className = "navbar-pin-placeholder";
   let pinned = false;
+  let lastY = window.scrollY;
+
+  // An open phone menu keeps the bar in place (its drawer hangs off it).
+  const menuOpen = () =>
+    document.documentElement.classList.contains("nav-drawer-open") ||
+    !!bar.querySelector(".collapse.show, .collapsing");
+
+  const pin = () => {
+    placeholder.style.height = bar.offsetHeight + "px";
+    bar.parentNode.insertBefore(placeholder, bar);
+    // Pinned straight into the hidden state, without the slide transition —
+    // otherwise it would flash at the top while sliding up out of view.
+    bar.classList.add("is-pinned", "is-scroll-hidden", "no-slide");
+    void bar.offsetHeight;
+    bar.classList.remove("no-slide");
+    pinned = true;
+  };
+
+  const unpin = () => {
+    bar.classList.remove("is-pinned", "is-scroll-hidden");
+    placeholder.remove();
+    pinned = false;
+  };
 
   const update = () => {
-    const anchor = pinned ? placeholder : navbar;
-    const shouldPin = window.scrollY > 0 && anchor.getBoundingClientRect().top < 0;
-    if (shouldPin === pinned) return;
-    if (shouldPin) {
-      placeholder.style.height = navbar.offsetHeight + "px";
-      navbar.parentNode.insertBefore(placeholder, navbar);
-      navbar.classList.add("is-pinned");
-    } else {
-      navbar.classList.remove("is-pinned");
-      placeholder.remove();
+    const y = window.scrollY;
+    const delta = y - lastY;
+
+    if (!pinned) {
+      lastY = y;
+      if (y > 0 && bar.getBoundingClientRect().bottom < 0) pin();
+      return;
     }
-    pinned = shouldPin;
+    if (y <= 0 || placeholder.getBoundingClientRect().top >= 0) {
+      lastY = y;
+      unpin();
+      return;
+    }
+    if (Math.abs(delta) < SCROLL_DELTA) return;
+    lastY = y;
+    if (delta > 0 && !menuOpen()) bar.classList.add("is-scroll-hidden");
+    else if (delta < 0) bar.classList.remove("is-scroll-hidden");
   };
 
   window.addEventListener("scroll", update, { passive: true });
@@ -162,7 +224,7 @@ function pinNavbarRow(navbar) {
   (window as any).__headerPinCleanup = () => {
     window.removeEventListener("scroll", update);
     window.removeEventListener("resize", update);
-    navbar.classList.remove("is-pinned");
+    bar.classList.remove("is-pinned", "is-scroll-hidden", "no-slide");
     placeholder.remove();
   };
 }

@@ -1,4 +1,5 @@
 import { NOTE_MAX, SUPPORT_TYPES } from "./funding-form-data";
+import RequiredMark from "@/components/ui/RequiredMark";
 
 /* Step 2 — "تفاصيل عرض الدعم": what the organisation is offering (multi-pick
    tick boxes) and the free-text pitch underneath. Both are required;
@@ -29,8 +30,9 @@ export default function SupportStep({
   return (
     <div className="cl-form">
       <div className="cl-field">
-        <span className="cl-label" data-i18n="collab_fu_f_support">
-          نوع الدعم الذي ترغبون بتقديمه
+        <span className="cl-label">
+          <span data-i18n="collab_fu_f_support">نوع الدعم الذي ترغبون بتقديمه</span>
+          <RequiredMark />
         </span>
 
         <div className="cl-checks">
@@ -57,6 +59,7 @@ export default function SupportStep({
           <span data-i18n="collab_fu_f_about">
             نبذة عن مؤسستكم ولماذا ترغبون بالتعاون معنا
           </span>
+          <RequiredMark />
         </label>
         <textarea
           id="collab-fu-about"

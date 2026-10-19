@@ -4,6 +4,7 @@ import {
   IconFieldUser,
 } from "@/components/collaborate/collaborate-icons";
 import CollabCountrySelect from "@/components/collaborate/creator/CollabCountrySelect";
+import RequiredMark from "@/components/ui/RequiredMark";
 
 /* Step 1 — "بيانات الشركة": who is proposing the partnership. Name, e-mail and
    phone are the ones the team writes back on; the website is optional.
@@ -35,6 +36,7 @@ export default function CompanyStep({
       <div className="cl-field">
         <label className="cl-label" htmlFor="collab-pa-company">
           <span data-i18n="collab_pa_f_company">اسم الشركة / المؤسسة</span>
+          <RequiredMark />
         </label>
         {/* the icon sits inside the border, so the frame is on the wrapper and
             the input itself is chrome-less */}
@@ -60,6 +62,7 @@ export default function CompanyStep({
       <div className="cl-field">
         <label className="cl-label" htmlFor="collab-pa-email">
           <span data-i18n="collab_pa_f_email">البريد الالكتروني</span>
+          <RequiredMark />
         </label>
         <div className={"cl-input-wrap" + (errors.email ? " is-invalid" : "")}>
           <span className="cl-input-icon" aria-hidden="true">
@@ -81,6 +84,7 @@ export default function CompanyStep({
       <div className="cl-field">
         <label className="cl-label" htmlFor="collab-pa-site">
           <span data-i18n="collab_pa_f_site">موقع الشركة الإلكتروني</span>
+          <RequiredMark />
         </label>
         <div className={"cl-input-wrap" + (errors.site ? " is-invalid" : "")}>
           <span className="cl-input-icon" aria-hidden="true">
@@ -102,6 +106,7 @@ export default function CompanyStep({
       <div className="cl-field">
         <label className="cl-label" htmlFor="collab-pa-phone">
           <span data-i18n="collab_pa_f_phone">رقم الهاتف</span>
+          <RequiredMark />
         </label>
         <div className="cl-phone-row">
           <CollabCountrySelect

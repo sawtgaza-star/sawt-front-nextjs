@@ -1,9 +1,11 @@
 // @ts-nocheck
 /* eslint-disable */
 import Link from "next/link";
+import "@/styles/home-features.css";
 import { localized } from "@/lib/api/pages";
 import type { HomeWhoWeAre } from "@/lib/api/home";
 import { bySortOrder } from "./home-text";
+import SawtAboutAnim from "./sawt-anim/SawtAboutAnim";
 
 /* The API's `who_we_are` block. The section keeps its two layouts — a mobile
    one (image first, 2x2 feature grid) and the desktop row — but they now draw
@@ -39,7 +41,6 @@ export default function SoutSection({
   const title = localized(data?.title, lang);
   const description = localized(data?.description, lang);
   const cta = localized(data?.cta?.label, lang);
-  const image = data?.image_url;
   const features = bySortOrder(data?.features).map((feature) => ({
     title: localized(feature.title, lang),
     iconUrl: feature.icon_url,
@@ -78,7 +79,9 @@ export default function SoutSection({
           {/*  نسخة الجوال: الصورة أولاً ثم النص وشبكة مزايا 2×2  */}{" "}
           <div className="sout-mobile d-md-none">
             {" "}
-            {image ? <img loading="lazy" decoding="async" className="image-swat" src={image} alt="" /> : null}{" "}
+            <div className="image-swat">
+              <SawtAboutAnim lang={lang} />
+            </div>{" "}
             {title ? (
               <h3 className="sout-mobile-title fw-bold text-center">{title}</h3>
             ) : null}{" "}
@@ -116,11 +119,9 @@ export default function SoutSection({
           </div>{" "}
           <div className="row d-none d-md-flex">
             {" "}
-            <div className="col-lg-6 mt-2 order-lg-2">
+            <div className="col-lg-6 mt-0 order-lg-2 sout-anim-col">
               {" "}
-              {image ? (
-                <img loading="lazy" decoding="async" className="image-swat" src={image} alt="" />
-              ) : null}{" "}
+              <SawtAboutAnim lang={lang} />{" "}
             </div>{" "}
             <div
               className="col-lg-6 position-relative mt-5 order-lg-1"
@@ -133,7 +134,7 @@ export default function SoutSection({
               {description ? (
                 <p
                   className="description text-secondary font-18 lh-lg"
-                  style={{ color: "rgba(90, 90, 90, 1) !important" }}
+                  style={{ color: "rgba(90, 90, 90, 1) !important", textAlign: "justify" }}
                 >
                   {description}
                 </p>

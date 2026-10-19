@@ -1,6 +1,7 @@
 import { IconCloudUpload, IconInfoCircle } from "@/components/ui/icons";
 import { dropZoneProps } from "@/lib/attachment";
 import { FILE_ACCEPT, NOTE_MAX } from "./funding-form-data";
+import RequiredMark from "@/components/ui/RequiredMark";
 
 /* Step 3 — "تفاصيل إضافية ومرفقات": the terms the sponsor wants to propose,
    the company-profile drop zone, and any last notes. Unlike the creator flow
@@ -35,6 +36,7 @@ export default function ExtrasStep({
           <span data-i18n="collab_fu_f_terms">
             هل يوجد شروط أو مقترحات محددة للتعاون؟
           </span>
+          <RequiredMark />
         </label>
         <textarea
           id="collab-fu-terms"
