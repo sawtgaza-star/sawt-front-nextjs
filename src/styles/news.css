@@ -276,6 +276,13 @@
   white-space: nowrap;
 }
 
+/* a story's "قصة نجاح" pill — the olive of the site's buttons and links */
+.nws-tag.nws-tag-badge {
+  border-color: rgba(76, 92, 55, 1);
+  background: rgba(76, 92, 55, 1);
+  color: #fff;
+}
+
 .nws-title {
   font-size: 34px;
   font-weight: 800;
@@ -784,4 +791,10 @@
   .nws-related-track > .item {
     flex: 0 0 70vw;
   }
+}
+
+/* a story card's `footer_title`, when it differs from the headline (StoryCard) */
+.rs-card-desc.rs-card-footer-title {
+  font-weight: 700;
+  margin-bottom: 4px;
 }

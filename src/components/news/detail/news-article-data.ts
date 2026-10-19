@@ -28,6 +28,8 @@ export type NewsArticle = {
   /* API articles: the categories the editor tagged, shown in place of the
      category/section pair above — there can be one, two or more */
   tags?: string[];
+  /* API stories: the poster's pill ("قصة نجاح"), shown ahead of the tags */
+  badge?: string;
   titleKey?: string;
   title: string;
   descKey?: string;

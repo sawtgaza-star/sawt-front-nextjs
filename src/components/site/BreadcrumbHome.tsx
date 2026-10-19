@@ -31,11 +31,16 @@ export function sectionHome(pathname: string | null): string {
   return "/";
 }
 
-export default function BreadcrumbHome() {
+/** `label` is the API's own wording of the crumb (an article's
+    `breadcrumb.home`), already in the reader's language — it then carries no
+    `data-i18n`, so the translator leaves React's text alone. */
+export default function BreadcrumbHome({ label }: { label?: string } = {}) {
   /* Plain <a>, as every crumb here has always been and as the links in SiteNav
      are — see the CSS-groups convention in CLAUDE.md. */
+  const href = sectionHome(usePathname());
+  if (label) return <a href={href}>{label}</a>;
   return (
-    <a href={sectionHome(usePathname())} data-i18n="nav_home">
+    <a href={href} data-i18n="nav_home">
       الرئيسية
     </a>
   );

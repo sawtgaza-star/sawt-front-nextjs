@@ -65,6 +65,7 @@ export default function StoryArticleContent({ uuid }: { uuid: string }) {
   return (
     <>
       <NewsHero
+        home={localized(story?.breadcrumb?.home, lang)}
         article={crumb ? { title: crumb } : undefined}
         parent={
           parentLabel

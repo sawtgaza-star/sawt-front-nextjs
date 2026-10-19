@@ -17,6 +17,8 @@ export type StoryCardItem = {
   /** the poster's pill — "قصة نجاح" */
   badge: string;
   title: string;
+  /** the payload's `footer_title` — "" when it only repeats `title` */
+  footerTitle: string;
   /** the one-line standfirst under the title */
   desc: string;
   /** the long copy that slides up on hover */

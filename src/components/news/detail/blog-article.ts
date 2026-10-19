@@ -33,18 +33,22 @@ function readTimeLabel(minutes: number | null | undefined, lang: string): string
   return `${minutes} دقائق قراءة`;
 }
 
-/** Cover first, then the gallery in the order the editor arranged it. Every
-    frame is captioned with the headline — the payload has no per-image alt. */
-function gallery(blog: Blog, title: string): NewsArticleImage[] {
-  const images = Array.isArray(blog.images) ? [...blog.images] : [];
-  images.sort((a, b) => (a.sort_order ?? 0) - (b.sort_order ?? 0));
+/** The gallery's frames: `lead` (the article's `hero_url`, then its cover),
+    then the editor's own in the order they arranged them. A URL that appears twice is shown once. Every frame is
+    captioned with the headline — the payload has no per-image alt. */
+export function galleryFrames(
+  lead: (string | null | undefined)[],
+  images: Blog["images"],
+  title: string,
+): NewsArticleImage[] {
+  const sorted = Array.isArray(images) ? [...images] : [];
+  sorted.sort((a, b) => (a.sort_order ?? 0) - (b.sort_order ?? 0));
 
-  const frames: NewsArticleImage[] = [];
-  if (blog.cover_url) frames.push({ src: blog.cover_url, alt: title });
-  for (const image of images) {
-    if (image.image_url) frames.push({ src: image.image_url, alt: title });
+  const srcs = new Set<string>();
+  for (const src of [...lead, ...sorted.map((image) => image.image_url)]) {
+    if (src) srcs.add(src);
   }
-  return frames;
+  return [...srcs].map((src) => ({ src, alt: title }));
 }
 
 export function blogArticle(blog: Blog, lang: string): NewsArticle {
@@ -66,7 +70,7 @@ export function blogArticle(blog: Blog, lang: string): NewsArticle {
     readTime: readTimeLabel(blog.read_time_minutes, lang),
     date: formatDate(blog.published_at, lang),
     author: localized(blog.author, lang),
-    gallery: gallery(blog, title),
+    gallery: galleryFrames([blog.hero_url, blog.cover_url], blog.images, title),
     bodyImages: [],
     html: localized(blog.content, lang),
     quote: quoteText ? { text: quoteText, by: quoteBy } : undefined,
