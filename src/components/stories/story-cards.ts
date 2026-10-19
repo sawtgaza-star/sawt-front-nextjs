@@ -5,8 +5,9 @@
    fight React (see the note in NewsCard). StoryCard falls back to its built-in
    Arabic + key for every slot an API row leaves empty.
 
-   `footer_title` is not mapped: it repeats `headline` in the rows the feed has
-   answered so far, and the poster has no second place to show it.
+   `footer_title` sits between the title and the standfirst — but only when it
+   says something the headline doesn't: in the rows the feed has answered so
+   far it repeats `headline` word for word, and the card would print it twice.
 
    The arrow links to /stories/{uuid}: GET /pages/stories/{uuid} resolves that
    identifier only, so it is the one every route into a story carries — the
@@ -28,13 +29,18 @@ export function storyCards(
 ): StoryCardItem[] {
   if (!Array.isArray(items)) return [];
 
-  return items.map((item, index) => ({
-    id: item.uuid || item.id || index,
-    href: storyHref(item),
-    image: item.cover_image || "",
-    badge: localized(item.badge, lang),
-    title: localized(item.headline, lang),
-    desc: localized(item.footer_subtitle, lang),
-    full: localized(item.excerpt, lang),
-  }));
+  return items.map((item, index) => {
+    const title = localized(item.headline, lang);
+    const footerTitle = localized(item.footer_title, lang);
+    return {
+      id: item.uuid || item.id || index,
+      href: storyHref(item),
+      image: item.cover_image || "",
+      badge: localized(item.badge, lang),
+      title,
+      footerTitle: footerTitle.trim() === title.trim() ? "" : footerTitle,
+      desc: localized(item.footer_subtitle, lang),
+      full: localized(item.excerpt, lang),
+    };
+  });
 }

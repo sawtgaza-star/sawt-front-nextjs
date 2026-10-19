@@ -13,6 +13,10 @@ export default function NewsArticleHead({ article }: { article: NewsArticle }) {
   return (
     <header className="nws-head">
       <div className="nws-tags">
+        {/* a story's own pill ("قصة نجاح") leads, in the brand olive */}
+        {article.badge ? (
+          <span className="nws-tag nws-tag-badge">{article.badge}</span>
+        ) : null}
         {/* the API sends the article's categories as a list; the static
             article has exactly the mock's two pills */}
         {article.tags ? (

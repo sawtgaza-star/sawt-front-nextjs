@@ -47,7 +47,10 @@ export default function NewsHero({
   image,
   loading = false,
   skeleton,
+  home,
 }: {
+  /** The API's "الرئيسية" (`breadcrumb.home`); the static crumb without it. */
+  home?: string;
   article?: Crumb;
   parent?: Parent | null;
   hero?: Hero;
@@ -66,7 +69,7 @@ export default function NewsHero({
         <SiteNav />
         <div className="container about-hero text-center text-white">
           <nav className="about-breadcrumb" aria-label="breadcrumb">
-            <BreadcrumbHome />
+            <BreadcrumbHome label={home} />
             <i className="fa-solid fa-angle-left mx-2 about-breadcrumb-sep arrow"></i>
             {loading && skeleton.crumb ? (
               <NewsCrumbSkeleton href={(parent ?? NEWS_PARENT).href} len={skeleton} />

@@ -24,6 +24,10 @@ export default function StoryCard({ story }: { story: StoryCardItem }) {
           {story.title ? (
             <h5 className="rs-card-title">{story.title}</h5>
           ) : null}
+          {/* rs-card-desc's collapse-on-hover, in the title's weight */}
+          {story.footerTitle ? (
+            <p className="rs-card-desc rs-card-footer-title">{story.footerTitle}</p>
+          ) : null}
           {story.desc ? <p className="rs-card-desc">{story.desc}</p> : null}
           {story.full ? <p className="rs-card-full">{story.full}</p> : null}
         </div>

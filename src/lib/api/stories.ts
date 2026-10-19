@@ -34,12 +34,10 @@
 
    A STORY IS SHAPED LIKE A BLOG. The `story` block carries the same fields
    `Blog` does, which is why the detail page renders the news article's own
-   components against it (see components/stories/story-article). It differs in
-   three places only:
+   components against it (see components/stories/story-article) — `hero_url`
+   and `cover_url` included. It differs in two places only:
 
-     - `hero_url`, the article's own wide image, next to the `cover_url` the
-       poster card uses;
-     - `badge` ("قصة نجاح"), which the article page has no slot for;
+     - `badge` ("قصة نجاح"), the poster's pill, which the article repeats;
      - the middle crumb is `breadcrumb.stories`, where a blog says `news`.
    ========================================================= */
 
@@ -136,12 +134,10 @@ export type StoryBreadcrumb = {
 };
 
 /** The story itself. Field for field a `Blog` (so the news article components
-    render it unchanged — see components/stories/story-article) plus the two
+    render it unchanged — see components/stories/story-article) plus the
     fields only a story has. `content` is HTML, one string per language. */
 export type Story = Omit<Blog, "breadcrumb"> & {
-  /** the article's own wide image, where a blog has only its cover */
-  hero_url?: string | null;
-  /** "قصة نجاح" — the poster's pill. The article page has no slot for it. */
+  /** "قصة نجاح" — the poster's pill, repeated ahead of the article's pills. */
   badge?: Localized;
   breadcrumb?: StoryBreadcrumb;
 };

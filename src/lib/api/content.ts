@@ -175,7 +175,9 @@ export async function fetchContentPage(
   if (query.category && query.category !== "all") {
     params.set("category", query.category);
   }
-  if (query.sort && query.sort !== "latest") params.set("sort", query.sort);
+  // sent explicitly, "latest" included — the filter's request is
+  // `?category={slug}&sort={latest|oldest}`, as the backend documents it
+  if (query.sort) params.set("sort", query.sort);
   const search = params.toString();
 
   const payload = await apiFetch<Envelope<ContentPage>>(

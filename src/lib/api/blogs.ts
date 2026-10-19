@@ -66,6 +66,8 @@ export type Blog = {
   title?: Localized;
   excerpt?: Localized;
   cover_url?: string | null;
+  /** the article's own wide image — the first frame of its gallery */
+  hero_url?: string | null;
   breadcrumb?: BlogBreadcrumb;
   categories?: BlogCategory[];
   author?: Localized;
@@ -112,6 +114,7 @@ function withAssetUrls<T extends BlogsListPage | BlogDetailPage>(page: T): T {
           blog: {
             ...detail.blog,
             cover_url: assetUrl(detail.blog.cover_url),
+            hero_url: assetUrl(detail.blog.hero_url),
             images: mapList(detail.blog.images, (image) => ({
               ...image,
               image_url: assetUrl(image.image_url),
