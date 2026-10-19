@@ -115,7 +115,7 @@ function StatColumn({ stat, lang }) {
   const label = localized(stat.label, lang);
   const value =
     stat.value && typeof stat.value === "object" ? localized(stat.value, lang) : stat.value;
-  const { figure, word } = splitStatValue(value);
+  const { figure, word } = splitStatValue(value, lang);
 
   return (
     <div className="col count">
@@ -123,9 +123,12 @@ function StatColumn({ stat, lang }) {
       <i>
         <StatIcon statKey={stat.key} />
       </i>{" "}
-      <h3 className="counter font-mob-22">
-        {/* LTR island: in the RTL heading a trailing "+" would otherwise be
-            flipped to the number's other side ("20+" painting as "+20"). */}
+      {/* keyed by the figure: runCounters() caches the first text it animated
+          (data-counter-from), so a language switch that rescales it ("140+"
+          → "140K+") needs a fresh element */}
+      <h3 className="counter font-mob-22" key={figure}>
+        {/* LTR island: in the RTL heading a leading "+" would otherwise be
+            flipped to the number's other side ("+20" painting as "20+"). */}
         <span className="counter-figure" dir="ltr">
           {figure}
         </span>

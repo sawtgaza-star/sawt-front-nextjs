@@ -1,4 +1,5 @@
 import { NOTE_MAX, PARTNER_TYPES } from "./partnership-form-data";
+import RequiredMark from "@/components/ui/RequiredMark";
 
 /* Step 2 — "طبيعة الشراكة": what the company is proposing (multi-pick tick
    boxes) and the free-text pitch underneath. Both are required;
@@ -30,8 +31,9 @@ export default function NatureStep({
   return (
     <div className="cl-form">
       <div className="cl-field">
-        <span className="cl-label" data-i18n="collab_pa_f_types">
-          نوع الشراكة الذي تقترحونها
+        <span className="cl-label">
+          <span data-i18n="collab_pa_f_types">نوع الشراكة الذي تقترحونها</span>
+          <RequiredMark />
         </span>
 
         <div className="cl-checks">
@@ -58,6 +60,7 @@ export default function NatureStep({
           <span data-i18n="collab_pa_f_about">
             نبذة عن مؤسستكم وهدف الشراكة
           </span>
+          <RequiredMark />
         </label>
         <textarea
           id="collab-pa-about"

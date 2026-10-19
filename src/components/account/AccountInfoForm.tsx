@@ -8,6 +8,7 @@ import AccountAvatar from "./AccountAvatar";
 import AvatarCropper from "./AvatarCropper";
 import { useAccountToast } from "./use-account-toast";
 import type { AccountDraft, AccountUser, Gender } from "./account-user";
+import RequiredMark from "@/components/ui/RequiredMark";
 
 const MAX_PHOTO_BYTES = 5 * 1024 * 1024;
 const PHOTO_TYPES = ["image/jpeg", "image/png"];
@@ -139,7 +140,10 @@ export default function AccountInfoForm({
 
       <div className="acc-grid">
         <label className="acc-field">
-          <span className="acc-label">{tr("acc_name")}</span>
+          <span className="acc-label">
+            {tr("acc_name")}
+            <RequiredMark />
+          </span>
           <input
             className="acc-input"
             value={draft.name}

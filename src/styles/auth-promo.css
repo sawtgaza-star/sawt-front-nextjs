@@ -1,0 +1,8 @@
+/* AuthShell promo side: the home "من نحن" animation in place of swat.png —
+   same footprint the image had (.promo-swat: 84% wide), in the flow so the
+   title still sits right under it. */
+.promo-container .promo-anim {
+  position: relative;
+  z-index: 1;
+  width: 84%;
+}

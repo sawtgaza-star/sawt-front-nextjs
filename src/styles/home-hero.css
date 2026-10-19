@@ -76,7 +76,9 @@
     display: none !important;
   }
   .carousel-caption-custom h1.font-60 {
-    font-size: 60px;
+    /* 80px on wide screens; eases back to the old 60px on tablets so the
+       title still fits the 60%-wide caption on one line */
+    font-size: clamp(60px, 5.5vw, 80px);
     line-height: 1.2;
     margin-bottom: 0;
   }

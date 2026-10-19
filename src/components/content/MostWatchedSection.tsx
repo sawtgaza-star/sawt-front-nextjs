@@ -22,11 +22,14 @@ export default function MostWatchedSection({
   reels,
   title = "",
   viewMore = "",
+  moreHref = "",
   loading = false,
 }: {
   reels: Reel[];
   title?: string;
   viewMore?: string;
+  /** where "رؤية المزيد" leads — the Instagram account the reels come from */
+  moreHref?: string;
   /** The payload is still on its way — hold the row with bars in its place. */
   loading?: boolean;
 }) {
@@ -152,8 +155,13 @@ export default function MostWatchedSection({
               </h2>
             )
           )}
-          {viewMore ? (
-            <a className="ct-mw-more" href="#">
+          {viewMore && moreHref ? (
+            <a
+              className="ct-mw-more"
+              href={moreHref}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
               {viewMore}
             </a>
           ) : null}

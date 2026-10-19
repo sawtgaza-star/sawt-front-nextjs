@@ -48,15 +48,42 @@ export function StatIcon({ statKey }: { statKey?: string }) {
 /* The API sends each figure as one string, unit included: "20+", "+140",
    "30 مليون". Split it into the figure the counter animates (digits plus the
    symbols stuck to them) and the trailing word, which is shown as sent.
-   Every figure carries a "+" whatever the API sends: one is added when the
-   value has none ("30 مليون" → "30+" · "مليون"). */
+   Every figure is led by a "+" whatever the API sends: a trailing one moves
+   to the front and one is added when there is none ("30 مليون" → "+30" · "مليون"). */
 export function splitStatValue(
   value?: string | number | null,
+  lang = "ar",
 ): { figure: string; word: string } {
   // the API sometimes sends a bare number (140) instead of a string
   const text = String(value ?? "").trim();
   const match = /^(\D*\d[\d.,]*[^\s\d\p{L}]*)\s*(.*)$/u.exec(text);
   if (!match) return { figure: text, word: "" };
-  const figure = match[1].includes("+") ? match[1] : `${match[1]}+`;
+  // the "+" always leads the figure: "20+" → "+20"
+  const figure = `+${match[1].replace(/\+/g, "")}`;
+  if (!match[2]) return scaleStat(figure, lang);
   return { figure, word: match[2] };
+}
+
+/* A bare figure of four digits or more is shortened by its zeros:
+   "+140000" → "+140" · "ألف" in Arabic, "+140K" in English;
+   "+30000000" → "+30" · "مليون" / "+30M". Arabic takes the plural for
+   3–10 ("5 آلاف", "3 ملايين"). The scale letter sits inside the figure, after
+   the digits, so the counter animates the number and keeps the "K" as is. */
+const STAT_SCALES = [
+  { size: 1e9, en: "B", ar: "مليار", arPlural: "مليارات" },
+  { size: 1e6, en: "M", ar: "مليون", arPlural: "ملايين" },
+  { size: 1e3, en: "K", ar: "ألف", arPlural: "آلاف" },
+];
+
+function scaleStat(figure: string, lang: string): { figure: string; word: string } {
+  const parts = /^(\D*?)(\d[\d,]*(?:\.\d+)?)(.*)$/.exec(figure);
+  if (!parts) return { figure, word: "" };
+  const [, before, digits, after] = parts;
+  const n = parseFloat(digits.replace(/,/g, ""));
+  const scale = STAT_SCALES.find((s) => n >= s.size);
+  if (!scale) return { figure, word: "" };
+  const short = Math.round((n / scale.size) * 10) / 10;
+  if (lang === "en") return { figure: `${before}${short}${scale.en}${after}`, word: "" };
+  const plural = Number.isInteger(short) && short >= 3 && short <= 10;
+  return { figure: `${before}${short}${after}`, word: plural ? scale.arPlural : scale.ar };
 }

@@ -19,7 +19,13 @@ export type ContentPageState = {
   reelsLoading: boolean;
 };
 
-export function useContentPage({ category, sort }: ContentQuery = {}): ContentPageState {
+/** `skip` holds the request back (the page already has that answer from
+    another call) — the state is then left as it was and not read. */
+export function useContentPage({
+  category,
+  sort,
+  skip = false,
+}: ContentQuery & { skip?: boolean } = {}): ContentPageState {
   // true on the server and on the first client render alike, so the prerendered
   // HTML is the skeleton and hydration finds exactly what it expects
   const [state, setState] = useState<ContentPageState>({
@@ -30,6 +36,7 @@ export function useContentPage({ category, sort }: ContentQuery = {}): ContentPa
   const loaded = useRef(false);
 
   useEffect(() => {
+    if (skip) return;
     const controller = new AbortController();
     if (loaded.current) setState((s) => ({ ...s, reelsLoading: true }));
 
@@ -57,7 +64,7 @@ export function useContentPage({ category, sort }: ContentQuery = {}): ContentPa
       });
 
     return () => controller.abort();
-  }, [category, sort]);
+  }, [category, sort, skip]);
 
   return state;
 }

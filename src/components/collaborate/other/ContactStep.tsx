@@ -4,6 +4,7 @@ import {
   IconFieldUser,
 } from "@/components/collaborate/collaborate-icons";
 import CollabCountrySelect from "@/components/collaborate/creator/CollabCountrySelect";
+import RequiredMark from "@/components/ui/RequiredMark";
 
 /* Step 1 — "بيانات التواصل": who is proposing the collaboration. All three
    fields are the ones the team writes back on, so all three are required.
@@ -34,6 +35,7 @@ export default function ContactStep({
       <div className="cl-field">
         <label className="cl-label" htmlFor="collab-ot-name">
           <span data-i18n="collab_ot_f_name">الأسم / اسم المؤسسة</span>
+          <RequiredMark />
         </label>
         {/* the icon sits inside the border, so the frame is on the wrapper and
             the input itself is chrome-less */}
@@ -57,6 +59,7 @@ export default function ContactStep({
       <div className="cl-field">
         <label className="cl-label" htmlFor="collab-ot-email">
           <span data-i18n="collab_ot_f_email">البريد الالكتروني</span>
+          <RequiredMark />
         </label>
         <div className={"cl-input-wrap" + (errors.email ? " is-invalid" : "")}>
           <span className="cl-input-icon" aria-hidden="true">
@@ -78,6 +81,7 @@ export default function ContactStep({
       <div className="cl-field">
         <label className="cl-label" htmlFor="collab-ot-phone">
           <span data-i18n="collab_ot_f_phone">رقم الهاتف</span>
+          <RequiredMark />
         </label>
         <div className="cl-phone-row">
           <CollabCountrySelect

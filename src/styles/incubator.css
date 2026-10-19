@@ -3004,3 +3004,30 @@ top: -23px;
     border-radius: 100px;
   }
 }
+
+/* Hide-on-scroll (initHeaderPin → autoHideBar in lib/legacy-main): fixed to
+   the top once scrolled out of view, slid away while scrolling down and back
+   in on scroll up. */
+.inc-nav-wrap.is-pinned {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1030;
+  padding-top: 10px;
+  transition: transform 0.3s ease;
+}
+.inc-nav-wrap.is-pinned.is-scroll-hidden {
+  transform: translateY(calc(-100% - 20px));
+}
+.inc-nav-wrap.no-slide {
+  transition: none !important;
+}
+@media (prefers-reduced-motion: reduce) {
+  .inc-nav-wrap.is-pinned {
+    transition: none;
+  }
+}
+.inc-nav-wrap.is-pinned .inc-nav {
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.08);
+}

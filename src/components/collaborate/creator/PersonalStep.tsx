@@ -4,6 +4,7 @@ import {
   IconFieldUser,
 } from "@/components/collaborate/collaborate-icons";
 import CollabCountrySelect from "./CollabCountrySelect";
+import RequiredMark from "@/components/ui/RequiredMark";
 
 /* Step 1 — "المعلومات الشخصية": full name, phone (dial code + number) and the
    e-mail the team writes back to. The values live in CreatorWizard so they
@@ -31,6 +32,7 @@ export default function PersonalStep({
       <div className="cl-field">
         <label className="cl-label" htmlFor="collab-name">
           <span data-i18n="collab_f_name">الاسم الكامل</span>
+          <RequiredMark />
         </label>
         {/* the icon sits inside the border, so the frame is on the wrapper and
             the input itself is chrome-less */}
@@ -54,6 +56,7 @@ export default function PersonalStep({
       <div className="cl-field">
         <label className="cl-label" htmlFor="collab-phone">
           <span data-i18n="collab_f_phone">رقم الهاتف</span>
+          <RequiredMark />
         </label>
         <div className="cl-phone-row">
           <CollabCountrySelect
@@ -82,6 +85,7 @@ export default function PersonalStep({
       <div className="cl-field">
         <label className="cl-label" htmlFor="collab-email">
           <span data-i18n="collab_f_email">البريد الالكتروني</span>
+          <RequiredMark />
         </label>
         <div className={"cl-input-wrap" + (errors.email ? " is-invalid" : "")}>
           <span className="cl-input-icon" aria-hidden="true">

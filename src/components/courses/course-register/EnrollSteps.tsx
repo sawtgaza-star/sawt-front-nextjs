@@ -46,7 +46,7 @@ type PaneProps = {
 export function StepPersonal({ form, set, tr, error }: PaneProps) {
   return (
     <div className="join-pane is-active">
-      <Field label={tr("crs_en_fullname")} error={error("full_name")}>
+      <Field required label={tr("crs_en_fullname")} error={error("full_name")}>
         <IconField
           icon={<IconUser />}
           type="text"
@@ -58,6 +58,7 @@ export function StepPersonal({ form, set, tr, error }: PaneProps) {
       </Field>
 
       <Field
+        required
         label={tr("crs_en_phone")}
         error={error("phone") || error("phone_country_code")}
       >
@@ -86,7 +87,7 @@ export function StepPersonal({ form, set, tr, error }: PaneProps) {
         </div>
       </Field>
 
-      <Field label={tr("crs_en_email")} error={error("email")}>
+      <Field required label={tr("crs_en_email")} error={error("email")}>
         <IconField
           icon={<IconMail />}
           type="email"
@@ -104,7 +105,7 @@ export function StepPersonal({ form, set, tr, error }: PaneProps) {
 export function StepAcademic({ form, set, tr, error }: PaneProps) {
   return (
     <div className="join-pane is-active">
-      <Field label={tr("crs_en_level")} error={error("academic_level")}>
+      <Field required label={tr("crs_en_level")} error={error("academic_level")}>
         <SelectField
           icon={<IconIdCard />}
           placeholder={tr("crs_en_level_ph")}
@@ -116,7 +117,7 @@ export function StepAcademic({ form, set, tr, error }: PaneProps) {
         />
       </Field>
 
-      <Field label={tr("crs_en_attended")} error={error("attended_similar_course")}>
+      <Field required label={tr("crs_en_attended")} error={error("attended_similar_course")}>
         <ChoiceRow
           name="attended_before"
           value={form.attendedBefore}
@@ -130,7 +131,7 @@ export function StepAcademic({ form, set, tr, error }: PaneProps) {
         />
       </Field>
 
-      <Field label={tr("crs_en_interests")} error={error("goals_interests")}>
+      <Field required label={tr("crs_en_interests")} error={error("goals_interests")}>
         <TextareaField
           name="interests"
           value={form.interests}
@@ -146,7 +147,7 @@ export function StepAcademic({ form, set, tr, error }: PaneProps) {
 export function StepGoals({ form, set, tr, error }: PaneProps) {
   return (
     <div className="join-pane is-active">
-      <Field label={tr("crs_en_goal")} error={error("join_goal")}>
+      <Field required label={tr("crs_en_goal")} error={error("join_goal")}>
         <SelectField
           icon={<IconIdCard />}
           placeholder={tr("crs_en_goal_ph")}

@@ -1,8 +1,8 @@
 "use client";
 /* The round "back to top" arrow, on every page (rendered from the root
    layout). It shows once the visitor has scrolled past SHOW_AFTER and takes
-   them straight back up. Bottom-right in RTL, bottom-left in LTR — clear of
-   the footer's social icons (see back-to-top.css).
+   them straight back up. Bottom-left in RTL, bottom-right in LTR (see
+   back-to-top.css).
 
    Not the legacy #backToTop: lib/legacy-main grabs that id once, on the first
    page only, and drives it through style.display — this one keeps its own

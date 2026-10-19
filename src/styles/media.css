@@ -1975,8 +1975,6 @@ color:#6D6D6D;
   max-width: 190px;
   object-fit: contain;
   flex: 0 0 auto;
-  filter: grayscale(1);
-  opacity: 0.7;
 }
 
 /* ============================================================
@@ -5298,4 +5296,31 @@ transform: rotate(-90deg);
   .sm-ct-trust {
     justify-content: flex-start;
   }
+}
+
+/* Hide-on-scroll (initHeaderPin → autoHideBar in lib/legacy-main): fixed to
+   the top once scrolled out of view, slid away while scrolling down and back
+   in on scroll up. */
+.sm-nav-wrap.is-pinned {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1030;
+  padding-top: 10px;
+  transition: transform 0.3s ease;
+}
+.sm-nav-wrap.is-pinned.is-scroll-hidden {
+  transform: translateY(calc(-100% - 20px));
+}
+.sm-nav-wrap.no-slide {
+  transition: none !important;
+}
+@media (prefers-reduced-motion: reduce) {
+  .sm-nav-wrap.is-pinned {
+    transition: none;
+  }
+}
+.sm-nav-wrap.is-pinned .sm-nav {
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.08);
 }

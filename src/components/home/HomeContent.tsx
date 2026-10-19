@@ -60,6 +60,7 @@ import Reviews from "./Reviews";
 import HomeSkeleton from "./HomeSkeleton";
 import type { HomePage } from "@/lib/api/home";
 import { enableHeroDrag } from "./hero-drag";
+import { enableHeroDots } from "./hero-dots";
 
 /** A short, stable key for a section's payload block — changes iff the block does. */
 function contentKey(block: unknown): string {
@@ -100,6 +101,9 @@ async function restartHeroCarousel() {
   // drag / swipe (see hero-drag); re-wired with the carousel
   (element as any).__heroDragOff?.();
   (element as any).__heroDragOff = enableHeroDrag(element, carousel);
+  // dots slide toward the side they sit on (see hero-dots)
+  (element as any).__heroDotsOff?.();
+  (element as any).__heroDotsOff = enableHeroDots(element, carousel);
 }
 
 export default function HomeContent({

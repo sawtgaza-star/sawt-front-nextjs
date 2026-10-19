@@ -102,6 +102,8 @@ export type ContentAccount = {
   name?: string | null;
   profile_picture?: string | null;
   profile_url?: string | null;
+  /** how many posts the account has on Instagram */
+  media_count?: number | null;
 };
 
 export type ContentReels = {

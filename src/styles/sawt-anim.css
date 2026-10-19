@@ -1,0 +1,281 @@
+/* <SawtAboutAnim /> — the animated illustration of the home "من نحن" section
+   (ported from sawt-hero-replica (1).html). The bar rhythm and light motes are
+   set by sawt-anim-effects.ts. */
+
+.sawt-about-anim {
+  width: 100%;
+  max-width: 945px;
+  margin: 0 auto;
+}
+.sawt-about-anim svg {
+  display: block;
+  width: 100%;
+  height: auto;
+  overflow: visible;
+}
+/* origins below are in the SVG's own coordinates (fill-box rules override) */
+.sawt-about-anim * {
+  transform-box: view-box;
+}
+/* paused while the section is off screen */
+.sawt-about-anim:not(.is-live) * {
+  animation-play-state: paused !important;
+}
+.sh-badge-text {
+  font-family: "cairo", sans-serif;
+}
+
+/* ---------- entry ---------- */
+.sh-in-main {
+  opacity: 0;
+  transform-origin: 571px 351px;
+  animation: sh-pop 1.1s cubic-bezier(0.2, 0.8, 0.2, 1) 0.05s forwards;
+}
+.sh-in-small {
+  opacity: 0;
+  transform: translateX(-40px);
+  animation: sh-slide 1s cubic-bezier(0.2, 0.8, 0.2, 1) 0.35s forwards;
+}
+.sh-in-badge {
+  opacity: 0;
+  transform-origin: 234px 347px;
+  transform: scale(0.55);
+  animation: sh-badge 0.9s cubic-bezier(0.3, 1.5, 0.5, 1) 0.75s forwards;
+}
+.sh-in-branch {
+  opacity: 0;
+  transform-origin: 622px 690px;
+  transform: rotate(-14deg) scale(0.82);
+  animation: sh-branch 1.3s cubic-bezier(0.2, 0.9, 0.25, 1.15) 0.6s forwards;
+}
+.sh-arc {
+  stroke-dasharray: var(--len);
+  stroke-dashoffset: var(--len);
+  animation: sh-draw 1.6s cubic-bezier(0.5, 0, 0.2, 1) 0.4s forwards;
+}
+.sh-dot {
+  opacity: 0;
+  transform-box: fill-box;
+  transform-origin: center;
+  transform: scale(0);
+  animation: sh-dot 0.5s cubic-bezier(0.3, 1.8, 0.5, 1) forwards;
+}
+@keyframes sh-pop {
+  from {
+    opacity: 0;
+    transform: scale(0.93);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+@keyframes sh-slide {
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+@keyframes sh-badge {
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+@keyframes sh-branch {
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+@keyframes sh-draw {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+@keyframes sh-dot {
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* ---------- continuous motion ---------- */
+.sh-float-small {
+  animation: sh-float 8s ease-in-out 1.4s infinite;
+}
+@keyframes sh-float {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-6px);
+  }
+}
+
+.sh-sway {
+  transform-origin: 622px 690px;
+  animation: sh-sway 7s ease-in-out 2s infinite;
+}
+@keyframes sh-sway {
+  0%,
+  100% {
+    transform: rotate(0);
+  }
+  50% {
+    transform: rotate(-1.4deg);
+  }
+}
+
+.sh-bubble {
+  animation: sh-bob 5s ease-in-out infinite;
+}
+.sh-bubble.d2 {
+  animation-delay: -1.7s;
+  animation-duration: 5.6s;
+}
+.sh-bubble.d3 {
+  animation-delay: -3.1s;
+  animation-duration: 6.2s;
+}
+@keyframes sh-bob {
+  0%,
+  100% {
+    transform: translateY(0);
+    opacity: 0.9;
+  }
+  50% {
+    transform: translateY(-5px);
+    opacity: 1;
+  }
+}
+
+.sh-bar {
+  transform-origin: 0 360.5px;
+  animation: sh-eq 1.2s ease-in-out infinite alternate;
+}
+@keyframes sh-eq {
+  0% {
+    transform: scaleY(var(--lo));
+  }
+  100% {
+    transform: scaleY(var(--hi));
+  }
+}
+
+.sh-mote {
+  animation: sh-mote linear infinite;
+}
+@keyframes sh-mote {
+  0% {
+    transform: translateY(0);
+    opacity: 0;
+  }
+  15% {
+    opacity: var(--o);
+  }
+  85% {
+    opacity: var(--o);
+  }
+  100% {
+    transform: translateY(-46px);
+    opacity: 0;
+  }
+}
+
+.sh-glow-breathe {
+  animation: sh-breathe 4.5s ease-in-out infinite;
+  mix-blend-mode: screen;
+}
+@keyframes sh-breathe {
+  0%,
+  100% {
+    opacity: 0.05;
+  }
+  50% {
+    opacity: 0.45;
+  }
+}
+.sh-glow-sweep {
+  mix-blend-mode: screen;
+}
+
+.sh-shine {
+  animation: sh-shine 7s ease-in-out 2.5s infinite;
+}
+@keyframes sh-shine {
+  0%,
+  72% {
+    transform: translateX(-120px);
+  }
+  92%,
+  100% {
+    transform: translateX(130px);
+  }
+}
+
+.sh-warm {
+  mix-blend-mode: screen;
+  animation: sh-warm 5s ease-in-out infinite;
+}
+@keyframes sh-warm {
+  0%,
+  100% {
+    opacity: 0.05;
+  }
+  50% {
+    opacity: 0.32;
+  }
+}
+
+.sh-ping {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: sh-ping 3.2s ease-out infinite;
+}
+.sh-ping.d2 {
+  animation-delay: 1.6s;
+}
+@keyframes sh-ping {
+  0% {
+    transform: scale(1);
+    opacity: 0.8;
+  }
+  70%,
+  100% {
+    transform: scale(1.8);
+    opacity: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sawt-about-anim * {
+    animation: none !important;
+  }
+  .sh-in-main,
+  .sh-in-small,
+  .sh-in-badge,
+  .sh-in-branch,
+  .sh-dot {
+    opacity: 1;
+    transform: none;
+  }
+  .sh-arc {
+    stroke-dashoffset: 0;
+  }
+  .sh-glow-breathe,
+  .sh-warm,
+  .sh-ping,
+  .sh-mote {
+    opacity: 0;
+  }
+}
+
+/* desktop row: the illustration sits level with the text column beside it
+   (its centre lines up with the text block's centre) */
+@media (min-width: 992px) {
+  .sout-anim-col {
+    margin-top: 10px !important;
+  }
+}

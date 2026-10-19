@@ -16,7 +16,7 @@ export default function ContentAccountBar({
   total,
 }: {
   account?: ContentAccount | null;
-  /** how many reels the page lists in all ("all" pill's count) */
+  /** the account's `media_count`, else how many reels the page lists ("all" pill's count) */
   total?: number | null;
 }) {
   const { tr, lang } = useLang();

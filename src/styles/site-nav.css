@@ -781,9 +781,11 @@ html.nav-drawer-open body {
   }
 }
 
-/* ---------- Pinned navbar row (initHeaderPin → pinNavbarRow) ----------
-   Past the row, only <nav class="navbar"> follows the scroll, flush to the
-   top; `header .navbar` rules still match, it stays inside <header>. */
+/* ---------- Hide-on-scroll navbar row (initHeaderPin → autoHideBar) ----------
+   Once scrolled out of view, only <nav class="navbar"> is fixed flush to the
+   top; it slides up out of sight while scrolling down (.is-scroll-hidden) and
+   back in on scroll up. `header .navbar` rules still match, it stays inside
+   <header>. The incubator / صوت ميديا bars get the same in their own CSS. */
 .navbar.is-pinned {
   position: fixed !important;
   top: 0 !important;
@@ -792,7 +794,7 @@ html.nav-drawer-open body {
   margin: 0 !important;
   padding-top: 0 !important;
   z-index: 1030;
-  animation: navPinIn 0.3s ease;
+  transition: transform 0.3s ease;
 }
 
 .navbar.is-pinned > .container {
@@ -800,17 +802,16 @@ html.nav-drawer-open body {
   box-shadow: 0 4px 14px rgba(0, 0, 0, 0.08);
 }
 
-@media (prefers-reduced-motion: reduce) {
-  .navbar.is-pinned {
-    animation: none;
-  }
+.navbar.is-pinned.is-scroll-hidden {
+  transform: translateY(-100%);
 }
 
-@keyframes navPinIn {
-  from {
-    transform: translateY(-100%);
-  }
-  to {
-    transform: translateY(0);
+.navbar.no-slide {
+  transition: none !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .navbar.is-pinned {
+    transition: none;
   }
 }

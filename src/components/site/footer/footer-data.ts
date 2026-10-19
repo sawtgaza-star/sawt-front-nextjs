@@ -31,7 +31,7 @@ import { socialIcon, GENERIC_SOCIAL_ICON } from "../social-icons";
 export type FooterNavLink = { label: string; url: string };
 
 export type FooterSocialLink = {
-  /** The API's platform slug, lowercased — FooterBottomBar picks the design's
+  /** The API's platform slug, lowercased — FooterBrand picks the design's
       own mark from it. */
   platform: string;
   /** Font Awesome class for the platform, e.g. "fab fa-instagram". Only used
@@ -122,10 +122,6 @@ const ROUTE_BY_KEY: Record<string, string> = {
    first column, so the labels follow the API and the ORDER stays here. A key
    that isn't listed keeps the API's own position, after these. */
 const MAIN_LINK_ORDER = ["home", "about", "team", "creators", "content"];
-
-/** How many main-section links the first of the two columns takes. The design
-    is 3 + the rest, on desktop and on mobile alike. */
-export const MAIN_LINKS_FIRST_COLUMN = 3;
 
 /* --------------------------------------------------------------------------- */
 

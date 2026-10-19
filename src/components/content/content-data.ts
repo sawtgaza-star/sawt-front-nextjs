@@ -92,6 +92,13 @@ export type Reel = {
   publishedAt?: string;
 };
 
+/** The reels filed under one category slug ("all" keeps every reel) — the
+    same match the API's `?category=` makes, on each reel's `categories`. */
+export function filterReels(list: Reel[], category: string): Reel[] {
+  if (category === "all") return list;
+  return list.filter((reel) => reel.details?.categories.includes(category));
+}
+
 export function sortReels(list: Reel[], sort: SortValue): Reel[] {
   const copy = [...list];
   if (sort === "views") return copy.sort((a, b) => (b.views ?? 0) - (a.views ?? 0));

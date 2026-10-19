@@ -1,5 +1,6 @@
 import { IconFieldUser } from "@/components/collaborate/collaborate-icons";
 import { CONTENT_CATEGORIES, NOTE_MAX } from "./creator-form-data";
+import RequiredMark from "@/components/ui/RequiredMark";
 
 /* Step 2 — "تفاصيل المحتوى": the content-type chips (multi-pick), the rough
    follower count on the creator's biggest platform, and the free-text pitch.
@@ -32,8 +33,9 @@ export default function ContentStep({
   return (
     <div className="cl-form">
       <div className="cl-field">
-        <span className="cl-label" data-i18n="collab_f_categories">
-          نوع المحتوى الذي تنتجه
+        <span className="cl-label">
+          <span data-i18n="collab_f_categories">نوع المحتوى الذي تنتجه</span>
+          <RequiredMark />
         </span>
         <div className="cl-chips">
           {CONTENT_CATEGORIES.map((cat) => {
@@ -63,6 +65,7 @@ export default function ContentStep({
           <span data-i18n="collab_f_followers">
             عدد المتابعين التقريبي في المنصة الواحدة (الاعلى شهرة )
           </span>
+          <RequiredMark />
         </label>
         <div className={"cl-input-wrap" + (errors.followers ? " is-invalid" : "")}>
           <span className="cl-input-icon" aria-hidden="true">
@@ -85,6 +88,7 @@ export default function ContentStep({
       <div className="cl-field">
         <label className="cl-label" htmlFor="collab-about">
           <span data-i18n="collab_f_about">نبذة عن محتواك</span>
+          <RequiredMark />
         </label>
         <textarea
           id="collab-about"
