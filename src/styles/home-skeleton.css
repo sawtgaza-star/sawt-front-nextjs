@@ -114,7 +114,8 @@
 }
 
 .sk-card-creator {
-  height: 300px;
+  /* the photo card's height (home-creator-card.css) */
+  height: 410px;
   border-radius: 24px;
 }
 

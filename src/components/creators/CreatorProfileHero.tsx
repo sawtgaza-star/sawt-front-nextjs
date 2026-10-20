@@ -10,7 +10,8 @@ import { compact } from "./creators-text";
 import { useCallback, useState } from "react";
 import { follow, unfollow, useFollows } from "@/lib/follows";
 import { isLoggedIn } from "@/lib/auth-state";
-import NewsletterToast, { type NewsletterNotice } from "@/components/site/NewsletterToast";
+import { type NewsletterNotice } from "@/components/site/NewsletterToast";
+import LoginRequiredDialog from "@/components/site/LoginRequiredDialog";
 import { pushNotification } from "@/lib/notifications";
 import { t } from "@/lib/translations";
 
@@ -206,9 +207,9 @@ export default function CreatorProfileHero({
           </div>
         ) : null}
       </div>
-      {/* guest pressed "متابعة" — position:fixed, so where it sits doesn't matter */}
+      {/* guest pressed "متابعة" — a portal, so where it sits doesn't matter */}
       {guestNotice ? (
-        <NewsletterToast notice={guestNotice} onClose={closeGuestNotice} />
+        <LoginRequiredDialog onClose={closeGuestNotice} />
       ) : null}
     </header>
   );

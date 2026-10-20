@@ -89,3 +89,14 @@ export function bySortOrder<T extends { sort_order?: number }>(
     )
     .map((entry) => entry.item);
 }
+
+/* The direction a name reads in, from its first letter: Arabic (or another
+   right-to-left script) → "rtl", Latin → "ltr". A creator card lays its name
+   and verified seal out this way, whatever the page language, so "mahmoud
+   zaqout" starts on the left and "يوسف الدوس" on the right. No letter at
+   all (digits, symbols) → `fallback`. */
+export function textDir(text: string, fallback: "rtl" | "ltr"): "rtl" | "ltr" {
+  const strong = text.match(/[\u0590-\u08FF\uFB1D-\uFDFF\uFE70-\uFEFF]|[A-Za-z\u00C0-\u024F]/);
+  if (!strong) return fallback;
+  return /[A-Za-z\u00C0-\u024F]/.test(strong[0]) ? "ltr" : "rtl";
+}

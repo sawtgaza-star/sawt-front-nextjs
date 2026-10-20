@@ -245,7 +245,7 @@ html.sawt-anim .latest-news .news-card .readmore:hover .arrow,
 }
 
 /* ---------- staggered middle card (3 cards visible) ----------
-   The middle of three consecutive .active items sits 5rem lower — exactly
+   The middle of three consecutive .active items sits 2.5rem lower — exactly
    the item right after the FIRST active one, so the two outer cards always
    match even if Owl marks a fourth item active; hovering it
    carries it up past the row to the usual -12px lift. The offset is on the
@@ -254,11 +254,11 @@ html.sawt-anim .latest-news .news-card .readmore:hover .arrow,
    follows the slider. */
 @media (min-width: 1000px) {
   .latest-news .owl-carousel .owl-stage-outer {
-    padding-bottom: calc(5rem + 24px);
+    padding-bottom: calc(2.5rem + 24px);
   }
 
   .latest-news .owl-item.active:not(.owl-item.active + .owl-item.active) + .owl-item.active:has(+ .owl-item.active) .news-card {
-    transform: translateY(5rem);
+    transform: translateY(2.5rem);
   }
 
   .latest-news .owl-item.active:not(.owl-item.active + .owl-item.active) + .owl-item.active:has(+ .owl-item.active) .news-card:hover {

@@ -127,9 +127,10 @@ function StatColumn({ stat, lang }) {
           (data-counter-from), so a language switch that rescales it ("140+"
           → "140K+") needs a fresh element */}
       <h3 className="counter font-mob-22" key={figure}>
-        {/* LTR island: in the RTL heading a leading "+" would otherwise be
-            flipped to the number's other side ("+20" painting as "20+"). */}
-        <span className="counter-figure" dir="ltr">
+        {/* Arabic paints the "+" on the number's right ("20+", "مليون 30+"),
+            English on its left ("+20", "+30M"): the figure's direction follows
+            the language so the leading "+" lands on the reading-start side. */}
+        <span className="counter-figure" dir={lang === "en" ? "ltr" : "rtl"}>
           {figure}
         </span>
         {word ? (

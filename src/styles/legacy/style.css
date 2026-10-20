@@ -4325,7 +4325,8 @@ svg {
   width: 100%;
   z-index: 4;
   color: #fff;
-  font-size: 0.98rem;
+  /* يتبع تصغير المايك (‎.mic-container‎ 215px) */
+  font-size: 0.9rem;
   font-weight: 600;
 }
 
@@ -4358,15 +4359,18 @@ svg {
   justify-content: center;
   align-items:center;
   color: rgba(76, 92, 55, 1) !important;
-  padding: 6px 18px;
+  /* صُغّر بطلب المالك: كان بعرض 72% من البطاقة وحشوة 6×18 وخط 0.95rem —
+     الآن بعرض نصه فقط */
+  gap: 6px;
+  padding: 5px 14px;
   border-radius: 24px;
   border: 1px solid rgba(76, 92, 55, 1) !important;
   text-decoration: none;
-  font-size: 0.95rem;
+  font-size: 0.82rem;
   font-weight: 500;
   transition: 0.2s ease-in-out !important;
   font-weight: 600;
-  width: 72%;
+  width: fit-content;
   margin:0 auto;
 }
 
@@ -4539,8 +4543,9 @@ svg {
 
 .mic-container {
   position: relative;
-  width: 260px;
-  /* الحجم الافتراضي للكمبيوتر */
+  /* الحجم الافتراضي للكمبيوتر — كان 260px؛ صُغّر بطلب المالك لتقليل ارتفاع
+     المايك (الارتفاع يتبع العرض بنسبة 310×587 فلا تتشوّه الصورة) */
+  width: 215px;
   margin: 0 auto;
 }
 
@@ -4583,13 +4588,16 @@ svg {
 .mic-container .mic-composed-box .mic-frame-composed {
   position: absolute;
   top: 0.51%;
-  left: 5.48%;
-  width: 88.71%;
+  left: 0;
+  width: 100%;
   height: 94.89%;
   max-width: none;
-  /* ‎fill‎ لا ‎contain‎: الصورة مقصوصة على حدود المايك، فتملأ المستطيل نفسه
-     دائماً وتتطابق أحجام كل المايكات مهما اختلف الملف المرفوع */
-  object-fit: fill;
+  /* ‎contain‎ لا ‎fill‎: كان ‎fill‎ يفرض على المايك نسبة 2.03 (طول/عرض) بينما
+     نسبته الحقيقية ≈1.86–1.89، فيظهر ممدوداً. المستطيل الآن بعرض الصندوق كله
+     وبنفس الارتفاع السابق، فيملؤه المايك بارتفاعه ويأخذ عرضه الحقيقي في المنتصف —
+     الارتفاع وموضع الاسم لم يتغيرا */
+  object-fit: contain;
+  object-position: center bottom;
   z-index: 2;
   opacity: 0;
   transition: opacity 0.3s ease;

@@ -1,0 +1,192 @@
+/* <LoginRequiredDialog /> — the "sign in first" card a guest gets on
+   pressing a creator's "متابعة". Its own stylesheet (not style.css) because
+   it shows under route groups that load different CSS. Site palette: olive
+   rgba(76, 92, 55) for the action, the warm orange #e1723b as the accent. */
+
+.lrd-backdrop {
+  /* one soft ease-out for every hover — long enough to read as a glide */
+  --lrd-ease: cubic-bezier(0.22, 1, 0.36, 1);
+  position: fixed;
+  inset: 0;
+  /* above the pinned navbar, the join modal and the page's overlays */
+  z-index: 2147483000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  background: rgba(22, 26, 18, 0.38);
+  -webkit-backdrop-filter: blur(8px);
+  backdrop-filter: blur(8px);
+  animation: lrd-fade 0.25s ease-out;
+}
+
+.lrd-card {
+  position: relative;
+  width: min(400px, 100%);
+  padding: 36px 28px 26px;
+  border-radius: 24px;
+  background: #fff;
+  text-align: center;
+  box-shadow:
+    0 30px 70px rgba(22, 26, 18, 0.3),
+    0 2px 10px rgba(22, 26, 18, 0.1);
+  animation: lrd-pop 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.lrd-close {
+  position: absolute;
+  top: 14px;
+  inset-inline-end: 14px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: transparent;
+  color: #8a8f84;
+  cursor: pointer;
+  transition:
+    background-color 0.35s var(--lrd-ease),
+    color 0.35s var(--lrd-ease);
+}
+.lrd-close:hover {
+  background: #f1f3ee;
+  color: #1c1c1c;
+}
+
+.lrd-badge {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 72px;
+  height: 72px;
+  margin-bottom: 18px;
+  border-radius: 50%;
+  background: #eef2e8;
+  color: rgba(76, 92, 55, 1);
+}
+/* a soft ring breathing out of the badge */
+.lrd-badge::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  box-shadow: 0 0 0 0 rgba(76, 92, 55, 0.28);
+  animation: lrd-ring 2s ease-out 0.6s infinite;
+}
+
+.lrd-title {
+  margin: 0 0 8px;
+  font-size: 22px;
+  font-weight: 800;
+  color: #1c1c1c;
+}
+
+.lrd-text {
+  margin: 0 auto 26px;
+  max-width: 300px;
+  font-size: 15px;
+  line-height: 1.75;
+  color: #6b6f66;
+}
+
+.lrd-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.lrd-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 48px;
+  border-radius: 14px;
+  font-size: 16px;
+  font-weight: 700;
+  text-decoration: none;
+  cursor: pointer;
+  transition:
+    background-color 0.45s var(--lrd-ease),
+    border-color 0.45s var(--lrd-ease),
+    color 0.45s var(--lrd-ease),
+    box-shadow 0.45s var(--lrd-ease),
+    transform 0.45s var(--lrd-ease);
+  will-change: transform;
+}
+.lrd-btn:active {
+  transform: translateY(0) scale(0.98);
+  transition-duration: 0.15s;
+}
+.lrd-card .lrd-btn-primary {
+  border: 0;
+  background: rgba(76, 92, 55, 1);
+  /* !important: style.css colours every <a> */
+  color: #fff !important;
+  box-shadow: 0 8px 20px rgba(76, 92, 55, 0.3);
+}
+.lrd-card .lrd-btn-primary:hover {
+  background: #44522f;
+  transform: translateY(-2px);
+  box-shadow: 0 14px 28px rgba(76, 92, 55, 0.34);
+}
+.lrd-btn-ghost {
+  border: 1px solid #e3e6de;
+  background: #fff;
+  color: #4c5c37;
+}
+.lrd-btn-ghost:hover {
+  border-color: #cdd7c0;
+  background: #f4f7ef;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 18px rgba(76, 92, 55, 0.1);
+}
+.lrd-btn:focus-visible,
+.lrd-close:focus-visible {
+  outline: 3px solid rgba(225, 114, 59, 0.55);
+  outline-offset: 2px;
+}
+
+@keyframes lrd-fade {
+  from {
+    opacity: 0;
+  }
+}
+@keyframes lrd-pop {
+  from {
+    opacity: 0;
+    transform: translateY(12px) scale(0.92);
+  }
+}
+@keyframes lrd-ring {
+  0% {
+    box-shadow: 0 0 0 0 rgba(76, 92, 55, 0.28);
+  }
+  100% {
+    box-shadow: 0 0 0 14px rgba(76, 92, 55, 0);
+  }
+}
+
+@media (max-width: 575.98px) {
+  .lrd-card {
+    padding: 32px 20px 20px;
+    border-radius: 20px;
+  }
+  .lrd-title {
+    font-size: 19px;
+  }
+  .lrd-text {
+    font-size: 14px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .lrd-backdrop,
+  .lrd-card,
+  .lrd-badge::after {
+    animation: none;
+  }
+}
