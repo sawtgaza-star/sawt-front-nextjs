@@ -39,11 +39,10 @@ export function fanCentres(width: number, gap: number): number[] {
   return centres;
 }
 
-/* The glowing planet rim in the hero backdrop (desktop only — phones get a
-   plain white header). Measured on the API's backdrop, 1920×1006: the rim is
-   a circle whose top sits at (960, 661) with a ~1900px radius. The header
-   paints it `cover` + centred, so its place on screen is worked out from the
-   header's size (measureArc). If the editor swaps the backdrop for one with a
+/* The glowing planet rim in the hero backdrop. Measured on the API's
+   backdrop, 1920×1006: the rim is a circle whose top sits at (960, 661) with
+   a ~1900px radius. Its place on screen is worked out from the header's size
+   (backdropPlacement). If the editor swaps the backdrop for one with a
    differently placed rim, these numbers need re-measuring. */
 export const ARC_IMAGE = { width: 1920, height: 1006, topX: 960, topY: 661, radius: 1900 };
 /** the focused poster's centre sits this share of its height above the rim */
@@ -51,6 +50,33 @@ const ARC_LIFT = 0.08;
 /** how much of the rim's slope each poster takes on (1 = fully tangent) */
 const ARC_TILT = 0.5;
 export const ARC_MEDIA = "(min-width: 992px)";
+/* Below ARC_MEDIA the header is far taller than wide for the backdrop:
+   `cover` would blow the rim up into a near-flat line. There content.css
+   paints it this many header-widths wide instead, pinned to the bottom (the
+   strip above it is filled with the backdrop's own top colour), so the rim
+   keeps its curve. Keep the two in step. */
+const COMPACT_BACKDROP_WIDTH = 1.6;
+
+/** Where the backdrop is painted inside a `width` × `height` header: its
+    scale and its top-left corner, as content.css lays it out. */
+export function backdropPlacement(width: number, height: number) {
+  if (window.matchMedia(ARC_MEDIA).matches) {
+    // background-size: cover; background-position: center
+    const scale = Math.max(width / ARC_IMAGE.width, height / ARC_IMAGE.height);
+    return {
+      scale,
+      offsetX: (width - ARC_IMAGE.width * scale) / 2,
+      offsetY: (height - ARC_IMAGE.height * scale) / 2,
+    };
+  }
+  // background-size: 160% auto; background-position: center bottom
+  const scale = (width * COMPACT_BACKDROP_WIDTH) / ARC_IMAGE.width;
+  return {
+    scale,
+    offsetX: (width - ARC_IMAGE.width * scale) / 2,
+    offsetY: height - ARC_IMAGE.height * scale,
+  };
+}
 
 /** Where the rim is, in the strip's own coordinates. */
 export type Arc = {
@@ -95,17 +121,15 @@ export function fanPose(
 /** The rim's place relative to the posters' resting row — measured once per
     layout (init / resize), not per frame. `rowTop` is the top of the row the
     posters rest in (it only ever moves sideways), `slideHeight` one poster's
-    unscaled height. Desktop only: undefined below ARC_MEDIA. */
+    unscaled height. */
 export function measureArc(
   header: Element | null,
   rowTop: number,
   slideHeight: number,
 ): Arc | undefined {
-  if (!header || !slideHeight || !window.matchMedia(ARC_MEDIA).matches) return undefined;
+  if (!header || !slideHeight) return undefined;
   const box = header.getBoundingClientRect();
-  // background-size: cover; background-position: center
-  const scale = Math.max(box.width / ARC_IMAGE.width, box.height / ARC_IMAGE.height);
-  const offsetY = (box.height - ARC_IMAGE.height * scale) / 2;
+  const { scale, offsetY } = backdropPlacement(box.width, box.height);
   const rimTop = box.top + offsetY + ARC_IMAGE.topY * scale;
   const rowCentre = rowTop + slideHeight / 2;
   const focusHeight = slideHeight * FAN_SCALE[0];

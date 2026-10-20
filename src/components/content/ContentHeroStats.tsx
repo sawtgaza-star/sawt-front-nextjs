@@ -1,14 +1,13 @@
 "use client";
-/* The two stat "orbits" in the hero's empty corners (desktop only — on a
-   phone the poster fan fills the width). Each is a thin glowing arc that
+/* The two stat "orbits" in the hero's top corners. Each is a thin glowing arc that
    draws itself in from beyond the screen edge and ends on a glowing dot; the
    number above the dot counts up as the line arrives (CountUp).
 
    THE ARC IS THE RIM'S: a circle around the same centre as the glowing planet
-   rim the posters sit on (ARC_IMAGE in ./hero-fan), ORBIT_LIFT larger, so it
-   leans exactly as the slider does. The rim lives in the `cover`-painted
-   backdrop, so its place is worked out from the header's size — once on
-   mount and on every resize.
+   rim the posters sit on (ARC_IMAGE in ./hero-fan), orbitLift() larger, so it
+   leans exactly as the slider does. The rim lives in the backdrop, so its
+   place is worked out from the header's size — on mount and whenever the
+   header resizes.
 
    Views: the account's `views_count`; without it, the sum of the reels'
    `views` (Instagram only returns those when the backend's token may read
@@ -20,12 +19,16 @@
 import { useLayoutEffect, useRef, useState } from "react";
 import type { ContentReels } from "@/lib/api/content";
 import CountUp from "./CountUp";
-import { ARC_IMAGE, ARC_MEDIA } from "./hero-fan";
+import { ARC_IMAGE, ARC_MEDIA, backdropPlacement } from "./hero-fan";
 
-/** how far above the rim the orbits run, in backdrop pixels */
-const ORBIT_LIFT = 340;
+/** how far above the rim the orbits run, in backdrop pixels — higher on
+    phones and tablets, so the counts clear the posters' tops */
+const orbitLift = () => (window.matchMedia(ARC_MEDIA).matches ? 340 : 480);
 /** the dots sit this far in from the screen edges */
-const dotInset = (width: number) => Math.min(220, Math.max(120, width * 0.11));
+const dotInset = (width: number) =>
+  window.matchMedia(ARC_MEDIA).matches
+    ? Math.min(220, Math.max(120, width * 0.11))
+    : Math.max(52, width * 0.15);
 /** the line starts this far beyond the screen edge, so it enters from outside */
 const OFFSCREEN = 40;
 
@@ -84,13 +87,10 @@ function measure(box: HTMLElement): Layout | undefined {
   const width = box.clientWidth;
   const height = box.clientHeight;
   if (!width || !height) return undefined;
-  // background-size: cover; background-position: center
-  const scale = Math.max(width / ARC_IMAGE.width, height / ARC_IMAGE.height);
-  const offsetX = (width - ARC_IMAGE.width * scale) / 2;
-  const offsetY = (height - ARC_IMAGE.height * scale) / 2;
+  const { scale, offsetX, offsetY } = backdropPlacement(width, height);
   const cx = offsetX + ARC_IMAGE.topX * scale;
   const cy = offsetY + (ARC_IMAGE.topY + ARC_IMAGE.radius) * scale;
-  const r = (ARC_IMAGE.radius + ORBIT_LIFT) * scale;
+  const r = (ARC_IMAGE.radius + orbitLift()) * scale;
   const yAt = (x: number) => cy - Math.sqrt(Math.max(0, r * r - (x - cx) ** 2));
   const r1 = r.toFixed(1);
 
@@ -131,11 +131,18 @@ export default function ContentHeroStats({
   useLayoutEffect(() => {
     const update = () => {
       const el = box.current;
-      setLayout(el && window.matchMedia(ARC_MEDIA).matches ? measure(el) : undefined);
+      setLayout(el ? measure(el) : undefined);
     };
     update();
     window.addEventListener("resize", update);
-    return () => window.removeEventListener("resize", update);
+    /* the header grows once the poster strip mounts (on a phone it has no
+       min-height to hold it), so follow the box itself, not just the window */
+    const observer = new ResizeObserver(update);
+    if (box.current) observer.observe(box.current);
+    return () => {
+      window.removeEventListener("resize", update);
+      observer.disconnect();
+    };
   }, []);
 
   if (!stats.length) return null;

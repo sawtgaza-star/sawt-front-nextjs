@@ -116,6 +116,7 @@ export function initHomeInline() {
            here, and so do the ×, Escape and a click on the backdrop — the next
            visitor to open it starts on an empty step 1 either way. */
         function closeModal() {
+          window.clearTimeout(successCloseTimer);
           overlay.classList.remove("is-open");
           overlay.setAttribute("aria-hidden", "true");
           document.body.style.overflow = "";
@@ -356,6 +357,9 @@ export function initHomeInline() {
         /* Set once the API has accepted the application: the footer is gone
            and the success pane is up, so the button must not be re-labelled. */
         let sent = false;
+        // ms the success pane stays up before the modal closes on its own
+        const SUCCESS_CLOSE_DELAY = 2500;
+        let successCloseTimer;
 
         /* "أنا لست روبوت" (lib/recaptcha) under step 3's notes. Rendered the
            first time step 3 shows — not while the modal is hidden — and
@@ -449,6 +453,9 @@ export function initHomeInline() {
           steps.forEach((s) => s.classList.add("is-done"));
           document.querySelector(".join-modal-foot").style.display = "none";
           resetJoinForm();
+          /* the success pane shows long enough to be read, then the modal
+             closes itself (closeModal clears this if it is dismissed first) */
+          successCloseTimer = window.setTimeout(closeModal, SUCCESS_CLOSE_DELAY);
         }
 
         /* The application is in, so the modal must not still be holding it:

@@ -305,19 +305,22 @@
   backdrop-filter: blur(6px);
 }
 
-/* phones: the card has to fit the old card's slot — style.css fixes every
-   `.owl-carousel .item` at 320px there — so the portrait is shorter and the
-   copy tightens to fit. */
+/* phones: the portrait is shorter than on desktop and the copy tightens —
+   but tall enough to show the head and shoulders, so the slot style.css
+   fixes every `.owl-carousel .item` at (320px) grows to fit the card. */
 @media (max-width: 767.98px) {
+  .creators-carousel2 .item {
+    height: auto;
+  }
   :is(.creators-carousel2, .cr-creators-grid) .cc-card {
     border-radius: 20px;
   }
   :is(.creators-carousel2, .cr-creators-grid) .cc-card-pop {
-    height: 158px;
+    height: 275px;
   }
   :is(.creators-carousel2, .cr-creators-grid) .cc-card-portrait,
   :is(.creators-carousel2, .cr-creators-grid) .cc-card-stage {
-    height: 158px;
+    height: 275px;
     border-radius: 0 0 36px 36px;
   }
   :is(.creators-carousel2, .cr-creators-grid) .cc-card-body {
