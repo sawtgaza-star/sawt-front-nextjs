@@ -1,10 +1,11 @@
-/* GET /pages/creators rows → the shape <CreatorCard /> renders. Shared by the
-   preview grid on /creators (`grid.creators`) and the full roster on
-   /creators/all (`creators`), which are the same row shape under two names.
+/* GET /pages/creators rows → the shape the home page's creator card
+   (components/home/CreatorCard) renders. Shared by the preview grid on
+   /creators (`grid.creators`) and the full roster on /creators/all
+   (`creators`), which are the same row shape under two names.
 
-   The cards arrive in the visitor's language and therefore carry no `data-i18n`
-   key — CreatorCard is told so with `translated`, so the DOM translator never
-   overwrites copy React owns.
+   The card is filled the way the home slider fills it (ContentCreators): the
+   bio line is the creator's `experience_excerpt`, or their role when there is
+   none. The cards arrive in the visitor's language, so no `data-i18n` key.
 
    THE LINK IS /creators/{uuid} (creatorHref): the uuids are the range
    creators/[id] pre-renders for `output: 'export'`. A row without an
@@ -13,8 +14,9 @@
 import { localized } from "@/lib/api/pages";
 import { creatorHref } from "@/lib/api/creator-profile";
 import type { CreatorsGridCreator } from "@/lib/api/creators-page";
-import type { Creator } from "./CreatorCard";
-import { followersLabel } from "./creators-text";
+import type { HomeCreatorCardData } from "@/components/home/CreatorCard";
+import { formatFollowers } from "@/components/home/home-text";
+import { htmlToLines } from "@/lib/html-text";
 import { CONTENT_CATEGORIES } from "@/components/collaborate/creator/creator-form-data";
 import { translations } from "@/lib/translations";
 
@@ -38,23 +40,23 @@ function roleLabel(role: string, lang: string, types?: ContentType[]): string {
 export function creatorCards(
   creators: CreatorsGridCreator[] | undefined,
   lang: string,
-  labels: {
-    experienceTitle?: string;
-    followersSuffix?: string;
-    contentTypes?: ContentType[];
-  } = {},
-): (Creator & { key: string | number })[] {
+  labels: { contentTypes?: ContentType[] } = {},
+): (HomeCreatorCardData & { key: string | number })[] {
   if (!Array.isArray(creators)) return [];
 
   return creators.map((creator, index) => ({
     key: creator.uuid || creator.id || index,
-    id: creator.id,
-    photo: creator.avatar_url || "",
+    uuid: creator.uuid || (creator.id != null ? String(creator.id) : ""),
     name: creator.name || "",
-    role: roleLabel(localized(creator.role, lang), lang, labels.contentTypes),
-    followers: followersLabel(creator.followers_count, labels.followersSuffix || ""),
-    experienceTitle: labels.experienceTitle || "",
-    excerpt: localized(creator.experience_excerpt, lang),
+    // the excerpt may arrive as CMS HTML — words only, on one run so the
+    // card's two-line clamp applies
+    bio:
+      htmlToLines(localized(creator.experience_excerpt, lang)).replace(/\n/g, " ") ||
+      roleLabel(localized(creator.role, lang), lang, labels.contentTypes),
+    avatar: creator.avatar_url,
+    followers: formatFollowers(creator.followers_count),
+    followersCount: creator.followers_count,
     href: creatorHref(creator),
+    verified: creator.is_verified === true,
   }));
 }

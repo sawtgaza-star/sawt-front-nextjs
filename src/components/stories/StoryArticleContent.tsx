@@ -20,6 +20,7 @@ import { useStory } from "@/lib/api/use-stories";
 import { useLang } from "@/lib/use-lang";
 import { localized } from "@/lib/api/pages";
 import { splitHeading } from "@/components/home/home-text";
+import { useRouteSegment } from "@/lib/use-route-segment";
 
 /* Everything /stories/{uuid} shows, from GET /pages/stories/{uuid}: the
    breadcrumb header, the story, and the "قصص ذات صلة" strip — one request
@@ -42,7 +43,8 @@ import { splitHeading } from "@/components/home/home-text";
    A story that no longer exists (the uuid 404s) settles into the header with
    an empty page under it — the same outcome as an outage, and the same as
    everywhere else on the site: the error is logged, not surfaced. */
-export default function StoryArticleContent({ uuid }: { uuid: string }) {
+export default function StoryArticleContent({ uuid: segment }: { uuid: string }) {
+  const uuid = useRouteSegment(segment);
   const { data, loading } = useStory(uuid);
   const { lang } = useLang();
 

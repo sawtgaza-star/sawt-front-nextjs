@@ -5,6 +5,7 @@ import CreatorProfileContent from "@/components/creators/CreatorProfileContent";
 import JoinModal from "@/components/site/JoinModal";
 import { fetchCreatorIds, fetchCreatorProfile } from "@/lib/api/creator-profile";
 import { localized } from "@/lib/api/pages";
+import { withFallback } from "@/lib/route-segment";
 
 /* The segment is the creator's uuid — what every CreatorCard's hover arrow
    links to (creatorSlug in lib/api/creator-profile); GET /pages/creators/{creator} answers the id and the uuid
@@ -12,7 +13,8 @@ import { localized } from "@/lib/api/pages";
 
    The build only reads the roster to learn which profiles exist, because
    `output: 'export'` pre-lists every dynamic segment; a creator added after
-   the deploy therefore needs a rebuild before their URL exists. Same shape as
+   the deploy therefore has no file of its own until the next deploy; it is served by
+   the fallback page meanwhile (lib/route-segment). Same shape as
    /courses/[id]. */
 /* Only the pre-listed segments exist (output: export). Without this, `npm run
    dev` throws "missing param in generateStaticParams()" for an unknown one
@@ -22,12 +24,12 @@ export const dynamicParams = false;
 export async function generateStaticParams() {
   try {
     const ids = await fetchCreatorIds();
-    return ids.map((id) => ({ id }));
+    return withFallback("id", ids.map((id) => ({ id })));
   } catch (caught) {
     // The API being unreachable must not fail the build: the rest of the site
-    // still exports, and this route simply has no pages this time round.
+    // still exports, and this route only gets its fallback page this time round.
     console.warn("[creators] could not list creators for the export:", caught);
-    return [];
+    return withFallback("id", []);
   }
 }
 

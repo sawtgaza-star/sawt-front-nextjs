@@ -155,7 +155,6 @@ export default function Page() {
   }, [wanted, reelsLoading, visible]);
 
   const rowTitle = localized(page?.reels?.title, lang);
-  const rowViewMore = localized(page?.reels?.view_more, lang);
 
   // the empty-grid line mounts after the page was translated
   useEffect(() => {
@@ -167,6 +166,7 @@ export default function Page() {
       <LegacyInit page="content" />
       <ContentHero
         data={page?.hero}
+        reelsBlock={page?.reels}
         reelPosters={heroReels}
         onSelectReel={selectReel}
         lang={lang}
@@ -211,8 +211,6 @@ export default function Page() {
           <MostWatchedSection
             reels={mostViewed}
             title={rowTitle}
-            viewMore={rowViewMore}
-            moreHref={page?.reels?.account?.profile_url || ""}
             loading={loading || rowProbing}
           />
         )}

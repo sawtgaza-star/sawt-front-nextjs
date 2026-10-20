@@ -74,6 +74,9 @@ export function useTeamMember(uuid: string): TeamMemberState {
   });
 
   useEffect(() => {
+    // "" = the fallback page before it has read its URL (lib/use-route-segment)
+    if (!uuid) return;
+
     const controller = new AbortController();
     setState({ page: null, loading: true });
 

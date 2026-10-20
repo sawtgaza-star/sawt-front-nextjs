@@ -13,41 +13,15 @@ import "@/styles/content-skeleton.css";
 
 /** Character counts of the current copy (GET /pages/content), raised about a
     quarter for the longer copy since the filler runs narrower than Arabic. */
-const LEN = { title: 32, desc: 155, rowHead: 8, rowTail: 6, viewMore: 11 };
+const LEN = { rowHead: 8, rowTail: 6 };
 /** The category pills the API sends now ("الكل", "الاقتصاد (3)", "السياسة (6)"). */
 const PILLS = [4, 12, 11];
 /** How many reels the API returns now. */
 const REELS = 6;
-/** HeroReelsSlider shows five posters across at its widest. */
-const POSTERS = 5;
 
-/** The hero's headline and lead — the same h1 + p as ContentHero renders. */
-export function ContentHeroSkeleton() {
-  return (
-    <>
-      <h1 className="cr-hero-title" aria-hidden="true">
-        <SkeletonText chars={LEN.title} />
-      </h1>
-      <p className="cr-hero-desc ct-hero-desc" aria-hidden="true">
-        <SkeletonText chars={LEN.desc} />
-      </p>
-    </>
-  );
-}
-
-/** The fanned poster strip: HeroReelsSlider's swiper box with a flat row of
-    slides in it (no Swiper instance — the widths are set in CSS). */
-export function ContentPostersSkeleton() {
-  return (
-    <div className="swiper ct-hero-swiper" aria-busy="true" aria-hidden="true">
-      <div className="swiper-wrapper ct-posters-row">
-        {Array.from({ length: POSTERS }, (_, i) => (
-          <div key={i} className="ct-hero-slide ct-poster-block sk-shimmer" />
-        ))}
-      </div>
-    </div>
-  );
-}
+/** The fanned poster strip — a client component of its own, since its
+    blocks are posed from the viewport (see ./ContentPostersSkeleton). */
+export { default as ContentPostersSkeleton } from "./ContentPostersSkeleton";
 
 /** The category pills of ContentFilterBar, label-less. */
 export function ContentPillsSkeleton() {
@@ -87,7 +61,7 @@ export function MostWatchedCardsSkeleton({ count = REELS }: { count?: number }) 
   );
 }
 
-/** The row's heading and "رؤية المزيد" link, as MostWatchedSection renders them. */
+/** The row's heading, as MostWatchedSection renders it. */
 export function MostWatchedTitleSkeleton() {
   return (
     <>
@@ -95,9 +69,6 @@ export function MostWatchedTitleSkeleton() {
         <span><SkeletonText chars={LEN.rowHead} /></span>{" "}
         <span className="cr-highlight"><SkeletonText chars={LEN.rowTail} /></span>
       </h2>
-      <span className="ct-mw-more" aria-hidden="true">
-        <SkeletonText chars={LEN.viewMore} />
-      </span>
     </>
   );
 }

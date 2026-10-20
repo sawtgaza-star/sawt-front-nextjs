@@ -7,13 +7,15 @@ import LegacyInit from "@/components/LegacyInit";
 import CourseContent from "@/components/courses/CourseContent";
 import { fetchCourse, fetchCourseSlugs } from "@/lib/api/courses";
 import { localized } from "@/lib/api/pages";
+import { withFallback } from "@/lib/route-segment";
 
 /* The segment is the course's slug — what GET /pages/courses lists and what
    the incubator's course cards link to.
 
    The build only reads the course list to learn which pages exist, because
    `output: 'export'` pre-lists every dynamic segment; a course added after the
-   deploy therefore needs a rebuild before its URL exists. Same shape as
+   deploy therefore has no file of its own until the next deploy; it is served by
+   the fallback page meanwhile (lib/route-segment). Same shape as
    /media/works/[slug]. */
 /* Only the pre-listed segments exist (output: export). Without this, `npm run
    dev` throws "missing param in generateStaticParams()" for an unknown one
@@ -23,12 +25,12 @@ export const dynamicParams = false;
 export async function generateStaticParams() {
   try {
     const slugs = await fetchCourseSlugs();
-    return slugs.map((id) => ({ id }));
+    return withFallback("id", slugs.map((id) => ({ id })));
   } catch (caught) {
     // The API being unreachable must not fail the build: the rest of the site
-    // still exports, and this route simply has no pages this time round.
+    // still exports, and this route only gets its fallback page this time round.
     console.warn("[courses] could not list courses for the export:", caught);
-    return [];
+    return withFallback("id", []);
   }
 }
 

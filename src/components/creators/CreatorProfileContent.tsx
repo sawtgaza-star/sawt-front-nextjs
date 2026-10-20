@@ -26,8 +26,10 @@ import CreatorContent from "./CreatorContent";
 import CreatorCollaborations from "./CreatorCollaborations";
 import CollaborationSteps from "./CollaborationSteps";
 import CreatorProfileSkeleton from "./CreatorProfileSkeleton";
+import { useRouteSegment } from "@/lib/use-route-segment";
 
-export default function CreatorProfileContent({ creator }: { creator: string }) {
+export default function CreatorProfileContent({ creator: segment }: { creator: string }) {
+  const creator = useRouteSegment(segment);
   const { page, loading } = useCreatorProfile(creator);
   const { lang } = useLang();
 

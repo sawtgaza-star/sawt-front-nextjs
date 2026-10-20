@@ -23,6 +23,9 @@ export function useMediaWork(work: string): MediaWorkState {
   const [state, setState] = useState<MediaWorkState>({ page: null, loading: true });
 
   useEffect(() => {
+    // "" = the fallback page before it has read its URL (lib/use-route-segment)
+    if (!work) return;
+
     const controller = new AbortController();
     setState({ page: null, loading: true });
 

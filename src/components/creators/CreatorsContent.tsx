@@ -43,7 +43,24 @@ export default function CreatorsContent() {
   useEffect(() => {
     if (loading) return;
     initTranslate();
+    // the stats strip counts up like the home bar (CreatorsStats) — again
+    // after a language switch, whose rescaled figures are fresh elements
+    let cancelled = false;
+    import("@/lib/legacy-main").then(({ runCounters }) => {
+      if (!cancelled) runCounters();
+    });
+    return () => {
+      cancelled = true;
+    };
   }, [loading, lang]);
+
+  // The creators slider is the home page's: boot Owl once its cards exist.
+  // Each carousel is skipped once loaded (`:not(.owl-loaded)`), so this is safe
+  // to call again.
+  useEffect(() => {
+    if (loading) return;
+    import("@/lib/owl-sliders").then(({ initOwlSliders }) => initOwlSliders());
+  }, [loading]);
 
   return (
     <>

@@ -7,7 +7,7 @@ import type { CreatorProfile, CreatorProfileLabels } from "@/lib/api/creator-pro
 import { CreatorsHeroSkeleton } from "./CreatorsSkeleton";
 import { ProfileCardSkeleton } from "./CreatorProfileSkeleton";
 import { compact } from "./creators-text";
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useLayoutEffect, useRef, useState, type CSSProperties } from "react";
 import { follow, unfollow, useFollows } from "@/lib/follows";
 import { isLoggedIn } from "@/lib/auth-state";
 import { type NewsletterNotice } from "@/components/site/NewsletterToast";
@@ -17,6 +17,12 @@ import { t } from "@/lib/translations";
 
 const HERO_IMAGE = "/assets/images/heroSectionImg.jpeg";
 const AVATAR_FALLBACK = encodeURI("/assets/images/Image (أحمد المنصور).png");
+/** How much of the bio shows before "عرض المزيد" (about two lines). */
+const BIO_LIMIT = 180;
+
+// the page is prerendered too, where useLayoutEffect would warn
+const useIsomorphicLayoutEffect =
+  typeof window !== "undefined" ? useLayoutEffect : useEffect;
 
 /* Font Awesome glyph per `socials[].platform`; anything unknown gets a link. */
 const SOCIAL_ICONS: Record<string, string> = {
@@ -63,6 +69,35 @@ export default function CreatorProfileHero({
   const description = localized(hero?.description, lang);
   const name = (creator?.name || "").trim();
   const bio = localized(creator?.bio, lang);
+  // a long bio is cut at a word near BIO_LIMIT characters, with "عرض المزيد"
+  // beside it, so the card keeps its size until the visitor asks for the rest
+  const bioLong = bio.length > BIO_LIMIT;
+  const shortBio = bioLong
+    ? bio.slice(0, bio.lastIndexOf(" ", BIO_LIMIT) > 0 ? bio.lastIndexOf(" ", BIO_LIMIT) : BIO_LIMIT).replace(/[\s،,.]+$/, "")
+    : bio;
+  const [bioOpen, setBioOpen] = useState(false);
+
+  // The hero photo is painted only down to the bottom of the hero block (the
+  // navbar + breadcrumb + the invisible title/description, i.e. exactly the
+  // /creators hero's height — creators.css → .cr-detail-header::before), not
+  // behind the card that hangs out of it. Its height is that block's bottom
+  // edge, measured here; so the card can grow ("عرض المزيد") without
+  // stretching the photo.
+  const headerRef = useRef<HTMLDivElement>(null);
+  const heroRef = useRef<HTMLDivElement>(null);
+  useIsomorphicLayoutEffect(() => {
+    const header = headerRef.current;
+    const hero = heroRef.current;
+    if (!header || !hero) return;
+    const fit = () => {
+      header.style.setProperty("--hero-bg-h", `${hero.offsetTop + hero.offsetHeight}px`);
+    };
+    fit();
+    const observer = new ResizeObserver(fit);
+    observer.observe(header);
+    observer.observe(hero);
+    return () => observer.disconnect();
+  }, [loading]);
   const socials = (creator?.socials || []).filter((social) => social.url);
   const uuid = creator?.uuid || (creator?.id != null ? String(creator.id) : "");
   const following = useFollows().creators.some((c) => c.uuid === uuid);
@@ -107,11 +142,18 @@ export default function CreatorProfileHero({
   return (
     <header>
       <div
+        ref={headerRef}
         className={`cr-header cr-detail-header py-1${loading ? " hero-bg-loading" : ""}`}
-        style={loading ? undefined : { background: `url("${hero?.image_url || HERO_IMAGE}")` }}
+        style={
+          loading
+            ? undefined
+            : ({ "--hero-bg": `url("${hero?.image_url || HERO_IMAGE}")` } as CSSProperties)
+        }
       >
         <SiteNav />
-        <div className="container cr-hero cr-detail-hero">
+        {/* the title/description stay in the flow but invisible (creators.css),
+            so this block is exactly as tall as the /creators hero */}
+        <div className="container cr-hero cr-detail-hero" ref={heroRef}>
           <nav className="cr-breadcrumb" aria-label="breadcrumb">
             <BreadcrumbHome />
             <i className="fa-solid fa-angle-left mx-2 cr-breadcrumb-sep arrow"></i>
@@ -157,6 +199,9 @@ export default function CreatorProfileHero({
                 </div>
               )}
 
+              {/* avatar on the start side (right in RTL), name + bio beside it;
+                  the stat boxes run full width underneath */}
+              <div className="cr-profile-top">
               <div className="cr-profile-avatar">
                 <img src={creator.avatar_url || AVATAR_FALLBACK} alt={name} />
                 {creator.is_verified && (
@@ -170,6 +215,7 @@ export default function CreatorProfileHero({
                 )}
               </div>
 
+              <div className="cr-profile-main">
               <div className="cr-profile-name-row">
                 <h2 className="cr-profile-name">{name}</h2>
                 {uuid && (
@@ -191,7 +237,25 @@ export default function CreatorProfileHero({
                 )}
               </div>
 
-              {bio && <p className="cr-profile-role">{bio}</p>}
+              {bio && (
+                <p className="cr-profile-role">
+                  {bioLong && !bioOpen ? `${shortBio}… ` : `${bio} `}
+                  {bioLong ? (
+                    <button
+                      type="button"
+                      className="cr-profile-more"
+                      aria-expanded={bioOpen}
+                      onClick={() => setBioOpen((open) => !open)}
+                    >
+                      {bioOpen
+                        ? lang === "en" ? "Show less" : "عرض أقل"
+                        : lang === "en" ? "Show more" : "عرض المزيد"}
+                    </button>
+                  ) : null}
+                </p>
+              )}
+              </div>
+              </div>
 
               {stats.length > 0 && (
                 <div className="cr-profile-stats">

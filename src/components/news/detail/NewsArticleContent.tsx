@@ -17,6 +17,7 @@ import { blogArticle } from "./blog-article";
 import { useBlog } from "@/lib/api/use-blogs";
 import { useLang } from "@/lib/use-lang";
 import { localized } from "@/lib/api/pages";
+import { useRouteSegment } from "@/lib/use-route-segment";
 
 /* Everything /news/{uuid} shows, from GET /pages/blogs/{uuid}: the breadcrumb
    header, the article, and the "أخبار ذات صلة" strip — one request carries all
@@ -31,7 +32,8 @@ import { localized } from "@/lib/api/pages";
    An article that no longer exists (the uuid 404s) settles into the header
    with an empty page under it — the same outcome as an outage, and the same
    as everywhere else on the site: the error is logged, not surfaced. */
-export default function NewsArticleContent({ uuid }: { uuid: string }) {
+export default function NewsArticleContent({ uuid: segment }: { uuid: string }) {
+  const uuid = useRouteSegment(segment);
   const { data, loading } = useBlog(uuid);
   const { lang } = useLang();
 

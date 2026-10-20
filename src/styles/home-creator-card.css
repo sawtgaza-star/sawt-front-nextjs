@@ -1,4 +1,5 @@
-/* Home "صناع المحتوى" card (components/home/CreatorCard). Each card takes
+/* Home "صناع المحتوى" card (components/home/CreatorCard) — also the card of
+   the /creators and /creators/all grids (.cr-creators-grid). Each card takes
    its colour from its own creator: a heavily blurred, toned-down copy of
    the photo fills it. The portrait fills the top half and ends in a wide
    rounded bottom, its sides melting into a light tint of its own
@@ -6,7 +7,7 @@
    lines of bio, the follower count and a white "متابعة +" pill. A thin
    dark-olive outline and a light shadow. */
 
-.creators-carousel2 .cc-card {
+:is(.creators-carousel2, .cr-creators-grid) .cc-card {
   position: relative;
   border-radius: 24px;
   background: #8b927a;
@@ -15,7 +16,7 @@
     0 10px 22px rgba(40, 46, 32, 0.14);
 }
 
-.creators-carousel2 .cc-card-screen {
+:is(.creators-carousel2, .cr-creators-grid) .cc-card-screen {
   position: relative;
   isolation: isolate;
   border-radius: inherit;
@@ -24,7 +25,7 @@
 }
 
 /* a faint light line just inside the outline */
-.creators-carousel2 .cc-card-screen::after {
+:is(.creators-carousel2, .cr-creators-grid) .cc-card-screen::after {
   content: "";
   position: absolute;
   inset: 0;
@@ -71,7 +72,7 @@
 /* the creator's colour: their photo, blown up and blurred to a wash —
    desaturated and dimmed so a warm backdrop (brick, wood) doesn't turn the
    card red */
-.creators-carousel2 .cc-card-backdrop {
+:is(.creators-carousel2, .cr-creators-grid) .cc-card-backdrop {
   position: absolute;
   inset: -20%;
   width: 140%;
@@ -81,7 +82,7 @@
 }
 
 /* evens the wash out and deepens it towards the copy */
-.creators-carousel2 .cc-card-tint {
+:is(.creators-carousel2, .cr-creators-grid) .cc-card-tint {
   position: absolute;
   inset: 0;
   background: linear-gradient(
@@ -96,7 +97,7 @@
    photo (its plain background, mostly) blown up and blurred, so the
    portrait's faded sides melt into its own background colour instead of
    the darker wash below */
-.creators-carousel2 .cc-card-stage {
+:is(.creators-carousel2, .cr-creators-grid) .cc-card-stage {
   position: absolute;
   top: 0;
   inset-inline: 0;
@@ -105,7 +106,7 @@
   overflow: hidden;
   border-radius: 0 0 48px 48px;
 }
-.creators-carousel2 .cc-card-stage img {
+:is(.creators-carousel2, .cr-creators-grid) .cc-card-stage img {
   position: absolute;
   inset: 0;
   width: 100%;
@@ -120,7 +121,7 @@
 /* the portrait: the top of the card, wide rounded bottom; its left and
    right edges fade softly into the stage behind it. The copy follows right
    under it, so the card is exactly as tall as both. */
-.creators-carousel2 .cc-card-portrait {
+:is(.creators-carousel2, .cr-creators-grid) .cc-card-portrait {
   position: relative;
   z-index: 2;
   height: 240px;
@@ -145,7 +146,7 @@
     transparent 100%
   );
 }
-.creators-carousel2 .cc-card-photo {
+:is(.creators-carousel2, .cr-creators-grid) .cc-card-photo {
   width: 100%;
   height: 100%;
   object-fit: cover;
@@ -161,7 +162,7 @@
    the head climbs out over the card's top edge while everything inside the
    card stays the real photo. Outside .cc-card-screen, whose overflow would
    clip it. */
-.creators-carousel2 .cc-card-pop {
+:is(.creators-carousel2, .cr-creators-grid) .cc-card-pop {
   position: absolute;
   top: 0;
   inset-inline: 0;
@@ -171,7 +172,7 @@
   clip-path: inset(-60% 0 calc(100% - 3px) 0);
   pointer-events: none;
 }
-.creators-carousel2 .cc-card-pop img {
+:is(.creators-carousel2, .cr-creators-grid) .cc-card-pop img {
   display: block;
   width: 100%;
   height: 100%;
@@ -180,24 +181,24 @@
   transform-origin: 50% 100%;
   transition: transform 0.4s ease;
 }
-.creators-carousel2 .cc-card:hover .cc-card-photo,
-.creators-carousel2 .cc-card:hover .cc-card-pop img {
+:is(.creators-carousel2, .cr-creators-grid) .cc-card:hover .cc-card-photo,
+:is(.creators-carousel2, .cr-creators-grid) .cc-card:hover .cc-card-pop img {
   transform: scale(1.14);
 }
 
 /* the whole card opens the profile */
-.creators-carousel2 .cc-card-link {
+:is(.creators-carousel2, .cr-creators-grid) .cc-card-link {
   position: absolute;
   inset: 0;
   z-index: 3;
   border-radius: inherit;
 }
-.creators-carousel2 .cc-card-link:focus-visible {
+:is(.creators-carousel2, .cr-creators-grid) .cc-card-link:focus-visible {
   outline: 3px solid #e1723b;
   outline-offset: -3px;
 }
 
-.creators-carousel2 .cc-card-body {
+:is(.creators-carousel2, .cr-creators-grid) .cc-card-body {
   position: relative;
   z-index: 3;
   padding: 16px 18px 18px;
@@ -206,7 +207,7 @@
   pointer-events: none;
 }
 
-.creators-carousel2 .cc-card-name {
+:is(.creators-carousel2, .cr-creators-grid) .cc-card-name {
   display: flex;
   align-items: center;
   gap: 8px;
@@ -217,7 +218,7 @@
   color: #fff;
   text-shadow: 0 1px 6px rgba(0, 0, 0, 0.18);
 }
-.creators-carousel2 .cc-card-name span {
+:is(.creators-carousel2, .cr-creators-grid) .cc-card-name span {
   min-width: 0;
   /* a Latin name inside Arabic (or the reverse) keeps its own order */
   unicode-bidi: isolate;
@@ -225,11 +226,11 @@
   white-space: nowrap;
   text-overflow: ellipsis;
 }
-.creators-carousel2 .cc-card-verified {
+:is(.creators-carousel2, .cr-creators-grid) .cc-card-verified {
   flex-shrink: 0;
 }
 
-.creators-carousel2 .cc-card-bio {
+:is(.creators-carousel2, .cr-creators-grid) .cc-card-bio {
   display: -webkit-box;
   -webkit-box-orient: vertical;
   -webkit-line-clamp: 2;
@@ -243,13 +244,13 @@
   color: rgba(255, 255, 255, 0.88);
 }
 
-.creators-carousel2 .cc-card-foot {
+:is(.creators-carousel2, .cr-creators-grid) .cc-card-foot {
   display: flex;
   align-items: center;
   gap: 12px;
 }
 
-.creators-carousel2 .cc-card-stat {
+:is(.creators-carousel2, .cr-creators-grid) .cc-card-stat {
   display: inline-flex;
   align-items: center;
   gap: 6px;
@@ -258,7 +259,7 @@
   color: #fff;
 }
 
-.creators-carousel2 .cc-follow {
+:is(.creators-carousel2, .cr-creators-grid) .cc-follow {
   pointer-events: auto;
   display: inline-flex;
   align-items: center;
@@ -279,24 +280,24 @@
     color 0.2s ease,
     translate 0.2s ease;
 }
-.creators-carousel2 .cc-follow:hover {
+:is(.creators-carousel2, .cr-creators-grid) .cc-follow:hover {
   translate: 0 -1px;
 }
-.creators-carousel2 .cc-follow[aria-busy="true"] {
+:is(.creators-carousel2, .cr-creators-grid) .cc-follow[aria-busy="true"] {
   opacity: 0.7;
   cursor: progress;
 }
 
 /* followed: a glassy outline pill reading "إلغاء المتابعة", no plus */
-.creators-carousel2 .cc-follow .cc-follow-off,
-.creators-carousel2 .cc-follow.is-following .cc-follow-on,
-.creators-carousel2 .cc-follow.is-following .cc-follow-plus {
+:is(.creators-carousel2, .cr-creators-grid) .cc-follow .cc-follow-off,
+:is(.creators-carousel2, .cr-creators-grid) .cc-follow.is-following .cc-follow-on,
+:is(.creators-carousel2, .cr-creators-grid) .cc-follow.is-following .cc-follow-plus {
   display: none;
 }
-.creators-carousel2 .cc-follow.is-following .cc-follow-off {
+:is(.creators-carousel2, .cr-creators-grid) .cc-follow.is-following .cc-follow-off {
   display: inline;
 }
-.creators-carousel2 .cc-follow.is-following {
+:is(.creators-carousel2, .cr-creators-grid) .cc-follow.is-following {
   background: rgba(255, 255, 255, 0.16);
   color: #fff;
   box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.55);
@@ -308,38 +309,38 @@
    `.owl-carousel .item` at 320px there — so the portrait is shorter and the
    copy tightens to fit. */
 @media (max-width: 767.98px) {
-  .creators-carousel2 .cc-card {
+  :is(.creators-carousel2, .cr-creators-grid) .cc-card {
     border-radius: 20px;
   }
-  .creators-carousel2 .cc-card-pop {
+  :is(.creators-carousel2, .cr-creators-grid) .cc-card-pop {
     height: 158px;
   }
-  .creators-carousel2 .cc-card-portrait,
-  .creators-carousel2 .cc-card-stage {
+  :is(.creators-carousel2, .cr-creators-grid) .cc-card-portrait,
+  :is(.creators-carousel2, .cr-creators-grid) .cc-card-stage {
     height: 158px;
     border-radius: 0 0 36px 36px;
   }
-  .creators-carousel2 .cc-card-body {
+  :is(.creators-carousel2, .cr-creators-grid) .cc-card-body {
     padding: 12px 14px 12px;
   }
-  .creators-carousel2 .cc-card-name {
+  :is(.creators-carousel2, .cr-creators-grid) .cc-card-name {
     font-size: 16px;
     margin-bottom: 4px;
   }
-  .creators-carousel2 .cc-card-verified {
+  :is(.creators-carousel2, .cr-creators-grid) .cc-card-verified {
     width: 18px;
     height: 18px;
   }
-  .creators-carousel2 .cc-card-bio {
+  :is(.creators-carousel2, .cr-creators-grid) .cc-card-bio {
     margin-bottom: 10px;
     min-height: 3.1em;
     font-size: 12px;
     line-height: 1.55;
   }
-  .creators-carousel2 .cc-card-stat {
+  :is(.creators-carousel2, .cr-creators-grid) .cc-card-stat {
     font-size: 13px;
   }
-  .creators-carousel2 .cc-follow {
+  :is(.creators-carousel2, .cr-creators-grid) .cc-follow {
     height: 32px;
     padding: 0 14px;
     gap: 5px;
@@ -360,9 +361,9 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .creators-carousel2 .cc-follow,
-  .creators-carousel2 .cc-card-photo,
-  .creators-carousel2 .cc-card-pop img {
+  :is(.creators-carousel2, .cr-creators-grid) .cc-follow,
+  :is(.creators-carousel2, .cr-creators-grid) .cc-card-photo,
+  :is(.creators-carousel2, .cr-creators-grid) .cc-card-pop img {
     transition: none;
   }
 }

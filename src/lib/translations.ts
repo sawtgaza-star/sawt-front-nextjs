@@ -244,6 +244,9 @@ export const translations: any = {
     content_hero_desc:
       "خلف كل محتوى تشاهده وتسمعه فريق من المختصين في تكنولوجيا المعلومات والإنتاج الإعلامي، نؤمن أن التكنولوجيا هي وسيلتنا لنقل الحقيقة، وأن إبداعنا هو الصوت الذي يصل بصدى غزة إلى آفاق العالم.",
     content_cat_all: "الكل",
+    content_stat_views: "مشاهدة",
+    content_stat_likes: "إعجاب",
+    content_stat_videos: "فيديو",
     content_cat_economy: "الاقتصاد (13)",
     content_cat_war: "قصص الحرب (45)",
     content_cat_business: "المال والأعمال (13)",
@@ -2536,6 +2539,9 @@ export const translations: any = {
     content_hero_desc:
       "Behind every piece of content you watch and hear is a team of information-technology and media-production specialists. We believe technology is our means of carrying the truth, and that our creativity is the voice that takes Gaza's echo to the far horizons of the world.",
     content_cat_all: "All",
+    content_stat_views: "Views",
+    content_stat_likes: "Likes",
+    content_stat_videos: "Videos",
     content_cat_economy: "Economy (13)",
     content_cat_war: "War Stories (45)",
     content_cat_business: "Money & Business (13)",

@@ -89,8 +89,10 @@ export default function SupportBanner({
 
             <div className="sp-banner-media">
               <img src="/assets/images/tree.jpg" alt="" />
+              {/* .counter: runCounters() counts each figure up from 0 once it
+                  scrolls into view (SupportContent starts it) */}
               <div className="sp-badge sp-badge-green">
-                <span className="sp-badge-num">1,247</span>
+                <span className="sp-badge-num counter">1,247</span>
                 <span
                   className="sp-badge-label"
                   data-i18n="support_badge_donors"
@@ -99,7 +101,7 @@ export default function SupportBanner({
                 </span>
               </div>
               <div className="sp-badge sp-badge-orange">
-                <span className="sp-badge-num">340+</span>
+                <span className="sp-badge-num counter">340+</span>
                 <span
                   className="sp-badge-label"
                   data-i18n="support_badge_stories"

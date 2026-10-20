@@ -24,8 +24,10 @@ import MediaServiceIncludes from "./MediaServiceIncludes";
 import MediaServiceWorks from "./MediaServiceWorks";
 import MediaProjectCta from "./MediaProjectCta";
 import MediaServiceSkeleton from "./MediaServiceSkeleton";
+import { useRouteSegment } from "@/lib/use-route-segment";
 
-export default function MediaServiceContent({ slug }: { slug: string }) {
+export default function MediaServiceContent({ slug: segment }: { slug: string }) {
+  const slug = useRouteSegment(segment);
   const { page, loading } = useMediaService(slug);
   const { lang } = useLang();
 

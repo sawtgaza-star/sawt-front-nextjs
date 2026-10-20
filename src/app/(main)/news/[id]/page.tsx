@@ -7,6 +7,7 @@ import LegacyInit from "@/components/LegacyInit";
 import NewsArticleContent from "@/components/news/detail/NewsArticleContent";
 import { fetchAllBlogUuids, fetchBlog } from "@/lib/api/blogs";
 import { localized } from "@/lib/api/pages";
+import { withFallback } from "@/lib/route-segment";
 
 /* /news/[id] — the article behind a card's "اقرأ المزيد". The segment is the
    blog's `uuid`: GET /pages/blogs/{uuid} resolves that identifier only (a
@@ -16,8 +17,8 @@ import { localized } from "@/lib/api/pages";
    The article itself is fetched in the browser — see NewsArticleContent — so
    an edit is live without a deploy. The build only reads the feed to learn
    which pages exist, because `output: 'export'` pre-lists every dynamic
-   segment; a post added after the deploy therefore needs a rebuild before its
-   URL exists. */
+   segment; a post added after the deploy therefore has no file of its own until the next deploy; it is served by
+   the fallback page meanwhile (lib/route-segment). */
 
 /* Only the pre-listed segments exist (output: export). Without this, `npm run
    dev` throws "missing param in generateStaticParams()" for an unknown one
@@ -27,12 +28,12 @@ export const dynamicParams = false;
 export async function generateStaticParams() {
   try {
     const uuids = await fetchAllBlogUuids();
-    return uuids.map((id) => ({ id }));
+    return withFallback("id", uuids.map((id) => ({ id })));
   } catch (caught) {
     // The API being unreachable must not fail the build: the rest of the site
-    // still exports, and this route simply has no pages this time round.
+    // still exports, and this route only gets its fallback page this time round.
     console.warn("[news] could not list articles for the export:", caught);
-    return [];
+    return withFallback("id", []);
   }
 }
 

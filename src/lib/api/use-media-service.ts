@@ -23,6 +23,9 @@ export function useMediaService(service: string): MediaServiceState {
   const [state, setState] = useState<MediaServiceState>({ page: null, loading: true });
 
   useEffect(() => {
+    // "" = the fallback page before it has read its URL (lib/use-route-segment)
+    if (!service) return;
+
     const controller = new AbortController();
     setState({ page: null, loading: true });
 

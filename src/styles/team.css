@@ -262,7 +262,7 @@ left: 12px;
 
 /* ---------- Profile: mic portrait (left in RTL) + info (right) ---------- */
 .team-detail-section {
-  padding: 100px 0 30px;
+  padding: 40px 0 30px;
   position:relative;
 }
 .team-detail-grid {
@@ -304,9 +304,11 @@ left: 12px;
   background-position: left center;
   background-repeat: no-repeat;
   pointer-events: none;
+  /* nudge the burst (and the mic below with it) 12% toward the outer edge */
+  transform: translateX(-12%);
 }
 [dir="ltr"] .team-detail-grid.has-bg::before {
-  transform: scaleX(-1);
+  transform: scaleX(-1) translateX(-12%);
 }
 .team-detail-grid.has-bg .team-detail-info {
   padding-inline: 56px 24px;
@@ -327,10 +329,10 @@ left: 12px;
    35.7% — the burst's centre in the current 2179×832 upload (outer side =
    right in LTR, left in RTL) */
 .team-detail-grid.has-bg .team-detail-photo img {
-  inset: 0 23% 0 0;
+  inset: 0 2.3% 0 20.7%;
 }
 [dir="rtl"] .team-detail-grid.has-bg .team-detail-photo img {
-  inset: 0 0 0 23%;
+  inset: 0 20.7% 0 2.3%;
 }
 /* Stacked (mic on top, text below): the backdrop is drawn at twice the card
    width from its top-left corner, which lands the burst behind the mic. */
@@ -342,6 +344,10 @@ left: 12px;
   .team-detail-grid.has-bg::before {
     background-size: 200% auto;
     background-position: 3% 0;
+    transform: none;
+  }
+  [dir="ltr"] .team-detail-grid.has-bg::before {
+    transform: scaleX(-1);
   }
   .team-detail-grid.has-bg .team-detail-info {
     padding-inline: 0;
@@ -393,16 +399,16 @@ left: 12px;
 }
 
 .team-detail-name {
-  font-size: 32px;
+  font-size: 29px;
   font-weight: 800;
   color: #1c1c1c;
   margin: 0 0 6px;
   text-align: start;
 }
 .team-detail-role {
-  font-size: 22px;
+  font-size: 19px;
   color: #919191;
-  margin: 10px 0 8px;
+  margin: 4px 0 0;
   text-align: start;
 }
 /* Name/role block + experience badge share one row: the badge sits at the
@@ -420,8 +426,8 @@ left: 12px;
 .team-detail-experience {
   display: flex;
   align-items: center;
-  gap: 7px;
-  font-size: 18px;
+  gap: 6px;
+  font-size: 16px;
   font-weight: 600;
   color: #4C5C37;
   margin: 6px 0 0;
@@ -430,23 +436,25 @@ left: 12px;
 }
 .team-detail-experience i {
   color: #FCD53F;
-  font-size: 16px;
+  font-size: 15px;
   text-align: start;
 }
 
 .team-detail-about-title {
-  font-size: 28px;
+  font-size: 23px;
   font-weight: 700;
   color: #1c1c1c;
-  margin: 0 0 12px;
+  margin: 0 0 10px;
   text-align: start;
 }
 .team-detail-bio {
-  font-size: 18px;
-  line-height: 2;
+  font-size: 16.5px;
+  line-height: 1.9;
   color: #6D6D6D;
-  margin: 0 0 26px;
-  text-align: start;
+  margin: 0 0 24px;
+  text-align: justify;
+  text-align-last: start;
+  unicode-bidi: plaintext;
 }
 
 /* "شاهد اعمالي في صوت ميديا" CTA — full-width green pill between the bio and
@@ -456,11 +464,11 @@ left: 12px;
   align-items: center;
   justify-content: center;
   gap: 10px;
-  padding: 13px 26px;
+  padding: 11px 22px;
   border-radius: 24px;
   background: #4c5c37;
   color: #fff !important;
-  font-size: 18px;
+  font-size: 16px;
   font-weight: 700;
   text-decoration: none;
   margin: 0 0 26px;
@@ -490,7 +498,7 @@ left: 12px;
   gap: 14px;
 }
 .team-detail-follow-label {
-  font-size: 28px;
+  font-size: 23px;
   font-weight: 700;
   color: black;
 }
@@ -628,10 +636,10 @@ left: 12px;
     padding: 40px 0 20px;
   }
   .team-detail-name {
-    font-size: 28px;
+    font-size: 24px;
   }
   .team-detail-role {
-    font-size: 18px;
+    font-size: 16px;
     margin: 6px 0;
   }
   .team-detail-experience {
@@ -642,18 +650,18 @@ left: 12px;
     margin-bottom: 20px;
   }
   .team-detail-about-title {
-    font-size: 22px;
+    font-size: 20px;
   }
   .team-detail-bio {
-    font-size: 16px;
+    font-size: 15px;
     line-height: 1.9;
     margin-bottom: 22px;
   }
   .team-detail-follow-label {
-    font-size: 22px;
+    font-size: 20px;
   }
   .team-detail-work-btn {
-    font-size: 16px;
+    font-size: 15px;
     padding: 12px 18px;
     margin-bottom: 22px;
   }

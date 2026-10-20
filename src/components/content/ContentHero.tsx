@@ -2,20 +2,20 @@ import type { CSSProperties } from "react";
 import SiteNav from "@/components/site/SiteNav";
 import HeroReelsSlider from "./HeroReelsSlider";
 import BreadcrumbHome from "@/components/site/BreadcrumbHome";
-import { localized } from "@/lib/api/pages";
-import type { ContentHeroContent } from "@/lib/api/content";
+import type { ContentHeroContent, ContentReels } from "@/lib/api/content";
 import { bySortOrder } from "./content-text";
 import { heroSlides, type HeroSlide } from "./content-data";
-import { ContentHeroSkeleton, ContentPostersSkeleton } from "./ContentSkeleton";
+import { ContentPostersSkeleton } from "./ContentSkeleton";
+import ContentHeroStats from "./ContentHeroStats";
 
 /* Breadcrumb hero for the محتوانا page. Reuses the creators/team hero classes
-   (cr-*) so the breadcrumb, title and description match the rest of the site;
-   the backdrop and the coverflow strip below come from the API's `hero` block.
+   (cr-*) so the breadcrumb matches the rest of the site; the backdrop and the
+   coverflow strip below come from the API's `hero` block.
 
-   No `data-i18n` on the headline or the lead any more: the payload carries ar
-   and en at once and `lang` picks one, so the DOM translator has nothing to do
-   — and nothing of React's to overwrite. The breadcrumb keeps its key; it is
-   site chrome, not page content, and the API doesn't send it.
+   The hero's headline and lead are deliberately not rendered (the API still
+   sends `hero.title` / `hero.description`): the page opens straight onto the
+   reels strip, so it sits in the first screen. The breadcrumb keeps its
+   data-i18n key; it is site chrome, not page content.
 
    The <header> shell is NOT conditional. <SiteNav /> lives inside it and
    initHeaderPin() (lib/legacy-main) wraps `.nav-face` + `.navbar` into
@@ -28,12 +28,15 @@ import { ContentHeroSkeleton, ContentPostersSkeleton } from "./ContentSkeleton";
    custom property the rule reads, whose fallback is the bundled image. */
 export default function ContentHero({
   data,
+  reelsBlock,
   reelPosters = [],
   onSelectReel,
   lang = "ar",
   loading = false,
 }: {
   data?: ContentHeroContent;
+  /** The reels block — what the views / videos cards count. */
+  reelsBlock?: ContentReels | null;
   /** The reels' thumbnails — what the strip fans out; a tap on one scrolls
       down to that reel (`onSelectReel`). */
   reelPosters?: HeroSlide[];
@@ -42,8 +45,6 @@ export default function ContentHero({
   /** The payload is still on its way — hold the hero's height with bars. */
   loading?: boolean;
 }) {
-  const title = localized(data?.title, lang);
-  const description = localized(data?.description, lang);
   const backdrop = data?.image_url;
   const heroPosters: HeroSlide[] = bySortOrder(data?.items)
     .map((poster) => ({ src: poster.image_url || "" }))
@@ -72,17 +73,8 @@ export default function ContentHero({
               محتوانا
             </span>
           </nav>
-          {loading ? (
-            <ContentHeroSkeleton />
-          ) : (
-            <>
-              {title ? <h1 className="cr-hero-title">{title}</h1> : null}
-              {description ? (
-                <p className="cr-hero-desc ct-hero-desc">{description}</p>
-              ) : null}
-            </>
-          )}
         </div>
+        {loading ? null : <ContentHeroStats reels={reelsBlock} lang={lang} />}
         {loading ? (
           <div className="ct-hero-slider">
             <ContentPostersSkeleton />

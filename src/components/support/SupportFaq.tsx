@@ -1,6 +1,6 @@
 "use client";
 import { useState } from "react";
-import { IconChevronDownBold, IconHeartOutline } from "@/components/ui/icons";
+import { IconChevronDownBold } from "@/components/ui/icons";
 import { localized } from "@/lib/api/pages";
 import type { SupportFaqContent } from "@/lib/api/support";
 import { resolveSupportFaqs } from "./support-faq-data";
@@ -19,9 +19,6 @@ export default function SupportFaq({
   const [open, setOpen] = useState<number>(1);
   const faqs = resolveSupportFaqs(data?.items, lang);
   const title = localized(data?.title, lang);
-  const moreTitle = localized(data?.cta?.title, lang);
-  const moreBody = localized(data?.cta?.body, lang);
-  const moreLabel = localized(data?.cta?.label, lang);
 
   return (
     <section className="sp-section sp-faq-section" style={{ paddingTop: 0 }}>
@@ -82,35 +79,6 @@ export default function SupportFaq({
                 </div>
               );
             })}
-
-            {/* mobile mock only — "لديك سؤال آخر؟" contact card under the
-                accordion; CSS keeps it hidden on desktop */}
-            <div className="sp-faq-more">
-              <span className="sp-faq-more-icon" aria-hidden="true">
-                <IconHeartOutline />
-              </span>
-              {moreTitle ? (
-                <h3 className="sp-faq-more-title">{moreTitle}</h3>
-              ) : (
-                <h3 className="sp-faq-more-title" data-i18n="support_faq_more_title">
-                  لديك سؤال آخر؟
-                </h3>
-              )}
-              {moreBody ? (
-                <p className="sp-faq-more-desc">{moreBody}</p>
-              ) : (
-                <p className="sp-faq-more-desc" data-i18n="support_faq_more_desc">
-                  فريقنا جاهز للإجابة — سنردّ عليك خلال ساعات
-                </p>
-              )}
-              <a href="/#join" className="sp-btn-green">
-                {moreLabel ? (
-                  <span>{moreLabel}</span>
-                ) : (
-                  <span data-i18n="support_contact_us">تواصل معنا</span>
-                )}
-              </a>
-            </div>
           </div>
         </div>
       </div>

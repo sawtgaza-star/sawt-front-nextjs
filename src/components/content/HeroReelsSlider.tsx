@@ -6,46 +6,11 @@ import type { Swiper as SwiperClass } from "swiper";
 import "swiper/css";
 import "swiper/css/autoplay";
 import type { HeroSlide } from "./content-data";
+import { FAN_LAST, FAN_SCALE, fanCentres, fanPose, measureArc as measureRim, type Arc } from "./hero-fan";
 
-/* The fan: a size GRADIENT out from the focused poster. Each whole step away
-   (Swiper's slide progress: 0 for the focus, ±1 its neighbours, ±2 …; POSITIVE
-   is a poster to the RIGHT — measured, despite the page being dir="rtl") has a
-   fixed scale, turn and look; between two steps everything is interpolated
-   from the exact progress, so a moving strip grows and shrinks continuously.
-
-   - FAN_SCALE: the focus stands out a size up; each step out is a clear notch
-     smaller than the last.
-   - Shrinking a poster in place would leave a wider and wider gap beside it,
-     so each one is drawn in toward the focus by exactly what keeps the visual
-     gap between neighbours even (fanPose).
-   - FAN_TURN: the outer edge turns away, so the row faces the middle.
-   - FAN_BLUR: the further out, the softer (content.css reads it as
-     --fan-blur), so the focus is the clear one. No darkening — the posters
-     keep their full brightness. */
-const FAN_SCALE = [1.06, 0.88, 0.76, 0.66, 0.58, 0.51, 0.45];
-const FAN_TURN = [0, 3, 6, 8, 10, 11, 12]; // rotateY deg
-const FAN_BLUR = [0, 0.8, 1.6, 2.2, 2.6, 3, 3]; // px
-const FAN_LAST = FAN_SCALE.length - 1;
-/** extra room either side of the focused poster, on top of the slider's gap */
-const FOCUS_GAP = 8;
-const TURN_GAP = 0.021;
 /* at least this many positions a side stay fully shown (phones show one
    poster and slivers of its neighbours); more on a wide screen — fanMax */
 const FAN_MAX = 2;
-
-/** Where the poster k steps out sits (its centre, from the focus's centre)
-    once the row is graded: half of each poster's scaled width plus the gap. */
-function fanCentres(width: number, gap: number): number[] {
-  const centres = [0];
-  for (let k = 1; k <= FAN_LAST; k++) {
-    /* a turned poster reads narrower in perspective on its inner side, which
-       opened each gap a little more than the last — TURN_GAP takes that back
-       (measured: ~2% of the poster width per step beyond the first) */
-    const between = gap + (k === 1 ? FOCUS_GAP : 0) - TURN_GAP * (k - 1) * width;
-    centres.push(centres[k - 1] + ((FAN_SCALE[k - 1] + FAN_SCALE[k]) / 2) * width + between);
-  }
-  return centres;
-}
 
 /** How many positions each side keep fully shown: every poster that starts
     inside the strip, so the graded row runs to both page edges. */
@@ -58,21 +23,14 @@ function fanMax(swiper: SwiperClass): number {
   return Math.max(FAN_MAX, k);
 }
 
-/** The pose of a poster at `progress` steps from the focus. */
-function fanPose(progress: number, width: number, gap: number, centres: number[]) {
-  const distance = Math.min(Math.abs(progress), FAN_LAST);
-  const lower = Math.floor(distance);
-  const upper = Math.min(lower + 1, FAN_LAST);
-  const t = distance - lower;
-  const mix = (steps: number[]) => steps[lower] + (steps[upper] - steps[lower]) * t;
-  const sign = progress < 0 ? -1 : 1;
-  // the graded centre minus where Swiper's even row already puts it
-  const pull = mix(centres) - distance * (width + gap);
-  return {
-    distance,
-    transform: `translateX(${sign * pull}px) rotateY(${sign * mix(FAN_TURN)}deg) scale(${mix(FAN_SCALE)})`,
-    blur: mix(FAN_BLUR),
-  };
+/** The rim's place for the live strip (see measureRim). */
+function measureArc(swiper: SwiperClass): Arc | undefined {
+  const first = swiper.slides[0] as HTMLElement | undefined;
+  return measureRim(
+    swiper.el.closest(".ct-header"),
+    swiper.wrapperEl.getBoundingClientRect().top,
+    first?.offsetHeight ?? 0,
+  );
 }
 
 type FanSlide = HTMLElement & { progress?: number };
@@ -144,6 +102,7 @@ export default function HeroReelsSlider({
   onSelect?: (reelId: string) => void;
 }) {
   const spinFrame = useRef<number | undefined>(undefined);
+  const arc = useRef<Arc | undefined>(undefined);
   useEffect(() => () => window.cancelAnimationFrame(spinFrame.current ?? 0), []);
 
   const introSpin = (swiper: SwiperClass) => {
@@ -242,7 +201,7 @@ export default function HeroReelsSlider({
     const gap = Number(swiper.params.spaceBetween ?? 0);
     const centres = fanCentres(width, gap);
     (swiper.slides as FanSlide[]).forEach((slide) => {
-      const pose = fanPose(slide.progress ?? 0, width, gap, centres);
+      const pose = fanPose(slide.progress ?? 0, width, gap, centres, arc.current);
       slide.style.transform = pose.transform;
       slide.style.setProperty("--fan-blur", `${pose.blur.toFixed(2)}px`);
       // nearer posters on top, should a turned edge ever touch a neighbour
@@ -294,12 +253,16 @@ export default function HeroReelsSlider({
         }}
         autoplay={{ delay: 2000, disableOnInteraction: false }}
         onAfterInit={(swiper) => {
+          arc.current = measureArc(swiper);
           fan(swiper);
           introSpin(swiper);
         }}
         onProgress={fan}
         onSetTranslate={fan}
-        onResize={fan}
+        onResize={(swiper) => {
+          arc.current = measureArc(swiper);
+          fan(swiper);
+        }}
         onSetTransition={syncTransition}
         onClick={(swiper) => {
           const id = (swiper.clickedSlide as HTMLElement | undefined)?.dataset.reelId;

@@ -4223,6 +4223,7 @@ svg {
   border-radius: 20px;
   background-color: #edefeb !important;
   padding: 10px !important;
+  box-shadow: 0 8px 22px -10px rgba(0, 0, 0, 0.18);
 }
 
 .branch-left-bottom-about {
@@ -6138,6 +6139,20 @@ svg {
   margin-bottom: 0;
 }
 
+/* Hover: a light lift with a soft shadow, a faint orange border and a small
+   icon pop. */
+.value-card:hover {
+  transform: translateY(-6px);
+  border-color: rgba(225, 114, 59, 0.35);
+  box-shadow: 0 12px 28px -14px rgba(0, 0, 0, 0.18);
+}
+.value-card-icon {
+  transition: transform 0.3s ease;
+}
+.value-card:hover .value-card-icon {
+  transform: scale(1.08);
+}
+
 .sawt-story-section .branch-right-bottom-sawt-story {
   top: -10%;
   right: -80px;
@@ -6393,6 +6408,29 @@ svg {
   }
   .sawt-story-grid-rest {
     padding-top: 60px;
+  }
+
+  /* Hover: the glass clears up a little, the rim picks up the olive, the card
+     lifts with a soft shadow and the icon tile warms up. */
+  .sawt-story-pin .sawt-story-card {
+    transition:
+      transform 0.3s ease,
+      box-shadow 0.3s ease,
+      background-color 0.3s ease,
+      border-color 0.3s ease;
+  }
+  .sawt-story-pin .sawt-story-card:hover {
+    transform: translateY(-4px);
+    background: rgba(255, 255, 255, 0.6);
+    border-color: rgba(76, 92, 55, 0.55);
+    box-shadow: 0 14px 30px -14px rgba(76, 92, 55, 0.35);
+  }
+  .sawt-story-pin .sawt-story-icon {
+    transition: transform 0.3s ease, background-color 0.3s ease;
+  }
+  .sawt-story-pin .sawt-story-card:hover .sawt-story-icon {
+    transform: scale(1.08);
+    background: rgba(214, 204, 178, 1);
   }
 }
 

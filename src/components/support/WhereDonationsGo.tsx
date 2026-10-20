@@ -15,34 +15,11 @@ const ICONS = {
   book: IconBookOpenOutline,
 };
 
-/* Donut from the design: a full orange ring with the grey (25%) and green
-   (35%) arcs stroked over it, round-capped. Traced from the design's SVG —
-   keep the path data as-is. */
+/* The donut: the design's three colours (orange, green, grey) blending into
+   one another around the ring, which turns continuously — a conic gradient
+   cut to the design's ring (support.css → .sp-alloc-summary-grad). */
 function AllocationRing() {
-  return (
-    <svg
-      className="sp-alloc-summary-svg"
-      width="192"
-      height="202"
-      viewBox="0 0 192 202"
-      fill="none"
-      aria-hidden="true"
-    >
-      <circle cx="96" cy="106" r="86" stroke="#FF7420" strokeWidth="20" />
-      <path
-        d="M79.5 22C124.3 10.4393 182 45.4998 182 108.5"
-        stroke="#7F7F7F"
-        strokeWidth="20"
-        strokeLinecap="round"
-      />
-      <path
-        d="M10.769 97.6789C11.1973 51.4133 71.3037 -2.35302 136.965 29.0949"
-        stroke="#4C5C37"
-        strokeWidth="20"
-        strokeLinecap="round"
-      />
-    </svg>
-  );
+  return <span className="sp-alloc-summary-grad" aria-hidden="true" />;
 }
 
 /* "أين تذهب تبرعاتكم؟" — three allocation cards, each with a coloured pill

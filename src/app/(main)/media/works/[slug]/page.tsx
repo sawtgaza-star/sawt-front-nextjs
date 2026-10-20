@@ -5,6 +5,7 @@ import LegacyInit from "@/components/LegacyInit";
 import MediaWorkContent from "@/components/media/MediaWorkContent";
 import { fetchMediaWork, fetchMediaWorkSlugs } from "@/lib/api/media-work";
 import { localized } from "@/lib/api/pages";
+import { withFallback } from "@/lib/route-segment";
 
 /* Same display face as /media and /media/works — headings and the banner
    headline are Cairo, scoped to the page through the variable media.css reads. */
@@ -18,8 +19,8 @@ const cairo = Cairo({
 /* The segment is the project's slug, which is what the listing and /media's
    works wall both link to. The build only reads the portfolio to learn which
    pages exist, because `output: 'export'` pre-lists every dynamic segment; a
-   project added after the deploy therefore needs a rebuild before its URL
-   exists. Same shape as /news/[id] and the service pages. */
+   project added after the deploy therefore has no file of its own until the next deploy; it is served by
+   the fallback page meanwhile (lib/route-segment). Same shape as /news/[id] and the service pages. */
 /* Only the pre-listed segments exist (output: export). Without this, `npm run
    dev` throws "missing param in generateStaticParams()" for an unknown one
    instead of showing the site 404 (global-not-found), as the export does. */
@@ -28,12 +29,12 @@ export const dynamicParams = false;
 export async function generateStaticParams() {
   try {
     const slugs = await fetchMediaWorkSlugs();
-    return slugs.map((slug) => ({ slug }));
+    return withFallback("slug", slugs.map((slug) => ({ slug })));
   } catch (caught) {
     // The API being unreachable must not fail the build: the rest of the site
-    // still exports, and this route simply has no pages this time round.
+    // still exports, and this route only gets its fallback page this time round.
     console.warn("[media works] could not list projects for the export:", caught);
-    return [];
+    return withFallback("slug", []);
   }
 }
 

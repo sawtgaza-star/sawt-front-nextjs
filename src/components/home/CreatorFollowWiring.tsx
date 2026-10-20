@@ -19,7 +19,11 @@ import LoginRequiredDialog from "@/components/site/LoginRequiredDialog";
    page has settled (sliders, images), so it is repeated once everything has
    loaded — unless the visitor has started scrolling by then. */
 
-const PILLS = ".creators-carousel2 .cc-follow[data-uuid]";
+/* the home slider and the /creators, /creators/all grids */
+const SCOPES = [".creators-carousel2", ".cr-creators-grid"];
+const pills = (attr = "[data-uuid]") =>
+  SCOPES.map((scope) => `${scope} .cc-follow${attr}`).join(", ");
+const PILLS = pills();
 const ANCHOR = "creators";
 
 function markPills(followed: Set<string>) {
@@ -81,7 +85,7 @@ export default function CreatorFollowWiring() {
       const uuid = pill.dataset.uuid || "";
       const name = pill.dataset.name || "";
       const twins = document.querySelectorAll<HTMLButtonElement>(
-        `${PILLS}[data-uuid="${CSS.escape(uuid)}"]`,
+        pills(`[data-uuid="${CSS.escape(uuid)}"]`),
       );
       twins.forEach((b) => b.setAttribute("aria-busy", "true"));
       try {

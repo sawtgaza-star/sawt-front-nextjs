@@ -43,9 +43,27 @@
   background-size: 400% 100%;
 }
 
+/* Desktop: the blocks take the live slides' own width (content.css,
+   `.ct-header .ct-hero-swiper .ct-hero-slide`) and gap, and
+   ContentPostersSkeleton poses each one where its poster will land on the
+   rim. Eleven of them, centred, so the row reaches both page edges. */
+@media (min-width: 992px) {
+  .ct-posters-row {
+    gap: 18px;
+  }
+  .ct-posters-row .ct-poster-block {
+    flex: 0 0 auto;
+  }
+}
+
 @media (max-width: 991.98px) {
   .ct-posters-row {
     gap: 12px;
+  }
+  /* five across here: drop the outer three blocks each side */
+  .ct-poster-block:nth-child(-n + 3),
+  .ct-poster-block:nth-child(n + 9) {
+    display: none;
   }
   .ct-poster-block {
     flex-basis: calc((100% - 4 * 12px) / 5);
