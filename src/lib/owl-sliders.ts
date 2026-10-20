@@ -32,7 +32,25 @@ export async function initOwlSliders() {
     },
   });
 
-  $(".creators-carousel2:not(.owl-loaded)").owlCarousel({
+  // صناع المحتوى: يُعرض العدد الفعلي القادم من الـ API — لا تكرار بالـ loop حين
+  // تتسع الشاشة لكل البطاقات (وإلا تُستنسخ نفس البطاقة لتملأ الصف)، وعندها
+  // تتوسّط البطاقات بنفس عرضها بدل أن تلتصق بطرف واحد (cc-fits في home-creator-card.css)
+  const $creators2 = $(".creators-carousel2:not(.owl-loaded)");
+  const creatorsCount = $creators2.children(".item").length;
+  const creatorsAt = (items, extra = {}) => ({
+    items,
+    loop: creatorsCount > items,
+    ...extra,
+  });
+  $creators2.on("initialized.owl.carousel refreshed.owl.carousel resized.owl.carousel", (e) => {
+    // relatedTarget is the Owl instance — on `initialized` it isn't in .data() yet
+    const owl = e.relatedTarget;
+    if (!owl?.settings || e.target !== e.currentTarget) return;
+    const fits = creatorsCount <= owl.settings.items;
+    e.target.classList.toggle("cc-fits", fits);
+    e.target.style.setProperty("--cc-gap", `${owl.settings.margin || 0}px`);
+  });
+  $creators2.owlCarousel({
     loop: true,
     margin: 25,
     rtl: true,
@@ -45,11 +63,11 @@ export async function initOwlSliders() {
     ],
     responsive: {
       // الجوال: بطاقة في المنتصف مع ظهور طرف البطاقتين المجاورتين، بدون نقاط تنقّل
-      0: { items: 1, center: true, stagePadding: 58, margin: 12, nav: false, dots: false },
-      600: { items: 2 },
-      1100: { items: 3 },
-      1300: { items: 4 },
-      1500: { items: 5 },
+      0: creatorsAt(1, { center: true, stagePadding: 58, margin: 12, nav: false, dots: false }),
+      600: creatorsAt(2),
+      1100: creatorsAt(3),
+      1300: creatorsAt(4),
+      1500: creatorsAt(5),
     },
   });
 

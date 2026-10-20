@@ -55,11 +55,12 @@ export function splitStatValue(
   lang = "ar",
 ): { figure: string; word: string } {
   // the API sometimes sends a bare number (140) instead of a string
-  const text = String(value ?? "").trim();
+  // a "+" set apart by a space ("+ 20", "20 +") is pulled onto the digits
+  const text = String(value ?? "").trim().replace(/\+\s+(?=\d)|(?<=\d)\s+\+/g, "+");
   const match = /^(\D*\d[\d.,]*[^\s\d\p{L}]*)\s*(.*)$/u.exec(text);
   if (!match) return { figure: text, word: "" };
-  // the "+" always leads the figure: "20+" → "+20"
-  const figure = `+${match[1].replace(/\+/g, "")}`;
+  // the "+" always leads the figure, hugging the digits: "20+" → "+20"
+  const figure = `+${match[1].replace(/[+\s]/g, "")}`;
   if (!match[2]) return scaleStat(figure, lang);
   return { figure, word: match[2] };
 }

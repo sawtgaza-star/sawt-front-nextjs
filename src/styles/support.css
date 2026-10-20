@@ -895,6 +895,24 @@ font-weight: 900;
   overflow:visible;
 }
 
+/* Logos sized exactly as on the home page (home-partners.css): one fixed
+   box per logo, fitted inside it, whatever the upload's own size. */
+.sp-section .marquee img {
+  flex: 0 0 auto;
+  width: 220px;
+  height: 110px;
+  object-fit: contain;
+  margin-inline: 20px;
+}
+
+@media (max-width: 767.98px) {
+  .sp-section .marquee img {
+    width: 124px;
+    height: 62px;
+    margin-inline: 12px;
+  }
+}
+
 /* Dark CTA band */
 .sp-dark-cta {
   background: #364127;

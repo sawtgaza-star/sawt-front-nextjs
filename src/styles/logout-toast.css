@@ -8,11 +8,13 @@
   /* above everything — the pinned navbar, the join modal (2000) and the
      page's other overlays (up to 30000) */
   z-index: 2147483000;
-  top: 24px;
-  inset-inline: 16px;
-  margin-inline: auto;
+  /* the bottom corner where the reading line starts — bottom-right in
+     Arabic, bottom-left in English (body[dir] follows the language button);
+     the back-to-top button holds the other corner */
+  bottom: 24px;
+  inset-inline-start: 24px;
   width: fit-content;
-  max-width: calc(100% - 32px);
+  max-width: min(440px, calc(100% - 48px));
   display: flex;
   align-items: center;
   gap: 12px;
@@ -27,7 +29,7 @@
 @keyframes logout-toast-in {
   from {
     opacity: 0;
-    transform: translateY(-12px);
+    transform: translateY(16px);
   }
 }
 
@@ -85,9 +87,12 @@
 }
 
 @media (max-width: 575.98px) {
+  /* phones: along the bottom, stopping short of the back-to-top button
+     (48px, 20px in from the other side) */
   .logout-toast {
-    top: 12px;
-    inset-inline: 12px;
+    bottom: 16px;
+    inset-inline-start: 12px;
+    max-width: calc(100% - 12px - 80px);
     gap: 8px;
     padding: 12px 14px;
   }

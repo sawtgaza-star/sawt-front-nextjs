@@ -1,18 +1,13 @@
 /* "Who we are" feature tiles (SoutSection): soft-square icon boxes instead
-   of circles; on hover the box turns the site green (the uploaded icons are
-   already orange, so they keep that colour on it),
-   and an orange line draws itself under the label — exactly as wide as the
-   text, starting from the reading side (right in Arabic, left in English). */
+   of circles. On hover nothing changes colour and no line is drawn — the
+   icon box just grows a little. */
 
-/* doubled class: outranks animations.css's html.sawt-anim transition, which
-   would otherwise drop the background fade */
+/* doubled class: outranks animations.css's html.sawt-anim transition and
+   hover lift */
 .sout-section .feature-item .icon-box.icon-box {
   flex-shrink: 0;
   border-radius: 14px;
-  transition:
-    background-color 0.3s ease,
-    translate 0.3s ease,
-    scale 0.3s ease;
+  transition: scale 0.3s ease;
 }
 .sout-section .sout-mobile-features .icon-box.icon-box {
   border-radius: 10px;
@@ -31,43 +26,18 @@
   }
 }
 
-.sout-section .feature-item:hover .icon-box {
-  background-color: rgba(76, 92, 55, 1);
+.sout-section .feature-item:hover .icon-box.icon-box {
+  translate: none;
+  scale: 1.1;
 }
 
-/* the label is a flex item, so its box is exactly the text's width */
-.sout-section .feature-item span {
-  position: relative;
-}
-.sout-section .feature-item span::after {
-  content: "";
-  position: absolute;
-  inset-inline-start: 0;
-  bottom: -4px;
-  width: 0;
-  height: 2px;
-  border-radius: 2px;
-  background-color: rgba(225, 114, 59, 1);
-  /* fades as it shrinks, so letting go doesn't leave a dot (a "comma")
-     under the text for a moment */
-  opacity: 0;
-  transition:
-    width 0.35s ease,
-    opacity 0.2s ease;
-}
-.sout-section .feature-item:hover span::after {
-  width: 100%;
-  opacity: 1;
-}
-
-/* label turns the site's dark green (legacy hover was a pale olive) */
+/* the label keeps its colour (style.css turns it olive on hover) */
 .sout-section .feature-item:hover span {
-  color: rgba(76, 92, 55, 1);
+  color: rgba(72, 72, 72, 1);
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .sout-section .feature-item .icon-box.icon-box,
-  .sout-section .feature-item span::after {
+  .sout-section .feature-item .icon-box.icon-box {
     transition: none;
   }
 }

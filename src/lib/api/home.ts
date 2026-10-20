@@ -111,6 +111,8 @@ export type HomeCreator = {
   avatar_url?: string | null;
   followers_count?: number | null;
   experience_excerpt?: Localized;
+  /** Shows the verified seal next to the name on the home card. */
+  is_verified?: boolean | null;
 };
 
 export type HomeCreators = {

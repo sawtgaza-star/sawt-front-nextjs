@@ -1,0 +1,382 @@
+/* Home "صناع المحتوى" card (components/home/CreatorCard). Each card takes
+   its colour from its own creator: a heavily blurred, toned-down copy of
+   the photo fills it. The portrait fills the top half and ends in a wide
+   rounded bottom, its sides melting into a light tint of its own
+   background; then, on the blurred colour, the name with the verified seal, two
+   lines of bio, the follower count and a white "متابعة +" pill. A thin
+   dark-olive outline and a light shadow. */
+
+.creators-carousel2 .cc-card {
+  position: relative;
+  border-radius: 24px;
+  background: #8b927a;
+  box-shadow:
+    0 0 0 1px rgba(62, 70, 50, 0.7),
+    0 10px 22px rgba(40, 46, 32, 0.14);
+}
+
+.creators-carousel2 .cc-card-screen {
+  position: relative;
+  isolation: isolate;
+  border-radius: inherit;
+  overflow: hidden;
+  color: #fff;
+}
+
+/* a faint light line just inside the outline */
+.creators-carousel2 .cc-card-screen::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 4;
+  border-radius: inherit;
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.22);
+  pointer-events: none;
+}
+
+/* room for the outline and the shadow — Owl's stage-outer clips overflow.
+   On the sides it reaches 12px past the carousel (the negative margin keeps
+   the content box, and so Owl's card width, unchanged) so the end cards'
+   outline and shadow aren't cut; 12px stays under the 25px gap, so no
+   neighbouring card peeks in. On top it leaves room for the hover pop-out
+   head, pulled back up by the same amount so the section doesn't move. */
+.creators-carousel2 .owl-stage-outer {
+  padding: 48px 12px 26px;
+  margin: -42px -12px 0;
+}
+@media (max-width: 599.98px) {
+  .creators-carousel2 .owl-stage-outer {
+    padding-inline: 0;
+    margin-inline: 0;
+  }
+}
+
+/* every creator the API returned fits on screen: loop is off (lib/owl-sliders),
+   so the row is centred at the cards' usual width — the stage carries one
+   trailing gap on its left (rtl), hence the half-gap nudge — and the arrows,
+   which would have nothing to scroll, go */
+.creators-carousel2.cc-fits .owl-stage {
+  margin-inline: auto;
+  left: calc(var(--cc-gap, 0px) / -2);
+}
+.creators-carousel2 .owl-nav.disabled {
+  display: none !important;
+}
+
+/* before Owl runs (owl-preinit.css), a short row is centred the same way */
+.creators-carousel2:not(.owl-loaded) {
+  justify-content: safe center;
+}
+
+/* the creator's colour: their photo, blown up and blurred to a wash —
+   desaturated and dimmed so a warm backdrop (brick, wood) doesn't turn the
+   card red */
+.creators-carousel2 .cc-card-backdrop {
+  position: absolute;
+  inset: -20%;
+  width: 140%;
+  height: 140%;
+  object-fit: cover;
+  filter: blur(34px) saturate(0.6) brightness(0.8);
+}
+
+/* evens the wash out and deepens it towards the copy */
+.creators-carousel2 .cc-card-tint {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to bottom,
+    rgba(255, 255, 255, 0.08) 0%,
+    rgba(0, 0, 0, 0.04) 45%,
+    rgba(0, 0, 0, 0.24) 100%
+  );
+}
+
+/* the stage behind the portrait, same box and shape as it: the top of the
+   photo (its plain background, mostly) blown up and blurred, so the
+   portrait's faded sides melt into its own background colour instead of
+   the darker wash below */
+.creators-carousel2 .cc-card-stage {
+  position: absolute;
+  top: 0;
+  inset-inline: 0;
+  z-index: 0;
+  height: 240px;
+  overflow: hidden;
+  border-radius: 0 0 48px 48px;
+}
+.creators-carousel2 .cc-card-stage img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center top;
+  transform: scale(2.4);
+  transform-origin: center top;
+  filter: blur(26px) saturate(0.85) brightness(1.06);
+}
+
+/* the portrait: the top of the card, wide rounded bottom; its left and
+   right edges fade softly into the stage behind it. The copy follows right
+   under it, so the card is exactly as tall as both. */
+.creators-carousel2 .cc-card-portrait {
+  position: relative;
+  z-index: 2;
+  height: 240px;
+  overflow: hidden;
+  border-radius: 0 0 48px 48px;
+  -webkit-mask-image: linear-gradient(
+    to right,
+    transparent 0%,
+    rgba(0, 0, 0, 0.35) 9%,
+    #000 26%,
+    #000 74%,
+    rgba(0, 0, 0, 0.35) 91%,
+    transparent 100%
+  );
+  mask-image: linear-gradient(
+    to right,
+    transparent 0%,
+    rgba(0, 0, 0, 0.35) 9%,
+    #000 26%,
+    #000 74%,
+    rgba(0, 0, 0, 0.35) 91%,
+    transparent 100%
+  );
+}
+.creators-carousel2 .cc-card-photo {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center 15%;
+  /* grows from the bottom so the head is what rises (see .cc-card-pop) */
+  transform-origin: 50% 100%;
+  transition: transform 0.4s ease;
+}
+
+/* Hover "pop-out", as on the team cards: the portrait with its backdrop cut
+   away (CreatorPopWiring) sits exactly over the photo — same box, same fit —
+   but clipped to the strip ABOVE the card, so as both grow from the bottom
+   the head climbs out over the card's top edge while everything inside the
+   card stays the real photo. Outside .cc-card-screen, whose overflow would
+   clip it. */
+.creators-carousel2 .cc-card-pop {
+  position: absolute;
+  top: 0;
+  inset-inline: 0;
+  z-index: 5;
+  height: 240px;
+  /* overlaps the edge by 3px so the head covers the outline's seam */
+  clip-path: inset(-60% 0 calc(100% - 3px) 0);
+  pointer-events: none;
+}
+.creators-carousel2 .cc-card-pop img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center 15%;
+  transform-origin: 50% 100%;
+  transition: transform 0.4s ease;
+}
+.creators-carousel2 .cc-card:hover .cc-card-photo,
+.creators-carousel2 .cc-card:hover .cc-card-pop img {
+  transform: scale(1.14);
+}
+
+/* the whole card opens the profile */
+.creators-carousel2 .cc-card-link {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  border-radius: inherit;
+}
+.creators-carousel2 .cc-card-link:focus-visible {
+  outline: 3px solid #e1723b;
+  outline-offset: -3px;
+}
+
+.creators-carousel2 .cc-card-body {
+  position: relative;
+  z-index: 3;
+  padding: 16px 18px 18px;
+  text-align: start;
+  /* clicks fall through to the card link — only the pill takes them */
+  pointer-events: none;
+}
+
+.creators-carousel2 .cc-card-name {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0 0 8px;
+  font-size: 20px;
+  font-weight: 700;
+  line-height: 1.3;
+  color: #fff;
+  text-shadow: 0 1px 6px rgba(0, 0, 0, 0.18);
+}
+.creators-carousel2 .cc-card-name span {
+  min-width: 0;
+  /* a Latin name inside Arabic (or the reverse) keeps its own order */
+  unicode-bidi: isolate;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+.creators-carousel2 .cc-card-verified {
+  flex-shrink: 0;
+}
+
+.creators-carousel2 .cc-card-bio {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  overflow: hidden;
+  /* always two lines tall, so every name sits at the same height whether
+     the bio is one line, two, or empty */
+  min-height: 3.4em;
+  margin: 0 0 18px;
+  font-size: 13.5px;
+  line-height: 1.7;
+  color: rgba(255, 255, 255, 0.88);
+}
+
+.creators-carousel2 .cc-card-foot {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.creators-carousel2 .cc-card-stat {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 15px;
+  font-weight: 600;
+  color: #fff;
+}
+
+.creators-carousel2 .cc-follow {
+  pointer-events: auto;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 38px;
+  margin-inline-start: auto;
+  padding: 0 18px;
+  border: 0;
+  border-radius: 999px;
+  background: #fff;
+  color: #1f1f1f;
+  font-size: 14px;
+  font-weight: 700;
+  white-space: nowrap;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.14);
+  transition:
+    background-color 0.2s ease,
+    color 0.2s ease,
+    translate 0.2s ease;
+}
+.creators-carousel2 .cc-follow:hover {
+  translate: 0 -1px;
+}
+.creators-carousel2 .cc-follow[aria-busy="true"] {
+  opacity: 0.7;
+  cursor: progress;
+}
+
+/* followed: a glassy outline pill reading "إلغاء المتابعة", no plus */
+.creators-carousel2 .cc-follow .cc-follow-off,
+.creators-carousel2 .cc-follow.is-following .cc-follow-on,
+.creators-carousel2 .cc-follow.is-following .cc-follow-plus {
+  display: none;
+}
+.creators-carousel2 .cc-follow.is-following .cc-follow-off {
+  display: inline;
+}
+.creators-carousel2 .cc-follow.is-following {
+  background: rgba(255, 255, 255, 0.16);
+  color: #fff;
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.55);
+  -webkit-backdrop-filter: blur(6px);
+  backdrop-filter: blur(6px);
+}
+
+/* phones: the card has to fit the old card's slot — style.css fixes every
+   `.owl-carousel .item` at 320px there — so the portrait is shorter and the
+   copy tightens to fit. */
+@media (max-width: 767.98px) {
+  .creators-carousel2 .cc-card {
+    border-radius: 20px;
+  }
+  .creators-carousel2 .cc-card-pop {
+    height: 158px;
+  }
+  .creators-carousel2 .cc-card-portrait,
+  .creators-carousel2 .cc-card-stage {
+    height: 158px;
+    border-radius: 0 0 36px 36px;
+  }
+  .creators-carousel2 .cc-card-body {
+    padding: 12px 14px 12px;
+  }
+  .creators-carousel2 .cc-card-name {
+    font-size: 16px;
+    margin-bottom: 4px;
+  }
+  .creators-carousel2 .cc-card-verified {
+    width: 18px;
+    height: 18px;
+  }
+  .creators-carousel2 .cc-card-bio {
+    margin-bottom: 10px;
+    min-height: 3.1em;
+    font-size: 12px;
+    line-height: 1.55;
+  }
+  .creators-carousel2 .cc-card-stat {
+    font-size: 13px;
+  }
+  .creators-carousel2 .cc-follow {
+    height: 32px;
+    padding: 0 14px;
+    gap: 5px;
+    font-size: 12.5px;
+  }
+}
+
+/* style.css pulls "عرض الكل" up into the old card's empty bottom strip
+   (-20px on desktop, -15px on phones); this card has none, so the link sat
+   on the card — give it its own gap below the slider at every width */
+.content-section .container > .creators-carousel2 + .creators-viewall {
+  margin-top: 24px !important;
+}
+@media (max-width: 767.98px) {
+  .content-section .container > .creators-carousel2 + .creators-viewall {
+    margin-top: 18px !important;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .creators-carousel2 .cc-follow,
+  .creators-carousel2 .cc-card-photo,
+  .creators-carousel2 .cc-card-pop img {
+    transition: none;
+  }
+}
+
+/* back from sign-in (/#creators): the section lands just under the pinned
+   navbar, its heading in view */
+#creators {
+  scroll-margin-top: 90px;
+}
+
+/* the arrows on the cards' vertical middle: style.css puts every .owl-nav at
+   top: 40%, but this carousel's box also holds the shadow room below the
+   cards and the pop-out room above them (.owl-stage-outer, above), which
+   leaves the arrows centred on the cards at 50% + 1px */
+.creators-carousel2 .owl-nav {
+  top: calc(50% + 1px);
+}
