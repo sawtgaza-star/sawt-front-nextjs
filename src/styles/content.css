@@ -30,10 +30,216 @@
   background-repeat: no-repeat !important;
   padding-bottom: 10px;
 }
+/* Desktop: the hero fills the first screen — nav + breadcrumb on top, the
+   poster fan centred in whatever height is left. Phones keep creators.css's
+   compact white header, where a full-screen box would only add blank space. */
+@media (min-width: 992px) {
+  .ct-header {
+    min-height: 100vh;
+    min-height: 100svh;
+    display: flex;
+    flex-direction: column;
+  }
+  /* pinned to the hero's bottom (only its 4px `py-1` padding below) so the
+     fade below ends right there; the posters themselves are placed on the rim
+     by HeroReelsSlider, wherever this box sits */
+  .ct-header > .ct-hero-slider {
+    /* fills everything under the breadcrumb: the mask below only paints what
+       is inside this box, and the arc lifts the posters well above the strip's
+       own row — a box that started lower cut their tops off */
+    flex: 1 1 auto;
+    /* up through the breadcrumb block's bottom spacing, to the crumb itself */
+    margin-top: -36px;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    padding-bottom: 24px;
+    /* the outermost posters bend down with the rim past the hero's bottom
+       edge: fade them out over the strip's last 70px instead of letting
+       them hang over the section below (a hard clip left a visible cut).
+       The focused poster ends above the fade. */
+    -webkit-mask-image: linear-gradient(to bottom, #000 calc(100% - 70px), transparent);
+    mask-image: linear-gradient(to bottom, #000 calc(100% - 70px), transparent);
+  }
+  /* the breadcrumb tucked closer under the nav, to give the posters room */
+  .ct-header .ct-hero {
+    padding-top: 60px;
+  }
+  /* …and the whole fan has to fit in it: the posters (9:16) are as tall as
+     the screen leaves under the nav + breadcrumb (~200px) and the strip's own
+     padding — plus the drop at the ends where the row bends down
+     with the planet rim (HeroReelsSlider) — never taller than their usual
+     five-across size. On a
+     short laptop screen they shrink instead of running off the bottom. */
+  .ct-header .ct-hero-swiper .ct-hero-slide {
+    width: max(
+      150px,
+      min(
+        calc((min(100%, 1500px) - 72px) / 5),
+        calc((100vh - 370px) * 9 / 16)
+      )
+    );
+    width: max(
+      150px,
+      min(
+        calc((min(100%, 1500px) - 72px) / 5),
+        calc((100svh - 370px) * 9 / 16)
+      )
+    );
+    height: auto;
+    aspect-ratio: 9 / 16;
+  }
+  /* Swiper's overflow:hidden would clip the posters the arc lifts above (or
+     drops below) the strip's row: clip the sides only, the vertical limits
+     are the slider's mask */
+  .ct-header .ct-hero-swiper {
+    overflow: visible;
+    clip-path: inset(-100vh 0);
+  }
+}
 /* creators.css dims its collage hero with a black scrim — this backdrop is
    already dark, so let it show through as in the mock */
 .ct-header::before {
   background: none;
+}
+
+/* ---------- Hero stat orbits (ContentHeroStats) ----------
+   A thin glowing arc in each empty corner, entering from beyond the screen
+   edge and ending on a glowing dot, the count above it. Desktop only: below
+   992px the fan fills the width. `.ct-header >` outranks creators.css's
+   `.cr-header > * { position: relative }`.
+   The count takes the focused poster's ring colour and glow.
+   Sequence: the line draws in (0–1.2s), the dot lights up as it arrives, the
+   number counts up from 1s (CountUp), then the dot keeps a slow pulse. */
+.ct-header > .ct-orbits {
+  display: none;
+}
+@media (min-width: 992px) {
+  /* a layer over the whole hero: the arcs are drawn in its pixels, and its
+     overflow clip keeps the off-screen run from widening the page */
+  .ct-header > .ct-orbits {
+    position: absolute;
+    inset: 0;
+    z-index: 5;
+    display: block;
+    overflow: hidden;
+    pointer-events: none;
+  }
+}
+.ct-orbit-lines {
+  position: absolute;
+  inset: 0;
+  overflow: visible;
+  filter: drop-shadow(0 0 3px rgba(255, 255, 255, 0.7));
+}
+.ct-orbit-lines path {
+  fill: none;
+  stroke: rgba(255, 255, 255, 0.85);
+  stroke-width: 1.6;
+  stroke-linecap: round;
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+  animation: ct-orbit-draw 1.2s cubic-bezier(0.33, 0, 0.2, 1) 0.15s forwards;
+}
+/* a zero-size anchor on the arc's end; the dot and the count hang off it */
+.ct-orbit {
+  position: absolute;
+  width: 0;
+  height: 0;
+}
+.ct-orbit-dot {
+  position: absolute;
+  top: -10px;
+  left: -10px;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: #fff;
+  opacity: 0;
+  transform: scale(0.3);
+  box-shadow:
+    0 0 0 6px rgba(255, 255, 255, 0.12),
+    0 0 26px 10px rgba(255, 255, 255, 0.5);
+  animation:
+    ct-orbit-dot-in 0.45s ease-out 1.2s forwards,
+    ct-orbit-pulse 2.8s ease-in-out 1.7s infinite;
+}
+/* the count, centred over the dot */
+.ct-orbit-text {
+  position: absolute;
+  bottom: 22px;
+  left: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  white-space: nowrap;
+  transform: translateX(-50%);
+  opacity: 0;
+  animation: ct-orbit-text-in 0.5s ease-out 0.95s forwards;
+}
+.ct-orbit-value {
+  font-size: 36px;
+  font-weight: 800;
+  line-height: 1.1;
+  /* the focused poster's ring colour, glowing like it */
+  color: rgb(240, 248, 175);
+  text-shadow:
+    0 0 10px rgba(214, 232, 96, 0.75),
+    0 0 24px rgba(214, 232, 96, 0.45);
+}
+.ct-orbit-label {
+  margin-top: 2px;
+  font-size: 16px;
+  color: rgba(255, 255, 255, 0.78);
+}
+@keyframes ct-orbit-draw {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+@keyframes ct-orbit-dot-in {
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+@keyframes ct-orbit-pulse {
+  0%,
+  100% {
+    box-shadow:
+      0 0 0 6px rgba(255, 255, 255, 0.12),
+      0 0 26px 10px rgba(255, 255, 255, 0.5);
+  }
+  50% {
+    box-shadow:
+      0 0 0 10px rgba(255, 255, 255, 0.06),
+      0 0 38px 16px rgba(255, 255, 255, 0.62);
+  }
+}
+@keyframes ct-orbit-text-in {
+  from {
+    opacity: 0;
+    transform: translate(-50%, 8px);
+  }
+  to {
+    opacity: 1;
+    transform: translate(-50%, 0);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .ct-orbit-lines path,
+  .ct-orbit-dot,
+  .ct-orbit-text {
+    animation: none;
+    opacity: 1;
+    stroke-dashoffset: 0;
+  }
+  .ct-orbit-dot {
+    transform: none;
+  }
+  .ct-orbit-text {
+    transform: translateX(-50%);
+  }
 }
 
 .ct-hero {
@@ -109,12 +315,14 @@
    a visible gap between the ring and the poster. The border is dropped so
    the white ring sits flush on the poster; the radius matches .ct-hero-thumb
    so the ring follows its corners. */
+/* The ring and glow take the colour of the backdrop's glowing planet rim
+   (sampled: a pale lime core fading to yellow-green) instead of plain white. */
 .ct-hero-swiper .swiper-slide-active {
   border: 0;
   border-radius: 14px;
   box-shadow:
-    0 0 0 2px #fff,
-    0 0 30px 5px rgba(255, 255, 255, 0.7);
+    0 0 0 2px rgb(240, 248, 175),
+    0 0 30px 6px rgba(214, 232, 96, 0.7);
 }
 /* Entrance spin (HeroReelsSlider introSpin): every frame is placed by the
    script, so nothing may transition on its own — a CSS transition would lag
@@ -159,7 +367,7 @@
 /* in focus: scaled up out of the row with the orange ring */
 .ct-hero-slide.swiper-slide-active .ct-hero-thumb {
 stroke-width: 5px;
-filter: drop-shadow(0 0 12px rgba(255, 255, 255, 0.75)) drop-shadow(0 4px 10px #000);
+filter: drop-shadow(0 0 12px rgba(214, 232, 96, 0.75)) drop-shadow(0 4px 10px #000);
 }
 
 /* ---------- Filter + sort bar ---------- */

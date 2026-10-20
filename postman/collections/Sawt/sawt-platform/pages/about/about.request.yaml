@@ -1,5 +1,5 @@
 $kind: http-request
-url: https://api.sawtgaza.com/api/v1/pages/about
+url: "{{Base_Url}}/pages/about"
 method: GET
 headers:
   Accept: application/json

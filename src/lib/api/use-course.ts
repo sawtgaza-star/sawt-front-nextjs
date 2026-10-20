@@ -23,6 +23,9 @@ export function useCourse(slug: string): CourseState {
   const [state, setState] = useState<CourseState>({ course: null, loading: true });
 
   useEffect(() => {
+    // "" = the fallback page before it has read its URL (lib/use-route-segment)
+    if (!slug) return;
+
     const controller = new AbortController();
     setState({ course: null, loading: true });
 

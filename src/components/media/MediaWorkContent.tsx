@@ -20,8 +20,10 @@ import MediaProjectIntro from "./MediaProjectIntro";
 import MediaProjectTabs from "./MediaProjectTabs";
 import MediaProjectCta from "./MediaProjectCta";
 import MediaWorkSkeleton from "./MediaWorkSkeleton";
+import { useRouteSegment } from "@/lib/use-route-segment";
 
-export default function MediaWorkContent({ slug }: { slug: string }) {
+export default function MediaWorkContent({ slug: segment }: { slug: string }) {
+  const slug = useRouteSegment(segment);
   const { page, loading } = useMediaWork(slug);
   const { lang } = useLang();
 

@@ -34,6 +34,18 @@ export default function SupportContent() {
     if (!loading) applyTranslations(getCurrentLang());
   }, [loading]);
 
+  // the banner's two badges count up when they come into view (SupportBanner)
+  useEffect(() => {
+    if (loading) return;
+    let cancelled = false;
+    import("@/lib/legacy-main").then(({ runCounters }) => {
+      if (!cancelled) runCounters();
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, [loading]);
+
   return (
     <>
       {/* Always rendered: <SiteNav /> lives in there — see SupportHero. */}

@@ -31,8 +31,10 @@ import CourseRequirements from "./CourseRequirements";
 import CourseSelection from "./CourseSelection";
 import CourseTrainer from "./CourseTrainer";
 import CourseSkeleton from "./CourseSkeleton";
+import { useRouteSegment } from "@/lib/use-route-segment";
 
-export default function CourseContent({ slug }: { slug: string }) {
+export default function CourseContent({ slug: segment }: { slug: string }) {
+  const slug = useRouteSegment(segment);
   const { course, loading } = useCourse(slug);
   const { lang } = useLang();
 

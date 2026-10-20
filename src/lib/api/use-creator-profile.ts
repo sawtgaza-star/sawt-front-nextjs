@@ -23,6 +23,9 @@ export function useCreatorProfile(creator: string): CreatorProfileState {
   const [state, setState] = useState<CreatorProfileState>({ page: null, loading: true });
 
   useEffect(() => {
+    // "" = the fallback page before it has read its URL (lib/use-route-segment)
+    if (!creator) return;
+
     const controller = new AbortController();
     setState({ page: null, loading: true });
 

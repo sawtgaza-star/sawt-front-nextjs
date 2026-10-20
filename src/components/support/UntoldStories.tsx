@@ -72,6 +72,9 @@ export default function UntoldStories({
   }, []);
 
   const maxIndex = Math.max(0, stories.length - perView);
+  /* every story fits in one row: the cards sit centred and nothing slides —
+     no arrows, no dots, no dragging. Past that the row is the slider. */
+  const fits = stories.length <= perView;
   // Clamp when the breakpoint shrinks the number of reachable slides.
   const safeIndex = Math.min(index, maxIndex);
 
@@ -80,6 +83,7 @@ export default function UntoldStories({
      with a POSITIVE translateX (the next card waits on the left), so dragging
      right = next; [dir="ltr"] mirrors that. */
   const onPointerDown = (e: React.PointerEvent) => {
+    if (fits) return;
     if (e.button !== 0 && e.pointerType === "mouse") return;
     dragStartX.current = e.clientX;
     dragMoved.current = false;
@@ -140,7 +144,7 @@ export default function UntoldStories({
           }}
         />
 
-        <div className="sp-stories-wrap">
+        <div className={"sp-stories-wrap" + (fits ? " is-static" : "")}>
           <button
             type="button"
             className="sp-stories-nav sp-stories-prev"
@@ -163,7 +167,7 @@ export default function UntoldStories({
             onDragStart={(e) => e.preventDefault()}
           >
             <div
-              className="sp-stories-track"
+              className={"sp-stories-track" + (fits ? " is-centered" : "")}
               style={{
                 transform: `translateX(calc(${safeIndex} * (100% + ${GAP}px) / ${perView} + ${dragDelta ?? 0}px))`,
                 transition: dragDelta !== null ? "none" : undefined,
@@ -190,7 +194,7 @@ export default function UntoldStories({
         {/* mobile mock: the side chevrons give way to this dot pager — CSS
             hides it on desktop and hides the chevrons under 768px */}
         <div className="sp-stories-dots">
-          {Array.from({ length: maxIndex + 1 }, (_, i) => (
+          {fits ? null : Array.from({ length: maxIndex + 1 }, (_, i) => (
             <button
               key={i}
               type="button"

@@ -25,8 +25,10 @@ import { TeamProfileSkeleton } from "./TeamSkeleton";
 import { useTeamMember } from "@/lib/api/use-team-page";
 import { useLang } from "@/lib/use-lang";
 import { localized } from "@/lib/api/pages";
+import { useRouteSegment } from "@/lib/use-route-segment";
 
-export default function TeamDetail({ uuid }: { uuid: string }) {
+export default function TeamDetail({ uuid: segment }: { uuid: string }) {
+  const uuid = useRouteSegment(segment);
   const { page, loading } = useTeamMember(uuid);
   const { lang } = useLang();
 

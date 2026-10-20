@@ -10,26 +10,22 @@ import {
   MostWatchedTitleSkeleton,
 } from "./ContentSkeleton";
 
-/* "الأكثر مشاهدة" row: heading + "رؤية المزيد" link, then a horizontal track
+/* "الأكثر مشاهدة" row: the heading, then a horizontal track
    that starts at the container's right edge (RTL) and bleeds off the left of
    the viewport. Circular arrows scroll it; a card's play button opens the
    full-screen viewer — the same one the grid above opens.
 
-   The heading, the link's label and the reels all come from the API's `reels`
-   block — the same list the grid above draws. The accent falls on the
+   The heading and the reels come from the API's `reels` block — the same
+   list the grid above draws. The block's `view_more` label is deliberately
+   not rendered: the row has no "رؤية المزيد" link. The accent falls on the
    heading's last word; see splitHeading in ./content-text. */
 export default function MostWatchedSection({
   reels,
   title = "",
-  viewMore = "",
-  moreHref = "",
   loading = false,
 }: {
   reels: Reel[];
   title?: string;
-  viewMore?: string;
-  /** where "رؤية المزيد" leads — the Instagram account the reels come from */
-  moreHref?: string;
   /** The payload is still on its way — hold the row with bars in its place. */
   loading?: boolean;
 }) {
@@ -155,16 +151,6 @@ export default function MostWatchedSection({
               </h2>
             )
           )}
-          {viewMore && moreHref ? (
-            <a
-              className="ct-mw-more"
-              href={moreHref}
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              {viewMore}
-            </a>
-          ) : null}
         </div>
       </div>
 

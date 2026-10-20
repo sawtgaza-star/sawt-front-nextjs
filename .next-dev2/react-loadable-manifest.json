@@ -1,0 +1,74 @@
+{
+  "..\\node_modules\\next\\dist\\client\\dev\\hot-reloader\\app\\use-websocket.js -> @vercel/turbopack-ecmascript-runtime/browser/dev/hmr-client/hmr-client.ts": {
+    "id": "..\\node_modules\\next\\dist\\client\\dev\\hot-reloader\\app\\use-websocket.js -> @vercel/turbopack-ecmascript-runtime/browser/dev/hmr-client/hmr-client.ts",
+    "files": [
+      "static/chunks/_app-pages-browser_node_modules_next_dist_client_dev_noop-turbopack-hmr_js.js"
+    ]
+  },
+  "components\\LegacyInit.tsx -> @/lib/legacy-home": {
+    "id": "components\\LegacyInit.tsx -> @/lib/legacy-home",
+    "files": [
+      "static/chunks/_app-pages-browser_src_lib_legacy-home_ts.js"
+    ]
+  },
+  "components\\LegacyInit.tsx -> @/lib/legacy-login": {
+    "id": "components\\LegacyInit.tsx -> @/lib/legacy-login",
+    "files": [
+      "static/chunks/_app-pages-browser_src_lib_legacy-login_ts.js"
+    ]
+  },
+  "components\\LegacyInit.tsx -> @/lib/legacy-main": {
+    "id": "components\\LegacyInit.tsx -> @/lib/legacy-main",
+    "files": [
+      "static/chunks/_app-pages-browser_src_lib_legacy-main_ts.js"
+    ]
+  },
+  "components\\LegacyInit.tsx -> @/lib/legacy-search": {
+    "id": "components\\LegacyInit.tsx -> @/lib/legacy-search",
+    "files": [
+      "static/chunks/_app-pages-browser_src_lib_legacy-search_ts.js"
+    ]
+  },
+  "components\\LegacyInit.tsx -> @/lib/legacy-verification": {
+    "id": "components\\LegacyInit.tsx -> @/lib/legacy-verification",
+    "files": [
+      "static/chunks/_app-pages-browser_src_lib_legacy-verification_ts.js"
+    ]
+  },
+  "components\\LegacyInit.tsx -> @/lib/owl-sliders": {
+    "id": "components\\LegacyInit.tsx -> @/lib/owl-sliders",
+    "files": [
+      "static/chunks/_app-pages-browser_src_lib_owl-sliders_ts.js"
+    ]
+  },
+  "components\\LegacyInit.tsx -> bootstrap/dist/js/bootstrap.bundle.min.js": {
+    "id": "components\\LegacyInit.tsx -> bootstrap/dist/js/bootstrap.bundle.min.js",
+    "files": [
+      "static/chunks/_app-pages-browser_node_modules_bootstrap_dist_js_bootstrap_bundle_min_js.js"
+    ]
+  },
+  "lib\\legacy-home.ts -> ./api/creators": {
+    "id": "lib\\legacy-home.ts -> ./api/creators",
+    "files": [
+      "static/chunks/_app-pages-browser_src_lib_api_creators_ts.js"
+    ]
+  },
+  "lib\\legacy-home.ts -> ./recaptcha": {
+    "id": "lib\\legacy-home.ts -> ./recaptcha",
+    "files": [
+      "static/chunks/_app-pages-browser_src_lib_recaptcha_ts.js"
+    ]
+  },
+  "lib\\owl-sliders.ts -> jquery": {
+    "id": "lib\\owl-sliders.ts -> jquery",
+    "files": [
+      "static/chunks/_app-pages-browser_node_modules_jquery_dist_jquery_js.js"
+    ]
+  },
+  "lib\\owl-sliders.ts -> owl.carousel": {
+    "id": "lib\\owl-sliders.ts -> owl.carousel",
+    "files": [
+      "static/chunks/_app-pages-browser_node_modules_owl_carousel_dist_owl_carousel_js.js"
+    ]
+  }
+}

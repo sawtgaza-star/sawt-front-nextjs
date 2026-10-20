@@ -3,31 +3,22 @@
    and the page doesn't change colour when the content lands.
    Colours and sizes live in styles/site-footer.css. */
 
-/** Grain texture and the torn top edge. */
+/** Grain texture. (The torn top edge that used to sit over it is gone — the
+    footer now starts on a straight edge.) */
 export function FooterBackdrop() {
   return (
-    <>
-      <svg className="ft-grain" aria-hidden="true">
-        <filter id="ft-grain-filter">
-          <feTurbulence
-            type="fractalNoise"
-            baseFrequency="0.85"
-            numOctaves="3"
-            stitchTiles="stitch"
-          />
-          <feColorMatrix type="saturate" values="0" />
-        </filter>
-        <rect width="100%" height="100%" filter="url(#ft-grain-filter)" />
-      </svg>
-      <svg
-        className="ft-torn"
-        aria-hidden="true"
-        viewBox="0 0 1440 26"
-        preserveAspectRatio="none"
-      >
-        <path d="M0 0H1440V9L1408 13L1371 8L1336 15L1290 10L1252 16L1210 9L1168 14L1121 8L1082 13L1040 11L996 17L951 10L910 14L862 8L820 15L776 11L733 16L690 9L648 13L603 8L560 14L518 10L470 17L428 11L385 15L340 9L298 13L252 8L210 15L168 10L122 16L80 9L40 13L0 10Z" />
-      </svg>
-    </>
+    <svg className="ft-grain" aria-hidden="true">
+      <filter id="ft-grain-filter">
+        <feTurbulence
+          type="fractalNoise"
+          baseFrequency="0.85"
+          numOctaves="3"
+          stitchTiles="stitch"
+        />
+        <feColorMatrix type="saturate" values="0" />
+      </filter>
+      <rect width="100%" height="100%" filter="url(#ft-grain-filter)" />
+    </svg>
   );
 }
 

@@ -6,6 +6,7 @@ import TeamDetail from "@/components/team/TeamDetail";
 import JoinModal from "@/components/site/JoinModal";
 import { fetchAllTeamUuids, fetchTeamMember } from "@/lib/api/team";
 import { localized } from "@/lib/api/pages";
+import { withFallback } from "@/lib/route-segment";
 
 /* /team/[id] — the profile behind a member card's arrow. The segment is the
    member's `uuid`: GET /pages/team/{uuid} resolves that identifier only, so
@@ -15,7 +16,8 @@ import { localized } from "@/lib/api/pages";
    The profile is fetched in the browser — see TeamDetail — so an edit is live
    without a deploy. The build only reads the roster to learn which pages
    exist, because `output: 'export'` pre-lists every dynamic segment; a member
-   added after the deploy therefore needs a rebuild before their URL exists. */
+   added after the deploy therefore has no file of its own until the next deploy; it is served by
+   the fallback page meanwhile (lib/route-segment). */
 
 /* Only the pre-listed segments exist (output: export). Without this, `npm run
    dev` throws "missing param in generateStaticParams()" for an unknown one
@@ -25,12 +27,12 @@ export const dynamicParams = false;
 export async function generateStaticParams() {
   try {
     const uuids = await fetchAllTeamUuids();
-    return uuids.map((id) => ({ id }));
+    return withFallback("id", uuids.map((id) => ({ id })));
   } catch (caught) {
     // The API being unreachable must not fail the build: the rest of the site
-    // still exports, and this route simply has no pages this time round.
+    // still exports, and this route only gets its fallback page this time round.
     console.warn("[team] could not list members for the export:", caught);
-    return [];
+    return withFallback("id", []);
   }
 }
 

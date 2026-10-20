@@ -41,9 +41,9 @@
 }
 @media (min-width: 992px) {
   .team-detail-grid.has-bg .team-detail-mic-sk {
-    inset: 0 23% 0 0;
+    inset: 0 2.3% 0 20.7%;
   }
   [dir="rtl"] .team-detail-grid.has-bg .team-detail-mic-sk {
-    inset: 0 0 0 23%;
+    inset: 0 20.7% 0 2.3%;
   }
 }

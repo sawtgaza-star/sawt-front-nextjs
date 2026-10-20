@@ -1,0 +1,23 @@
+# Detail pages are static files, one per item that existed at build time
+# (<segment>.html + .txt). Anything added from the dashboard since then has
+# no file, so it is served by the fallback page _.html, which reads the
+# segment from the URL - see src/lib/route-segment.ts.
+#
+# A RewriteEngine in this folder replaces the root .htaccess rules for it,
+# so the root's extensionless -> .html mapping is repeated here.
+RewriteEngine On
+RewriteBase /team/
+
+# /team/ -> the listing page, as the root rules served it
+RewriteRule ^$ /team.html [L]
+
+# real files (<segment>.html, <segment>.txt, _.html)
+RewriteCond %{REQUEST_FILENAME} -f
+RewriteRule ^ - [L]
+
+# a page built for this segment
+RewriteCond %{REQUEST_FILENAME}.html -f
+RewriteRule ^([^/.]+)$ $1.html [L]
+
+# any other segment -> the fallback page
+RewriteRule ^[^/.]+$ _.html [L]

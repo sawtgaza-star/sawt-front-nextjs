@@ -68,6 +68,7 @@ export type CreatorsGridCreator = {
   avatar_url?: string | null;
   followers_count?: number | null;
   experience_excerpt?: Localized;
+  is_verified?: boolean | null;
 };
 
 export type CreatorsGridContent = {

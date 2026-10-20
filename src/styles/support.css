@@ -683,6 +683,11 @@ font-size: 32px;
 .sp-community-cta .sp-btn-green span {
   color: #ffffff !important;
 }
+/* a size down from the shared 20px button */
+.sp-community-cta .sp-btn-green {
+  font-size: 17px;
+  padding: 12px 26px;
+}
 
 /* ---------- 4. Where donations go ("أين تذهب تبرعاتكم؟") ---------- */
 .sp-alloc-row {
@@ -733,30 +738,30 @@ font-size: 32px;
   margin-bottom: 22px;
 }
 .sp-alloc-icon {
-  width: 60px;
-  height: 60px;
-  border-radius: 14px;
+  width: 50px;
+  height: 50px;
+  border-radius: 12px;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 30px;
+  font-size: 25px;
   flex: 0 0 auto;
 }
 .sp-alloc-pct {
-  font-size: 45px;
+  font-size: 38px;
   font-weight: 800;
   line-height: 1;
 }
 .sp-alloc-title {
-  font-size: 28px;
+  font-size: 22px;
   font-weight: 800;
   color: #1c1c1c;
   margin-bottom: 12px;
 }
 .sp-alloc-desc {
-  font-size: 18px;
+  font-size: 15px;
   color: #6D6D6D;
-  line-height: 1.9;
+  line-height: 1.85;
   margin-bottom: 16px;
 }
 .sp-alloc-list {
@@ -768,13 +773,13 @@ font-size: 32px;
   display: flex;
   align-items: center;
   gap: 10px;
-  font-size: 18px;
+  font-size: 15px;
   color: #484848;
-  padding: 6px 0;
+  padding: 5px 0;
 }
 .sp-alloc-bullet {
-  width: 16px;
-  height: 16px;
+  width: 13px;
+  height: 13px;
   border-radius: 50%;
   flex: 0 0 auto;
 }
@@ -792,7 +797,7 @@ font-size: 32px;
   border-radius: 999px;
 }
 .sp-alloc-foot-text {
-  font-size: 18px;
+  font-size: 15px;
   color: #484848;
 }
 /* Transparency summary strip: copy on the start side, 100% donut on the end. */
@@ -828,7 +833,8 @@ font-weight: 900;
   display: flex;
   flex-wrap: wrap;
   justify-content: flex-start;
-  gap: 10px 26px;
+  /* a wider gap between the three shares */
+  gap: 14px 56px;
 }
 .sp-alloc-summary-legend li {
   display: flex;
@@ -865,6 +871,34 @@ font-weight: 900;
 }
 .sp-alloc-summary-svg {
   display: block;
+}
+/* The donut (WhereDonationsGo → AllocationRing): orange, green and grey
+   blending into one another around the ring, all turning one way. It sits
+   where the design's ring did — a 192px circle, 20px thick, centred at
+   (96, 106) in the 192×202 box — in percentages, so the phone size (140×147)
+   scales it too. The "100%" in the hole is a separate layer and stays still. */
+.sp-alloc-summary-grad {
+  position: absolute;
+  top: 4.95%; /* 10px of 202: centre at y = 106 */
+  left: 0;
+  width: 100%;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: conic-gradient(#ff7420, #4c5c37, #7f7f7f, #ff7420);
+  /* the ring: 20px of the 96px radius */
+  -webkit-mask: radial-gradient(farthest-side, transparent 78.6%, #000 79.4%);
+  mask: radial-gradient(farthest-side, transparent 78.6%, #000 79.4%);
+  animation: sp-ring-spin 4s linear infinite;
+}
+@keyframes sp-ring-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .sp-alloc-summary-grad {
+    animation: none;
+  }
 }
 .sp-alloc-summary-hole {
   position: absolute;
@@ -919,10 +953,21 @@ font-weight: 900;
   border-radius: 20px;
   padding: 30px 34px;
   display: flex;
-  flex-wrap: wrap;
+  /* the button always sits opposite the copy — however long the body text
+     runs, the copy wraps inside its column instead of pushing the button
+     down onto a line of its own */
+  flex-wrap: nowrap;
   align-items: center;
   justify-content: space-between;
-  gap: 20px;
+  gap: 28px;
+}
+.sp-dark-cta > div {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+.sp-dark-cta > .sp-btn-light {
+  flex: 0 0 auto;
+  white-space: nowrap;
 }
 .sp-dark-cta-title {
   font-size: 24px;
@@ -970,7 +1015,7 @@ font-weight: 900;
 .sp-course-title {
   font-size: 28px;
   font-weight: 800;
-  color: #1c1c1c;
+  color: #4c5c37;
   margin-bottom: 10px;
 }
 .sp-course-desc {
@@ -1011,6 +1056,10 @@ font-weight: 900;
 
 /* ---------- 7. Untold stories ("أصوات لم نقدر على توصيلها") ---------- */
 .sp-stories-viewport {
+  /* the row is held a little narrower than the container, so the three
+     cards come out smaller than full width would make them */
+  max-width: 1120px;
+  margin-inline: auto;
   overflow: hidden;
   /* pointer-drag slider: keep vertical page scroll on touch, no text/image
      selection ghosts while swiping */
@@ -1028,6 +1077,17 @@ font-weight: 900;
   display: flex;
   gap: 20px;
   transition: transform 0.45s ease;
+}
+/* fewer stories than a row holds (UntoldStories → fits): centred, and the
+   slider's arrows and grab cursor go — there is nothing to scroll */
+.sp-stories-track.is-centered {
+  justify-content: center;
+}
+.sp-stories-wrap.is-static .sp-stories-nav {
+  visibility: hidden;
+}
+.sp-stories-wrap.is-static .sp-stories-viewport {
+  cursor: default;
 }
 .sp-story-slide {
   flex: 0 0 calc((100% - 40px) / 3);
@@ -1245,8 +1305,10 @@ background: #F2F2F2;
   position: relative;
   isolation: isolate;
   border-radius: 24px;
-  padding: 24px;
-  margin-top: 40px;
+  /* a narrower patterned band around the panel */
+  padding: 12px;
+  /* clear room under the story cards */
+  margin-top: 64px;
 background: rgba(237, 239, 235, 0.33);
 
 }
@@ -1273,14 +1335,14 @@ background: rgba(237, 239, 235, 0.33);
   gap: 18px;
 }
 .sp-stories-strip-title {
-  font-size: 32px;
+  font-size: 26px;
   font-weight: 800;
   color: #1c1c1c;
   margin-bottom: 6px;
   text-align:start
 }
 .sp-stories-strip-desc {
-  font-size: 24px;
+  font-size: 19px;
   color: #5A5A5A;
   margin: 0;
     text-align:start
@@ -1289,8 +1351,8 @@ background: rgba(237, 239, 235, 0.33);
   border-radius: 24px;
   background: #4C5C37;
   color: #fff !important;
-  font-size: 20px;
-  padding: 14px 44px;
+  font-size: 17px;
+  padding: 12px 38px;
 }
 .sp-stories-strip .sp-btn-green:hover {
   background: #3d4b2c;
@@ -1471,7 +1533,7 @@ background: rgba(237, 239, 235, 0.33);
     padding: 26px 22px;
   }
   .sp-alloc-summary-legend {
-    gap: 10px 18px;
+    gap: 12px 36px;
   }
 }
 @media (max-width: 767.98px) {
@@ -1744,7 +1806,7 @@ color:#4C5C37 !important;
     font-size: 24px;
   }
   .sp-alloc-pct {
-    font-size: 40px;
+    font-size: 32px;
   }
   .sp-alloc-title {
     font-size: 16px;
@@ -1839,6 +1901,8 @@ color:#4C5C37 !important;
   .sp-dark-cta {
     border-radius: 24px;
     gap: 18px;
+    /* phones: too narrow for side by side — the full-width button goes under */
+    flex-wrap: wrap;
   }
   .sp-dark-cta-title {
     font-size: 20px;
@@ -3353,4 +3417,26 @@ font-size: 16px;
   .sp-toast-text {
     font-size: 13px;
   }
+}
+
+/* The hero title on the support pages: the shared white→grey fill
+   (hero-size.css) vanishes on this light cream backdrop, so it is painted
+   with the site's greens instead — light olive fading to the deep one. */
+.sp-page .cr-hero-title {
+  background-image: linear-gradient(to bottom, #738c52, #364127);
+}
+
+/* …and the line under it is not shown on the support pages — the title
+   stands alone on the backdrop */
+.sp-page .cr-hero-desc {
+  display: none;
+}
+
+/* the breadcrumb's links ("الرئيسية" …) and its arrows: the site's green
+   instead of the shared white, which is lost on the cream — the current page
+   (.cr-breadcrumb-active) keeps its orange */
+.sp-page .cr-header .cr-breadcrumb a,
+.sp-page .cr-header .cr-breadcrumb-sep {
+  color: #4c5c37 !important;
+  opacity: 1;
 }

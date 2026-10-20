@@ -3,13 +3,15 @@ import "@/styles/creators.css";
 import { useState } from "react";
 import LegacyInit from "@/components/LegacyInit";
 import CreatorsHero from "@/components/creators/CreatorsHero";
-import CreatorCard from "@/components/creators/CreatorCard";
+import CreatorCard from "@/components/home/CreatorCard";
+import CreatorFollowWiring from "@/components/home/CreatorFollowWiring";
+import CreatorPopWiring from "@/components/home/CreatorPopWiring";
+import "@/styles/home-creator-card.css";
 import { CreatorsGridSkeleton } from "@/components/creators/CreatorsSkeleton";
 import { creatorCards } from "@/components/creators/creator-cards";
 import JoinModal from "@/components/site/JoinModal";
 import { useAllCreators } from "@/lib/api/use-creators-page";
 import { useLang } from "@/lib/use-lang";
-import { localized } from "@/lib/api/pages";
 
 /* Full, paginated listing of every content creator — the "عرض الكل" target
    from CreatorsGrid. Reuses the breadcrumb hero + the shared CreatorCard.
@@ -51,10 +53,9 @@ export default function Page() {
   const { page: data, meta, loading } = useAllCreators(page, PER_PAGE);
 
   const totalPages = meta.last_page ?? 1;
-  const pageItems = creatorCards(data?.creators, lang, {
-    experienceTitle: localized(data?.labels?.experience_title, lang),
-    followersSuffix: localized(data?.labels?.followers_suffix, lang),
-  });
+  const pageItems = creatorCards(data?.creators, lang);
+  const followLabel = lang === "en" ? "Follow" : "متابعة";
+  const unfollowLabel = lang === "en" ? "Unfollow" : "إلغاء المتابعة";
 
   const goTo = (p: number) => {
     if (p < 1 || p > totalPages || p === page) return;
@@ -71,7 +72,8 @@ export default function Page() {
       <LegacyInit page="creators" />
       <CreatorsHero data={data?.hero} lang={lang} loading={!data && loading} />
       <main>
-        <section className="content-section cr-grid-section position-relative">
+        {/* id: sign-in from a card's "متابعة" comes back to #creators */}
+        <section id="creators" className="content-section cr-grid-section position-relative">
           <img
             src="/assets/images/leaf_cutout.png"
             className="olive-branch branch-right-top-creators-grid-section"
@@ -93,11 +95,24 @@ export default function Page() {
                 }
               />
             ) : (
-              <div className="cr-creators-grid">
-                {pageItems.map((c) => (
-                  <CreatorCard key={c.key} item={c} translated />
-                ))}
-              </div>
+              <>
+                <div className="cr-creators-grid">
+                  {pageItems.map((c) => (
+                    <CreatorCard
+                      key={c.key}
+                      creator={c}
+                      dir={lang === "en" ? "ltr" : "rtl"}
+                      followLabel={followLabel}
+                      unfollowLabel={unfollowLabel}
+                    />
+                  ))}
+                </div>
+                {/* keyed by page: the grid is rebuilt on every page change,
+                    so the new cards' pills are marked and their pop-out
+                    layers laid again */}
+                <CreatorFollowWiring key={`follow-${page}`} />
+                <CreatorPopWiring key={`pop-${page}`} />
+              </>
             )}
 
             {totalPages > 1 ? (

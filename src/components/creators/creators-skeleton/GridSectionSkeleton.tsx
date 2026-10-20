@@ -4,7 +4,7 @@ import { times } from "./sk-utils";
 /* CreatorsGrid while GET /pages/creators is in flight: the same section,
    heading, grid and "عرض الكل" link, with each text swapped for a
    <SkeletonText /> (~1.25x the current copy: the bars run narrower than real
-   text) and each card for a shimmer of the card's own 300px box. Keep it in step with CreatorsGrid. */
+   text) and each card for a shimmer of about the card's height. Keep it in step with CreatorsGrid. */
 
 /** Character counts (~1.25x the current `grid` copy). */
 const LEN = { title: 33, subtitle: 91, browse: 5 };
@@ -18,6 +18,22 @@ export function CreatorsGridSkeleton({ count = CARDS }: { count?: number }) {
   return (
     <div className="cr-creators-grid" aria-busy="true" aria-hidden="true">
       {times(count).map((i) => (
+        <div className="item" key={i}>
+          <span className="sk-shimmer cr-card-ph" />
+        </div>
+      ))}
+    </div>
+  );
+}
+
+/** The /creators slider before its cards land: the same un-booted
+    `.creators-carousel2` row (owl-preinit.css lays it out as Owl will), each
+    card a shimmer of about its height. Never booted — it is gone by the time
+    CreatorsContent starts Owl. */
+function CreatorsSliderSkeleton() {
+  return (
+    <div className="owl-carousel creators-carousel2" aria-busy="true" aria-hidden="true">
+      {times(5).map((i) => (
         <div className="item" key={i}>
           <span className="sk-shimmer cr-card-ph" />
         </div>
@@ -48,8 +64,8 @@ export default function GridSectionSkeleton() {
             <SkeletonText chars={LEN.subtitle} />
           </p>
         </div>
-        <CreatorsGridSkeleton />
-        <div className="text-center" style={{ marginTop: "50px" }}>
+        <CreatorsSliderSkeleton />
+        <div className="text-center" style={{ marginTop: "24px" }}>
           <a className="px-4 py-2 fw-bold show-more-news">
             <SkeletonText chars={LEN.browse} />{" "}
             <i className="fa-solid fa-angle-left me-2 arrow"></i>

@@ -1,13 +1,17 @@
 // @ts-nocheck
 /* eslint-disable */
-import CreatorCard from "@/components/creators/CreatorCard";
+import CreatorCard from "@/components/home/CreatorCard";
+import CreatorFollowWiring from "@/components/home/CreatorFollowWiring";
+import CreatorPopWiring from "@/components/home/CreatorPopWiring";
+import "@/styles/home-creator-card.css";
 import { localized } from "@/lib/api/pages";
 import type { CreatorsGridContent } from "@/lib/api/creators-page";
 import { creatorCards } from "./creator-cards";
 import { splitEnds } from "./creators-text";
 
 /* "+47 صانع محتوى ناجح في صوت" — the API's `grid` block, in the same card
-   design as the home page (ContentCreators flip/hover card).
+   as the home page's creators slider (home/CreatorCard: the photo card with
+   the "متابعة +" pill, wired by CreatorFollowWiring / CreatorPopWiring).
 
    The heading's two accents are the legacy markup's: the count in orange at
    the front, the brand in green at the back ("+47 · صانع محتوى ناجح في ·
@@ -30,19 +34,16 @@ export default function CreatorsGrid({
   const [count, titleMid, brand] = splitEnds(title, 1, 1);
   const subtitle = localized(data?.subtitle, lang);
   const browse = localized(data?.browse_label, lang);
-  const experienceTitle = localized(data?.experience_title, lang);
-  const followersSuffix = localized(data?.followers_suffix, lang);
+  const followLabel = lang === "en" ? "Follow" : "متابعة";
+  const unfollowLabel = lang === "en" ? "Unfollow" : "إلغاء المتابعة";
 
-  const creators = creatorCards(data?.creators, lang, {
-    experienceTitle,
-    followersSuffix,
-    contentTypes,
-  });
+  const creators = creatorCards(data?.creators, lang, { contentTypes });
 
   if (!title && !subtitle && !creators.length) return null;
 
   return (
-    <section className="content-section cr-grid-section">
+    // id: sign-in from a card's "متابعة" comes back to #creators
+    <section id="creators" className="content-section cr-grid-section">
           <div className="container position-relative">
 
           <img
@@ -65,12 +66,22 @@ export default function CreatorsGrid({
           ) : null}
           {subtitle ? <p className="cr-section-sub">{subtitle}</p> : null}
         </div>
-        <div className="cr-creators-grid">
+        {/* the home page's slider (lib/owl-sliders → .creators-carousel2),
+            booted by CreatorsContent once the payload is in */}
+        <div className="owl-carousel creators-carousel2">
           {creators.map((c) => (
-            <CreatorCard key={c.key} item={c} translated />
+            <CreatorCard
+              key={c.key}
+              creator={c}
+              dir={lang === "en" ? "ltr" : "rtl"}
+              followLabel={followLabel}
+              unfollowLabel={unfollowLabel}
+            />
           ))}
         </div>
-        <div className="text-center" style={{ marginTop: "50px" }}>
+        <CreatorFollowWiring />
+        <CreatorPopWiring />
+        <div className="text-center creators-viewall" style={{ marginTop: "50px" }}>
           {" "}
           <a href="/creators/all" className="px-4 py-2 fw-bold show-more-news">
             {" "}

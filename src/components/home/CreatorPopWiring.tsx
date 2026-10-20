@@ -10,7 +10,9 @@ import { cutoutPortrait } from "@/lib/portrait-cutout";
    photo — clones included, and again whenever Owl rebuilds its stage. A card
    whose cutout fails simply keeps the plain zoom. */
 
-const CARDS = ".creators-carousel2 .cc-card";
+/* the home slider and the /creators, /creators/all grids */
+const ROOTS = ".creators-carousel2, .cr-creators-grid";
+const CARDS = ".creators-carousel2 .cc-card, .cr-creators-grid .cc-card";
 
 function addPop(card: HTMLElement, cutout: string) {
   if (card.querySelector(":scope > .cc-card-pop")) return;
@@ -53,7 +55,7 @@ export default function CreatorPopWiring() {
     };
 
     apply();
-    const root = document.querySelector(".creators-carousel2");
+    const root = document.querySelector(ROOTS);
     const observer = new MutationObserver((records) => {
       // only Owl's own rebuilds (new slides), not the layers added above
       if (records.some((r) => Array.from(r.addedNodes).some((n) => !(n as Element).classList?.contains("cc-card-pop")))) {

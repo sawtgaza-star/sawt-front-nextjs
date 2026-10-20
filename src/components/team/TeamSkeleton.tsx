@@ -105,7 +105,7 @@ export function TeamProfileSkeleton() {
               <SkeletonText chars={8} />
             </h2>
             <p className="team-detail-bio">
-              <SkeletonText chars={420} />
+              <SkeletonText chars={560} />
             </p>
             <span className="team-detail-work-btn">
               <span>

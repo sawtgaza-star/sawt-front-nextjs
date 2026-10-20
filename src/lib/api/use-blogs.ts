@@ -62,6 +62,9 @@ export function useBlog(uuid: string): BlogState {
   const [state, setState] = useState<BlogState>({ data: null, loading: true });
 
   useEffect(() => {
+    // "" = the fallback page before it has read its URL (lib/use-route-segment)
+    if (!uuid) return;
+
     const controller = new AbortController();
     setState({ data: null, loading: true });
 
