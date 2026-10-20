@@ -235,20 +235,11 @@ export default function HeroReelsSlider({
            run out mid-slide (the entrance spin moves a step every few frames) */
         loopAdditionalSlides={3}
         watchSlidesProgress
-        /* the focused poster is centred, so the count has to be ODD for both
-           edges to end on a whole card; 5 across = the focused one plus two
-           fanned positions on each side, each poster large (the strip is
-           capped in width in content.css, so they stay a sane height).
-           On phones the mock shows ONE big poster instead: 1.6 across leaves the
-           focused one ~61% of the screen and its neighbours as slivers at the
-           two edges */
-        slidesPerView={1.6}
-        spaceBetween={12}
+        /* the posters' width is set in content.css and as many as fit fill
+           the page — on a phone too, the same fan as on desktop, smaller */
+        slidesPerView="auto"
+        spaceBetween={10}
         breakpoints={{
-          576: { slidesPerView: 2.2, spaceBetween: 12 },
-          768: { slidesPerView: 5, spaceBetween: 12 },
-          /* desktop: posters keep the size five had in the old 1320px strip
-             (width set in content.css) and as many as fit fill the page */
           992: { slidesPerView: "auto", spaceBetween: 18 },
         }}
         autoplay={{ delay: 2000, disableOnInteraction: false }}

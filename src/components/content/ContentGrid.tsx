@@ -5,10 +5,16 @@ import ReelViewer from "./ReelViewer";
 import type { Reel } from "./content-data";
 import { useReelBatches } from "./use-reel-batches";
 
+/** Phones show this many reels, then a "عرض المزيد" button for the rest. */
+const PHONE_PREVIEW = 4;
+const PHONE_MEDIA = "(max-width: 767.98px)";
+
 /* The filtered reel grid — five posters per row on desktop. Each card is the
    reel's thumbnail (ReelThumbCard); clicking it opens the full-screen viewer —
    the creator page's — where the video plays. Cards are drawn a batch at a
-   time (useReelBatches); the viewer still gets the whole list.
+   time (useReelBatches); the viewer still gets the whole list. On a phone
+   only the first PHONE_PREVIEW show until "عرض المزيد" is tapped — back to
+   that on every new filter / sort.
 
    An empty grid says why when the API does: `reels.message` (e.g. the
    Instagram account's token expired) replaces the stock "nothing here" line. */
@@ -45,9 +51,32 @@ export default function ContentGrid({
   const toViewer = (i: number) =>
     playable.findIndex((r) => r.id === reels[i]?.id);
   const gridRef = useRef<HTMLDivElement>(null);
-  const { shown, reveal } = useReelBatches(reels.length, gridRef, {
-    resetKey: reels.map((r) => r.id).join(","),
+  const resetKey = reels.map((r) => r.id).join(",");
+  const { shown: batch, reveal: revealBatch } = useReelBatches(reels.length, gridRef, {
+    resetKey,
   });
+
+  const [phone, setPhone] = useState(false);
+  useEffect(() => {
+    const mq = window.matchMedia(PHONE_MEDIA);
+    const sync = () => setPhone(mq.matches);
+    sync();
+    mq.addEventListener("change", sync);
+    return () => mq.removeEventListener("change", sync);
+  }, []);
+  const [expanded, setExpanded] = useState(false);
+  const [expandedKey, setExpandedKey] = useState(resetKey);
+  if (expandedKey !== resetKey) {
+    setExpandedKey(resetKey);
+    setExpanded(false);
+  }
+  const collapsed = phone && !expanded && reels.length > PHONE_PREVIEW;
+  const shown = collapsed ? Math.min(batch, PHONE_PREVIEW) : batch;
+  /** Make sure reel `i` is drawn — past the phone preview, that opens it up. */
+  const reveal = (i: number) => {
+    if (i >= PHONE_PREVIEW) setExpanded(true);
+    revealBatch(i);
+  };
 
   // a share link opens its reel in the viewer once the list holds it
   const openIndexReq = open ? reels.findIndex((r) => String(r.id) === open.id) : -1;
@@ -175,6 +204,14 @@ export default function ContentGrid({
           />
         ))}
       </div>
+      {collapsed && (
+        <div className="ct-grid-more-wrap">
+          <button type="button" className="ct-grid-more" onClick={() => setExpanded(true)}>
+            <span data-i18n="view_more">عرض المزيد</span>
+            <i className="fa-solid fa-chevron-down" aria-hidden="true"></i>
+          </button>
+        </div>
+      )}
 
       {openIndex !== null && toViewer(openIndex) >= 0 && (
         <ReelViewer

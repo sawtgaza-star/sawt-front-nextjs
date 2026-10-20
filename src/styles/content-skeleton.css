@@ -6,8 +6,7 @@
    creators.css, and the copy is <SkeletonText /> (skeleton-text.css). The one
    thing left here is the poster row, which Swiper would lay out: with no
    Swiper instance the slides are a flat flex row whose widths follow
-   HeroReelsSlider's breakpoints (5 / 5 / 2.2 / 1.6 across; 24px apart from
-   992px up, 12px below),
+   the live slides' (content.css), 18px apart from 992px up and 10px below,
    centred like its centredSlides strip. */
 
 .ct-posters-row {
@@ -56,28 +55,15 @@
   }
 }
 
+/* Phones and tablets: the same fan as desktop, smaller — the blocks take
+   the live slides' width (content.css's compact rule) and HeroReelsSlider's
+   10px gap, and are posed on the rim the same way. */
 @media (max-width: 991.98px) {
   .ct-posters-row {
-    gap: 12px;
+    gap: 10px;
   }
-  /* five across here: drop the outer three blocks each side */
-  .ct-poster-block:nth-child(-n + 3),
-  .ct-poster-block:nth-child(n + 9) {
-    display: none;
-  }
-  .ct-poster-block {
-    flex-basis: calc((100% - 4 * 12px) / 5);
-  }
-}
-
-@media (max-width: 767.98px) {
-  .ct-poster-block {
-    flex-basis: calc((100% - 12px) / 2.2);
-  }
-}
-
-@media (max-width: 575.98px) {
-  .ct-poster-block {
-    flex-basis: calc((100% - 12px) / 1.6);
+  .ct-posters-row .ct-poster-block {
+    flex: 0 0 auto;
+    border-radius: 10px;
   }
 }

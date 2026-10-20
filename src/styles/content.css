@@ -102,6 +102,50 @@
 .ct-header::before {
   background: none;
 }
+/* Phones and tablets: the same fan on the same curved rim as desktop, only
+   smaller. The backdrop is painted 1.6 header-widths wide and pinned to the
+   bottom — `cover` on this tall a box would flatten the rim into a line —
+   and the strip above it takes the backdrop's own top colour (#1f1f04,
+   the API's backdrop). hero-fan's
+   backdropPlacement() mirrors these numbers. */
+@media (max-width: 991.98px) {
+  .ct-header {
+    background-size: 160% auto !important;
+    background-position: center bottom !important;
+    background-color: #1f1f04 !important;
+    padding-bottom: 0;
+  }
+  .ct-header > .ct-hero-slider {
+    margin-top: -14px;
+    padding-bottom: 30px;
+    /* the outer posters bend down past the hero's bottom: fade them out */
+    -webkit-mask-image: linear-gradient(to bottom, #000 calc(100% - 40px), transparent);
+    mask-image: linear-gradient(to bottom, #000 calc(100% - 40px), transparent);
+  }
+  .ct-header .ct-hero-swiper {
+    /* the stat counts sit in the top corners, above the outer posters
+       (style.css forces every .swiper's top padding with !important) */
+    padding: 74px 0 6px;
+    padding-top: 74px !important;
+    overflow: visible;
+    clip-path: inset(-100vh 0);
+  }
+  .ct-header .ct-hero-swiper .ct-hero-slide {
+    width: clamp(108px, 29vw, 200px);
+    height: auto;
+    aspect-ratio: 9 / 16;
+  }
+  .ct-header .ct-hero-swiper .ct-hero-thumb {
+    transform: none;
+    border-radius: 10px;
+  }
+  .ct-header .ct-hero-swiper .swiper-slide-active {
+    border-radius: 10px;
+    box-shadow:
+      0 0 0 2px rgb(240, 248, 175),
+      0 0 18px 4px rgba(214, 232, 96, 0.7);
+  }
+}
 
 /* ---------- Hero stat orbits (ContentHeroStats) ----------
    A thin glowing arc in each empty corner, entering from beyond the screen
@@ -111,20 +155,15 @@
    The count takes the focused poster's ring colour and glow.
    Sequence: the line draws in (0–1.2s), the dot lights up as it arrives, the
    number counts up from 1s (CountUp), then the dot keeps a slow pulse. */
+/* a layer over the whole hero: the arcs are drawn in its pixels, and its
+   overflow clip keeps the off-screen run from widening the page */
 .ct-header > .ct-orbits {
-  display: none;
-}
-@media (min-width: 992px) {
-  /* a layer over the whole hero: the arcs are drawn in its pixels, and its
-     overflow clip keeps the off-screen run from widening the page */
-  .ct-header > .ct-orbits {
-    position: absolute;
-    inset: 0;
-    z-index: 5;
-    display: block;
-    overflow: hidden;
-    pointer-events: none;
-  }
+  position: absolute;
+  inset: 0;
+  z-index: 5;
+  display: block;
+  overflow: hidden;
+  pointer-events: none;
 }
 .ct-orbit-lines {
   position: absolute;
@@ -191,6 +230,24 @@
   margin-top: 2px;
   font-size: 16px;
   color: rgba(255, 255, 255, 0.78);
+}
+@media (max-width: 991.98px) {
+  .ct-orbit-dot {
+    top: -6px;
+    left: -6px;
+    width: 12px;
+    height: 12px;
+  }
+  .ct-orbit-text {
+    bottom: 14px;
+  }
+  .ct-orbit-value {
+    font-size: 18px;
+  }
+  .ct-orbit-label {
+    margin-top: 0;
+    font-size: 11px;
+  }
 }
 @keyframes ct-orbit-draw {
   to {
@@ -368,6 +425,33 @@
 .ct-hero-slide.swiper-slide-active .ct-hero-thumb {
 stroke-width: 5px;
 filter: drop-shadow(0 0 12px rgba(214, 232, 96, 0.75)) drop-shadow(0 4px 10px #000);
+}
+
+/* "عرض المزيد" under the phone grid's first four reels (ContentGrid) —
+   the active category pill's green */
+.ct-grid-more-wrap {
+  display: flex;
+  justify-content: center;
+  margin-top: 20px;
+}
+.ct-grid-more {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 28px;
+  border: 0;
+  border-radius: 999px;
+  background: rgba(76, 92, 55, 1);
+  color: #fff;
+  font-size: 14px;
+  font-weight: 700;
+  transition: background-color 0.2s ease;
+}
+.ct-grid-more:hover {
+  background: rgba(60, 74, 43, 1);
+}
+.ct-grid-more i {
+  font-size: 12px;
 }
 
 /* ---------- Filter + sort bar ---------- */
@@ -733,13 +817,23 @@ body.ct-focus-mode::after {
   
   /* creators.css whitens its hero and hides the title/desc on mobile — that is
      the creators LIST mock, not this page: keep the dark hero of the mockup */
-  .ct-header.cr-header:not(.cr-detail-header) {
+  /* while loading: hero-loading.css's flat ground, as on desktop —
+     creators.css's white `background` ties with that rule and comes later */
+  .ct-header.cr-header.hero-bg-loading {
+    background-color: #e9ecef !important;
+  }
+  /* not while loading: hero-loading.css's flat ground shows then, as on
+     desktop (this selector would outrank it) */
+  .ct-header.cr-header:not(.cr-detail-header):not(.hero-bg-loading) {
     background-image: var(
       --ct-hero-bg,
       url("/assets/images/Hero background container.png")
     ) !important;
-    background-size: cover !important;
-    background-position: center !important;
+    background-size: 160% auto !important;
+    background-position: center bottom !important;
+    /* creators.css's `background: #fff` shorthand reset these too */
+    background-repeat: no-repeat !important;
+    background-color: #1f1f04 !important;
   }
   /* both heroes ARE .container elements — 10px keeps them on the same grid as
      the navbar card (see the .container block in legacy/style.css) */
@@ -770,34 +864,6 @@ body.ct-focus-mode::after {
   .ct-hero-desc {
     font-size: 14px;
     margin-bottom: 30px;
-  }
-  /* phones show ONE tall poster (see slidesPerView in HeroReelsSlider): it keeps
-     the reel's portrait shape and its neighbours only peek in at the edges.
-     swiper.css's own `.swiper-slide { height: 100% }` is loaded after this file
-     and has the same specificity, so the height has to be qualified to win */
-  .ct-hero-swiper .ct-hero-slide {
-    /* ~1.6× the poster's width, the ratio of the mock, clamped so the hero stays
-       sane on the widest phones */
-    height: clamp(310px, 98vw, 420px);
-  }
-  /* the 9-across row needs the 1.1 scale to reach both screen edges — the single
-     poster must stay exactly the width Swiper gives it */
-  .ct-hero-thumb {
-    transform: scale(1);
-    border-radius: 12px;
-  }
-  .ct-hero-swiper .swiper-slide-active {
-    border-radius: 12px;
-  }
-  .ct-hero-slide:not(.swiper-slide-active) .ct-hero-thumb {
-    filter: blur(max(2px, var(--fan-blur, 2px)));
-  }
-  /* the focused poster carries a white ring */
-  .ct-hero-slide.swiper-slide-active .ct-hero-thumb {
-    border: 3px solid #fff;
-    /* white glow around the focused poster (was orange) */
-    filter: drop-shadow(0 0 14px rgba(255, 255, 255, 0.7))
-      drop-shadow(0 4px 10px rgba(0, 0, 0, 0.6));
   }
   .ct-grid {
     grid-template-columns: repeat(2, 1fr);

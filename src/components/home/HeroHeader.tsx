@@ -23,6 +23,30 @@ import { HeroSlideSkeleton, StatsBarSkeleton } from "./HomeSkeleton";
    then — and HomeContent re-starts the Bootstrap carousel afterwards, because
    an empty `.carousel-inner` is nothing for it to cycle. */
 
+/* The slide dots ride a wave: each one alternately below and above the
+   middle line, joined by one smooth curve (home-hero.css draws the rest).
+   DOT_STEP is the distance between two dots' centres, WAVE_AMP how far each
+   sits off the middle — keep both in step with home-hero.css. */
+const DOT_STEP = 60;
+const WAVE_AMP = 12;
+
+/** How far dot `index` sits below (+) or above (−) the middle line. */
+function dotY(index) {
+  return index % 2 === 0 ? WAVE_AMP : -WAVE_AMP;
+}
+
+/** The curve through every dot's centre, level at each dot — measured from
+    the first dot, in reading order (home-hero.css mirrors it in Arabic). */
+function wavePath(count) {
+  let d = `M 0 ${dotY(0)}`;
+  for (let i = 1; i < count; i++) {
+    const x0 = (i - 1) * DOT_STEP;
+    const x1 = i * DOT_STEP;
+    d += ` C ${x0 + DOT_STEP / 2} ${dotY(i - 1)} ${x1 - DOT_STEP / 2} ${dotY(i)} ${x1} ${dotY(i)}`;
+  }
+  return d;
+}
+
 /** The four filled stars + one empty one, ahead of the trust line. */
 function HeroStars() {
   return (
@@ -175,8 +199,22 @@ export default function HeroHeader({
             {" "}
             <div className="carousel-indicators">
               {" "}
+              {slides.length > 1 ? (
+                <svg
+                  className="hero-dots-wave"
+                  width={(slides.length - 1) * DOT_STEP}
+                  height={2 * WAVE_AMP + 4}
+                  viewBox={`0 ${-WAVE_AMP - 2} ${(slides.length - 1) * DOT_STEP} ${2 * WAVE_AMP + 4}`}
+                  aria-hidden="true"
+                >
+                  <path d={wavePath(slides.length)} />
+                  {/* the coloured run up to the current dot (hero-dots.ts
+                      sets --wave-fill as the slides change) */}
+                  <path className="hero-dots-wave-fill" d={wavePath(slides.length)} pathLength={1} />
+                </svg>
+              ) : null}
               {slides.map((_, index) => (
-                <div key={index}>
+                <div key={index} style={{ "--dot-y": `${dotY(index)}px` }}>
                   {" "}
                   <button
                     type="button"
