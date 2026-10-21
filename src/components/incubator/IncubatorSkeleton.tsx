@@ -1,5 +1,5 @@
 import { AlbumSkeleton, ExpertsSkeleton, FaqSkeleton } from "./incubator-skeleton/AlbumExpertsFaqSkeleton";
-import { GradsSkeleton, JoinSkeleton, TestimonialsSkeleton } from "./incubator-skeleton/GradsJoinTestiSkeleton";
+import { GradsSkeleton, TestimonialsSkeleton } from "./incubator-skeleton/GradsJoinTestiSkeleton";
 import { EventsSkeleton, SponsorSkeleton } from "./incubator-skeleton/SponsorEventsSkeleton";
 import { CoursesSkeleton, WhySkeleton } from "./incubator-skeleton/WhyCoursesSkeleton";
 
@@ -24,7 +24,6 @@ export default function IncubatorSkeleton() {
       <ExpertsSkeleton />
       <FaqSkeleton />
       <GradsSkeleton />
-      <JoinSkeleton />
       <TestimonialsSkeleton />
     </div>
   );

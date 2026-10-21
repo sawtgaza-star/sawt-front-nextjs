@@ -181,9 +181,13 @@
   transform-origin: 50% 100%;
   transition: transform 0.4s ease;
 }
-:is(.creators-carousel2, .cr-creators-grid) .cc-card:hover .cc-card-photo,
-:is(.creators-carousel2, .cr-creators-grid) .cc-card:hover .cc-card-pop img {
-  transform: scale(1.14);
+/* pointer devices only: on a touch screen the first tap would only set
+   :hover (the zoom) and a second one was needed to open the profile */
+@media (hover: hover) and (pointer: fine) {
+  :is(.creators-carousel2, .cr-creators-grid) .cc-card:hover .cc-card-photo,
+  :is(.creators-carousel2, .cr-creators-grid) .cc-card:hover .cc-card-pop img {
+    transform: scale(1.14);
+  }
 }
 
 /* the whole card opens the profile */
@@ -280,8 +284,10 @@
     color 0.2s ease,
     translate 0.2s ease;
 }
-:is(.creators-carousel2, .cr-creators-grid) .cc-follow:hover {
-  translate: 0 -1px;
+@media (hover: hover) and (pointer: fine) {
+  :is(.creators-carousel2, .cr-creators-grid) .cc-follow:hover {
+    translate: 0 -1px;
+  }
 }
 :is(.creators-carousel2, .cr-creators-grid) .cc-follow[aria-busy="true"] {
   opacity: 0.7;
@@ -312,8 +318,17 @@
   .creators-carousel2 .item {
     height: auto;
   }
+  /* no shadow at all on phones: not the card's outline and drop shadow,
+     not the light line inside it, not the follow pill's */
   :is(.creators-carousel2, .cr-creators-grid) .cc-card {
     border-radius: 20px;
+    box-shadow: none;
+  }
+  :is(.creators-carousel2, .cr-creators-grid) .cc-card-screen::after {
+    box-shadow: none;
+  }
+  :is(.creators-carousel2, .cr-creators-grid) .cc-follow {
+    box-shadow: none;
   }
   :is(.creators-carousel2, .cr-creators-grid) .cc-card-pop {
     height: 275px;
@@ -322,6 +337,13 @@
   :is(.creators-carousel2, .cr-creators-grid) .cc-card-stage {
     height: 275px;
     border-radius: 0 0 36px 36px;
+  }
+  /* the /creators grids' two-up cards are narrower than the slider's, so
+     their portrait is a little shorter */
+  .cr-creators-grid .cc-card-pop,
+  .cr-creators-grid .cc-card-portrait,
+  .cr-creators-grid .cc-card-stage {
+    height: 240px;
   }
   :is(.creators-carousel2, .cr-creators-grid) .cc-card-body {
     padding: 12px 14px 12px;

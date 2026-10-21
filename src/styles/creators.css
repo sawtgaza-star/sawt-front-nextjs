@@ -237,6 +237,11 @@ margin-top:20px !important;
 .cr-creators-grid .item {
   position: relative;
 }
+/* a card never outgrows its column — otherwise its nowrap name / follow row
+   widens the 1fr track and the grid spills past the container's gutter */
+.cr-creators-grid > * {
+  min-width: 0;
+}
 .cr-creators-grid .main-container {
   width: 100%;
   height: 300px;
@@ -957,12 +962,15 @@ background: rgba(237, 239, 235, 0.50);
   justify-content: center;
   margin-top: 34px;
 }
+/* the same look as the home hero's "ادعم صوت": a flat site green
+   (#4c5c37), darkening to rgb(50, 59, 38) on hover; white text. */
 .cr-collab-cta a {
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  background: #FF7420;
+  background: #4c5c37;
   color: #fff !important;
+  border: 0;
   border-radius: 30px;
   padding: 12px 30px;
   font-weight: 600;
@@ -970,46 +978,12 @@ background: rgba(237, 239, 235, 0.50);
   transition: background 0.2s ease;
 }
 .cr-collab-cta a:hover {
-  background: #e5621a;
-}
-/* the number circles' orange with a soft glass sheen on its top half and a
-   warm glow; white text. On hover the orange deepens and it lifts a touch. */
-.cr-collab-cta a {
-  position: relative;
-  overflow: hidden;
-  color: #fff !important;
-  background: #FF7420;
-  border: 1px solid rgba(255, 255, 255, 0.35);
-  -webkit-backdrop-filter: blur(10px) saturate(160%);
-  backdrop-filter: blur(10px) saturate(160%);
-  box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.45),
-    inset 0 -1px 4px rgba(170, 60, 0, 0.18),
-    0 6px 18px rgba(255, 116, 32, 0.3);
-  transition: transform 0.3s ease, box-shadow 0.3s ease, background 0.3s ease;
-}
-.cr-collab-cta a::before {
-  content: "";
-  position: absolute;
-  inset: 0 0 50% 0;
-  background: linear-gradient(to bottom, rgba(255, 255, 255, 0.25), rgba(255, 255, 255, 0));
-  pointer-events: none;
-}
-.cr-collab-cta a > * {
-  position: relative; /* above the sheen */
-}
-.cr-collab-cta a:hover {
-  background: #e5621a;
-  transform: translateY(-2px);
-  box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.45),
-    inset 0 -1px 4px rgba(170, 60, 0, 0.22),
-    0 10px 24px rgba(255, 116, 32, 0.4);
+  background: rgb(50, 59, 38);
 }
 .cr-collab-cta a i {
   font-size: 13px;
 }
-[dir='ltr'] .cr-collab-cta a svg {
+[dir='ltr'] .cr-collab-cta a > svg {
   transform: rotate(90deg) !important;
 }
 
@@ -1362,9 +1336,9 @@ background: rgba(237, 239, 235, 0.50);
     font-size: 12px;
     padding: 5px 14px;
   }
-  /* dots run top → bottom, growing towards the arrow head that points at the
-     next node: `dir="left"` is already in that order, `dir="right"` (arrow
-     first in the DOM) is flipped with column-reverse */
+  /* the upper arrow (`dir="left"`): dots run top → bottom, growing towards
+     the head that points down. The lower one (`dir="right"`) keeps its DOM
+     order — head on top pointing up, the dots shrinking below it. */
   .cr-flow-arrow {
     display: flex;
     flex-direction: column;
@@ -1372,20 +1346,21 @@ background: rgba(237, 239, 235, 0.50);
     min-height: 86px;
     padding: 14px 0;
   }
-  .cr-flow-arrow-right {
-    flex-direction: column-reverse;
-  }
   .cr-flow-arrow-left .cr-flow-head {
     transform: rotate(-90deg);
   }
+  /* the lower arrow (media ↔ creators) points up */
   .cr-flow-arrow-right .cr-flow-head {
-    transform: rotate(90deg);
+    transform: rotate(-90deg);
   }
-  /* the heads point down here: nudge them down instead of sideways */
+  /* the heads point down/up here: nudge them that way instead of sideways */
   .cr-flow-arrow .cr-flow-head {
     --flow-nudge: 0 4px;
   }
-  [dir = 'ltr'] .cr-collab-cta a svg{
+  .cr-flow-arrow-right .cr-flow-head {
+    --flow-nudge: 0 -4px;
+  }
+  [dir = 'ltr'] .cr-collab-cta a > svg{
     transform: rotate(145deg) !important
   }
 
@@ -1399,7 +1374,7 @@ background: rgba(237, 239, 235, 0.50);
     padding: 16px 24px;
   }
   /* Mock button is text-only — hide the trailing arrow on mobile. */
-  .cr-collab-cta a svg {
+  .cr-collab-cta a > svg {
     display: none;
   }
   .cr-companies-panel,
@@ -3875,4 +3850,157 @@ display:none;
 /* loading placeholder (CollabsSkeleton) */
 .cr-collab-card.is-skeleton .cr-collab-card-letter {
   box-shadow: none;
+}
+
+/* the centre circle is a link to /incubator: no underline (its colour,
+   set above, already outranks Bootstrap's link colours) */
+a.cr-flow-center-circle {
+  text-decoration: none;
+}
+
+/* ---------- "تواصل مع فريق صوت": a contact button that feels alive ----------
+   A chat bubble in a light disc leads the label, with a small "online" dot
+   pulsing on it; a soft light sweeps across the pill every few seconds; on
+   hover the bubble tilts and the arrow nudges toward the corner, and a press
+   sinks the pill a touch. Colours stay the hero "ادعم صوت" green. */
+.cr-collab-cta a {
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+  gap: 12px;
+  box-shadow: 0 8px 22px -10px rgba(50, 59, 38, 0.55);
+  transition:
+    background 0.2s ease,
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
+}
+.cr-collab-cta a::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: linear-gradient(
+    100deg,
+    transparent 30%,
+    rgba(255, 255, 255, 0.16) 45%,
+    rgba(255, 255, 255, 0.28) 50%,
+    rgba(255, 255, 255, 0.16) 55%,
+    transparent 70%
+  );
+  translate: -120% 0;
+  animation: cr-cta-sweep 4.5s ease-in-out infinite;
+  pointer-events: none;
+}
+.cr-collab-cta a:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 26px -10px rgba(50, 59, 38, 0.65);
+}
+.cr-collab-cta a:active {
+  transform: translateY(0) scale(0.98);
+  box-shadow: 0 4px 12px -8px rgba(50, 59, 38, 0.6);
+}
+.cr-collab-cta a:focus-visible {
+  outline: 3px solid rgba(76, 92, 55, 0.45);
+  outline-offset: 3px;
+}
+.cr-cta-icon {
+  position: relative;
+  flex: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.16);
+  transition: transform 0.25s ease;
+}
+.cr-collab-cta a:hover .cr-cta-icon {
+  transform: rotate(-10deg) scale(1.06);
+}
+.cr-cta-dot {
+  position: absolute;
+  top: 3px;
+  inset-inline-end: 3px;
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: #9ee37d;
+  box-shadow: 0 0 0 2px #4c5c37;
+}
+.cr-cta-dot::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background: #9ee37d;
+  animation: cr-cta-ping 1.8s ease-out infinite;
+}
+.cr-collab-cta a > svg {
+  transition: translate 0.25s ease;
+}
+[dir="rtl"] .cr-collab-cta a:hover > svg {
+  translate: -3px -3px;
+}
+[dir="ltr"] .cr-collab-cta a:hover > svg {
+  translate: 3px -3px;
+}
+@keyframes cr-cta-sweep {
+  0%,
+  55% {
+    translate: -120% 0;
+  }
+  100% {
+    translate: 120% 0;
+  }
+}
+@keyframes cr-cta-ping {
+  0% {
+    transform: scale(1);
+    opacity: 0.7;
+  }
+  100% {
+    transform: scale(2.6);
+    opacity: 0;
+  }
+}
+@media (max-width: 767.98px) {
+  .cr-cta-icon {
+    width: 32px;
+    height: 32px;
+  }
+  .cr-collab-cta a {
+    padding-block: 12px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .cr-collab-cta a::after,
+  .cr-cta-dot::after {
+    animation: none;
+  }
+  .cr-collab-cta a,
+  .cr-cta-icon,
+  .cr-collab-cta a > svg {
+    transition: none;
+  }
+}
+
+/* phones: the stats heading and its paragraph off the screen edges —
+   20px on the right (10px container + 10px here) and a little more on the
+   left, where the Arabic lines end and looked pressed to the edge */
+@media (max-width: 767.98px) {
+  .cr-stats-section .cr-section-head {
+    padding-inline: 10px 20px;
+  }
+  /* the creators grid is a .content-section, whose container has no end
+     (left) padding on phones so the home slider can run off the edge — but
+     here it is a plain grid, so it gets the site's 10px gutter back on that
+     side too and the cards no longer touch the screen */
+  .cr-page .cr-grid-section > .container {
+    padding-inline-end: 10px;
+  }
+  /* the heading sits 20px in on both sides (10px container + 10px here) */
+  .cr-grid-section .cr-section-head {
+    padding-inline: 10px;
+  }
 }

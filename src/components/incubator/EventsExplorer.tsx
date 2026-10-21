@@ -49,11 +49,19 @@ export default function EventsExplorer({
         </div>
       ) : null}
 
-      <div className="inc-event-row">
-        {events.map((event, index) => (
-          <EventCard event={event} lang={lang} key={`${active}-${index}`} />
-        ))}
-      </div>
+      {events.length ? (
+        <div className="inc-event-row">
+          {events.map((event, index) => (
+            <EventCard event={event} lang={lang} key={`${active}-${index}`} />
+          ))}
+        </div>
+      ) : (
+        <p className="inc-events-empty">
+          {lang === "en"
+            ? "No events in this category yet."
+            : "لا توجد فعاليات في هذا التصنيف حاليًا."}
+        </p>
+      )}
     </>
   );
 }

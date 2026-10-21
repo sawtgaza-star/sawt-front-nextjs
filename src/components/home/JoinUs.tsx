@@ -34,7 +34,7 @@ export default function JoinUs({
             alt="Olive Branch"
           />
         )}
-        <div className="join-us-banner ">
+        <div className="join-us-banner join-creator-banner">
           <img loading="lazy" decoding="async" src={image} alt="" className="join-us-bg" />
           <div className="join-us-content text-center ">
             <h2 className="join-us-title" data-i18n={title ? undefined : "join_creator_title"}>

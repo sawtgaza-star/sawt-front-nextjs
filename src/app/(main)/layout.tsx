@@ -10,6 +10,7 @@ import "@/styles/owl-preinit.css";
 import "@/styles/hero-size.css";
 import SiteFooter from "@/components/site/SiteFooter";
 import HeroRatioSync from "@/components/site/HeroRatioSync";
+import StoryTapWiring from "@/components/site/StoryTapWiring";
 
 export default function MainLayout({
   children,
@@ -21,6 +22,7 @@ export default function MainLayout({
       {children}
       <SiteFooter />
       <HeroRatioSync />
+      <StoryTapWiring />
     </>
   );
 }

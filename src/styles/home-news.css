@@ -319,3 +319,14 @@ html.sawt-anim .latest-news .news-card .readmore:hover .arrow,
     transition: none;
   }
 }
+
+/* phones: no shadow on the news cards at all — the card's, its hover lift's
+   (a tap sets :hover) or the "إقرأ المزيد" pill's; the thin border stays */
+@media (max-width: 767.98px) {
+  .latest-news .news-card,
+  .latest-news .news-card:hover,
+  .latest-news .news-card .readmore a,
+  .latest-news .news-card .readmore a:hover {
+    box-shadow: none !important;
+  }
+}

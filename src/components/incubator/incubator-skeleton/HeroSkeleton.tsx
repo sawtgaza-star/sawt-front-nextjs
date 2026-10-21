@@ -33,7 +33,7 @@ export function HeroMediaSkeleton() {
   const [top, bottom] = HERO.badges;
   return (
     <>
-      <SkImg className="inc-hero-img inc-hero-img--composite" ratio={HERO.image} />
+      <SkImg className="inc-hero-img" ratio={HERO.image} />
       <div className="inc-hero-badge inc-hero-badge-green incskel-media">
         <b>
           <SkeletonText chars={top[0]} />

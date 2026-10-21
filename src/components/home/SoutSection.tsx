@@ -109,7 +109,7 @@ export default function SoutSection({
             {cta ? (
               <Link
                 href="/about"
-                className="btn btn-dark-green rounded-pill w-100 text-bold fw-bold sout-mobile-btn"
+                className="btn btn-dark-green rounded-pill text-bold fw-bold sout-mobile-btn"
               >
                 {" "}
                 <span>{cta}</span>{" "}
