@@ -363,6 +363,16 @@ left: 12px;
     inset: 0;
   }
 }
+/* phones: the burst in the middle of the screen, the mic centred on it.
+   At 200% width the burst's centre (~36% of the image) sits at 72% of the
+   card; a 22% position (= 0.22 × the card's width to the left) brings it to
+   50%. The 20px drop lines it up with the mic box under the top padding.
+   Mirrored in English, it stays centred. */
+@media (max-width: 767.98px) {
+  .team-detail-grid.has-bg::before {
+    background-position: 22% 20px;
+  }
+}
 @media (max-width: 575.98px) {
   .team-detail-grid.has-bg {
     padding: 20px 16px;
@@ -832,5 +842,37 @@ padding:0;
   .team-members-row .team-member-card.active {
     transform: none;
     z-index: 2;
+  }
+}
+
+/* ---------- touch screens: no hover, one tap opens the profile ----------
+   A tap would only set :hover (zoom, arrow, badge shift) and a second one
+   was needed to follow the arrow. Here the hover look is cancelled and the
+   arrow — still invisible — is stretched over the whole card (its ::after,
+   clipped back to the photo by its `overflow: hidden`), so a tap anywhere
+   on the card follows its link. */
+@media (hover: none) {
+  .team-member-card:hover .team-member-photo img,
+  .team-member-card:hover .team-member-pop img {
+    transform: none;
+  }
+  .team-member-card:hover .team-member-arrow {
+    opacity: 0;
+    transform: translateY(-50%) scale(0.6);
+  }
+  .team-member-card:hover .team-member-badge {
+    text-align: center;
+    padding-inline-end: 12px;
+  }
+  html.sawt-anim .team-member-card.team-member-card:hover {
+    translate: none;
+  }
+  .team-member-arrow {
+    pointer-events: auto;
+  }
+  .team-member-arrow::after {
+    content: "";
+    position: absolute;
+    inset: -1200px;
   }
 }

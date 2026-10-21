@@ -274,6 +274,12 @@
 
 /* desktop row: the illustration sits level with the text column beside it
    (its centre lines up with the text block's centre) */
+@media (max-width: 767.98px) {
+  /* mobile layout: nudged a little to the left */
+  .sout-mobile .sawt-about-anim {
+    transform: translateX(-12px);
+  }
+}
 @media (min-width: 992px) {
   .sout-anim-col {
     margin-top: 10px !important;

@@ -80,9 +80,10 @@ export default function IncubatorHero({
             {loading ? (
               <HeroMediaSkeleton />
             ) : (
-              /* `foreground_url` is a finished composite — the design's frame
-                 and shadow are part of the upload — so it drops the CSS frame
-                 (.inc-hero-img--composite) instead of being framed twice */
+              /* a plain photo (`image_url`) is cropped into the CSS frame;
+                 `foreground_url` arrives already framed (border + shadow baked
+                 in), so the box is the upload's own frame and the CSS one is
+                 dropped (.inc-hero-img--composite) instead of framing twice */
               <img
                 className={
                   "inc-hero-img" + (data?.foreground_url ? " inc-hero-img--composite" : "")

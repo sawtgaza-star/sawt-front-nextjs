@@ -1,14 +1,11 @@
 "use client";
 import { useEffect, useRef, useState } from "react";
-import {
-  IconChevronDownBold,
-  IconQuoteMarks,
-  IconRatingStar,
-} from "@/components/ui/icons";
+import { IconQuoteMarks, IconRatingStar } from "@/components/ui/icons";
 import { localized } from "@/lib/api/pages";
 import type { IncubatorTestimonial } from "@/lib/api/incubator-page";
 import { t } from "@/lib/translations";
 import { PLACEHOLDER } from "./incubator-page-view";
+import TestimonialQuote from "./TestimonialQuote";
 
 /* The testimonials section's card strip: a scroll-snap track paged by however
    many cards actually fit (two on the desktop panel, one on a phone) plus the
@@ -39,10 +36,20 @@ export default function TestimonialsSlider({
   /* Arabic is the document's default, so this starts true and the effect below
      corrects it when the language toggle flips <html dir> */
   const [rtl, setRtl] = useState(true);
-  const [dragging, setDragging] = useState(false);
   /* indexes of the cards whose quote is expanded past the 3-line clamp */
   const [expanded, setExpanded] = useState<number[]>([]);
-  const drag = useRef({ startX: 0, startScroll: 0, moved: false });
+  const drag = useRef({
+    active: false,
+    startX: 0,
+    startScroll: 0,
+    startPage: 0,
+    moved: false,
+    lastX: 0,
+    lastT: 0,
+    velocity: 0,
+  });
+  /* one pager update per frame, however many scroll events fire */
+  const scrollFrame = useRef(0);
 
   /* how many whole cards the viewport shows at this width */
   const perView = () => {
@@ -78,9 +85,27 @@ export default function TestimonialsSlider({
     return best;
   };
 
-  const nearestIndex = () => Math.floor(startCard() / perView());
+  /* With a short last page (3 cards, 2 per view) the track can't bring the
+     last page's first card to the start edge — it stops a card early, at the
+     end of its scroll range — so reaching that end IS the last page.
+     Otherwise the second dot never lit and clicking it seemed to do nothing. */
+  const nearestIndex = () => {
+    const el = trackRef.current;
+    const last = Math.max(0, Math.ceil(items.length / perView()) - 1);
+    if (el) {
+      const max = el.scrollWidth - el.clientWidth;
+      if (max > 2 && Math.abs(el.scrollLeft) >= max - 2) return last;
+    }
+    return Math.min(last, Math.floor(startCard() / perView()));
+  };
 
-  const onScroll = () => setActive(nearestIndex());
+  const onScroll = () => {
+    if (scrollFrame.current) return;
+    scrollFrame.current = requestAnimationFrame(() => {
+      scrollFrame.current = 0;
+      setActive(nearestIndex());
+    });
+  };
 
   /* the dot count follows the layout, so it changes with the breakpoint */
   useEffect(() => {
@@ -108,10 +133,15 @@ export default function TestimonialsSlider({
     const i = Math.min(el.children.length - 1, page * perView());
     const card = el.children[i] as HTMLElement | undefined;
     if (!card) return;
-    const rtl = getComputedStyle(el).direction === "rtl";
+    const cs = getComputedStyle(el);
+    const rtl = cs.direction === "rtl";
     const box = el.getBoundingClientRect();
     const r = card.getBoundingClientRect();
-    const delta = rtl ? r.right - box.right : r.left - box.left;
+    /* aim at the padding edge — the phone track is padded, and that inset is
+       where scroll-padding puts the snap stop */
+    const delta = rtl
+      ? r.right - (box.right - parseFloat(cs.paddingRight))
+      : r.left - (box.left + parseFloat(cs.paddingLeft));
     el.scrollBy({ left: delta, behavior: "smooth" });
   };
 
@@ -135,28 +165,75 @@ export default function TestimonialsSlider({
     return () => mo.disconnect();
   }, []);
 
+  /* Scroll-snap is lifted (the `dragging` class) for the whole gesture AND
+     the glide that follows it, and only restored once the track has settled
+     on its page. Restoring it on release made the browser snap instantly to
+     the nearest stop and then start the smooth scroll from there — the hitch. */
+  const settle = (el: HTMLElement) => {
+    let done = false;
+    const restore = () => {
+      if (done) return;
+      done = true;
+      el.removeEventListener("scrollend", restore);
+      el.classList.remove("dragging");
+    };
+    el.addEventListener("scrollend", restore);
+    /* browsers without scrollend, or a release already on its stop */
+    window.setTimeout(restore, 700);
+  };
+
   const onPointerDown = (e: React.PointerEvent) => {
     const el = trackRef.current;
-    if (!el || e.pointerType !== "mouse") return;
-    drag.current = { startX: e.clientX, startScroll: el.scrollLeft, moved: false };
-    setDragging(true);
+    if (!el || e.pointerType !== "mouse" || e.button !== 0) return;
+    drag.current = {
+      active: true,
+      startX: e.clientX,
+      startScroll: el.scrollLeft,
+      startPage: nearestIndex(),
+      moved: false,
+      lastX: e.clientX,
+      lastT: e.timeStamp,
+      velocity: 0,
+    };
+    el.classList.add("dragging");
     el.setPointerCapture(e.pointerId);
   };
 
   const onPointerMove = (e: React.PointerEvent) => {
     const el = trackRef.current;
-    if (!el || !dragging) return;
-    const dx = e.clientX - drag.current.startX;
-    if (Math.abs(dx) > 6) drag.current.moved = true;
+    const d = drag.current;
+    if (!el || !d.active) return;
+    const dx = e.clientX - d.startX;
+    if (Math.abs(dx) > 6) d.moved = true;
+    /* recent px/ms, so a quick flick turns the page even if it is short */
+    const dt = e.timeStamp - d.lastT;
+    if (dt > 0) d.velocity = (e.clientX - d.lastX) / dt;
+    d.lastX = e.clientX;
+    d.lastT = e.timeStamp;
     /* content follows the cursor — same formula in LTR and RTL */
-    el.scrollLeft = drag.current.startScroll - dx;
+    el.scrollLeft = d.startScroll - dx;
   };
 
-  const onPointerUp = () => {
-    if (!dragging) return;
-    setDragging(false);
-    const i = nearestIndex();
-    requestAnimationFrame(() => goTo(i));
+  /* a deliberate drag (> 60px) or a flick turns one page in its direction;
+     anything less glides back to where it started. scrollLeft grows towards
+     the end in LTR and shrinks (goes negative) towards it in RTL. */
+  const onPointerUp = (e: React.PointerEvent) => {
+    const el = trackRef.current;
+    const d = drag.current;
+    if (!el || !d.active) return;
+    d.active = false;
+    if (el.hasPointerCapture(e.pointerId)) el.releasePointerCapture(e.pointerId);
+    const moved = el.scrollLeft - d.startScroll;
+    /* a pause before letting go cancels the flick */
+    const flick = e.timeStamp - d.lastT < 80 && Math.abs(d.velocity) > 0.35;
+    const last = Math.max(0, Math.ceil(items.length / perView()) - 1);
+    let i = d.startPage;
+    if (Math.abs(moved) > 60 || (flick && Math.abs(moved) > 12)) {
+      const towardEnd = getComputedStyle(el).direction === "rtl" ? moved < 0 : moved > 0;
+      i = Math.min(last, Math.max(0, i + (towardEnd ? 1 : -1)));
+    }
+    goTo(i);
+    settle(el);
   };
 
   const toggleQuote = (key: number) =>
@@ -176,7 +253,7 @@ export default function TestimonialsSlider({
   return (
     <div className="inc-testi-slider">
       <div
-        className={"inc-testi-track" + (dragging ? " dragging" : "")}
+        className="inc-testi-track"
         ref={trackRef}
         onScroll={onScroll}
         onPointerDown={onPointerDown}
@@ -206,21 +283,13 @@ export default function TestimonialsSlider({
               ))}
             </div>
 
-            <p className="inc-testi-text">{localized(item.quote, lang)}</p>
-
-            {/* the mock's chevron control: it opens the quote past its 3-line
-                clamp rather than navigating */}
-            <button
-              type="button"
-              className="inc-testi-cta"
-              aria-expanded={isOpen}
-              onClick={() => toggleQuote(index)}
-            >
-              <span>
-                {isOpen ? t("inc_testi_read_less") : readMore || t("inc_testi_read_more")}
-              </span>
-              <IconChevronDownBold />
-            </button>
+            <TestimonialQuote
+              text={localized(item.quote, lang)}
+              isOpen={isOpen}
+              onToggle={() => toggleQuote(index)}
+              moreLabel={readMore || t("inc_testi_read_more")}
+              lessLabel={t("inc_testi_read_less")}
+            />
 
             <b className="inc-testi-name">{item.name}</b>
             <span className="inc-testi-meta">{localized(item.role, lang)}</span>

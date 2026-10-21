@@ -10,7 +10,7 @@ import NavUserMenu from "./NavUserMenu";
    phone header and drawer take over, see SiteNav / NavDrawer).
    RTL layout — first child renders on the RIGHT:
 
-   guest:      [social links] ........ [En | تسجيل الدخول] [🔍] [ادعم صوت]
+   guest:      [social links] ........ [En | 🔍] [تسجيل الدخول] [ادعم صوت]
    signed in:  [social links] ... [En | أهلاً، أحمد ˅] [🔔] [🔍] [ادعم صوت]
 
    Both variants are rendered; `.nav-guest-only` / `.nav-authed-only` in
@@ -47,6 +47,11 @@ export default function NavTopBar({ nav, loading }) {
             </span>{" "}
           </button>{" "}
           <span className="nav-top-divider" aria-hidden="true" />{" "}
+          <NavUserMenu />{" "}
+          <NavNotifications />{" "}
+          {/* Icon + the field it opens beside itself — see NavSearch. */}
+          <NavSearch placeholder={nav.searchPlaceholder} />{" "}
+          {/* guest: after the search icon — [🔍] [تسجيل الدخول] */}
           {loading ? (
             <span className="nsk-cta nav-guest-only" style={{ width: "128px" }} />
           ) : (
@@ -55,10 +60,6 @@ export default function NavTopBar({ nav, loading }) {
               <IconNavLogin /> <span>{nav.login.label}</span>{" "}
             </a>
           )}{" "}
-          <NavUserMenu />{" "}
-          <NavNotifications />{" "}
-          {/* Icon + the field it opens beside itself — see NavSearch. */}
-          <NavSearch placeholder={nav.searchPlaceholder} />{" "}
           {/* icon first == icon on the trailing (right) edge of the pill in RTL */}
           {loading ? (
             <span className="nsk-cta" style={{ width: "118px" }} />

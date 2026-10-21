@@ -51,6 +51,18 @@ body:has(.crs-page) {
   position: relative;
   z-index: 30;
 }
+/* …but once legacy-main pins it (hide on scroll down / show on scroll up) it
+   must really be fixed — the rule above is as specific as incubator.css's
+   `.inc-nav-wrap.is-pinned` and loads later, so it kept the bar in the flow
+   and the page jumped every time it pinned/unpinned. Re-stated for both
+   widths (the phone rule below makes it absolute). */
+.crs-hero > .inc-nav-wrap.is-pinned {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1030;
+}
 .crs-breadcrumb {
   text-align: center;
   color: #fff;
@@ -773,44 +785,42 @@ position: absolute;
 }
 
 /* ---------- "المدرب" trainer card ---------- */
-/* like the selection section above it, borrow part of the empty aside column
-   so the card breathes and the bio wraps less */
-.crs-trainer-section {
-  margin-inline-end: -75px;
-}
+/* Stays inside its own column: it used to borrow 75px of the aside like the
+   selection section does, but the sticky registration/share cards are still
+   in that column when it scrolls by, so the card ran under them. */
 .crs-trainer-card {
   display: flex;
   align-items: flex-start;
-  gap: 20px;
+  gap: 18px;
   border-radius: 20px;
   background: #EDEFEB;
-  padding: 24px;
+  padding: 20px;
   text-align: start;
 }
 .crs-trainer-photo {
-  width: 134px;
-  height: 134px;
+  width: 116px;
+  height: 116px;
   object-fit: cover;
   border-radius: 20px;
   flex-shrink: 0;
 }
 .crs-trainer-name {
   color: #1A1A1A;
-  font-size: 24px;
+  font-size: 22px;
   font-weight: 900;
   line-height: 160%;
   margin-bottom: 0;
 }
 .crs-trainer-role {
   color: #4C5C37;
-  font-size: 18px;
+  font-size: 16px;
   line-height: 160%;
   letter-spacing: 0.36px;
   margin-bottom: 8px;
 }
 .crs-trainer-bio {
   color: #484848;
-  font-size: 19px;
+  font-size: 17px;
   line-height: 160%;
   margin-bottom: 12px;
 }
@@ -867,6 +877,18 @@ position: absolute;
     inset-inline: 0;
     z-index: 1030;
   }
+  .crs-hero > .inc-nav-wrap.is-pinned {
+    position: fixed;
+  }
+  /* the floating bar held no room in the flow, so the placeholder legacy-main
+     puts in its place while it is pinned must not either — laid out at the
+     hero's top, since its top edge decides when the bar drops back in */
+  .crs-hero > .navbar-pin-placeholder {
+    position: absolute;
+    top: 0;
+    inset-inline: 0;
+    pointer-events: none;
+  }
   .crs-hero {
     /* ~122px the floating bar no longer occupies: its own 24px top padding,
        the back-link line and the 70px white card */
@@ -918,8 +940,7 @@ position: absolute;
   .crs-reqs-leaf {
     display: none;
   }
-  .crs-sel-section,
-  .crs-trainer-section {
+  .crs-sel-section {
     margin-inline-end: 0; /* single-column layout — no empty aside to borrow */
   }
   .crs-sel-grid {
@@ -1263,24 +1284,52 @@ position: absolute;
   }
 
   /* ---------- Trainer ---------- */
-  /* photo over the copy: a 134px portrait beside text leaves ~150px for the
-     bio on a phone */
+  /* Photo beside the name + role, then the bio (and socials) full width
+     underneath — a portrait beside the whole text left ~150px for the bio.
+     `display: contents` lets the info block's children sit in the card's
+     grid next to the photo. */
   .crs-trainer-card {
-    flex-direction: column;
-    gap: 14px;
+    display: grid;
+    grid-template-columns: 76px minmax(0, 1fr);
+    column-gap: 14px;
+    row-gap: 0;
+    align-items: start;
     border-radius: 18px;
     padding: 18px 16px;
   }
+  .crs-trainer-info {
+    display: contents;
+  }
   .crs-trainer-photo {
-    width: 96px;
-    height: 96px;
-    border-radius: 16px;
+    grid-column: 1;
+    grid-row: 1 / span 2;
+    width: 76px;
+    height: 76px;
+    border-radius: 14px;
+  }
+  .crs-trainer-name {
+    grid-column: 2;
+    grid-row: 1;
+    align-self: end;
+  }
+  .crs-trainer-role {
+    grid-column: 2;
+    grid-row: 2;
+    margin-bottom: 0;
+  }
+  .crs-trainer-bio,
+  .crs-trainer-follow,
+  .crs-trainer-socials {
+    grid-column: 1 / -1;
+  }
+  .crs-trainer-bio {
+    margin-top: 14px;
   }
   .crs-trainer-name {
     font-size: 19px;
   }
   .crs-trainer-role {
-    font-size: 15px;
+    font-size: 13px;
     color: #000 !important;
     font-weight: 600;
   }

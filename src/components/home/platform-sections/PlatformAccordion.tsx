@@ -1,5 +1,6 @@
 import { Fragment } from "react";
 import { SECTION_ICONS } from "./platform-icons";
+import PlatformTapWiring from "./PlatformTapWiring";
 
 const SAWT_LOGO = encodeURI("/assets/images/شعار صوت اخضر.svg");
 
@@ -24,8 +25,8 @@ function splitStat(text: string): [string, string] {
 }
 
 /* Three equal pills; hovering (or focusing) one grows it and slides up its
-   glass panel — all in platform-accordion.css, so no client state. The
-   title links to the section. */
+   glass panel — all in platform-accordion.css; on touch screens a tap
+   toggles it instead (PlatformTapWiring). The title links to the section. */
 export default function PlatformAccordion({
   items,
   moreLabel,
@@ -95,6 +96,7 @@ export default function PlatformAccordion({
           </div>
         );
       })}
+      <PlatformTapWiring />
     </div>
   );
 }

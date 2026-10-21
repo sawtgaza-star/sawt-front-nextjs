@@ -2,7 +2,9 @@
    soft_fluid_platform_sections.html: three equal pills; the hovered one grows
    to flex 4 and turns into a rounded rectangle, its photo zooms, and an olive
    glass panel slides up from the bottom with the copy and staggered stats.
-   Pure CSS — :focus-within gives keyboard users the same state. */
+   :focus-within gives keyboard users the same state. On touch screens
+   (.ps-touch, PlatformTapWiring) hover is off: a tap opens a card (.is-open)
+   and a second tap closes it. */
 
 .ps-accordion {
   --ps-ease: cubic-bezier(0.25, 1, 0.3, 1);
@@ -25,7 +27,8 @@
   box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.1);
 }
 
-.ps-item:hover,
+.ps-item:not(.ps-touch):hover,
+.ps-item.is-open,
 .ps-item:focus-within {
   flex: 4;
   border-radius: 30px;
@@ -43,7 +46,8 @@
   transition: transform 1.5s var(--ps-ease);
 }
 
-.ps-item:hover .ps-bg,
+.ps-item:not(.ps-touch):hover .ps-bg,
+.ps-item.is-open .ps-bg,
 .ps-item:focus-within .ps-bg {
   transform: scale(1.1);
 }
@@ -62,7 +66,8 @@
   transition: opacity 0.5s ease;
 }
 
-.ps-item:hover .ps-pill,
+.ps-item:not(.ps-touch):hover .ps-pill,
+.ps-item.is-open .ps-pill,
 .ps-item:focus-within .ps-pill {
   opacity: 0;
   pointer-events: none;
@@ -123,7 +128,8 @@
   transition: all 0.9s var(--ps-ease);
 }
 
-.ps-item:hover .ps-panel,
+.ps-item:not(.ps-touch):hover .ps-panel,
+.ps-item.is-open .ps-panel,
 .ps-item:focus-within .ps-panel {
   bottom: 0;
   opacity: 1;
@@ -254,19 +260,22 @@
   opacity: 0.8;
 }
 
-.ps-item:hover .ps-stat,
+.ps-item:not(.ps-touch):hover .ps-stat,
+.ps-item.is-open .ps-stat,
 .ps-item:focus-within .ps-stat {
   opacity: 1;
   transform: translateY(0);
 }
 
-.ps-item:hover .ps-stat:nth-child(1),
+.ps-item:not(.ps-touch):hover .ps-stat:nth-child(1),
+.ps-item.is-open .ps-stat:nth-child(1),
 .ps-item:focus-within .ps-stat:nth-child(1) {
   transition-delay: 0.2s;
 }
 
 /* nth-child counts the divider between the two stats */
-.ps-item:hover .ps-stat:nth-child(3),
+.ps-item:not(.ps-touch):hover .ps-stat:nth-child(3),
+.ps-item.is-open .ps-stat:nth-child(3),
 .ps-item:focus-within .ps-stat:nth-child(3) {
   transition-delay: 0.3s;
 }
@@ -332,7 +341,8 @@
   transform: scaleX(-1);
 }
 
-.ps-item:hover .ps-more,
+.ps-item:not(.ps-touch):hover .ps-more,
+.ps-item.is-open .ps-more,
 .ps-item:focus-within .ps-more {
   opacity: 1;
   transform: translateY(0);

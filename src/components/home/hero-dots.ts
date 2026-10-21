@@ -32,23 +32,6 @@ export function enableHeroDots(element: HTMLElement, carousel: HeroCarousel): ()
     carousel._maybeEnableCycle?.();
   };
 
-  /* The wave between the dots fills with colour up to the current slide's
-     dot, moving along with each slide (home-hero.css transitions it). Every
-     dot-to-dot run is the same shape, so dot `i` is `i / (count - 1)` of the
-     way along. */
-  const wave = element.querySelector<SVGElement>(".hero-dots-wave");
-  const fillTo = (index: number) => {
-    const count = element.querySelectorAll(".carousel-indicators [data-bs-slide-to]").length;
-    if (wave && count > 1) wave.style.setProperty("--wave-fill", String(index / (count - 1)));
-  };
-  const onSlide = (e: Event) => fillTo((e as Event & { to: number }).to);
-  const dots = Array.from(element.querySelectorAll(".carousel-indicators [data-bs-slide-to]"));
-  fillTo(Math.max(0, dots.findIndex((d) => d.classList.contains("active"))));
-
   window.addEventListener("click", onClick, true);
-  element.addEventListener("slide.bs.carousel", onSlide);
-  return () => {
-    window.removeEventListener("click", onClick, true);
-    element.removeEventListener("slide.bs.carousel", onSlide);
-  };
+  return () => window.removeEventListener("click", onClick, true);
 }

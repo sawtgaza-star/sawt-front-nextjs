@@ -2,6 +2,7 @@ import { IconPlay } from "@/components/ui/icons";
 import { localized } from "@/lib/api/pages";
 import type { IncubatorGalleryContent } from "@/lib/api/incubator-page";
 import { CHIP_POS, SLOT_AREAS } from "./album-data";
+import AlbumTapWiring from "./AlbumTapWiring";
 import IncubatorSectionHead from "./IncubatorSectionHead";
 import { PLACEHOLDER, sortItems } from "./incubator-page-view";
 
@@ -22,6 +23,8 @@ export default function IncubatorAlbum({
 
   return (
     <section className="inc-album" id="inc-album">
+      {/* touch screens: tap to show, tap again to hide */}
+      <AlbumTapWiring />
       <img
         src="/assets/images/leaf_cutout.png"
         className="inc-album-leaf"

@@ -1,8 +1,8 @@
 import { IconChainLink, IconLinkedIn } from "@/components/ui/icons";
 import type { Expert } from "./experts-data";
 
-/* One "فريق خبراء متخصص" card. The LinkedIn action, the dark photo tint and
-   the olive border only appear while hovering — pure CSS, see the
+/* One "فريق خبراء متخصص" card. The LinkedIn action, the card lift and the
+   photo zoom only appear while hovering — pure CSS, see the
    .inc-expert-card:hover rules in incubator.css. An action the API gives no
    url for is left out rather than linked to nowhere. */
 export default function ExpertCard({ expert }: { expert: Expert }) {

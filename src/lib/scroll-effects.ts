@@ -82,8 +82,8 @@ const COUNTER_SELECTOR =
   ".cr-stat-num, .cr-profile-stat-num, .sp-stat-value, .sm-stat-value, " +
   /* the two headline figures and the three result figures of a case study */
   ".sm-pj-figure-value, .sm-pj-result-value, " +
-  /* the /incubator hero's stats strip */
-  ".inc-stat-value";
+  /* the /incubator hero's stats strip and its two floating badges */
+  ".inc-stat-value, .inc-hero-badge b";
 const COUNT_DURATION = 1600;
 
 function findDigitTextNode(root: Node): Text | null {

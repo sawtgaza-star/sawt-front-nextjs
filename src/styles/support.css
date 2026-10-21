@@ -1155,7 +1155,8 @@ font-weight: 900;
   z-index: 1;
   pointer-events: none;
 }
-.rs-card:hover::before {
+:where(html:not(.rs-tap)) .rs-card:hover::before,
+.rs-card.is-open::before {
   opacity: 1;
 }
 .rs-card-info {
@@ -1202,7 +1203,8 @@ font-weight: 900;
     opacity 0.4s ease,
     margin 0.4s ease;
 }
-.rs-card:hover .rs-card-desc {
+:where(html:not(.rs-tap)) .rs-card:hover .rs-card-desc,
+.rs-card.is-open .rs-card-desc {
   max-height: 0;
   opacity: 0;
   margin: 0;
@@ -1220,7 +1222,8 @@ font-weight: 900;
     opacity 0.45s ease,
     margin 0.45s ease;
 }
-.rs-card:hover .rs-card-full {
+:where(html:not(.rs-tap)) .rs-card:hover .rs-card-full,
+.rs-card.is-open .rs-card-full {
   max-height: 360px;
   opacity: 0.95;
   margin-top: 8px;

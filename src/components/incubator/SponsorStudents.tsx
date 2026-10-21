@@ -1,4 +1,4 @@
-import { IconCalendarWeeks, IconUser } from "@/components/ui/icons";
+import { IconCalendarWeeks } from "@/components/ui/icons";
 import { localized } from "@/lib/api/pages";
 import type { IncubatorSponsorContent } from "@/lib/api/incubator-page";
 import IncubatorSectionHead from "./IncubatorSectionHead";
@@ -88,7 +88,7 @@ export default function SponsorStudents({
                         {student.avatar_url ? (
                           <img src={student.avatar_url} alt="" />
                         ) : (
-                          <IconUser />
+                          Array.from((student.name ?? "").trim())[0] ?? ""
                         )}
                       </span>
                       <span className="inc-sponsor-student-body">

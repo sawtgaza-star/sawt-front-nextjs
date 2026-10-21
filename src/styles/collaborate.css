@@ -1234,3 +1234,24 @@ font-weight: 800;
     padding: 9px 14px;
   }
 }
+
+/* The shared hero copy is light ink (white→grey gradient title, #DADADA line,
+   see hero-size.css / creators.css) and vanishes on this page's cream
+   backdrop — both are painted with the site's greens instead, light olive
+   fading to the deep one, as on the support pages. */
+.cl-page .cr-hero-title,
+.cl-page .cr-hero-desc {
+  background-image: linear-gradient(to bottom, #738c52, #364127);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* the breadcrumb's links ("الرئيسية") and arrows: the site's green instead
+   of the shared white, lost on the cream — the current page
+   (.cr-breadcrumb-active) keeps its orange */
+.cl-page .cr-header .cr-breadcrumb a,
+.cl-page .cr-header .cr-breadcrumb-sep {
+  color: #4c5c37 !important;
+  opacity: 1;
+}

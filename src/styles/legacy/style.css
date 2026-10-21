@@ -5754,9 +5754,10 @@ svg {
 
   /* Sawt story — heading + stacked cards with inline icon */
   /* a roomier side gutter than the 10px container; heading and cards share it */
+  /* the site's 10px gutter — the panel's own pad sits inside it */
   .sawt-story-section .container {
-    padding-left: 20px !important;
-    padding-right: 20px !important;
+    padding-left: 10px !important;
+    padding-right: 10px !important;
   }
   .sawt-story-head {
     margin-bottom: 28px !important;
@@ -5813,6 +5814,40 @@ svg {
     font-size: 13px !important;
     line-height: 1.8 !important;
     font-weight: 500 !important;
+  }
+
+  /* two cards per row, so the card and its copy tighten to fit the half width */
+  .sawt-story-grid {
+    --bs-gutter-x: 0.75rem;
+  }
+  /* the pinned cards sit in a display:contents .sawt-story-stack, so they
+     are not `.row > *` and Bootstrap's gutter never reaches them — space
+     them here (the row's -6px side margins come from the gutter above) */
+  .sawt-story-grid-col {
+    flex: 0 0 50%;
+    max-width: 50%;
+    padding-inline: 6px;
+    margin-bottom: 12px;
+  }
+  .sawt-story-card {
+    gap: 8px !important;
+    padding: 16px 12px !important;
+  }
+  .sawt-story-card-title {
+    font-size: 15px !important;
+  }
+  .sawt-story-icon {
+    width: 36px !important;
+    height: 36px !important;
+    font-size: 16px !important;
+  }
+  .sawt-story-icon img {
+    width: 22px;
+    height: 22px;
+  }
+  .sawt-story-card-desc {
+    font-size: 12px !important;
+    line-height: 1.7 !important;
   }
 
   /* Card order to match the design */
@@ -6438,6 +6473,76 @@ svg {
   0%, 100% { opacity: 0.85; transform: scale(0.92); }
   50% { opacity: 1; transform: scale(1.12); }
 }
+/* Below 992px (no background image): the same panel tone and the same glass
+   cards as desktop — beige icon tile, thin rim, glowing dot, hover lift —
+   laid out by the stacked/2-up mobile rules above. */
+@media (max-width: 991.98px) {
+  .sawt-story-map {
+    background: #eeece8;
+    border-radius: 20px;
+    padding: 18px 8px 8px;
+  }
+  .sawt-story-map .sawt-story-head {
+    margin-bottom: 16px !important;
+  }
+  /* .row pulls itself up by the y-gutter, which its cards (inside the
+     display:contents stack) never add back — so it overlapped the subtitle */
+  .sawt-story-map .sawt-story-grid {
+    margin-top: 0;
+  }
+  .sawt-story-pin .sawt-story-card {
+    background: rgba(255, 255, 255, 0.32);
+    border: 1px solid rgba(110, 108, 98, 0.45);
+    border-radius: 14px;
+    -webkit-backdrop-filter: blur(5px);
+    backdrop-filter: blur(5px);
+    transition:
+      transform 0.3s ease,
+      box-shadow 0.3s ease,
+      background-color 0.3s ease,
+      border-color 0.3s ease;
+  }
+  .sawt-story-pin .sawt-story-icon {
+    border-radius: 10px;
+    background: rgba(224, 218, 202, 0.9);
+    transition: transform 0.3s ease, background-color 0.3s ease;
+  }
+  .sawt-story-pin .sawt-story-icon img {
+    filter: brightness(0) saturate(100%) invert(30%) sepia(19%) saturate(860%)
+      hue-rotate(44deg) brightness(92%);
+  }
+  .sawt-story-pin .sawt-story-card-dot {
+    display: block;
+    position: absolute;
+    top: 12px;
+    inset-inline-end: 12px;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: radial-gradient(circle, #fff6d6 0%, #f2c14e 45%, #d99a1e 100%);
+    box-shadow:
+      0 0 4px 2px rgba(240, 180, 50, 1),
+      0 0 10px 4px rgba(226, 158, 30, 0.75),
+      0 0 20px 8px rgba(214, 140, 20, 0.35);
+    animation: sawt-story-glow 0.8s ease-in-out infinite;
+  }
+  /* clear of the glow at the far end */
+  .sawt-story-pin .sawt-story-card-title {
+    padding-inline-end: 14px;
+  }
+  /* :active stands in for :hover on a touch screen */
+  .sawt-story-pin .sawt-story-card:is(:hover, :active) {
+    transform: translateY(-4px);
+    background: rgba(255, 255, 255, 0.6);
+    border-color: rgba(76, 92, 55, 0.55);
+    box-shadow: 0 14px 30px -14px rgba(76, 92, 55, 0.35);
+  }
+  .sawt-story-pin .sawt-story-card:is(:hover, :active) .sawt-story-icon {
+    transform: scale(1.08);
+    background: rgba(214, 204, 178, 1);
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .sawt-story-pin .sawt-story-card-dot {
     animation: none;
@@ -7684,7 +7789,8 @@ svg {
   pointer-events: none;
 }
 
-.rs-card:hover::before {
+:where(html:not(.rs-tap)) .rs-card:hover::before,
+.rs-card.is-open::before {
   opacity: 1;
 }
 
@@ -7698,7 +7804,8 @@ svg {
     margin 0.4s ease;
 }
 
-.rs-card:hover .rs-card-desc {
+:where(html:not(.rs-tap)) .rs-card:hover .rs-card-desc,
+.rs-card.is-open .rs-card-desc {
   max-height: 0;
   opacity: 0;
   margin: 0;
@@ -7718,7 +7825,8 @@ svg {
     margin 0.45s ease;
 }
 
-.rs-card:hover .rs-card-full {
+:where(html:not(.rs-tap)) .rs-card:hover .rs-card-full,
+.rs-card.is-open .rs-card-full {
   max-height: 360px;
   opacity: 0.95;
   margin-top: 8px;
@@ -8193,12 +8301,12 @@ svg {
     align-items: center;
     justify-content: center;
   }
-  /* order: تعاون معنا (support) on the right, ادعم صوت (watch) on the left */
+  /* order: ادعم صوت (watch) on the right, تعاون معنا (support) on the left */
   .heroOptionsBtn .hero-btn-support {
-    order: 0;
+    order: 1;
   }
   .heroOptionsBtn .hero-btn-watch {
-    order: 1;
+    order: 0;
   }
   /* dots indicator */
   #heroCarousel .carousel-indicators {
@@ -8352,10 +8460,16 @@ svg {
     text-align: start;
   }
 
+  /* sized to its text, at the start of the line (right in Arabic) */
   .sout-mobile-btn {
+    display: flex;
+    align-items: center;
+    width: fit-content;
+    margin-inline-start: 0;
+    margin-inline-end: auto;
     border-radius: 18px !important;
-    padding: 12px 16px;
-    font-size: 14px;
+    padding: 8px 18px;
+    font-size: 13px;
   }
 }
 
@@ -8722,7 +8836,12 @@ svg {
   }
 
   .join-us-banner-about {
-    min-height: 230px;
+    min-height: 180px;
+  }
+  /* the about page's banner: on the site's 10px gutter instead of 5% a side */
+  .join-us-section:has(> .join-us-banner-about) {
+    width: auto;
+    margin-inline: 10px !important;
   }
 }
 
@@ -8734,6 +8853,32 @@ svg {
 
   .join-us-banner {
     min-height: 160px;
+  }
+
+  /* phones: no photo — a gradient in its colours instead (the warm lamp
+     light on the left, the dark room in the middle, the teal on the right) */
+  .join-creator-banner {
+    background: linear-gradient(
+      90deg,
+      #6e4123 0%,
+      #33302b 30%,
+      #1f2a2b 55%,
+      #1c3d3b 80%,
+      #1d5752 100%
+    );
+  }
+  .join-creator-banner .join-us-bg {
+    display: none;
+  }
+  /* the about page's banner, same idea: its photo's dark green room, the
+     orange sound wave glowing across the middle, the black of the desk below */
+  .join-us-banner-about {
+    background:
+      radial-gradient(ellipse 70% 38% at 45% 62%, rgba(234, 130, 40, 0.42) 0%, rgba(234, 130, 40, 0) 70%),
+      linear-gradient(170deg, #3b4a3a 0%, #283428 45%, #1a211b 75%, #121612 100%);
+  }
+  .join-us-banner-about .join-us-bg-about {
+    display: none;
   }
 
   .join-us-content {
@@ -10027,5 +10172,26 @@ svg {
 
   .join-step-line {
     max-width: 18px;
+  }
+}
+
+/* phones: no faint microphones behind "آخر أخبارنا" */
+@media (max-width: 767.98px) {
+  .latest-news .bg-icon {
+    display: none;
+  }
+}
+
+/* phones: the mic slider runs edge to edge — no side padding at all in
+   "أعضاء فريقنا" (the shared 10px start gutter above is cleared here); only
+   the title and subtitle keep a small inset so the text doesn't touch the
+   screen edge */
+@media (max-width: 767.98px) {
+  .team-section > .container {
+    padding-inline: 0;
+  }
+  .team-section .title,
+  .team-section .describ-p {
+    padding-inline: 10px;
   }
 }

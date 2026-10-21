@@ -25,7 +25,6 @@ import IncubatorAlbum from "./IncubatorAlbum";
 import ExpertsTeam from "./ExpertsTeam";
 import IncubatorFaq from "./IncubatorFaq";
 import GraduatesPartners from "./GraduatesPartners";
-import IncubatorJoin from "./IncubatorJoin";
 import IncubatorTestimonials from "./IncubatorTestimonials";
 import IncubatorSkeleton from "./IncubatorSkeleton";
 
@@ -64,7 +63,6 @@ export default function IncubatorContent() {
             <ExpertsTeam data={page?.experts} lang={lang} />
             <IncubatorFaq data={page?.faq} lang={lang} />
             <GraduatesPartners data={page?.employers} lang={lang} />
-            <IncubatorJoin data={page?.join_cta} lang={lang} />
             <IncubatorTestimonials data={page?.testimonials} lang={lang} />
           </>
         )}
