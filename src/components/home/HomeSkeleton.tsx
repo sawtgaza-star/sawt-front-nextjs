@@ -46,19 +46,6 @@ function CardRow({
   );
 }
 
-/** The hero slide, held at its full 100vh while the photo is unknown. */
-export function HeroSlideSkeleton() {
-  return (
-    <div className="carousel-item active sk-hero-slide" aria-busy="true" aria-hidden="true">
-      <div className="sk-hero-copy sk-center text-center">
-        <Line width="40%" />
-        <Line width="60%" className="sk-line-title" />
-        <Line width="80%" />
-      </div>
-    </div>
-  );
-}
-
 /** The five figures of the stats bar, in the columns they will occupy. */
 export function StatsBarSkeleton() {
   return (

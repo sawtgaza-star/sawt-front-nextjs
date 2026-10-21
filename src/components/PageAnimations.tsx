@@ -89,6 +89,8 @@ export default function PageAnimations() {
       ).filter(
         (el) =>
           !el.closest(".modal") &&
+          // the home hero has its own entrance (home-hero.css) and stays put
+          !el.classList.contains("home-hero") &&
           !el.parentElement?.closest("section") &&
           !el.hasAttribute("data-sawt-seen") &&
           // Skeleton placeholders: wait for the real content instead.
@@ -110,7 +112,7 @@ export default function PageAnimations() {
       }
     };
 
-    /* Inner-page heroes (<header>s other than the home carousel, which has its
+    /* Inner-page heroes (<header>s other than the home hero, which has its
        own entrance in home-hero.css) get the home hero's entrance on load: the
        title and what follows it rise in turn. Anything before the title — the
        breadcrumb, painted before the content loads — stays put. Skeleton
@@ -120,7 +122,7 @@ export default function PageAnimations() {
       const titles = Array.from(document.querySelectorAll<HTMLElement>("header h1")).filter(
         (h1) =>
           !h1.hasAttribute("data-sawt-seen") &&
-          !h1.closest("#heroCarousel, .modal, .navbar, .nav-face, [aria-busy='true']") &&
+          !h1.closest(".home-hero, .modal, .navbar, .nav-face, [aria-busy='true']") &&
           h1.getAttribute("aria-hidden") !== "true" &&
           !h1.querySelector(".sk-text")
       );

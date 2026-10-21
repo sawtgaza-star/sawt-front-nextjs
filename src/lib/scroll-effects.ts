@@ -17,8 +17,6 @@ type ParallaxTarget = {
 };
 
 const PARALLAX_TARGETS: ParallaxTarget[] = [
-  // Hero caption drifts down slightly while scrolling past the hero.
-  { selector: ".carousel-caption-custom", mode: "top", factor: 0.12, max: 60 },
   // Large section image lags gently around the viewport center.
   { selector: ".image-swat", mode: "center", factor: 0.06, max: 20 },
 ];

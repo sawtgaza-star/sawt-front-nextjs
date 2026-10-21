@@ -1,99 +1,622 @@
-/* Slide titles (منصة صوت / حاضنة صوت / صوت ميديا) carry a soft, deep drop
-   shadow — Tailwind's drop-shadow-2xl — so they lift off the photo. */
-.carousel-caption-custom h1 {
-  filter: drop-shadow(0 25px 25px rgb(0 0 0 / 0.15));
+/* =========================================================
+   Home hero — the copy beside the latest reels, stacked in a ring of orbits
+   (components/home/hero/*). Replaced the photo carousel.
+
+   Motion, all CSS:
+   - entrance: the copy rises line by line (--hh-delay), the title lines
+     unmask from below, the orange stroke draws itself under the accent line;
+     the orbit grows in and the cards drop into their poses one by one.
+   - idle: the orbits turn (mics counter-turn so they stay upright), the glow
+     breathes, the cards float out of phase, the tagline's dot pulses.
+   - the stack: cards glide between three poses (slot 0 in front, 1 and 2
+     behind it either side); the pager's fill is the clock (HeroReelStack).
+   Everything still is shown as is under prefers-reduced-motion.
+   ========================================================= */
+
+.home-hero {
+  --hh-green: #4c5c37;
+  --hh-green-deep: #38422a;
+  --hh-ink: #222828;
+  --hh-muted: #6f746c;
+  --hh-orange: #e1723b;
+  --hh-ease: cubic-bezier(0.22, 1, 0.36, 1);
+  /* the stage is square; cards and rings are sized from it */
+  --hh-size: clamp(300px, 38vw, 540px);
+
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  /* runs under the in-flow nav, as the carousel did (style.css #heroCarousel) */
+  margin-top: -160px;
+  padding: 200px 0 120px;
+  min-height: min(100vh, 900px);
+  display: flex;
+  align-items: center;
+  background: #fbf7f2;
+}
+.home-hero > .container {
+  position: relative;
+  z-index: 1;
 }
 
-/* Text entrance, from cinematic_hero_section.html: the title stays still
-   (by request) while the subtitle and the buttons fade up in turn — on the
-   first slide, when the page opens; see .hero-has-slid below. */
-.hero-reveal {
-  display: inline-block;
+/* Warm ground: a peach bloom behind the stack, sage haze at both edges. */
+.hh-backdrop {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(42% 55% at 28% 55%, rgba(225, 114, 59, 0.1), transparent 70%),
+    radial-gradient(30% 45% at 102% 70%, rgba(115, 140, 82, 0.22), transparent 70%),
+    radial-gradient(26% 40% at -4% 92%, rgba(115, 140, 82, 0.2), transparent 70%),
+    linear-gradient(180deg, #fdfaf6 0%, #fbf3ea 100%);
 }
-.hero-reveal-text {
+.hh-backdrop::after {
+  /* a fine grain, so the gradients don't band */
+  content: "";
+  position: absolute;
+  inset: 0;
+  opacity: 0.35;
+  background-image: radial-gradient(rgba(56, 66, 42, 0.07) 1px, transparent 1px);
+  background-size: 22px 22px;
+  mask-image: radial-gradient(70% 70% at 30% 50%, #000, transparent);
+}
+
+/* ---------------------------------------------------------------- copy */
+
+.hh-copy {
+  text-align: start;
+  max-width: 600px;
+}
+
+.hh-eyebrow {
+  color: var(--hh-muted);
+  font-size: 17px;
+  margin-bottom: 14px;
+  --hh-delay: 0.1s;
+}
+
+.hh-title {
+  color: var(--hh-ink);
+  font-size: clamp(38px, 4.6vw, 68px);
+  font-weight: 800;
+  line-height: 1.3;
+  margin-bottom: 22px;
+}
+/* each line unmasks from below */
+.hh-line {
   display: block;
-  /* title colour from the same file: white fading to grey (Tailwind's
-     from-white to-gray-400), painted through the glyphs. text-fill beats the
-     h1's .text-white !important colour. */
-  background-image: linear-gradient(to bottom, #fff, #9ca3af);
-  -webkit-background-clip: text;
-  background-clip: text;
-  -webkit-text-fill-color: transparent;
-  color: transparent;
+  overflow: hidden;
+  padding-bottom: 0.12em;
 }
-.carousel-caption-custom p.font-24,
-.carousel-caption-custom .heroOptionsBtn {
+.hh-line-text {
+  display: inline-block;
+  animation: hh-unmask 1s var(--hh-ease) both;
+  animation-delay: 0.22s;
+}
+.hh-line + .hh-line .hh-line-text {
+  animation-delay: 0.38s;
+}
+
+.hh-accent {
+  color: var(--hh-green);
+}
+/* the words the stroke underlines — kept on one line so it never spans a
+   wrapped one */
+.hh-mark {
+  position: relative;
+  display: inline-block;
+  white-space: nowrap;
+}
+.hh-stroke {
+  position: absolute;
+  z-index: -1;
+  left: -2%;
+  bottom: 0.02em;
+  width: 104%;
+  height: 0.42em;
+  overflow: visible;
+}
+[dir="ltr"] .hh-stroke {
+  transform: scaleX(-1);
+}
+.hh-stroke path {
+  fill: none;
+  stroke: var(--hh-orange);
+  stroke-opacity: 0.55;
+  stroke-width: 9;
+  stroke-linecap: round;
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+  animation: hh-draw 1.1s var(--hh-ease) 1s forwards;
+}
+
+.hh-lead {
+  color: #4a4f48;
+  font-size: 18px;
+  line-height: 1.85;
+  margin-bottom: 30px;
+  --hh-delay: 0.6s;
+}
+
+.hh-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14px;
+  margin-bottom: 26px;
+  --hh-delay: 0.75s;
+}
+.hh-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  min-height: 50px;
+  padding: 10px 30px;
+  border-radius: 999px;
+  font-size: 16px;
+  font-weight: 700;
+  transition:
+    transform 0.35s var(--hh-ease),
+    box-shadow 0.35s var(--hh-ease),
+    background-color 0.25s ease,
+    color 0.25s ease;
+}
+.hh-btn-primary {
+  color: #fff !important; /* style.css paints every <a> black !important */
+  background: var(--hh-green);
+  box-shadow: 0 12px 26px -12px rgba(56, 66, 42, 0.7);
+}
+.hh-btn-primary i {
+  font-size: 13px;
+  transition: transform 0.35s var(--hh-ease);
+}
+.hh-btn-primary:hover {
+  background: var(--hh-green-deep);
+  transform: translateY(-2px);
+  box-shadow: 0 18px 32px -14px rgba(56, 66, 42, 0.8);
+}
+.hh-btn-primary:hover i {
+  transform: translateX(-4px);
+}
+[dir="ltr"] .hh-btn-primary i {
+  transform: scaleX(-1);
+}
+[dir="ltr"] .hh-btn-primary:hover i {
+  transform: scaleX(-1) translateX(-4px);
+}
+.hh-btn-ghost {
+  color: var(--hh-ink) !important;
+  background: rgba(255, 255, 255, 0.6);
+  border: 1.5px solid var(--hh-ink);
+}
+.hh-btn-ghost:hover {
+  color: #fff !important;
+  background: var(--hh-ink);
+  transform: translateY(-2px);
+}
+
+.hh-tagline {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: #4a4f48;
+  font-size: 15px;
+  margin: 0;
+  --hh-delay: 0.9s;
+}
+.hh-pulse {
+  position: relative;
+  flex: none;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: var(--hh-orange);
+}
+.hh-pulse::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: inherit;
+  animation: hh-ping 2.4s ease-out 1.6s infinite;
+}
+
+/* the copy's placeholder bars, while the payload is on its way */
+.hh-sk {
+  display: block;
+  height: 16px;
+  margin-bottom: 18px;
+  border-radius: 8px;
+  background: linear-gradient(110deg, #ece6dc 30%, #f6f1ea 45%, #ece6dc 60%);
+  background-size: 300% 100%;
+  animation: hh-shimmer 1.6s linear infinite;
+}
+.hh-sk-title {
+  height: 52px;
+  border-radius: 12px;
+}
+@media (max-width: 991.98px) {
+  .hh-sk {
+    margin-inline: auto;
+  }
+}
+
+.hh-rise {
+  animation: hh-rise 0.9s var(--hh-ease) both;
+  animation-delay: var(--hh-delay, 0s);
+}
+
+/* ---------------------------------------------------------------- stage */
+
+.hh-stack-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  /* clears the badge riding the outer ring's bottom edge */
+  gap: 38px;
+}
+
+.hh-stage {
+  position: relative;
+  width: var(--hh-size);
+  height: var(--hh-size);
+  perspective: 1400px;
+}
+/* grab the stack anywhere on the stage; a vertical swipe still scrolls */
+.hh-stage.is-draggable {
+  cursor: grab;
+  touch-action: pan-y;
+  user-select: none;
+  -webkit-user-select: none;
+}
+.hh-stage.is-dragging {
+  cursor: grabbing;
+}
+
+/* --- orbit --- */
+.hh-orbit {
+  position: absolute;
+  inset: 0;
+  animation: hh-orbit-in 1.4s var(--hh-ease) 0.15s both;
+}
+.hh-orbit > span {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  border-radius: 50%;
+  translate: -50% -50%;
+}
+.hh-glow {
+  width: 92%;
+  height: 92%;
+  background: radial-gradient(circle, rgba(225, 114, 59, 0.16) 0%, rgba(225, 114, 59, 0.06) 45%, transparent 70%);
+  animation: hh-breathe 7s ease-in-out infinite;
+}
+.hh-ring {
+  animation: hh-spin 70s linear infinite;
+}
+.hh-ring-outer {
+  width: 104%;
+  height: 104%;
+  border: 1.5px solid rgba(225, 114, 59, 0.26);
+}
+.hh-ring-inner {
+  width: 80%;
+  height: 80%;
+  border: 1.5px solid rgba(225, 114, 59, 0.2);
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.55), rgba(255, 255, 255, 0) 70%);
+  animation-duration: 50s;
+  animation-direction: reverse;
+}
+.hh-ring-dashed {
+  width: 92%;
+  height: 92%;
+  border: 1px dashed rgba(76, 92, 55, 0.2);
+  animation-duration: 110s;
+  animation-direction: reverse;
+}
+
+/* a badge rides its ring: the arm (full size, turned to the start angle)
+   carries it to the top edge; it counter-turns with the ring to stay upright */
+.hh-mic-arm {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+.hh-mic {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  display: grid;
+  place-items: center;
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  background: #fff;
+  color: var(--hh-green);
+  font-size: 17px;
+  box-shadow:
+    0 8px 18px -6px rgba(56, 66, 42, 0.28),
+    0 0 0 1px rgba(76, 92, 55, 0.08);
+  transform: translate(-50%, -50%) rotate(var(--hh-start, 0deg));
+  animation: hh-counter 70s linear infinite;
+}
+.hh-mic::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  border: 1.5px solid rgba(225, 114, 59, 0.5);
+  animation: hh-ping 3.2s ease-out infinite;
+}
+.hh-mic-arm:nth-child(2) .hh-mic::after { animation-delay: 1.1s; }
+.hh-mic-arm:nth-child(3) .hh-mic::after { animation-delay: 2.2s; }
+.hh-mic-arm:nth-child(4) .hh-mic::after { animation-delay: 1.6s; }
+
+/* --- cards --- */
+.hh-cards {
+  position: absolute;
+  inset: 0;
+  transform-style: preserve-3d;
+  pointer-events: none;
+}
+
+.hh-card {
+  --hh-x: 0%;
+  --hh-scale: 1;
+  --hh-turn: 0deg;
+  --hh-depth: 40px;
+  --hh-veil: 0;
+  --hh-saturate: 1;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  display: block;
+  width: calc(var(--hh-size) * 0.43);
+  aspect-ratio: 9 / 16;
+  border-radius: 18px;
+  /* The pose is written here by HeroReelStack every frame (hero-pose) — no
+     transition: the stack's spring IS the motion, and a drag follows the
+     pointer 1:1. --hh-depth: inside the 3D stage z-index is ignored and
+     cards are sorted by depth — a turned side card's inner edge would poke
+     through the front one, so the side cards sit well behind it. */
+  transform: translate(calc(-50% + var(--hh-x)), -50%) translateZ(var(--hh-depth))
+    scale(var(--hh-scale)) rotateY(var(--hh-turn));
+  filter: saturate(var(--hh-saturate));
+  will-change: transform;
+  /* idle float, out of phase card to card (`translate` composes with the pose) */
+  animation: hh-float 6s ease-in-out infinite;
+  animation-delay: calc(var(--hh-i, 0) * -2s);
+}
+/* the server-rendered poses, until the stack's script takes over —
+   the same values hero-pose gives index 0, 1 (right) and 2 (left) */
+.hh-slot-1 {
+  --hh-x: 70%;
+  --hh-depth: -140px;
+  --hh-scale: 0.92;
+  --hh-turn: -16deg;
+  --hh-veil: 0.3;
+  --hh-saturate: 0.75;
+}
+.hh-slot-2 {
+  --hh-x: -70%;
+  --hh-depth: -140px;
+  --hh-scale: 0.92;
+  --hh-turn: 16deg;
+  --hh-veil: 0.3;
+  --hh-saturate: 0.75;
+}
+.hh-card-media {
+  position: absolute;
+  inset: 0;
+  display: block;
+  overflow: hidden;
+  border-radius: inherit;
+  background: #2e3526;
+  box-shadow: 0 22px 44px -22px rgba(30, 36, 22, 0.55);
+  animation: hh-card-in 1.1s var(--hh-ease) both;
+  animation-delay: calc(0.45s + var(--hh-i, 0) * 0.14s);
+  transition: box-shadow 0.95s var(--hh-ease);
+}
+.hh-card.is-front .hh-card-media {
+  box-shadow:
+    0 34px 60px -24px rgba(30, 36, 22, 0.6),
+    0 0 0 1px rgba(255, 255, 255, 0.35) inset;
+}
+/* the card fading into the page (hero-pose → --hh-veil): the page's cream
+   laid over an opaque card, so nothing behind it shows through */
+.hh-card-media::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  background: #fbf6f0;
+  opacity: var(--hh-veil);
+  pointer-events: none;
+}
+
+.hh-card-poster,
+.hh-card-video {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  user-select: none;
+}
+.hh-card-video {
   opacity: 0;
-  transform: translateY(30px);
+  transition: opacity 0.6s ease;
 }
-
-.carousel-item.active .carousel-caption-custom p.font-24 {
-  animation: hero-fade-up 1s ease-out 0.8s forwards;
-}
-.carousel-item.active .carousel-caption-custom .heroOptionsBtn {
-  animation: hero-fade-up 1s ease-out 1.2s forwards;
-}
-
-/* The entrance plays once, on landing: once the slider has moved
-   (HomeContent adds .hero-has-slid) every slide's copy simply shows. */
-#heroCarousel.hero-has-slid .carousel-caption-custom p.font-24,
-#heroCarousel.hero-has-slid .carousel-caption-custom .heroOptionsBtn {
-  animation: none;
+.hh-card-video.is-playing {
   opacity: 1;
-  transform: none;
 }
 
-@keyframes hero-fade-up {
-  to { opacity: 1; transform: translateY(0); }
+.hh-card-badge {
+  position: absolute;
+  top: 10px;
+  inset-inline-start: 10px;
+  display: inline-flex;
+  align-items: center;
+  min-width: 30px;
+  justify-content: center;
+  padding: 2px 9px;
+  border-radius: 999px;
+  color: #fff;
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 20px;
+  background: rgba(20, 24, 16, 0.55);
+  backdrop-filter: blur(6px);
+}
+/* while the payload is on its way */
+.hh-card-skeleton {
+  background: linear-gradient(110deg, #ece6dc 30%, #f6f1ea 45%, #ece6dc 60%);
+  background-size: 300% 100%;
+  animation: hh-shimmer 1.6s linear infinite;
+}
+
+/* --- pager: the stack's clock --- */
+.hh-pager {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  animation: hh-rise 0.9s var(--hh-ease) 1.1s both;
+}
+.hh-pager-dot {
+  position: relative;
+  width: 26px;
+  height: 5px;
+  padding: 0;
+  border: 0;
+  border-radius: 999px;
+  overflow: hidden;
+  background: rgba(76, 92, 55, 0.18);
+  cursor: pointer;
+  transition: width 0.5s var(--hh-ease), background-color 0.3s ease;
+}
+.hh-pager-dot:hover {
+  background: rgba(76, 92, 55, 0.32);
+}
+.hh-pager-dot.is-active {
+  width: 52px;
+}
+.hh-pager-fill {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: var(--hh-green);
+  transform-origin: right center;
+  animation: hh-fill 5.5s linear both;
+}
+[dir="ltr"] .hh-pager-fill {
+  transform-origin: left center;
+}
+.hh-pager.is-paused .hh-pager-fill {
+  animation-play-state: paused;
+}
+
+/* ---------------------------------------------------------------- keyframes */
+
+@keyframes hh-rise {
+  from { opacity: 0; transform: translateY(26px); }
+  to { opacity: 1; transform: none; }
+}
+@keyframes hh-unmask {
+  from { transform: translateY(105%); }
+  to { transform: none; }
+}
+@keyframes hh-draw {
+  to { stroke-dashoffset: 0; }
+}
+@keyframes hh-ping {
+  0% { transform: scale(1); opacity: 0.7; }
+  80%, 100% { transform: scale(2.4); opacity: 0; }
+}
+@keyframes hh-orbit-in {
+  from { opacity: 0; transform: scale(0.75) rotate(-20deg); }
+  to { opacity: 1; transform: none; }
+}
+@keyframes hh-breathe {
+  0%, 100% { transform: scale(1); opacity: 1; }
+  50% { transform: scale(1.07); opacity: 0.75; }
+}
+@keyframes hh-spin {
+  to { transform: rotate(360deg); }
+}
+@keyframes hh-counter {
+  from { transform: translate(-50%, -50%) rotate(var(--hh-start, 0deg)); }
+  to { transform: translate(-50%, -50%) rotate(calc(var(--hh-start, 0deg) - 360deg)); }
+}
+@keyframes hh-float {
+  0%, 100% { translate: 0 0; }
+  50% { translate: 0 -10px; }
+}
+@keyframes hh-card-in {
+  from { opacity: 0; transform: translateY(60px) rotate(-5deg) scale(0.92); }
+  to { opacity: 1; transform: none; }
+}
+@keyframes hh-shimmer {
+  to { background-position: -300% 0; }
+}
+@keyframes hh-fill {
+  from { transform: scaleX(0); }
+  to { transform: scaleX(1); }
+}
+
+/* ---------------------------------------------------------------- layout */
+
+@media (max-width: 991.98px) {
+  .home-hero {
+    --hh-size: min(78vw, 440px);
+    padding-bottom: 110px;
+    min-height: 0;
+  }
+  .hh-copy {
+    margin-inline: auto;
+    text-align: center;
+  }
+  .hh-actions,
+  .hh-tagline {
+    justify-content: center;
+  }
+}
+
+/* the nav floats over the hero on phones (style.css) — no pull-up needed */
+@media (max-width: 767.98px) {
+  .home-hero {
+    margin-top: 0;
+    padding-top: 120px;
+  }
+  .hh-eyebrow {
+    font-size: 15px;
+  }
+  .hh-lead {
+    font-size: 16px;
+  }
+  .hh-btn {
+    min-height: 46px;
+    padding: 8px 24px;
+    font-size: 15px;
+  }
+  .hh-mic {
+    width: 30px;
+    height: 30px;
+    font-size: 13px;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .carousel-caption-custom p.font-24,
-  .carousel-caption-custom .heroOptionsBtn {
+  .home-hero *,
+  .home-hero *::before,
+  .home-hero *::after {
     animation: none !important;
-    opacity: 1;
-    transform: none;
   }
-}
-
-/* Desktop/tablet: the caption matches the hero mock (1600×844) — the copy
-   sits over the image's left side (the person is on the right) in both
-   languages, so the margins are physical, not logical. The block spans the
-   left 60% of the hero and is centred in it, i.e. centred at 30% of the
-   width, which leaves the subtitle room for its one line. No trust row in
-   the mock. Below 768px the caption keeps its centred mobile layout. */
-@media (min-width: 768px) {
-  .carousel-caption-custom {
-    top: 53%;
+  .hh-stroke path {
+    stroke-dashoffset: 0;
   }
-  .carousel-caption-custom .container {
-    width: 60%;
-    max-width: none;
-    margin-left: 0;
-    margin-right: auto;
-  }
-  .carousel-caption-custom .d-md-flex {
-    display: none !important;
-  }
-  .carousel-caption-custom h1.font-60 {
-    /* 80px on wide screens; eases back to the old 60px on tablets so the
-       title still fits the 60%-wide caption on one line */
-    font-size: clamp(60px, 5.5vw, 80px);
-    line-height: 1.2;
-    margin-bottom: 0;
-  }
-  .carousel-caption-custom p.font-24 {
-    font-size: 20px;
-    line-height: 1.5;
-    margin-bottom: 20px !important;
-  }
-  .carousel-caption-custom .heroOptionsBtn {
-    gap: 16px !important;
-  }
-  /* 46px pills: 16px text + 10px/34px padding + 1px border */
-  .carousel-caption-custom .heroOptionsBtn .btn {
-    padding: 10px 34px !important;
-    font-size: 16px;
-    line-height: 1.5;
+  .hh-pager-fill {
+    transform: scaleX(1);
   }
 }
