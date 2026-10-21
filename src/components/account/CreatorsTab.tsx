@@ -1,13 +1,18 @@
-import { unfollow, type FollowedCreator } from "@/lib/follows";
+import type { FollowedCreator } from "@/lib/follows";
 import { useLang } from "@/lib/use-lang";
+import CreatorFollowWiring from "@/components/home/CreatorFollowWiring";
+import CreatorPopWiring from "@/components/home/CreatorPopWiring";
+import "@/styles/home-creator-card.css";
 import { fill } from "./account-user";
 import FollowedCreatorCard from "./FollowedCreatorCard";
 import { CreatorsListSkeleton } from "./AccountSkeleton";
 
 /* "صناع المحتوى المتابعون": the creators the user follows (GET /auth/profile
-   → lib/follows), in a sideways-scrolling row; an empty state pointing at
-   /creators when there are none. "إلغاء المتابعة" drops the card at once and
-   sends DELETE …/follow — a failure brings it back (lib/follows). */
+   → lib/follows), in the site's creator cards on the /creators grid
+   (.cr-creators-grid, so CreatorFollowWiring / CreatorPopWiring pick them
+   up); an empty state pointing at /creators when there are none. The pill's
+   "إلغاء المتابعة" drops the card at once and sends DELETE …/follow — a
+   failure brings it back (lib/follows). */
 export default function CreatorsTab({
   creators,
   loaded,
@@ -40,21 +45,18 @@ export default function CreatorsTab({
               ? tr("acc_creators_count_one")
               : fill(tr("acc_creators_count"), { count })}
           </p>
-          <div className="acc-creators-row">
+          <div className="cr-creators-grid acc-creators-grid">
             {creators.map((creator) => (
               <FollowedCreatorCard
                 key={creator.uuid}
                 creator={creator}
                 lang={lang}
                 tr={tr}
-                onUnfollow={() =>
-                  unfollow(creator.uuid).catch((error) =>
-                    console.warn("[follow] unfollow failed:", error),
-                  )
-                }
               />
             ))}
           </div>
+          <CreatorFollowWiring />
+          <CreatorPopWiring />
           <p className="acc-note">{tr("acc_creators_note")}</p>
         </>
       ) : (

@@ -1,0 +1,36 @@
+$kind: http-request
+url: http://127.0.0.1:8000/api/v1/pages/collaborate/partnership
+method: POST
+headers:
+  Accept: application/json
+  Content-Type: application/json
+body:
+  type: json
+  content: "{\r
+
+    \  \"company_name\": \"شركة النجاح\",\r
+
+    \  \"email\": \"0597558483m@gmail.com\",\r
+
+    \  \"phone\": \"54545454\",\r
+
+    \  \"country_code\": \"+970\",\r
+
+    \  \"website\": \"www.example.com\",\r
+
+    \  \"partnership_types\": [\r
+
+    \    \"content_exchange\",\r
+
+    \    \"event_collaboration\"\r
+
+    \  ],\r
+
+    \  \"partnership_goal\": \"نبذة عن مؤسستنا وهدف الشراكة مع منصة صوت.\",\r
+
+    \  \"additional_notes\": \"ملاحظات إضافية...\",\r
+
+    \  \"recaptcha_token\":\"\"\r
+
+    }"
+order: 3000

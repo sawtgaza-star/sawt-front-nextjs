@@ -1,5 +1,5 @@
 "use client";
-import { useCallback, useRef } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { localized } from "@/lib/api/pages";
 import type { MediaConsultForm as MediaConsultFormContent } from "@/lib/api/media-page";
 import {
@@ -23,10 +23,9 @@ import RequiredMark from "@/components/ui/RequiredMark";
    POSTs to the endpoint the payload itself names (`form.submit_path`, resolved
    by `consultationPath`) and shows what comes back: the server's own "تم
    استلام طلب الاستشارة…" above the button on success, its 422 messages under
-   the boxes they name. Nothing is checked here first — the API validates every
-   field and answers in the same Arabic the rest of the site's forms show, so a
-   second set of rules in the browser could only disagree with it. (The one
-   thing the browser does own is emptying the card afterwards.)
+   the boxes they name. The browser only catches EMPTY required boxes (same
+   wording as the API's) and the unticked robot box, so those never cost a
+   request; every other rule is the API's alone.
 
    The labels, the services and the button are the API's. The example values in
    the inputs are not — the payload has no placeholder for them, and they are
@@ -45,14 +44,23 @@ export default function MediaConsultForm({
   lang?: string;
 }) {
   const formRef = useRef<HTMLFormElement>(null);
-  const { pending, error, success, fieldErrors, submit, clearField, setSuccess } =
+  const { pending, error, success, fieldErrors, submit, reset, clearField, setSuccess } =
     useAuthForm();
   /* only for the button's "جاري الإرسال..." — every other word here is either
      the payload's or, for the API's messages, translated by useAuthForm */
   const { tr } = useLang();
   const options = useMediaServiceOptions();
-  /* "أنا لست روبوت" — the button waits on it */
+  /* "أنا لست روبوت" — the button never waits on it: once every box is filled,
+     a press without it gets a note under the box instead */
   const captcha = useRecaptcha(RECAPTCHA_ACTIONS.mediaConsultation);
+  const [captchaMissed, setCaptchaMissed] = useState(false);
+  /* Required boxes found empty on a press, as i18n keys — caught here so the
+     button never goes to "جاري الإرسال..." for a booking the API would only
+     bounce. Keys, not text, so the language button re-words them. */
+  const [emptyFields, setEmptyFields] = useState<Record<string, string>>({});
+  useEffect(() => {
+    if (captcha.token) setCaptchaMissed(false);
+  }, [captcha.token]);
   const closeToast = useCallback(() => setSuccess(null), [setSuccess]);
 
   const fields = form?.fields;
@@ -67,10 +75,53 @@ export default function MediaConsultForm({
   const serviceKey = fields?.service?.key || "service";
 
   const choices = serviceChoices(options, form?.services, pageLang);
-  const fieldError = (key: string) => fieldErrors[key]?.[0];
+  const fieldError = (key: string) =>
+    emptyFields[key] ? tr(emptyFields[key]) : fieldErrors[key]?.[0];
+  /* drop this box's notes, local and the API's, on the first edit */
+  const clear = (...keys: string[]) => {
+    clearField(...keys);
+    setEmptyFields((current) => {
+      if (!keys.some((key) => key in current)) return current;
+      const next = { ...current };
+      for (const key of keys) delete next[key];
+      return next;
+    });
+  };
+  /* the payload flags each field required; with no flag, it is required */
+  const isRequired = (key: string) => fields?.[key]?.required ?? true;
   const hasFieldErrors = Object.keys(fieldErrors).length > 0;
 
-  const onSubmit = submit(async (data) => {
+  /* Empty boxes first, without a request; the robot check only once they are
+     all filled — it is the last thing asked for. Run before `send`, so a press
+     that stops here never shows "جاري الإرسال...". */
+  const onSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    const data = new FormData(event.currentTarget);
+    const value = (key: string) => String(data.get(key) || "").trim();
+
+    const empty: Record<string, string> = {};
+    for (const [field, key, i18n] of [
+      ["name", nameKey, "sm_form_name_required"],
+      ["phone", phoneKey, "sm_form_phone_required"],
+      ["email", emailKey, "sm_form_email_required"],
+      ["service", serviceKey, "sm_form_service_required"],
+    ]) {
+      if (isRequired(field) && !value(key)) empty[key] = i18n;
+    }
+    setEmptyFields(empty);
+    if (Object.keys(empty).length > 0) {
+      reset(); // the last answer's notes give way to these
+      setCaptchaMissed(false);
+      return;
+    }
+    if (!captcha.token) {
+      setCaptchaMissed(true);
+      return;
+    }
+    send(event);
+  };
+
+  const send = submit(async (data) => {
     const value = (key: string) => String(data.get(key) || "").trim();
 
     let result: Awaited<ReturnType<typeof submitConsultation>>;
@@ -122,7 +173,7 @@ export default function MediaConsultForm({
             name={nameKey}
             placeholder="محمد احمد"
             data-i18n-placeholder="sm_form_name_ph"
-            onInput={() => clearField(nameKey)}
+            onInput={() => clear(nameKey)}
           />
         </div>
         {fieldError(nameKey) ? (
@@ -148,7 +199,7 @@ export default function MediaConsultForm({
               placeholder="59999999"
               data-i18n-placeholder="sm_form_phone_ph"
               dir="rtl"
-              onInput={() => clearField(phoneKey, codeKey)}
+              onInput={() => clear(phoneKey, codeKey)}
             />
           </div>
         </div>
@@ -172,7 +223,7 @@ export default function MediaConsultForm({
             name={emailKey}
             placeholder="Mohamed@Gmail.Com"
             data-i18n-placeholder="sm_form_email_ph"
-            onInput={() => clearField(emailKey)}
+            onInput={() => clear(emailKey)}
           />
         </div>
         {fieldError(emailKey) ? (
@@ -191,7 +242,7 @@ export default function MediaConsultForm({
             className="sm-input sm-select"
             name={serviceKey}
             defaultValue=""
-            onChange={() => clearField(serviceKey)}
+            onChange={() => clear(serviceKey)}
           >
             <option value="" disabled>
               {localized(fields?.service?.placeholder, pageLang)}
@@ -222,11 +273,14 @@ export default function MediaConsultForm({
       ) : null}
 
       <Recaptcha captcha={captcha} />
+      {captchaMissed && !captcha.token ? (
+        <p className="sm-field-error">{tr("sm_form_captcha_required")}</p>
+      ) : null}
 
       <button
         type="submit"
         className="sm-btn-green sm-form-submit"
-        disabled={pending || !captcha.token}
+        disabled={pending}
         aria-busy={pending}
       >
         <span>

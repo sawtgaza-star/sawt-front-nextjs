@@ -1,6 +1,7 @@
 "use client";
 /* "Sign in first" — shown when a guest presses a creator's "متابعة" (the home
-   creator cards and the creator profile). A centred card over a blurred
+   creator cards and the creator profile) or a course's "انضم لقائمة الانتظار"
+   (titleKey / messageKey swap the copy). A centred card over a blurred
    backdrop: a lock badge, a title, the reason, and two actions — sign in
    (back to `next` afterwards — this page by default, via loginHref) or
    "ليس الآن". It fades and rises in; nothing shakes.
@@ -19,10 +20,15 @@ import "@/styles/login-required-dialog.css";
 export default function LoginRequiredDialog({
   onClose,
   next,
+  titleKey = "login_required_title",
+  messageKey = "follow_login_required",
 }: {
   onClose: () => void;
   /** Where sign-in returns to; the current page (path + query + hash) if unset. */
   next?: string;
+  /** Translation keys of the heading and the reason — the follow copy by default. */
+  titleKey?: string;
+  messageKey?: string;
 }) {
   const { tr } = useLang();
   const [mounted, setMounted] = useState(false);
@@ -65,10 +71,10 @@ export default function LoginRequiredDialog({
         </span>
 
         <h2 id="lrd-title" className="lrd-title">
-          {tr("login_required_title")}
+          {tr(titleKey)}
         </h2>
         <p id="lrd-text" className="lrd-text">
-          {tr("follow_login_required")}
+          {tr(messageKey)}
         </p>
 
         <div className="lrd-actions">

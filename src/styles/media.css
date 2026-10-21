@@ -775,7 +775,7 @@ html.sm-drawer-open .sm-nav-wrap > .container {
   gap: 44px;
   padding-inline-start: 44px;
   flex: 0 0 auto;
-  animation: sm-ticker 26s linear infinite;
+  animation: sm-ticker var(--sm-ticker-duration, 70s) linear infinite;
 }
 .sm-ticker-item {
   display: inline-flex;
@@ -794,31 +794,27 @@ html.sm-drawer-open .sm-nav-wrap > .container {
   background: var(--sm-orange-400);
   flex: 0 0 auto;
 }
+/* The strip flows the way the page reads: leftwards in Arabic, rightwards in
+   English. Groups sit start-to-end (right-to-left in RTL), so the loop runs
+   from one group-width back toward the start to 0 — the second group then
+   ends exactly where the first began and the seam never shows. */
 @keyframes sm-ticker {
   from {
-    transform: translateX(0);
-  }
-  /* RTL flips the axis for us: the groups are laid out right-to-left, so a
-     positive translate walks the strip leftwards on screen */
-  to {
     transform: translateX(100%);
   }
+  to {
+    transform: translateX(0);
+  }
 }
-[dir="ltr"] /* While GET /pages/media is in flight the strip has no phrases to scroll yet
-   (MediaHero renders it empty): hold its height so the fan stays cropped by it
-   and nothing below jumps when the words arrive. 17px padding + one 18px line. */
-.sm-ticker:empty {
-  min-height: 56px;
-}
-.sm-ticker-group {
+[dir="ltr"] .sm-ticker-group {
   animation-name: sm-ticker-ltr;
 }
 @keyframes sm-ticker-ltr {
   from {
-    transform: translateX(0);
+    transform: translateX(-100%);
   }
   to {
-    transform: translateX(-100%);
+    transform: translateX(0);
   }
 }
 
@@ -1625,12 +1621,12 @@ html.sm-drawer-open .sm-nav-wrap > .container {
   display: flex;
   flex-direction: column;
   gap: 16px;
-  animation: sm-works-up 13s linear infinite;
+  animation: sm-works-up 26s linear infinite;
 }
 /* the middle column drifts the other way, as in the design */
 .sm-works-col-2 .sm-works-loop {
   animation-name: sm-works-down;
-  animation-duration: 10s;
+  animation-duration: 20s;
 }
 .sm-works-shot {
   position: relative;
@@ -1988,7 +1984,8 @@ color:#6D6D6D;
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 56px;
-  align-items: center;
+  /* the copy starts at the section's top, level with the card */
+  align-items: start;
 }
 .sm-consult-desc {
   margin: 0 0 26px;
@@ -3616,7 +3613,8 @@ color:#6D6D6D;
     opacity: 0;
   }
 
-  /* ---- FAQ: the artboard keeps the photo, above the questions ---- */
+  /* ---- FAQ: the photo is dropped on phones — the questions follow the
+     heading directly ---- */
   .sm-faq {
     padding: 48px 0 0px;
   }
@@ -3624,11 +3622,7 @@ color:#6D6D6D;
     gap: 18px;
   }
   .sm-faq-visual {
-    display: block;
-    flex: 0 0 100%;
-    min-width: 0;
-    max-width: 280px;
-    margin: 0 auto 6px;
+    display: none;
   }
   .sm-faq-q {
     font-size: 14px;

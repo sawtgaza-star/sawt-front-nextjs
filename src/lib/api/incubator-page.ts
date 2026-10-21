@@ -121,7 +121,25 @@ export type IncubatorEventCategory = Sorted & {
   count?: number | null;
 };
 
+/** "past" (ended) is the one the API sends today; "reserve", "reserved",
+    "full" and "closed" are read the same way if it starts sending them. */
+export type IncubatorEventCta = Label & {
+  key?: string | null;
+  requires_auth?: boolean;
+  method?: string | null;
+  path?: string | null;
+};
+
+export type IncubatorEventSeats = {
+  max?: number | null;
+  reserved?: number | null;
+  /** null = no limit */
+  available?: number | null;
+};
+
 export type IncubatorEvent = Sorted & {
+  /** What POST /pages/incubator/events/{uuid}/reserve is addressed by. */
+  uuid?: string | null;
   image_url?: string | null;
   category_key?: string | null;
   title?: Localized;
@@ -134,6 +152,10 @@ export type IncubatorEvent = Sorted & {
   format?: Label & { key?: string | null };
   /** "وجاهي، ندوة" — the venue row, already joined by the API. */
   tags?: Localized;
+  seats?: IncubatorEventSeats;
+  /** Only meaningful when the page was fetched with the visitor's token. */
+  reserved_by_me?: boolean;
+  cta?: IncubatorEventCta;
 };
 
 export type IncubatorEventsContent = SectionHead & {
@@ -301,9 +323,36 @@ function withAssetUrls(page: IncubatorPage): IncubatorPage {
   };
 }
 
+/** The page, as the visitor sees it: with a token the events carry their own
+    `reserved_by_me`, without one they all read false. */
 export async function fetchIncubatorPage(
   signal?: AbortSignal,
+  token?: string | null,
 ): Promise<IncubatorPage | null> {
-  const payload = await apiFetch<Envelope<IncubatorPage>>("/pages/incubator", { signal });
+  const payload = await apiFetch<Envelope<IncubatorPage>>("/pages/incubator", {
+    signal,
+    token,
+  });
   return payload?.data ? withAssetUrls(payload.data) : null;
+}
+
+/* --- seat reservation ----------------------------------------------------- */
+
+/** What a reservation answers with — read loosely: any of the event's own
+    fields it carries back are folded into the card, the rest is ignored. */
+export type EventReserveResponse = {
+  message?: string;
+  data?: Partial<Pick<IncubatorEvent, "reserved_by_me" | "seats" | "cta">> | null;
+};
+
+/** POST /pages/incubator/events/{uuid}/reserve — signed-in only (401 without
+    a session); no body, the account is the reservation. */
+export function reserveIncubatorEvent(
+  uuid: string,
+  token: string,
+): Promise<EventReserveResponse | null> {
+  return apiFetch<EventReserveResponse | null>(
+    `/pages/incubator/events/${encodeURIComponent(uuid)}/reserve`,
+    { method: "POST", token },
+  );
 }

@@ -34,7 +34,7 @@ export default function MediaNav({ base = "" }: { base?: string }) {
     <div className="sm-nav-wrap">
       <div className="container">
         <div className="sm-nav-back-row">
-          {/* back to the platform · or across to the sister brand */}
+          {/* back to the platform */}
           <div className="nav-switch">
             <a className="sm-nav-back" href={nav.back.href}>
               {loading ? (
@@ -42,13 +42,6 @@ export default function MediaNav({ base = "" }: { base?: string }) {
               ) : (
                 <span>{nav.back.label}</span>
               )}
-            </a>
-            <span className="nav-switch-or" data-i18n="nav_switch_or">
-              أو
-            </span>
-            <a className="sm-nav-back nav-switch-cross" href="/incubator">
-              <span data-i18n="sm_nav_to_incubator">الذهاب إلى حاضنة صوت</span>
-              <i className="fa-solid fa-angle-left"></i>
             </a>
           </div>
         </div>

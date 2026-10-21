@@ -1,8 +1,9 @@
 "use client";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { ApiError } from "@/lib/api/client";
 import { joinWaitlist, type CourseSubscribeResponse } from "@/lib/api/courses";
-import { clearSession, getToken, loginHref } from "@/lib/auth-state";
+import { clearSession, getToken } from "@/lib/auth-state";
+import LoginRequiredDialog from "@/components/site/LoginRequiredDialog";
 import { useLang } from "@/lib/use-lang";
 import CourseModal from "./CourseModal";
 import EnrollDone, { EnrollAlready } from "./EnrollDone";
@@ -19,10 +20,11 @@ type Outcome =
    course card and on the course page's registration card.
 
    There is no form: POST /pages/courses/{uuid}/join takes the signed-in
-   account as the application, so a visitor without a session is sent to
-   /login first (and brought back here — see loginHref / the login page's
-   `?next=`). A 401 on the way means the stored session is stale: it is
-   dropped and the visitor goes to sign in again.
+   account as the application, so a visitor without a session gets the
+   "sign in first" dialog; its sign-in link brings them back to this page,
+   scrolled to the section the button sits in (the login page's `?next=`).
+   A 401 on the way means the stored session is stale: it is dropped and the
+   same dialog asks them to sign in again.
 
    Whatever the API answers is shown in the course dialog: its confirmation on
    a 201 (the subscription's own pane), its message otherwise — "already on
@@ -40,12 +42,22 @@ export default function WaitlistButton({
   const { lang, tr } = useLang();
   const [pending, setPending] = useState(false);
   const [outcome, setOutcome] = useState<Outcome | null>(null);
+  const [needsLogin, setNeedsLogin] = useState(false);
+  const buttonRef = useRef<HTMLButtonElement>(null);
+
+  /* this page, at the section holding the button (the incubator's course
+     list), so sign-in lands the visitor back in front of it */
+  const returnTo = () => {
+    const { pathname, search, hash } = window.location;
+    const section = buttonRef.current?.closest<HTMLElement>("section[id]");
+    return pathname + search + (section ? `#${section.id}` : hash);
+  };
 
   const join = async () => {
     if (pending) return;
     const token = getToken();
     if (!token) {
-      window.location.href = loginHref();
+      setNeedsLogin(true);
       return;
     }
 
@@ -55,7 +67,7 @@ export default function WaitlistButton({
     } catch (caught) {
       if (caught instanceof ApiError && caught.isUnauthorized) {
         clearSession();
-        window.location.href = loginHref();
+        setNeedsLogin(true);
         return;
       }
       if (!(caught instanceof ApiError)) console.error(caught);
@@ -74,6 +86,7 @@ export default function WaitlistButton({
     <>
       <button
         type="button"
+        ref={buttonRef}
         className={className}
         onClick={join}
         disabled={pending}
@@ -82,6 +95,15 @@ export default function WaitlistButton({
         <span>{pending ? tr("crs_en_sending") : label}</span>
         <i className="fa-solid fa-angle-left"></i>
       </button>
+
+      {needsLogin && (
+        <LoginRequiredDialog
+          onClose={() => setNeedsLogin(false)}
+          next={returnTo()}
+          titleKey="waitlist_login_title"
+          messageKey="waitlist_login_required"
+        />
+      )}
 
       {outcome && (
         <CourseModal

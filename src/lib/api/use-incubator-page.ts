@@ -10,6 +10,8 @@
    shimmer forever. The error is logged, not surfaced. */
 
 import { useEffect, useState } from "react";
+import { getToken } from "@/lib/auth-state";
+import { ApiError } from "./client";
 import { fetchIncubatorPage, type IncubatorPage } from "./incubator-page";
 
 export type IncubatorPageState = {
@@ -25,7 +27,18 @@ export function useIncubatorPage(): IncubatorPageState {
   useEffect(() => {
     const controller = new AbortController();
 
-    fetchIncubatorPage(controller.signal)
+    /* Signed in, the request carries the session so each event knows whether
+       this visitor already holds a seat. A session the API no longer accepts
+       must not cost the visitor the whole page: the same request is made
+       again as a guest. */
+    const token = getToken();
+    fetchIncubatorPage(controller.signal, token)
+      .catch((caught) => {
+        if (token && caught instanceof ApiError && caught.isUnauthorized) {
+          return fetchIncubatorPage(controller.signal);
+        }
+        throw caught;
+      })
       .then((page) => setState({ page, loading: false }))
       .catch((caught) => {
         // The unmount aborted it — leave the state alone, nothing is watching.

@@ -1,0 +1,11 @@
+$kind: http-request
+url: "{{Base_Url}}/pages/courses"
+method: GET
+headers:
+  Accept: application/json
+  Content-Type: application/json
+body:
+  type: text
+  content: ""
+settings: {}
+order: 1000

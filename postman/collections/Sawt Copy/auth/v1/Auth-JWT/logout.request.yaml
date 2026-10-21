@@ -1,0 +1,28 @@
+$kind: http-request
+url: "{{Base_Url}}/auth/logout"
+method: POST
+headers:
+  Accept: application/json
+  Content-Type: application/json
+body:
+  type: json
+  content: "{\r
+
+    \  \"first_name\": \"أحمد\",\r
+
+    \  \"last_name\": \"محمد\",\r
+
+    \  \"email\": \"ahmed@gmail.com\",\r
+
+    \  \"phone\": \"0599000000\",\r
+
+    \  \"password\": \"12345678\",\r
+
+    \  \"password_confirmation\": \"12345678\"\r
+
+    }"
+auth:
+  type: bearer
+  credentials:
+    token: "{{auth_secret_19y9}}"
+order: 3000

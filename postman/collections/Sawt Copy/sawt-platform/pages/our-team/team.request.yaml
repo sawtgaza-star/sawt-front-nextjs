@@ -1,0 +1,11 @@
+$kind: http-request
+url: http://127.0.0.1:8000/api/v1/pages/team
+method: GET
+headers:
+  Accept: application/json
+  Content-Type: application/json
+body:
+  type: text
+  content: ""
+settings: {}
+order: 1000

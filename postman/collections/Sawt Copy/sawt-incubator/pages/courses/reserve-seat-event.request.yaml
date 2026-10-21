@@ -1,0 +1,11 @@
+$kind: http-request
+url: "{{Base_Url}}/pages/incubator/events/cb3b1ee4/reserve"
+method: POST
+headers:
+  Accept: application/json
+  Content-Type: application/json
+auth:
+  type: bearer
+  credentials:
+    token: "{{auth_secret_0jm7}}"
+order: 5000

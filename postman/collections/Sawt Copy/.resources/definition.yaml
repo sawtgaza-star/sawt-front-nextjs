@@ -1,0 +1,36 @@
+$kind: collection
+description: ""
+variables:
+  - key: json_web_token_0bof
+    value: ""
+    disabled: false
+  - key: json_web_token_18v3
+    value: ""
+    disabled: false
+  - key: auth_secret_0sbx
+    secret: true
+    disabled: false
+  - key: auth_secret_0jm7
+    secret: true
+    disabled: false
+  - key: auth_secret_07xn
+    secret: true
+    disabled: false
+  - key: auth_secret_19y9
+    secret: true
+    disabled: false
+  - key: auth_secret_0bre
+    secret: true
+    disabled: false
+  - key: auth_secret_176g
+    secret: true
+    disabled: false
+  - key: auth_secret_0dxz
+    secret: true
+    disabled: false
+  - key: auth_secret_0wd2
+    secret: true
+    disabled: false
+  - key: auth_secret_0qq5
+    secret: true
+    disabled: false

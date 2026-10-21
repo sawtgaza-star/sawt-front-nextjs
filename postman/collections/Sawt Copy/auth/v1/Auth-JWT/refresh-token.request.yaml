@@ -1,0 +1,28 @@
+$kind: http-request
+url: "{{Base_Url}}/auth/refresh"
+method: POST
+headers:
+  Accept: application/json
+  Content-Type: application/json
+body:
+  type: json
+  content: "{\r
+
+    \  \"first_name\": \"محمود\",\r
+
+    \  \"last_name\": \"زقوت\",\r
+
+    \  \"email\": \"mahmoudzaqoutt12333@gmail.com\",\r
+
+    \  \"phone\": \"0594113731\",\r
+
+    \  \"password\": \"Mahmoud78@\",\r
+
+    \  \"password_confirmation\": \"mahmoud78@\"\r
+
+    }"
+auth:
+  type: bearer
+  credentials:
+    token: "{{auth_secret_07xn}}"
+order: 4000

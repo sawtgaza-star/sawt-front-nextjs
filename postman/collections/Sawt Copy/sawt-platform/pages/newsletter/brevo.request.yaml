@@ -1,0 +1,16 @@
+$kind: http-request
+url: https://api.sawtgaza.com/api/v1/newsletter
+method: POST
+headers:
+  Accept: application/json
+  Content-Type: application/json
+body:
+  type: json
+  content: "{\r
+
+    \  \"email\": \"0597558483m@gmail.com\",\r
+
+    \  \"return_url\": \"/incubator\"\r
+
+    }"
+order: 1000

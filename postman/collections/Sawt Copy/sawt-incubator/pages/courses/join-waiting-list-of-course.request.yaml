@@ -1,0 +1,11 @@
+$kind: http-request
+url: http://127.0.0.1:8000/api/v1/pages/courses/z56aj/join
+method: POST
+headers:
+  Accept: application/json
+  Content-Type: application/json
+auth:
+  type: bearer
+  credentials:
+    token: "{{json_web_token_18v3}}"
+order: 4000

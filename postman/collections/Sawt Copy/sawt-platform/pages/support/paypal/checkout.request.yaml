@@ -1,0 +1,22 @@
+$kind: http-request
+url: "{{Base_Url}}/support/checkout"
+method: POST
+headers:
+  Accept: application/json
+  Content-Type: application/json
+body:
+  type: json
+  content: "{\r
+
+    \  \"amount\": 10,\r
+
+    \  \"currency\": \"USD\",\r
+
+    \  \"interval\": \"one_time\",\r
+
+    \  \"return_url\": \"http://sawtgaza.com/support/thank-you\",\r
+
+    \  \"cancel_url\": \"http://sawtgaza.com/support\"\r
+
+    }"
+order: 1000
