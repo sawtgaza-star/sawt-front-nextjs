@@ -5,11 +5,13 @@ import {
 } from "@/components/ui/icons";
 import { localized } from "@/lib/api/pages";
 import type { IncubatorEvent } from "@/lib/api/incubator-page";
+import EventReserveButton from "./EventReserveButton";
 import { PLACEHOLDER } from "./incubator-page-view";
 
 /* One "استكشف أحدث فعالياتنا" card: photo with the orange date badge straddling
    its bottom edge, the date/time chips, title, excerpt and the venue row
-   ("وجاهي، ندوة" — the API's `tags`). */
+   ("وجاهي، ندوة" — the API's `tags`) beside the "احجز مقعدك" button.
+   The card's id is where sign-in returns a guest who pressed it. */
 export default function EventCard({
   event,
   lang,
@@ -23,8 +25,10 @@ export default function EventCard({
   const time = localized(event.time_label, lang);
   const tags = localized(event.tags, lang);
 
+  const anchorId = `inc-event-${event.uuid || "x"}`;
+
   return (
-    <article className="inc-event-card">
+    <article className="inc-event-card" id={event.uuid ? anchorId : undefined}>
       <div className="inc-event-media">
         <img src={event.image_url || PLACEHOLDER.card} alt="" />
         {day ? (
@@ -56,12 +60,15 @@ export default function EventCard({
         <h3 className="inc-event-title">{localized(event.title, lang)}</h3>
         <p className="inc-event-desc">{localized(event.description, lang)}</p>
 
-        {tags ? (
-          <div className="inc-event-type">
-            <IconLocationPin />
-            <b>{tags}</b>
-          </div>
-        ) : null}
+        <div className="inc-event-foot">
+          {tags ? (
+            <div className="inc-event-type">
+              <IconLocationPin />
+              <b>{tags}</b>
+            </div>
+          ) : null}
+          <EventReserveButton event={event} anchorId={anchorId} />
+        </div>
       </div>
     </article>
   );

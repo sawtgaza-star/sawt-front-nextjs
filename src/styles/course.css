@@ -1663,3 +1663,13 @@ position: absolute;
     height: 46px;
   }
 }
+
+/* The enrollment confirmation's "تصفح كورسات ثانية" is a link, not a button,
+   so the site-wide link colour painted its text dark on the olive pill —
+   white like the button version. */
+a.join-btn.crs-en-next,
+a.join-btn.crs-en-next:hover,
+a.join-btn.crs-en-next:focus {
+  color: #ffffff !important;
+  text-decoration: none;
+}

@@ -111,14 +111,72 @@ export function useSnapSlider(
     return best;
   }, []);
 
+  /* the stop nearest an arbitrary offset — a drag's release aims at where its
+     fling would carry the track, not where the pointer let go */
+  const stopNear = useCallback((left: number) => {
+    const list = stopsRef.current;
+    let best = 0;
+    for (let i = 1; i < list.length; i++) {
+      if (Math.abs(list[i].at - left) < Math.abs(list[best].at - left)) best = i;
+    }
+    return best;
+  }, []);
+
   const onScroll = () => setActive(nearestStop());
+
+  /* ---- glide ----
+     The moves to a stop are animated here rather than by scrollTo's "smooth":
+     the browser's own curve is short and, after a drag, starts while
+     scroll-snap is being switched back on — the snap jumps first and the
+     smooth scroll then fights it, which is the hitch. Here snapping stays off
+     for the whole glide and comes back only once the track already rests on
+     the stop, so there is nothing left for it to move. Ease-out, so a fling
+     carries on at its own speed and settles. */
+  const glide = useRef<number | null>(null);
+
+  const stopGlide = () => {
+    if (glide.current === null) return false;
+    cancelAnimationFrame(glide.current);
+    glide.current = null;
+    return true;
+  };
+
+  const glideTo = (el: HTMLDivElement, target: number) => {
+    stopGlide();
+    const start = el.scrollLeft;
+    const delta = target - start;
+    const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if (Math.abs(delta) < 1 || reduced) {
+      el.scrollLeft = target;
+      el.style.removeProperty("scroll-snap-type");
+      return;
+    }
+    el.style.scrollSnapType = "none";
+    // longer trips take a little longer, within a range that still feels quick
+    const duration = Math.min(650, Math.max(380, Math.abs(delta) * 0.9));
+    const t0 = performance.now();
+    const step = (now: number) => {
+      const p = Math.min(1, (now - t0) / duration);
+      el.scrollLeft = start + delta * (1 - Math.pow(1 - p, 3));
+      if (p < 1) {
+        glide.current = requestAnimationFrame(step);
+      } else {
+        glide.current = null;
+        el.scrollLeft = target;
+        el.style.removeProperty("scroll-snap-type");
+      }
+    };
+    glide.current = requestAnimationFrame(step);
+  };
+
+  useEffect(() => () => void stopGlide(), []);
 
   const goTo = (i: number) => {
     const el = trackRef.current;
     const list = stopsRef.current;
     if (!el || list.length < 2) return;
     const stop = list[Math.max(0, Math.min(list.length - 1, i))];
-    el.scrollTo({ left: stop.at, behavior: "smooth" });
+    glideTo(el, stop.at);
   };
 
   /* "next" always means the arrow that advances the list, in either direction */
@@ -132,16 +190,32 @@ export function useSnapSlider(
      left alone — the browser's own panning is better than anything done here.
      A drag that actually moved swallows the click it ends on, so releasing
      over a card's CTA doesn't follow the link. */
-  const drag = useRef<{ id: number; x: number; from: number; moved: boolean } | null>(
-    null
-  );
+  const drag = useRef<{
+    id: number;
+    x: number;
+    from: number;
+    moved: boolean;
+    /* a glide was cut short by this press — it still has to land somewhere */
+    interrupted: boolean;
+    /* recent (time, scrollLeft) pairs, for the speed at release */
+    samples: { t: number; left: number }[];
+  } | null>(null);
   const swallowClick = useRef(false);
 
   const onPointerDown = (e: React.PointerEvent<HTMLDivElement>) => {
     const el = trackRef.current;
     if (!el || e.pointerType === "touch" || e.button !== 0) return;
     swallowClick.current = false;
-    drag.current = { id: e.pointerId, x: e.clientX, from: el.scrollLeft, moved: false };
+    // grabbing a gliding track catches it where it is
+    const interrupted = stopGlide();
+    drag.current = {
+      id: e.pointerId,
+      x: e.clientX,
+      from: el.scrollLeft,
+      moved: false,
+      interrupted,
+      samples: [{ t: e.timeStamp, left: el.scrollLeft }],
+    };
   };
 
   const onPointerMove = (e: React.PointerEvent<HTMLDivElement>) => {
@@ -158,6 +232,8 @@ export function useSnapSlider(
       el.classList.add("is-dragging");
     }
     el.scrollLeft = d.from - dx;
+    d.samples.push({ t: e.timeStamp, left: el.scrollLeft });
+    if (d.samples.length > 8) d.samples.shift();
   };
 
   const endDrag = (e: React.PointerEvent<HTMLDivElement>) => {
@@ -165,12 +241,37 @@ export function useSnapSlider(
     const d = drag.current;
     if (!el || !d || e.pointerId !== d.id) return;
     drag.current = null;
-    if (!d.moved) return;
+    if (!d.moved) {
+      if (d.interrupted) goTo(nearestStop());
+      return;
+    }
     swallowClick.current = true;
     if (el.hasPointerCapture(d.id)) el.releasePointerCapture(d.id);
     el.classList.remove("is-dragging");
-    el.style.removeProperty("scroll-snap-type");
-    goTo(nearestStop());
+
+    /* Speed over the last ~100ms of the drag (px of scrollLeft per ms), and
+       where it would have carried the track: a quick flick moves on to the
+       next stop even when it travelled less than half the way there. A hand
+       held still before letting go has no speed left, so it lands where it is. */
+    const now = e.timeStamp;
+    const recent = d.samples.filter((s) => now - s.t <= 100);
+    let velocity = 0;
+    if (recent.length >= 2) {
+      const first = recent[0];
+      const last = recent[recent.length - 1];
+      const dt = last.t - first.t;
+      if (dt > 0) velocity = (last.left - first.left) / dt;
+    }
+    const list = stopsRef.current;
+    if (list.length < 2) {
+      el.style.removeProperty("scroll-snap-type");
+      return;
+    }
+    let target = stopNear(el.scrollLeft + velocity * 180);
+    // never more than one stop past where the drag started, however hard the fling
+    const origin = stopNear(d.from);
+    target = Math.max(origin - 1, Math.min(origin + 1, target));
+    goTo(target);
   };
 
   const onClickCapture = (e: React.MouseEvent<HTMLDivElement>) => {

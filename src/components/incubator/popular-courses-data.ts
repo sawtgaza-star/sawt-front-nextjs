@@ -3,8 +3,8 @@
    declares which blocks it renders rather than every card looking alike:
    - a running course: photo + meta chips + rating, and on hover the
      description, trainer and "تفاصيل الكورس"
-   - a coming-soon course (`is_coming_soon`): photo + "قريبًا" flag + copy +
-     CTA, with the chips, rating and trainer revealed on hover
+   - a coming-soon course (`is_coming_soon`): photo + "قريبًا" flag + copy,
+     with the chips, rating, trainer and the waitlist CTA revealed on hover
 
    `reveal` lists the blocks a card keeps hidden until it is hovered — at rest
    it looks exactly as above, on hover it fills out to the full detail set
@@ -91,6 +91,6 @@ export function toPopularCourse(
       : undefined,
     cta: ctaLabel && !waitlist ? { label: ctaLabel, href } : undefined,
     waitlist,
-    reveal: soon ? ["meta", "rating", "tutor"] : ["desc", "tutor", "cta"],
+    reveal: soon ? ["meta", "rating", "tutor", "cta"] : ["desc", "tutor", "cta"],
   };
 }

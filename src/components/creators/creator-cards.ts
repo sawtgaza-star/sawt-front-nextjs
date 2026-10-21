@@ -27,7 +27,7 @@ import { translations } from "@/lib/translations";
    known key is shown as it came — an editor-typed title. */
 type ContentType = { key?: string; label?: Parameters<typeof localized>[0] };
 
-function roleLabel(role: string, lang: string, types?: ContentType[]): string {
+export function roleLabel(role: string, lang: string, types?: ContentType[]): string {
   const key = role.trim().toLowerCase();
   const fromApi = types?.find((type) => type.key === key);
   if (fromApi?.label) return localized(fromApi.label, lang) || role;

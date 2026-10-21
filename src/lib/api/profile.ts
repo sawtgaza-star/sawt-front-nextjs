@@ -96,6 +96,9 @@ export type FollowedCreator = {
   role?: Localized;
   followers?: number | null;
   videos?: number | null;
+  /** The card's bio line — the creator's `experience_excerpt`. */
+  excerpt?: Localized;
+  verified?: boolean;
 };
 
 type PageMeta = { current_page?: number; last_page?: number; total?: number };
@@ -117,6 +120,8 @@ export function normalizeFollowed(row: any): FollowedCreator | null {
     role: c.role,
     followers: num(c.followers_count ?? c.stats?.followers),
     videos: num(c.videos_count ?? c.stats?.videos),
+    excerpt: c.experience_excerpt,
+    verified: c.is_verified === true,
   };
 }
 

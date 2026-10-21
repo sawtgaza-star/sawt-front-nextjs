@@ -373,6 +373,10 @@
   cursor: pointer;
   flex-shrink: 0;
 }
+/* the burger is a bare icon — no grey disc behind it */
+.nav-round-btn.nav-burger {
+  background: transparent;
+}
 
 .nav-round-btn svg,
 .nav-bar-mobile .nav-notif .nav-icon-btn svg,

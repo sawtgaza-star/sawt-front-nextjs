@@ -1,5 +1,6 @@
 import { IconChainLink, IconLinkedIn } from "@/components/ui/icons";
 import type { Expert } from "./experts-data";
+import ExpertBio from "./ExpertBio";
 
 /* One "فريق خبراء متخصص" card. The LinkedIn action, the card lift and the
    photo zoom only appear while hovering — pure CSS, see the
@@ -45,7 +46,7 @@ export default function ExpertCard({ expert }: { expert: Expert }) {
           <h3 className="inc-expert-name">{expert.name}</h3>
           {expert.badge ? <span className="inc-expert-badge">{expert.badge}</span> : null}
         </div>
-        <p className="inc-expert-desc">{expert.desc}</p>
+        {expert.desc ? <ExpertBio text={expert.desc} /> : null}
       </div>
     </article>
   );

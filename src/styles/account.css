@@ -333,100 +333,30 @@ a.acc-btn-primary:hover {
   color: var(--acc-text);
 }
 
-/* ---- followed creators ---------------------------------------------------------- */
-.acc-creators-row {
-  display: flex;
-  gap: 20px;
-  overflow-x: auto;
-  padding-bottom: 12px;
-  scroll-snap-type: x proximity;
+/* ---- followed creators ----------------------------------------------------------
+   The site's creator cards (home-creator-card.css, through .cr-creators-grid)
+   in a grid of their own: account.css doesn't load creators.css. auto-fill
+   keeps a short list at the cards' usual width; the row gap leaves room for
+   the hover pop-out head. */
+.acc-creators-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 48px 22px;
+  padding-top: 40px;
 }
-
-.acc-creator-card {
+.acc-creators-grid > * {
+  min-width: 0;
+}
+.acc-creators-grid .item {
   position: relative;
-  flex: 0 0 220px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  padding: 28px 16px 20px;
-  border: 1px solid var(--acc-line);
-  border-radius: 16px;
-  background: var(--acc-surface);
-  text-align: center;
-  scroll-snap-align: start;
 }
 
-.acc-creator-badge {
-  position: absolute;
-  top: 10px;
-  inset-inline-end: 10px;
-  padding: 2px 8px;
-  border-radius: 100px;
-  background: var(--acc-olive);
-  color: #fff;
-  font-size: 11px;
-  font-weight: 600;
-  direction: ltr;
-}
-
-html[dir="rtl"] .acc-creator-badge {
-  direction: rtl;
-}
-
-.acc-creator-photo {
+/* the skeleton: a shimmer of about the card's height */
+.acc-creator-ph {
   display: block;
-  width: 136px;
-  height: 136px;
-  margin-bottom: 14px;
-  padding: 5px;
-  border-radius: 50%;
-  background: linear-gradient(135deg, #c9a27a, #b8c2a6 60%, #e3d6c3);
-  box-shadow: 0 8px 20px rgba(76, 92, 55, 0.12);
-}
-
-.acc-creator-photo img {
   width: 100%;
-  height: 100%;
-  border: 4px solid #f4f1e8;
-  border-radius: 50%;
-  object-fit: cover;
-}
-
-.acc-creator-name {
-  font-size: 18px;
-  font-weight: 700;
-  color: var(--acc-text);
-  text-decoration: none;
-}
-
-.acc-creator-name:hover {
-  color: var(--acc-olive);
-}
-
-.acc-creator-sub {
-  margin: 4px 0 16px;
-  font-size: 14px;
-  color: #3a3a3a;
-}
-
-.acc-creator-btn {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  margin-top: auto;
-  padding: 7px 26px;
-  border: 1px solid var(--acc-olive);
-  border-radius: 100px;
-  background: #fff;
-  color: var(--acc-olive);
-  font-size: 13px;
-  font-weight: 700;
-  cursor: pointer;
-  transition: background-color 0.2s ease;
-}
-
-.acc-creator-btn:hover {
-  background: #e5e9df;
+  height: 410px;
+  border-radius: 24px;
 }
 
 .acc-note {
@@ -717,8 +647,14 @@ ul.acc-msg {
     gap: 10px;
   }
 
-  .acc-creator-card {
-    flex-basis: 78%;
+  .acc-creators-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 36px 14px;
+  }
+
+  .acc-creator-ph {
+    height: 368px;
+    border-radius: 20px;
   }
 
   .acc-grid {

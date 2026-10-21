@@ -13,7 +13,7 @@ import { useEffect, useRef } from "react";
    Only this leaf is a Client Component; the section and its heading stay on the
    server. */
 
-const SPEED = 1.8; // px per frame ≈ 108px/s
+const SPEED = 0.9; // px per frame ≈ 54px/s
 
 export default function MediaWhyStrip({
   children,

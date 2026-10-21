@@ -43,6 +43,12 @@
   position: relative;
   z-index: 1;
 }
+/* Keep the navbar (and the user menu that drops out of it) above the hero
+   copy and image — same trick as .crs-hero > .inc-nav-wrap. z-index only:
+   position is left to the phone (absolute) and pinned (fixed) rules. */
+.inc-hero > .inc-nav-wrap {
+  z-index: 30;
+}
 
 /* ---------- Page navbar (white floating card) ---------- */
 .inc-nav-wrap {
@@ -63,6 +69,22 @@
   gap: 16px;
   padding: 12px 0;
   border-bottom: 1px solid #ececec;
+}
+/* [أهلاً ˅] pill + socials, at the row's far end. The pill is trimmed from
+   the site bar's 40px so the utility row keeps its height. */
+.inc-nav-top-end {
+  display: inline-flex;
+  align-items: center;
+  gap: 20px;
+}
+.inc-nav-top .nav-user-pill {
+  height: 34px;
+  font-size: 14px;
+}
+.inc-nav-top .nav-user-pill .nav-account-avatar,
+.inc-nav-top .nav-user-pill > svg:first-child {
+  width: 26px;
+  height: 26px;
 }
 .inc-nav-back {
   display: inline-flex;
@@ -977,6 +999,39 @@ button.inc-course-cta:disabled {
   .inc-course-card:not(.is-featured):focus-within .inc-course-body {
     flex-grow: 1;
   }
+  /* Every photo card's picture is the same height — half the card — instead of
+     whatever its body leaves over, so a card with more text no longer has a
+     shorter photo than its neighbour. Hover still drains it to nothing (now by
+     height rather than flex-grow), and the body takes the rest of the card at
+     rest too, its spacer keeping the content at the top. */
+  .inc-course-card:not(.is-featured) .inc-course-media {
+    flex: 0 0 auto;
+    height: 50%;
+    min-height: 0;
+    transition: height 0.45s ease;
+  }
+  .inc-course-card:not(.is-featured):hover .inc-course-media,
+  .inc-course-card:not(.is-featured):focus-within .inc-course-media {
+    height: 0;
+  }
+  .inc-course-card:not(.is-featured) .inc-course-body {
+    flex-grow: 1;
+  }
+  /* …and the description is capped at three lines so it fits the half the
+     photo leaves; the hover panel, which takes the whole card, shows the rest */
+  .inc-course-card:not(.is-featured) .inc-course-desc {
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 3;
+    line-clamp: 3;
+    overflow: hidden;
+  }
+  .inc-course-card:not(.is-featured):hover .inc-course-desc,
+  .inc-course-card:not(.is-featured):focus-within .inc-course-desc {
+    -webkit-line-clamp: unset;
+    line-clamp: unset;
+    overflow: visible;
+  }
 }
 
 /* Stacked cards have no hover to open them with, so nothing stays collapsed —
@@ -1377,12 +1432,72 @@ line-height: 24px; /* 150% */
   color: #6D6D6D;
   margin: 0 0 5px;
 }
-/* [pin] وجاهي, ورشة عمل — pinned to the card's bottom edge */
+/* venue row + "احجز مقعدك" — pinned to the card's bottom edge */
+.inc-event-foot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: auto;
+}
+.inc-event-book {
+  display: inline-flex;
+  align-items: center;
+  margin-inline-start: auto;
+  padding: 8px 20px;
+  border-radius: 24px;
+  background: #4c5c37;
+  color: #ffffff !important;
+  font-size: 15px;
+  font-weight: 700;
+  text-decoration: none;
+  white-space: nowrap;
+}
+.inc-event-book:hover {
+  background: #38422a;
+}
+/* the reserve button (EventReserveButton) */
+button.inc-event-book {
+  border: 0;
+  gap: 8px;
+  cursor: pointer;
+  transition: background-color 0.2s ease, opacity 0.2s ease;
+}
+.inc-event-book[aria-busy="true"] {
+  opacity: 0.75;
+  cursor: progress;
+}
+.inc-event-book.is-reserved,
+.inc-event-book.is-reserved:hover {
+  background: #e7ecdf;
+  color: #4c5c37 !important;
+  cursor: default;
+}
+.inc-event-book.is-closed,
+.inc-event-book.is-closed:hover {
+  background: #ececec;
+  color: #7f7f7f !important;
+  cursor: not-allowed;
+}
+.inc-event-cta {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 6px;
+  margin-inline-start: auto;
+  max-width: 100%;
+}
+/* sign-in brings a guest back to the card they pressed — keep it clear of
+   the pinned navbar */
+.inc-event-card {
+  scroll-margin-top: 120px;
+}
+/* [pin] وجاهي, ورشة عمل */
 .inc-event-type {
   display: flex;
   align-items: center;
   gap: 10px;
-  margin-top: auto;
   font-size: 15px;
   font-weight: 800;
   color: #4C5C37;
@@ -1672,7 +1787,7 @@ border: 1px solid  #4C5C37;
   margin-bottom: 10px;
 }
 .inc-expert-name {
-  font-size: 17px;
+  font-size: 19px;
   line-height: 1.4;
   font-weight: 800;
   color: #1c1c1c;
@@ -1689,10 +1804,33 @@ border: 1px solid  #4C5C37;
   white-space: nowrap;
 }
 .inc-expert-desc {
-  font-size: 13.5px;
+  font-size: 15px;
   line-height: 1.85;
   color: #7A8572;
   margin: 0;
+  /* clamped; ExpertBio's "عرض المزيد" lifts it */
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3;
+  overflow: hidden;
+}
+.inc-expert-desc.is-open {
+  display: block;
+  -webkit-line-clamp: unset;
+  overflow: visible;
+}
+.inc-expert-more {
+  margin-top: 6px;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: #4c5c37;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+}
+.inc-expert-more:hover {
+  text-decoration: underline;
 }
 
 /* ============================================================
@@ -2267,6 +2405,10 @@ top: -23px;
   /* the socials have their own row in the drawer tail */
   .inc-nav-top .inc-nav-social {
     display: none;
+  }
+  /* the phone bar's top line is the back link alone */
+  .sawt-authed .inc-nav-top .nav-user.nav-authed-only {
+    display: none !important;
   }
   .inc-nav-back {
     font-size: 13px;
@@ -2972,10 +3114,13 @@ top: -23px;
     height: 230px;
   }
   .inc-expert-name {
-    font-size: 18px;
+    font-size: 19px;
   }
   .inc-expert-desc {
-    font-size: 12px;
+    font-size: 14px;
+  }
+  .inc-expert-more {
+    font-size: 13px;
   }
 
   /* ---------- يعمل خريجونا لدى جهات موثوقة ---------- */

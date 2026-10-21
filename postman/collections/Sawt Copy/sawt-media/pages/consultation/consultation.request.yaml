@@ -1,0 +1,24 @@
+$kind: http-request
+url: http://127.0.0.1:8000/api/v1/pages/media/consultation
+method: POST
+headers:
+  Accept: application/json
+  Content-Type: application/json
+body:
+  type: json
+  content: "{\r
+
+    \  \"name\": \"محمد زقوت\",\r
+
+    \  \"email\": \"0597558483m@gmail.com\",\r
+
+    \  \"phone\": \"59999999\",\r
+
+    \  \"country_code\": \"+970\",\r
+
+    \  \"service\": \"photography\",\r
+
+    \  \"recaptcha_token\":\"\"\r
+
+    }"
+order: 1000

@@ -5,15 +5,13 @@
    rounded bottom, its sides melting into a light tint of its own
    background; then, on the blurred colour, the name with the verified seal, two
    lines of bio, the follower count and a white "متابعة +" pill. A thin
-   dark-olive outline and a light shadow. */
+   dark-olive outline, no shadow. */
 
 :is(.creators-carousel2, .cr-creators-grid) .cc-card {
   position: relative;
   border-radius: 24px;
   background: #8b927a;
-  box-shadow:
-    0 0 0 1px rgba(62, 70, 50, 0.7),
-    0 10px 22px rgba(40, 46, 32, 0.14);
+  box-shadow: 0 0 0 1px rgba(62, 70, 50, 0.7);
 }
 
 :is(.creators-carousel2, .cr-creators-grid) .cc-card-screen {

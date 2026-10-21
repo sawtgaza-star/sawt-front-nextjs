@@ -10,7 +10,7 @@
 
 import SkeletonText from "@/components/ui/SkeletonText";
 import { useLang } from "@/lib/use-lang";
-import { IconPencil, IconUserPlus } from "./account-icons";
+import { IconPencil } from "./account-icons";
 import { fill } from "./account-user";
 
 /** ProfileTab with the user's details as placeholders. */
@@ -54,23 +54,6 @@ export function ProfileTabSkeleton() {
   );
 }
 
-/** One FollowedCreatorCard, inert. */
-function CreatorCardSkeleton() {
-  const { tr } = useLang();
-  return (
-    <article className="acc-creator-card">
-      <span className="acc-creator-photo acc-sk-ring" />
-      {/* an <a> in the card: inline, so its line box is the name's */}
-      <span className="acc-creator-name"><SkeletonText chars={12} /></span>
-      <p className="acc-creator-sub"><SkeletonText chars={8} /></p>
-      <button type="button" className="acc-creator-btn" disabled tabIndex={-1}>
-        <IconUserPlus />
-        <span>{tr("acc_unfollow")}</span>
-      </button>
-    </article>
-  );
-}
-
 /** CreatorsTab's list before the followed creators are known; `count` is the
     stored user's following count, so the row is as long as it will be and
     the count line can already be the real one. */
@@ -82,9 +65,12 @@ export function CreatorsListSkeleton({ count }: { count: number }) {
       <p className="acc-desc">
         {n === 1 ? tr("acc_creators_count_one") : fill(tr("acc_creators_count"), { count: n })}
       </p>
-      <div className="acc-creators-row" aria-hidden="true">
+      {/* each FollowedCreatorCard a shimmer of about its height */}
+      <div className="cr-creators-grid acc-creators-grid" aria-hidden="true">
         {Array.from({ length: n }, (_, index) => (
-          <CreatorCardSkeleton key={index} />
+          <div className="item" key={index}>
+            <span className="sk-shimmer acc-creator-ph" />
+          </div>
         ))}
       </div>
       <p className="acc-note">{tr("acc_creators_note")}</p>
