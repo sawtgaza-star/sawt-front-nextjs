@@ -34,18 +34,16 @@ export type HomeCta = { label?: Localized };
 
 /* ---------------------------------------------------------------- hero */
 
-export type HomeHeroSlide = {
-  image_url?: string | null;
-  title?: Localized;
-  subtitle?: Localized;
-  sort_order?: number;
-};
-
+/** The hero beside the latest reels (components/home/hero). `title` is one
+    string; the hero breaks it onto two lines itself (splitHeroTitle). */
 export type HomeHero = {
-  /** The line beside the five stars, one for the whole carousel. */
-  trust?: Localized;
+  /** the small line above the title */
+  kicker?: Localized;
+  title?: Localized;
+  description?: Localized;
+  /** the line under the buttons, beside the orange dot */
+  tagline?: Localized;
   buttons?: { support?: HomeCta; collaborate?: HomeCta };
-  slides?: HomeHeroSlide[];
 };
 
 /* --------------------------------------------------------------- stats */
@@ -327,13 +325,6 @@ function mapList<T>(list: T[] | undefined, fn: (item: T) => T): T[] | undefined 
 function withAssetUrls(page: HomePage): HomePage {
   return {
     ...page,
-    hero: page.hero && {
-      ...page.hero,
-      slides: mapList(page.hero.slides, (slide) => ({
-        ...slide,
-        image_url: assetUrl(slide.image_url),
-      })),
-    },
     who_we_are: page.who_we_are && {
       ...page.who_we_are,
       image_url: assetUrl(page.who_we_are.image_url),

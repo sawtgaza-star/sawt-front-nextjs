@@ -60,40 +60,6 @@
   border-radius: 16px;
 }
 
-/* The hero slide sits under the pinned header, on the dark ground the real
-   photo would cover, so its bars are dimmed rather than page-grey.
-
-   Selected through #heroCarousel .carousel-item so the centring actually
-   lands: Bootstrap's own `.carousel-item.active { display: block }` is two
-   classes and outranks a bare `.sk-hero-slide`, which left the bars stacked at
-   the top of the slide — and `#heroCarousel` is pulled up by -160px
-   (style.css), so that put them behind the navbar. */
-#heroCarousel .carousel-item.sk-hero-slide {
-  min-height: 100vh;
-  background: rgba(30, 34, 26, 1);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-/* The bars keep their shimmer over the dark ground — dimmed into it rather
-   than flattened to a static fill, which read as "nothing is happening" on a
-   full 100vh block. Same treatment as creators-skeleton.css's hero. */
-.sk-hero-slide .sk-line,
-.sk-hero-slide .sk-line-title {
-  background: linear-gradient(
-    90deg,
-    rgba(255, 255, 255, 0.1) 25%,
-    rgba(255, 255, 255, 0.22) 37%,
-    rgba(255, 255, 255, 0.1) 63%
-  );
-  background-size: 400% 100%;
-}
-
-.sk-hero-copy {
-  width: min(680px, 80%);
-}
-
 /* One column of the stats bar: circle + figure + label, centred. */
 .sk-stat {
   display: flex;

@@ -19,12 +19,12 @@
    would corrupt it. Everything else — the reels' expiring Instagram links,
    copy, the header — is patched in place as usual. The <header> must not be
    remounted anyway: SiteNav lives in it and initHeaderPin() has re-parented
-   its nodes; the Bootstrap carousel is restarted below.
+   its nodes.
 
    RE-BOOTING THE LEGACY WIDGETS
    -----------------------------
    <LegacyInit page="home" /> runs its whole boot on mount, which is now before
-   any of this markup exists. Four widgets read the DOM at that moment and so
+   any of this markup exists. Three widgets read the DOM at that moment and so
    have to be run again once the payload has landed:
 
      - the four Owl carousels. Owl marks an element `.owl-loaded` and skips it
@@ -32,10 +32,6 @@
        at all: nothing gets initialised on an empty stage. With a baked payload
        LegacyInit's own call already sees the items, and this one is a no-op
        until a remount brings fresh, un-initialised carousels.
-     - the Bootstrap hero carousel. Its element IS in the first render (SiteNav
-       lives inside that header), but with an empty `.carousel-inner`, so the
-       instance Bootstrap made has no slides to cycle — it is disposed and
-       rebuilt here.
      - the reels column and its comment list (lib/legacy-main).
      - the stat counters, which animate the number they find in the text node,
        and the DOM translator, for the handful of `data-i18n` bits that are
@@ -59,8 +55,6 @@ import JoinUs from "./JoinUs";
 import Reviews from "./Reviews";
 import HomeSkeleton from "./HomeSkeleton";
 import type { HomePage } from "@/lib/api/home";
-import { enableHeroDrag } from "./hero-drag";
-import { enableHeroDots } from "./hero-dots";
 
 /** A short, stable key for a section's payload block — changes iff the block does. */
 function contentKey(block: unknown): string {
@@ -68,42 +62,6 @@ function contentKey(block: unknown): string {
   let hash = 5381;
   for (let i = 0; i < text.length; i++) hash = ((hash << 5) + hash + text.charCodeAt(i)) | 0;
   return `${text.length}-${hash >>> 0}`;
-}
-
-/** How long each hero slide stays up before the next one slides in. */
-const HERO_INTERVAL = 5000;
-
-/** Rebuild the hero's Bootstrap carousel now that it has slides, and start it
-    cycling. Bootstrap is taken from its module, not `window.bootstrap`: the
-    bundle is imported as a module (LegacyInit), which never sets the global —
-    and it lands after the window `load` that its own data-bs-ride
-    auto-start listens for, so nothing else starts the carousel. */
-async function restartHeroCarousel() {
-  const element = document.getElementById("heroCarousel");
-  if (!element) return;
-  // @ts-ignore — no types for the bundle; same import LegacyInit makes
-  const mod: any = await import("bootstrap/dist/js/bootstrap.bundle.min.js");
-  const Carousel = mod?.Carousel ?? mod?.default?.Carousel;
-  if (!Carousel) return;
-  Carousel.getInstance(element)?.dispose();
-  // touch: false — hero-drag handles fingers too, in the direction they move
-  const carousel = Carousel.getOrCreateInstance(element, {
-    interval: HERO_INTERVAL,
-    ride: "carousel",
-    touch: false,
-  });
-  carousel.cycle();
-  // The copy's entrance plays only on landing: from the first slide change
-  // on, home-hero.css shows every slide's copy as is.
-  element.addEventListener("slide.bs.carousel", () => element.classList.add("hero-has-slid"), {
-    once: true,
-  });
-  // drag / swipe (see hero-drag); re-wired with the carousel
-  (element as any).__heroDragOff?.();
-  (element as any).__heroDragOff = enableHeroDrag(element, carousel);
-  // dots slide toward the side they sit on (see hero-dots)
-  (element as any).__heroDotsOff?.();
-  (element as any).__heroDotsOff = enableHeroDots(element, carousel);
 }
 
 export default function HomeContent({
@@ -128,7 +86,6 @@ export default function HomeContent({
       const { initReels, replayComments } = await import("@/lib/legacy-main");
       initReels();
       replayComments();
-      await restartHeroCarousel();
     })();
 
     return () => {
@@ -157,6 +114,7 @@ export default function HomeContent({
       <HeroHeader
         hero={page?.hero}
         stats={page?.stats}
+        reels={page?.reviews?.reels_enabled === false ? [] : page?.reviews?.reels}
         lang={lang}
         loading={loading}
       />
