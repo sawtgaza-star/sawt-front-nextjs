@@ -4,8 +4,8 @@ import {
   IconClockCheck,
   IconHourglass,
   IconLayers,
-  IconRatingStar,
 } from "@/components/ui/icons";
+import RatingStars from "@/components/ui/RatingStars";
 import WaitlistButton from "@/components/courses/course-register/WaitlistButton";
 import type { CourseBlock, PopularCourse } from "./popular-courses-data";
 
@@ -98,9 +98,7 @@ export default function CourseCard({ course }: { course: PopularCourse }) {
                   className="inc-course-rating"
                   aria-label={`${course.rating} من ${STARS_TOTAL}`}
                 >
-                  {Array.from({ length: STARS_TOTAL }, (_, i) => (
-                    <IconRatingStar key={i} filled={i < course.rating!} />
-                  ))}
+                  <RatingStars value={course.rating} max={STARS_TOTAL} />
                 </div>,
               )}
           </div>

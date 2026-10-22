@@ -503,6 +503,8 @@
 /* ---------- "أخبار ذات صلة" ---------- */
 .nws-related {
   background-color: rgba(237, 239, 235, 1);
+  /* keeps the blobs (z-index: -1, home-news.css) above the band's colour */
+  isolation: isolate;
   overflow: hidden;
   padding: 36px 0 34px;
   margin-bottom: 60px;
@@ -540,8 +542,9 @@
   overflow-x: auto;
   scroll-snap-type: x mandatory;
   scrollbar-width: none;
-  /* room for the cards' hover lift + shadow */
-  padding: 4px;
+  /* room for the home card's 12px hover lift + shadow (home-news.css) —
+     a scroll container clips both axes */
+  padding: 20px 4px 30px;
 }
 
 .nws-related-track::-webkit-scrollbar {
@@ -652,6 +655,11 @@
   .nws-detail .nws-main {
     padding: 24px 0 40px;
   }
+  /* a comfortable reading gutter — style.css's phone .container gives 10px,
+     which ran the prose almost into the screen edge */
+  .nws-detail .nws-main > .container {
+    padding-inline: 18px;
+  }
   /* the "شارك الخبر" bubble and the "ادعم صوت" card are desktop/tablet only —
      on phones the article starts straight after the breadcrumb */
   .nws-detail .nws-aside {
@@ -686,8 +694,12 @@
   }
   .nws-p,
   .nws-html p,
-  .nws-html blockquote {
-    font-size: 18px;
+  .nws-html blockquote,
+  .nws-html ul,
+  .nws-html ol {
+    font-size: 17px;
+    line-height: 1.95;
+    margin-bottom: 18px;
   }
   .nws-meta {
     font-size: 12px;
@@ -724,13 +736,34 @@
     grid-template-columns: 1fr;
     gap: 14px;
   }
-  /* the thumbs share the stage's full width instead of keeping the desktop's
-     fixed 100px box, so the strip lines up with the image above it */
+  .nws-gallery {
+    margin: 4px 0 24px;
+  }
+  .nws-gallery-stage {
+    border-radius: 14px;
+  }
+  .nws-gallery-count {
+    inset-inline-start: 10px;
+    bottom: 10px;
+  }
+  /* small fixed thumbs in a strip that scrolls sideways — stretched to share
+     the width, two or three pictures turned into a second copy of the stage.
+     The padding keeps the active thumb's 4px ring from being clipped. */
+  .nws-gallery-thumbs {
+    gap: 10px;
+    margin-top: 10px;
+    padding: 4px;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+  .nws-gallery-thumbs::-webkit-scrollbar {
+    display: none;
+  }
   .nws-gallery-thumb {
-    flex: 1 1 0;
-    width: auto;
-    height: auto;
-    aspect-ratio: 3 / 2;
+    flex: 0 0 72px;
+    width: 72px;
+    height: 50px;
+    border-radius: 10px;
   }
   /* ---- "أخبار ذات صلة": mirror the home "آخر أخبارنا" slider on phones ----
      There the owl config runs nav:false below 600px and the strip is swipe-only,
@@ -740,6 +773,10 @@
   .nws-related {
     padding: 32px 0 36px;
     margin-bottom: 40px;
+  }
+  /* no faint microphones behind the strip — as on the home slider */
+  .nws-related .bg-icon {
+    display: none;
   }
   /* Bootstrap's .container sets --bs-gutter-x: 1.5rem, and style.css's mobile
      block replaces that with a flat 10px gutter; drop both here so the strip
@@ -769,7 +806,8 @@
     gap: 12px;
   }
   .nws-related-track .news-card {
-    max-width: 322px;
+    /* the home slider's phone card (home-news.css) */
+    max-width: 360px;
     margin-inline: auto;
   }
   /* news.css sets .card-body .card-title to 16px for the listing grid; the
@@ -786,10 +824,11 @@
 }
 
 /* Phone: one card plus a peek of the next, exactly like the home carousel's
-   `.creators-carousel .item { width: 70vw }` under the same breakpoint. */
+   `.creators-carousel .item { width: 80vw }` (home-news.css) under the same
+   breakpoint. */
 @media (max-width: 599.98px) {
   .nws-related-track > .item {
-    flex: 0 0 70vw;
+    flex: 0 0 80vw;
   }
 }
 

@@ -12,7 +12,8 @@ import type { ReactNode } from "react";
    stills and the service phrases separately (five and six as the content
    stands), so each side takes `step` and walks its own list with it instead of
    sharing one index. */
-const ROTATE_MS = 1500;
+/* long enough for the deck's 1.4s glide (media.css) to finish and rest */
+const ROTATE_MS = 2600;
 
 type Rotation = {
   /* how many ticks have passed — one seat, and one word, each */

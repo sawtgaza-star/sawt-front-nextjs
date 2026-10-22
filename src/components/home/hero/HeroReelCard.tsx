@@ -8,7 +8,7 @@ import { formatDuration } from "./hero-copy";
    no hover state and clicking it does nothing; the stack is turned by
    dragging, by its pager, or on its own.
 
-   `preview` (the stack decides: desktop, motion allowed, page loaded) loads
+   `preview` (the stack decides: motion allowed, no data saver, page loaded) loads
    the file's metadata for the duration badge and lets the front card play
    muted, on a loop, while it stays in front. Instagram CDN links expire —
    a file that fails simply leaves the poster up. */

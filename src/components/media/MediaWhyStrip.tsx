@@ -10,10 +10,18 @@ import { useEffect, useRef } from "react";
    inert; the rail (rather than each card) keeps the motion from stuttering as
    the pointer crosses the gaps between cards.
 
+   Touch screens have no hover, so there the rail drifts on its own — slower —
+   whenever it is on screen. A finger on it stops the drift so it can be swiped
+   by hand; it picks up again from wherever the swipe left it, a moment after
+   the finger lifts.
+
    Only this leaf is a Client Component; the section and its heading stay on the
    server. */
 
 const SPEED = 0.9; // px per frame ≈ 54px/s
+const TOUCH_SPEED = 0.42; // px per frame ≈ 25px/s
+/** how long after a swipe the touch drift waits before it resumes */
+const TOUCH_RESUME = 2000;
 
 export default function MediaWhyStrip({
   children,
@@ -27,6 +35,8 @@ export default function MediaWhyStrip({
     if (!rail) return;
 
     const reduce = window.matchMedia("(prefers-reduced-motion: reduce)");
+    const touch = window.matchMedia("(hover: none)").matches;
+    const speed = touch ? TOUCH_SPEED : SPEED;
 
     // RTL scrollLeft runs 0 → -max, LTR runs 0 → +max; keep the maths signless.
     const dir =
@@ -47,7 +57,7 @@ export default function MediaWhyStrip({
     const step = () => {
       const loop = loopWidth();
       if (loop > 0) {
-        offset += SPEED;
+        offset += speed;
         if (offset >= loop) offset -= loop;
         rail.scrollLeft = dir * offset;
       }
@@ -65,14 +75,52 @@ export default function MediaWhyStrip({
       raf = 0;
     };
 
-    rail.addEventListener("pointerenter", start);
-    rail.addEventListener("pointerleave", stop);
     reduce.addEventListener("change", stop);
+
+    if (!touch) {
+      rail.addEventListener("pointerenter", start);
+      rail.addEventListener("pointerleave", stop);
+      return () => {
+        stop();
+        rail.removeEventListener("pointerenter", start);
+        rail.removeEventListener("pointerleave", stop);
+        reduce.removeEventListener("change", stop);
+      };
+    }
+
+    // touch: drift while on screen and not held
+    let visible = false;
+    let held = false;
+    let resume = 0;
+    const update = () => (visible && !held ? start() : stop());
+    const observer = new IntersectionObserver(([entry]) => {
+      visible = entry.isIntersecting;
+      update();
+    });
+    observer.observe(rail);
+    const hold = () => {
+      window.clearTimeout(resume);
+      held = true;
+      update();
+    };
+    const release = () => {
+      window.clearTimeout(resume);
+      resume = window.setTimeout(() => {
+        held = false;
+        update();
+      }, TOUCH_RESUME);
+    };
+    rail.addEventListener("touchstart", hold, { passive: true });
+    rail.addEventListener("touchend", release);
+    rail.addEventListener("touchcancel", release);
 
     return () => {
       stop();
-      rail.removeEventListener("pointerenter", start);
-      rail.removeEventListener("pointerleave", stop);
+      window.clearTimeout(resume);
+      observer.disconnect();
+      rail.removeEventListener("touchstart", hold);
+      rail.removeEventListener("touchend", release);
+      rail.removeEventListener("touchcancel", release);
       reduce.removeEventListener("change", stop);
     };
   }, []);

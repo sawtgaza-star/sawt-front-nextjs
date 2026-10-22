@@ -27,9 +27,6 @@ export function ProfileTabSkeleton() {
           <div className="acc-profile-id">
             <button type="button" className="acc-profile-avatar" disabled tabIndex={-1}>
               <span className="acc-avatar acc-avatar-lg acc-sk-block" />
-              <span className="acc-profile-avatar-badge">
-                <IconPencil size={14} />
-              </span>
             </button>
             <div className="acc-profile-text">
               <h2 className="acc-profile-name"><SkeletonText chars={12} /></h2>

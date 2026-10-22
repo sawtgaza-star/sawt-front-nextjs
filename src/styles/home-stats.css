@@ -24,6 +24,20 @@
   stroke: #4c5c37;
 }
 
+/* phones: no "قصة" figure (the API's `stories` key) — the other four sit side
+   by side on one row instead of style.css's three-over-two grid */
+@media (max-width: 767.98px) {
+  .stats-bar .row > .col.count-stories,
+  .stats-bar .row > .sk-stat:nth-child(5) {
+    display: none;
+  }
+  .stats-bar .row > .col.count {
+    flex: 1 1 0;
+    max-width: 25%;
+    min-width: 0;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .stats-bar .count i svg {
     transition: none;

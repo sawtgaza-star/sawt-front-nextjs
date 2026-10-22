@@ -24,11 +24,14 @@ export default function MediaHeroFan({ deck }: { deck: string[] }) {
       onMouseEnter={() => setPaused(true)}
       onMouseLeave={() => setPaused(false)}
     >
-      {deck.map((src, i) => (
-        <span className={"sm-fan-card sm-fan-" + ((i + step) % seats)} key={i}>
-          <img src={src} alt="" />
-        </span>
-      ))}
+      {/* the 3D stage the cards are depth-sorted in (media.css) */}
+      <div className="sm-fan-stage">
+        {deck.map((src, i) => (
+          <span className={"sm-fan-card sm-fan-" + ((i + step) % seats)} key={i}>
+            <img src={src} alt="" />
+          </span>
+        ))}
+      </div>
     </div>
   );
 }

@@ -586,8 +586,11 @@
 /* the nav floats over the hero on phones (style.css) — no pull-up needed */
 @media (max-width: 767.98px) {
   .home-hero {
+    /* phones: let the reel stack fill the width */
+    --hh-size: min(88vw, 440px);
     margin-top: 0;
     padding-top: 120px;
+    padding-bottom: 80px;
   }
   .hh-eyebrow {
     font-size: 15px;

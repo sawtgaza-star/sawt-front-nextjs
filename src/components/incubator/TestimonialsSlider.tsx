@@ -1,6 +1,7 @@
 "use client";
 import { useEffect, useRef, useState } from "react";
-import { IconQuoteMarks, IconRatingStar } from "@/components/ui/icons";
+import { IconQuoteMarks } from "@/components/ui/icons";
+import RatingStars from "@/components/ui/RatingStars";
 import { localized } from "@/lib/api/pages";
 import type { IncubatorTestimonial } from "@/lib/api/incubator-page";
 import { t } from "@/lib/translations";
@@ -264,7 +265,6 @@ export default function TestimonialsSlider({
       >
         {items.map((item, index) => {
           const isOpen = expanded.includes(index);
-          const rating = Math.min(5, Math.max(0, Math.round(Number(item.rating) || 0)));
           return (
           <article
             className={"inc-testi-card" + (isOpen ? " is-open" : "")}
@@ -278,9 +278,7 @@ export default function TestimonialsSlider({
             </span>
 
             <div className="inc-testi-stars" aria-hidden="true">
-              {Array.from({ length: 5 }, (_, s) => (
-                <IconRatingStar key={s} filled={s < rating} />
-              ))}
+              <RatingStars value={item.rating} />
             </div>
 
             <TestimonialQuote

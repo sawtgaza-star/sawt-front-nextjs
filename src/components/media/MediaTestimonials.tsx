@@ -2,7 +2,7 @@
 import { localized } from "@/lib/api/pages";
 import { sortItems, type MediaTestimonialsContent } from "@/lib/api/media-page";
 import MediaSectionHead from "./MediaSectionHead";
-import { IconRatingStar } from "@/components/ui/icons";
+import RatingStars from "@/components/ui/RatingStars";
 import { IconReviewQuote } from "./media-icons";
 import { useSnapSlider } from "./useSnapSlider";
 
@@ -13,11 +13,10 @@ import { useSnapSlider } from "./useSnapSlider";
    track opens on the second card, so the section is first seen with a card
    flanked on both sides rather than parked at its own edge.
 
-   The quotes are GET /pages/media's `testimonials` block. The star count is
-   not in the payload — every card in the design shows four — so it stays a
-   design constant here. */
-const STARS = 5;
-const FILLED = 4;
+   The quotes are GET /pages/media's `testimonials` block. The stars follow an
+   item's `rating`; the payload doesn't carry one yet, so until it does every
+   card shows the design's four. */
+const FALLBACK_RATING = 4;
 
 export default function MediaTestimonials({
   data,
@@ -75,9 +74,7 @@ export default function MediaTestimonials({
             </span>
 
             <div className="sm-testi-stars" aria-hidden="true">
-              {Array.from({ length: STARS }, (_, s) => (
-                <IconRatingStar key={s} filled={s < FILLED} />
-              ))}
+              <RatingStars value={item.rating ?? FALLBACK_RATING} />
             </div>
 
             <p className="sm-testi-quote">{localized(item.quote, lang)}</p>

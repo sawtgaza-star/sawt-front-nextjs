@@ -683,6 +683,23 @@ html.sm-drawer-open .sm-nav-wrap > .container {
   overflow-x: visible;
   overflow-y: clip;
 }
+/* Which card is in front is real 3D depth, not z-index: each seat sits a
+   little further back the further it is from the middle (--sm-fan-depth,
+   with a slight tilt so neighbours aren't parallel — the tilt is what makes
+   the hand-off a slow sweep rather than a quick one). While two cards
+   cross, the browser sorts them pixel by pixel, so the edge between them
+   slides across instead of one card popping over the other — any z-index
+   swap is a one-frame pop, because neighbours overlap for the whole move.
+   The perspective is very long, so depth and tilt barely change a card's
+   visible size or shape (seat 1/5 reads ~1.5% smaller). */
+.sm-fan-stage {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  justify-content: center;
+  perspective: 10000px;
+  transform-style: preserve-3d;
+}
 .sm-fan-card {
   position: absolute;
   top: 0;
@@ -692,9 +709,13 @@ html.sm-drawer-open .sm-nav-wrap > .container {
   overflow: hidden;
   box-shadow: 0 18px 40px rgba(0, 0, 0, 0.16);
   transform-origin: 50% 50%;
-  transition: transform 0.6s cubic-bezier(0.22, 0.61, 0.36, 1),
-    opacity 0.6s ease;
-  will-change: transform;
+  /* a long, symmetric ease-in-out: each card glides off its seat and settles
+     into the next with no snap at either end (the tick is 2.6s, so a move
+     always finishes and rests a beat before the next one starts) */
+  transition: transform 1.4s cubic-bezier(0.65, 0, 0.35, 1),
+    opacity 1s ease;
+  will-change: transform, opacity;
+  backface-visibility: hidden;
 }
 .sm-fan-card img {
   width: 100%;
@@ -706,29 +727,35 @@ html.sm-drawer-open .sm-nav-wrap > .container {
    the far side, so it takes its place without a transform transition and only
    fades in — otherwise it would sweep back across the whole deck. */
 .sm-fan-1 {
-  transform: translate(455px, 198px) rotate(25deg);
+  --sm-fan-depth: translateZ(-160px) rotateY(-12deg);
+  transform: translate(455px, 198px) rotate(25deg) var(--sm-fan-depth);
   z-index: 2;
-  transition: opacity 0.6s ease;
+  transition: opacity 1s ease;
 }
 .sm-fan-2 {
-  transform: translate(235px, 66px) rotate(20deg);
+  --sm-fan-depth: translateZ(-80px) rotateY(-10deg);
+  transform: translate(235px, 66px) rotate(20deg) var(--sm-fan-depth);
   z-index: 3;
 }
 /* the seat in focus rides 20px above the rest of the arc */
 .sm-fan-3 {
-  transform: translate(0, 0) rotate(0deg);
+  --sm-fan-depth: translateZ(0) rotateY(0deg);
+  transform: translate(0, 0) rotate(0deg) var(--sm-fan-depth);
   z-index: 4;
 }
 .sm-fan-4 {
-  transform: translate(-235px, 66px) rotate(-20deg);
+  --sm-fan-depth: translateZ(-80px) rotateY(10deg);
+  transform: translate(-235px, 66px) rotate(-20deg) var(--sm-fan-depth);
   z-index: 3;
 }
 .sm-fan-5 {
-  transform: translate(-455px, 198px) rotate(-25deg);
+  --sm-fan-depth: translateZ(-160px) rotateY(12deg);
+  transform: translate(-455px, 198px) rotate(-25deg) var(--sm-fan-depth);
   z-index: 2;
 }
 .sm-fan-0 {
-  transform: translate(-680px, 270px) rotate(-30deg);
+  --sm-fan-depth: translateZ(-240px) rotateY(14deg);
+  transform: translate(-680px, 270px) rotate(-30deg) var(--sm-fan-depth);
   opacity: 0;
   z-index: 1;
 }
@@ -2885,19 +2912,19 @@ color:#6D6D6D;
     height: 211px;
   }
   .sm-fan-1 {
-    transform: translate(372px, 160px) rotate(25deg);
+    transform: translate(372px, 160px) rotate(25deg) var(--sm-fan-depth);
   }
   .sm-fan-2 {
-    transform: translate(192px, 54px) rotate(20deg);
+    transform: translate(192px, 54px) rotate(20deg) var(--sm-fan-depth);
   }
   .sm-fan-4 {
-    transform: translate(-192px, 54px) rotate(-20deg);
+    transform: translate(-192px, 54px) rotate(-20deg) var(--sm-fan-depth);
   }
   .sm-fan-5 {
-    transform: translate(-372px, 160px) rotate(-25deg);
+    transform: translate(-372px, 160px) rotate(-25deg) var(--sm-fan-depth);
   }
   .sm-fan-0 {
-    transform: translate(-560px, 219px) rotate(-30deg);
+    transform: translate(-560px, 219px) rotate(-30deg) var(--sm-fan-depth);
   }
   .sm-hero-fan {
     height: 191px;
@@ -3151,21 +3178,21 @@ color:#6D6D6D;
     border-radius: 16px;
   }
   .sm-fan-1 {
-    transform: translate(240px, 92px) rotate(25deg);
+    transform: translate(240px, 92px) rotate(25deg) var(--sm-fan-depth);
     opacity: 0;
   }
   .sm-fan-2 {
-    transform: translate(128px, 38px) rotate(20deg);
+    transform: translate(128px, 38px) rotate(20deg) var(--sm-fan-depth);
   }
   .sm-fan-4 {
-    transform: translate(-128px, 38px) rotate(-20deg);
+    transform: translate(-128px, 38px) rotate(-20deg) var(--sm-fan-depth);
   }
   .sm-fan-5 {
-    transform: translate(-240px, 80px) rotate(-25deg);
+    transform: translate(-240px, 80px) rotate(-25deg) var(--sm-fan-depth);
     opacity: 0;
   }
   .sm-fan-0 {
-    transform: translate(-360px, 120px) rotate(-30deg);
+    transform: translate(-360px, 120px) rotate(-30deg) var(--sm-fan-depth);
   }
   /* only the headline chip survives; the design parks it above the title,
      hard against the start edge (right in RTL is where the artboard puts it) */
@@ -3279,17 +3306,20 @@ color:#6D6D6D;
     text-align: start;
   }
 
-  /* ---- stats: 3 + 2 ---- */
+  /* ---- stats: four side by side ("عميل سعيد" is dropped — MediaStats) ---- */
   .sm-stats {
     padding-bottom: 48px;
   }
   .sm-stats-panel {
-    padding: 30px 18px 34px;
+    padding: 30px 12px 34px;
   }
   .sm-stats-row {
-    grid-template-columns: repeat(3, 1fr);
-    gap: 24px 8px;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 24px 6px;
     margin-top: 26px;
+  }
+  .sm-stat-desktop {
+    display: none;
   }
   .sm-stat-value {
     font-size: 22px;
@@ -3437,23 +3467,25 @@ color:#6D6D6D;
   /* Every row gets its own speed and starts part-way through its loop (the
      negative delay), so the three are never in step: the wall reads as tiles
      drifting past at their own pace rather than one block sliding, and the
-     rows sit at different offsets from each other however long you watch. */
+     rows sit at different offsets from each other however long you watch.
+     Slower than the desktop columns, so a phone's narrow wall stays easy to
+     follow. */
   .sm-works-loop {
     flex-direction: row;
     width: max-content;
     gap: 10px;
     animation-name: sm-works-side;
-    animation-duration: 12s;
-    animation-delay: -4s;
+    animation-duration: 31s;
+    animation-delay: -10s;
   }
   .sm-works-col-2 .sm-works-loop {
     animation-name: sm-works-side-rev;
-    animation-duration: 9s;
-    animation-delay: -7s;
+    animation-duration: 24s;
+    animation-delay: -18s;
   }
   .sm-works-col-3 .sm-works-loop {
-    animation-duration: 15s;
-    animation-delay: -11s;
+    animation-duration: 36s;
+    animation-delay: -27s;
   }
   [dir="ltr"] .sm-works-loop {
     animation-name: sm-works-side-ltr;

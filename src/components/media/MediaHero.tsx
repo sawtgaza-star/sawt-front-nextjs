@@ -97,7 +97,7 @@ export default function MediaHero({
                   </>
                 ) : (
                   <>
-                    <span>...{eyebrow}</span>
+                    <span>{eyebrow}</span>
                     <MediaHeroWord phrases={phrases} />
                   </>
                 )}

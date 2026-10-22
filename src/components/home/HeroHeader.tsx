@@ -38,7 +38,7 @@ function StatColumn({ stat, lang }) {
   const { figure, word } = splitStatValue(value, lang);
 
   return (
-    <div className="col count">
+    <div className={"col count" + (stat.key ? ` count-${stat.key}` : "")}>
       {" "}
       <i>
         <StatIcon statKey={stat.key} />

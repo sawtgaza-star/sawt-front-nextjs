@@ -87,6 +87,8 @@ export type MediaWorkClient = {
   role?: Localized;
   quote?: Localized;
   avatar_url?: string | null;
+  /** Out of 5. Not sent yet — the card falls back to the design's four. */
+  rating?: number | null;
 };
 
 export type MediaWorkResults = { title?: Localized; items?: MediaWorkFigure[] };

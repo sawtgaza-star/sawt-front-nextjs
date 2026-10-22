@@ -4,14 +4,15 @@
    the photo fills it. The portrait fills the top half and ends in a wide
    rounded bottom, its sides melting into a light tint of its own
    background; then, on the blurred colour, the name with the verified seal, two
-   lines of bio, the follower count and a white "متابعة +" pill. A thin
-   dark-olive outline, no shadow. */
+   lines of bio, the follower count and a white "متابعة +" pill. No shadow
+   anywhere on the card, at any width — not around it, not inside it, not on
+   the name or the follow pill. */
 
 :is(.creators-carousel2, .cr-creators-grid) .cc-card {
   position: relative;
   border-radius: 24px;
   background: #8b927a;
-  box-shadow: 0 0 0 1px rgba(62, 70, 50, 0.7);
+  box-shadow: none;
 }
 
 :is(.creators-carousel2, .cr-creators-grid) .cc-card-screen {
@@ -20,17 +21,6 @@
   border-radius: inherit;
   overflow: hidden;
   color: #fff;
-}
-
-/* a faint light line just inside the outline */
-:is(.creators-carousel2, .cr-creators-grid) .cc-card-screen::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  z-index: 4;
-  border-radius: inherit;
-  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.22);
-  pointer-events: none;
 }
 
 /* room for the outline and the shadow — Owl's stage-outer clips overflow.
@@ -218,7 +208,6 @@
   font-weight: 700;
   line-height: 1.3;
   color: #fff;
-  text-shadow: 0 1px 6px rgba(0, 0, 0, 0.18);
 }
 :is(.creators-carousel2, .cr-creators-grid) .cc-card-name span {
   min-width: 0;
@@ -276,7 +265,7 @@
   font-size: 14px;
   font-weight: 700;
   white-space: nowrap;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.14);
+  box-shadow: none;
   transition:
     background-color 0.2s ease,
     color 0.2s ease,
@@ -316,17 +305,8 @@
   .creators-carousel2 .item {
     height: auto;
   }
-  /* no shadow at all on phones: not the card's outline and drop shadow,
-     not the light line inside it, not the follow pill's */
   :is(.creators-carousel2, .cr-creators-grid) .cc-card {
     border-radius: 20px;
-    box-shadow: none;
-  }
-  :is(.creators-carousel2, .cr-creators-grid) .cc-card-screen::after {
-    box-shadow: none;
-  }
-  :is(.creators-carousel2, .cr-creators-grid) .cc-follow {
-    box-shadow: none;
   }
   :is(.creators-carousel2, .cr-creators-grid) .cc-card-pop {
     height: 275px;

@@ -36,9 +36,6 @@ export default function ProfileTab({
               aria-label={tr("acc_edit_profile")}
             >
               <AccountAvatar src={user.avatar} name={user.name} className="acc-avatar-lg" />
-              <span className="acc-profile-avatar-badge">
-                <IconPencil size={14} />
-              </span>
             </button>
             <div className="acc-profile-text">
               <h2 className="acc-profile-name">{user.name}</h2>
