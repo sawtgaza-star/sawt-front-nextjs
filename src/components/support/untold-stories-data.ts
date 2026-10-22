@@ -2,7 +2,7 @@
    Copy reuses the home page's real-stories keys (rs_*) since the mock shows
    the same two stories; the later cards repeat them as in the design. */
 
-import { localized } from "@/lib/api/pages";
+import { localized, localizedHtml } from "@/lib/api/pages";
 import type { SupportStoryItem } from "@/lib/api/support";
 
 export type UntoldStory = {
@@ -95,8 +95,8 @@ export function resolveStorySlides(
         image: item.cover_image || "/assets/images/tea.png",
         badge: localized(item.badge, lang),
         title: localized(item.headline, lang) || localized(item.footer_title, lang),
-        subtitle: localized(item.footer_subtitle, lang),
-        full: localized(item.excerpt, lang),
+        subtitle: localizedHtml(item.footer_subtitle, lang, { oneLine: true }),
+        full: localizedHtml(item.excerpt, lang, { oneLine: true }),
         href: id ? `/stories/${encodeURIComponent(id)}` : "/stories",
       };
     })

@@ -11,12 +11,12 @@
    creators/[id] pre-renders for `output: 'export'`. A row without an
    identifier is not linkable. */
 
-import { localized } from "@/lib/api/pages";
+import { localized, localizedHtml } from "@/lib/api/pages";
 import { creatorHref } from "@/lib/api/creator-profile";
 import type { CreatorsGridCreator } from "@/lib/api/creators-page";
 import type { HomeCreatorCardData } from "@/components/home/CreatorCard";
 import { formatFollowers } from "@/components/home/home-text";
-import { htmlToLines } from "@/lib/html-text";
+import { richInline } from "@/lib/rich-text";
 import { CONTENT_CATEGORIES } from "@/components/collaborate/creator/creator-form-data";
 import { translations } from "@/lib/translations";
 
@@ -48,11 +48,11 @@ export function creatorCards(
     key: creator.uuid || creator.id || index,
     uuid: creator.uuid || (creator.id != null ? String(creator.id) : ""),
     name: creator.name || "",
-    // the excerpt may arrive as CMS HTML — words only, on one run so the
-    // card's two-line clamp applies
+    // the excerpt arrives as CMS HTML — its formatting kept, on one run so
+    // the card's two-line clamp applies
     bio:
-      htmlToLines(localized(creator.experience_excerpt, lang)).replace(/\n/g, " ") ||
-      roleLabel(localized(creator.role, lang), lang, labels.contentTypes),
+      localizedHtml(creator.experience_excerpt, lang, { oneLine: true }) ||
+      richInline(roleLabel(localized(creator.role, lang), lang, labels.contentTypes)),
     avatar: creator.avatar_url,
     followers: formatFollowers(creator.followers_count),
     followersCount: creator.followers_count,

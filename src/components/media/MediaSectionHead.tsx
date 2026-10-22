@@ -1,3 +1,4 @@
+import RichText from "@/components/ui/RichText";
 /* Every section on /media opens the same way: an orange outline pill, a bold
    heading and a muted one-liner. `titleHl` renders the trailing half of the
    heading in olive green (the packages section is the only one that uses it —
@@ -36,7 +37,7 @@ export default function MediaSectionHead({
           ) : null}
         </h2>
       ) : null}
-      {sub ? <p className="sm-head-sub">{sub}</p> : null}
+      {sub ? <RichText as="p" className="sm-head-sub" html={sub} /> : null}
     </div>
   );
 }

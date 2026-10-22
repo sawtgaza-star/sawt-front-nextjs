@@ -1,4 +1,5 @@
 import type { StoryCardItem } from "./story-data";
+import RichText from "@/components/ui/RichText";
 
 /* The story card used on /stories and in the "قصص ذات صلة" strip — the very
    same `.rs-card` markup the home slider and the support page render, so the
@@ -28,8 +29,8 @@ export default function StoryCard({ story }: { story: StoryCardItem }) {
           {story.footerTitle ? (
             <p className="rs-card-desc rs-card-footer-title">{story.footerTitle}</p>
           ) : null}
-          {story.desc ? <p className="rs-card-desc">{story.desc}</p> : null}
-          {story.full ? <p className="rs-card-full">{story.full}</p> : null}
+          {story.desc ? <RichText as="p" className="rs-card-desc" html={story.desc} /> : null}
+          {story.full ? <RichText as="p" className="rs-card-full" html={story.full} /> : null}
         </div>
         <a
           href={story.href}

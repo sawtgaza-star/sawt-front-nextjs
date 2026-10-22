@@ -5,6 +5,7 @@ import {
   IconPartnership,
 } from "./collaborate-icons";
 import type { CollaborateType } from "./collaborate-types-data";
+import RichText from "@/components/ui/RichText";
 
 const COLLAB_ICON = {
   creator: IconCreator,
@@ -51,9 +52,7 @@ export default function CollaborateTypeCard({
       <h3 className="cl-type-title" data-i18n={type.titleKey}>
         {type.title}
       </h3>
-      <p className="cl-type-desc" data-i18n={type.descKey}>
-        {type.desc}
-      </p>
+      <RichText as="p" className="cl-type-desc" data-i18n={type.descKey} html={type.desc} />
     </label>
   );
 }

@@ -1,4 +1,4 @@
-import { localized } from "@/lib/api/pages";
+import { localized, localizedHtml } from "@/lib/api/pages";
 import type { IncubatorEmployer, IncubatorEmployersContent } from "@/lib/api/incubator-page";
 import IncubatorSectionHead from "./IncubatorSectionHead";
 import { sortItems } from "./incubator-page-view";
@@ -39,7 +39,7 @@ export default function GraduatesPartners({
       <div className="container">
         <IncubatorSectionHead
           title={localized(data.title, lang)}
-          sub={localized(data.subtitle, lang)}
+          sub={localizedHtml(data.subtitle, lang)}
         />
       </div>
 

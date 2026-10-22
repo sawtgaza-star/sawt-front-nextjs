@@ -1,5 +1,5 @@
 import type { ReactNode } from "react";
-import { localized } from "@/lib/api/pages";
+import { localized, localizedHtml } from "@/lib/api/pages";
 import { t } from "@/lib/translations";
 import type { CourseTitledItem } from "@/lib/api/courses";
 import {
@@ -11,6 +11,7 @@ import {
   IconGoalGrid,
 } from "@/components/ui/icons";
 import { sortItems } from "./course-view";
+import RichText from "@/components/ui/RichText";
 
 /* The mock's six icons, in its order — drawn when an objective has no
    uploaded `icon_url`, cycling for a course with more than six. */
@@ -68,7 +69,7 @@ export default function CourseGoals({
               )}
             </span>
             <h3 className="crs-goal-title">{localized(g.title, lang)}</h3>
-            <p className="crs-goal-desc">{localized(g.description, lang)}</p>
+            <RichText as="p" className="crs-goal-desc" html={localizedHtml(g.description, lang)} />
           </article>
         ))}
       </div>

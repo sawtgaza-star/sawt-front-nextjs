@@ -1,5 +1,5 @@
 import type { ReactNode } from "react";
-import { localized } from "@/lib/api/pages";
+import { localized, localizedHtml } from "@/lib/api/pages";
 import { t } from "@/lib/translations";
 import type { CourseTrainer as CourseTrainerData } from "@/lib/api/courses";
 import {
@@ -9,6 +9,7 @@ import {
   IconTrainerInstagram,
 } from "@/components/ui/icons";
 import { PLACEHOLDER } from "@/components/incubator/incubator-page-view";
+import RichText from "@/components/ui/RichText";
 
 /* The four platforms the design draws a chip for. DOM order facebook →
    twitter → linkedin → instagram so facebook lands rightmost in RTL, as in
@@ -36,7 +37,7 @@ export default function CourseTrainer({
   if (!trainer || !name) return null;
 
   const role = localized(trainer.title, lang);
-  const bio = localized(trainer.bio, lang);
+  const bio = localizedHtml(trainer.bio, lang);
   const socials = SOCIAL_ICONS.map((entry) => ({
     ...entry,
     url: (trainer.socials || []).find((s) =>
@@ -60,7 +61,7 @@ export default function CourseTrainer({
         <div className="crs-trainer-info">
           <h3 className="crs-trainer-name">{name}</h3>
           {role && <p className="crs-trainer-role">{role}</p>}
-          {bio && <p className="crs-trainer-bio">{bio}</p>}
+          {bio && <RichText as="p" className="crs-trainer-bio" html={bio} />}
           {socials.length > 0 && (
             <>
               <p className="crs-trainer-follow">{t("crs_trainer_follow")}</p>

@@ -1,4 +1,5 @@
 import { splitHeading } from "./support-text";
+import RichText from "@/components/ui/RichText";
 
 /* The centred heading every /support section opens with (cr-section-head from
    creators.css). With the API's copy the last word takes the accent; without
@@ -48,7 +49,7 @@ export default function SupportSectionHead({
         </h2>
       )}
       {sub ? (
-        <p className="cr-section-sub">{sub}</p>
+        <RichText as="p" className="cr-section-sub" html={sub} />
       ) : title || !fallback.sub ? null : (
         <p className="cr-section-sub" data-i18n={fallback.subKey}>
           {fallback.sub}

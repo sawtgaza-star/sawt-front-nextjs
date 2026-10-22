@@ -9,7 +9,7 @@
    `formatDate` is the home page's helper: one date format for every API date
    on the site, rather than a second copy that could drift from it. */
 
-import { localized } from "@/lib/api/pages";
+import { localized, localizedHtml } from "@/lib/api/pages";
 import { formatDate } from "@/components/home/home-text";
 import type { BlogListItem } from "@/lib/api/blogs";
 import type { NewsItem } from "./news-data";
@@ -33,7 +33,7 @@ export function blogCards(
       img: item.cover_image || "",
       alt: title,
       title,
-      desc: localized(item.excerpt, lang),
+      desc: localizedHtml(item.excerpt, lang, { oneLine: true }),
       date: formatDate(item.publish_date, lang),
       href: blogHref(item),
     };

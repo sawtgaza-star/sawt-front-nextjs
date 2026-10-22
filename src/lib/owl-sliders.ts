@@ -14,7 +14,23 @@ export async function initOwlSliders() {
   // it adds `.owl-loaded` — so a skipped init leaves the section blank until a
   // hard refresh. Instead we skip per element via `:not(.owl-loaded)`, which
   // makes repeat calls on an already-initialized carousel a no-op.
-  $(".creators-carousel:not(.owl-loaded)").owlCarousel({
+  // آخر الأخبار: حين تتسع الشاشة لكل الأخبار القادمة من الـ API (3 أو أقل على
+  // الديسكتوب) لا يوجد ما يُسحب إليه — فلا loop ولا سحب ولا أسهم، وإلا كان
+  // السحب يدوّر نسخاً مكرّرة من نفس البطاقات
+  const $news = $(".creators-carousel:not(.owl-loaded)");
+  const newsAt = (items, extra = {}) => {
+    const fits = $news.children().length <= items;
+    return {
+      items,
+      loop: !fits,
+      mouseDrag: !fits,
+      touchDrag: !fits,
+      pullDrag: !fits,
+      nav: !fits,
+      ...extra,
+    };
+  };
+  $news.owlCarousel({
     loop: true,
     margin: 20,
     rtl: true, // مهم عشان العربي
@@ -26,9 +42,9 @@ export async function initOwlSliders() {
     ],
     responsive: {
       // الجوال: بطاقة كاملة + نصف البطاقة التالية (autoWidth + عرض البطاقة بالـ CSS)
-      0: { items: 1, nav: false, loop: false, autoWidth: true, margin: 12 },
-      600: { items: 2 },
-      1000: { items: 3 },
+      0: newsAt(1, { nav: false, loop: false, autoWidth: true, margin: 12 }),
+      600: newsAt(2),
+      1000: newsAt(3),
     },
   });
 

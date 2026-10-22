@@ -1,4 +1,4 @@
-import { localized } from "@/lib/api/pages";
+import { localized, localizedHtml } from "@/lib/api/pages";
 import { localizedList, sortItems, type MediaServicesContent } from "@/lib/api/media-page";
 import { SERVICE_THEMES, cycle } from "./media-page-view";
 import MediaSectionHead from "./MediaSectionHead";
@@ -26,7 +26,7 @@ export default function MediaServices({
     number: item.number || "",
     title: localized(item.title, lang),
     tagline: localized(item.tagline, lang),
-    description: localized(item.description, lang),
+    description: localizedHtml(item.description, lang),
     tags: localizedList(item.tags, lang),
     imageUrl: item.image_url || null,
     href: item.path || (item.slug ? "/media/services/" + item.slug : "#"),
@@ -42,7 +42,7 @@ export default function MediaServices({
         <MediaSectionHead
           pill={localized(data.eyebrow, lang)}
           title={localized(data.title, lang)}
-          sub={localized(data.subtitle, lang)}
+          sub={localizedHtml(data.subtitle, lang)}
         />
 
         <MediaServicesSlider cards={cards} />

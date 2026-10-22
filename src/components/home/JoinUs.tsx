@@ -1,6 +1,7 @@
 // @ts-nocheck
 /* eslint-disable */
-import { localized } from "@/lib/api/pages";
+import { localized, localizedHtml } from "@/lib/api/pages";
+import RichText from "@/components/ui/RichText";
 import type { HomeJoinCta } from "@/lib/api/home";
 
 /* The "انضم إلينا كصانع محتوى" banner. On the home page every word and the
@@ -20,7 +21,7 @@ export default function JoinUs({
   lang?: string;
 }) {
   const title = localized(data?.title, lang);
-  const description = localized(data?.description, lang);
+  const description = localizedHtml(data?.description, lang);
   const button = localized(data?.button?.label, lang);
   const image = data?.image_url || "/assets/images/join-img.jpg";
 
@@ -40,9 +41,13 @@ export default function JoinUs({
             <h2 className="join-us-title" data-i18n={title ? undefined : "join_creator_title"}>
               {title || "انضم إلينا كصانع محتوى"}
             </h2>
-            <p className="join-us-desc" data-i18n={description ? undefined : "join_creator_desc"}>
-              {description || "صوت تجمع صناع المحتوى , كن صوت من لاصوت له"}
-            </p>
+            {description ? (
+              <RichText as="p" className="join-us-desc" html={description} />
+            ) : (
+              <p className="join-us-desc" data-i18n="join_creator_desc">
+                صوت تجمع صناع المحتوى , كن صوت من لاصوت له
+              </p>
+            )}
             <a className="btn btn-dark-green join-us-btn" id="openJoinModal">
               <span data-i18n={button ? undefined : "join_creator_btn"}>
                 {button || "طلب الانضمام"}

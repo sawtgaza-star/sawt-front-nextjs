@@ -1,4 +1,5 @@
 import { splitTitle } from "./incubator-page-view";
+import RichText from "@/components/ui/RichText";
 
 /* The heading + one-liner every /incubator section opens with. The API sends
    the heading as one string; splitTitle() finds the olive tail the design
@@ -36,7 +37,7 @@ export default function IncubatorSectionHead({
   return (
     <div className="inc-section-head">
       <IncubatorTitle title={title} />
-      {sub ? <p className="inc-section-sub">{sub}</p> : null}
+      {sub ? <RichText as="p" className="inc-section-sub" html={sub} /> : null}
     </div>
   );
 }

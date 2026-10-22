@@ -1,8 +1,9 @@
-import { localized } from "@/lib/api/pages";
+import { localized, localizedHtml } from "@/lib/api/pages";
 import type { MediaWorkClient } from "@/lib/api/media-work";
 import RatingStars from "@/components/ui/RatingStars";
 import { IconReviewQuote } from "./media-icons";
 import MediaProjectHead from "./MediaProjectHead";
+import RichText from "@/components/ui/RichText";
 
 /* "رأي العميل" panel — the client's card on the right and the two scores the
    design draws as orange meters on the left.
@@ -47,7 +48,7 @@ export default function MediaProjectReview({
             <RatingStars value={data?.rating ?? FALLBACK_RATING} />
           </div>
 
-          <p className="sm-pj-review-quote">{localized(data?.quote, lang)}</p>
+          <RichText as="p" className="sm-pj-review-quote" html={localizedHtml(data?.quote, lang)} />
 
           <b className="sm-pj-review-name">{data?.name}</b>
           <span className="sm-pj-review-meta">{localized(data?.role, lang)}</span>

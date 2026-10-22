@@ -1,4 +1,4 @@
-import { localized } from "@/lib/api/pages";
+import { localized, localizedHtml } from "@/lib/api/pages";
 import type { SupportFundAllocation } from "@/lib/api/support";
 import { resolveAllocations } from "./allocations-data";
 import SupportSectionHead from "./SupportSectionHead";
@@ -8,6 +8,7 @@ import {
   IconLightbulbOutline,
   IconMicOutline,
 } from "@/components/ui/icons";
+import RichText from "@/components/ui/RichText";
 
 const ICONS = {
   lightbulb: IconLightbulbOutline,
@@ -38,14 +39,14 @@ export default function WhereDonationsGo({
   const badge = localized(data?.transparency?.badge, lang);
   const [badgeTotal, badgeCaption] = splitPercentBadge(badge);
   const summaryTitle = localized(data?.transparency?.title, lang);
-  const summaryBody = localized(data?.transparency?.body, lang);
+  const summaryBody = localizedHtml(data?.transparency?.body, lang);
 
   return (
     <section className="sp-section" id="where-donations">
       <div className="container">
         <SupportSectionHead
           title={localized(data?.title, lang)}
-          sub={localized(data?.subtitle, lang)}
+          sub={localizedHtml(data?.subtitle, lang)}
           tailWords={1}
           fallback={{
             pre: "أين تذهب",
@@ -81,9 +82,7 @@ export default function WhereDonationsGo({
                   <h3 className="sp-alloc-title" data-i18n={a.titleKey || undefined}>
                     {a.title}
                   </h3>
-                  <p className="sp-alloc-desc" data-i18n={a.descKey || undefined}>
-                    {a.desc}
-                  </p>
+                  <RichText as="p" className="sp-alloc-desc" data-i18n={a.descKey || undefined} html={a.desc} />
                   <ul className="sp-alloc-list">
                     {a.items.map((item, i) => (
                       <li key={i}>
@@ -154,7 +153,7 @@ export default function WhereDonationsGo({
               </h3>
             )}
             {summaryBody ? (
-              <p className="sp-alloc-summary-sub">{summaryBody}</p>
+              <RichText as="p" className="sp-alloc-summary-sub" html={summaryBody} />
             ) : (
               <p
                 className="sp-alloc-summary-sub"

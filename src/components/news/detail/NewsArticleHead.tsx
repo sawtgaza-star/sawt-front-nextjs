@@ -5,6 +5,7 @@ import {
   IconMetaPencil,
 } from "./news-icons";
 import type { NewsArticle } from "./news-article-data";
+import RichText from "@/components/ui/RichText";
 
 /* Category pills · headline · standfirst · meta row, above the gallery.
    RTL DOM order is the mock's right-to-left reading order: views, read time,
@@ -40,9 +41,7 @@ export default function NewsArticleHead({ article }: { article: NewsArticle }) {
       <h1 className="nws-title" data-i18n={article.titleKey}>
         {article.title}
       </h1>
-      <p className="nws-standfirst" data-i18n={article.descKey}>
-        {article.desc}
-      </p>
+      <RichText as="p" className="nws-standfirst" data-i18n={article.descKey} html={article.desc} />
 
       <ul className="nws-meta">
         <li className="nws-meta-item">

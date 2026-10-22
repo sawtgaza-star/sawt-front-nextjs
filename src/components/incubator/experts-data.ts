@@ -4,7 +4,7 @@
    language; the two hover actions only exist when the API gives them a url
    (`link_url`, and a `linkedin` entry in `socials`). */
 
-import { localized } from "@/lib/api/pages";
+import { localized, localizedHtml } from "@/lib/api/pages";
 import type { IncubatorExpert } from "@/lib/api/incubator-page";
 import { PLACEHOLDER } from "./incubator-page-view";
 
@@ -43,7 +43,7 @@ export function toExpert(expert: IncubatorExpert, lang: string, index: number): 
     image: expert.avatar_url || PLACEHOLDER.person,
     name: localized(expert.name, lang),
     badge: years(localized(expert.experience, lang), lang),
-    desc: localized(expert.bio, lang),
+    desc: localizedHtml(expert.bio, lang),
     profileHref: expert.link_url || undefined,
     linkedinHref: linkedin?.url || undefined,
   };

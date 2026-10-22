@@ -2,10 +2,11 @@
 /* eslint-disable */
 import Link from "next/link";
 import "@/styles/home-features.css";
-import { localized } from "@/lib/api/pages";
+import { localized, localizedHtml } from "@/lib/api/pages";
 import type { HomeWhoWeAre } from "@/lib/api/home";
 import { bySortOrder } from "./home-text";
 import SawtAboutAnim from "./sawt-anim/SawtAboutAnim";
+import RichText from "@/components/ui/RichText";
 
 /* The API's `who_we_are` block. The section keeps its two layouts — a mobile
    one (image first, 2x2 feature grid) and the desktop row — but they now draw
@@ -36,10 +37,10 @@ export default function SoutSection({
   lang?: string;
 }) {
   const sectionTitle = localized(data?.section_title, lang);
-  const sectionSubtitle = localized(data?.section_subtitle, lang);
-  const lead = localized(data?.lead, lang);
+  const sectionSubtitle = localizedHtml(data?.section_subtitle, lang);
+  const lead = localizedHtml(data?.lead, lang);
   const title = localized(data?.title, lang);
-  const description = localized(data?.description, lang);
+  const description = localizedHtml(data?.description, lang);
   const cta = localized(data?.cta?.label, lang);
   const features = bySortOrder(data?.features).map((feature) => ({
     title: localized(feature.title, lang),
@@ -60,20 +61,14 @@ export default function SoutSection({
               <h1 className="fw-bold who-us font-42">{sectionTitle}</h1>
             ) : null}{" "}
             {sectionSubtitle ? (
-              <p
+              <RichText as="p"
                 className="mt-2 font-24 d-none d-md-block"
-                style={{ color: "rgba(72, 72, 72, 1)" }}
-              >
-                {sectionSubtitle}
-              </p>
+                style={{ color: "rgba(72, 72, 72, 1)" }} html={sectionSubtitle} />
             ) : null}{" "}
             {lead || sectionSubtitle ? (
-              <p
+              <RichText as="p"
                 className="mt-2 sout-mobile-lead d-md-none"
-                style={{ color: "rgba(72, 72, 72, 1)" }}
-              >
-                {lead || sectionSubtitle}
-              </p>
+                style={{ color: "rgba(72, 72, 72, 1)" }} html={lead || sectionSubtitle} />
             ) : null}{" "}
           </div>{" "}
           {/*  نسخة الجوال: الصورة أولاً ثم النص وشبكة مزايا 2×2  */}{" "}
@@ -86,7 +81,7 @@ export default function SoutSection({
               <h3 className="sout-mobile-title fw-bold text-center">{title}</h3>
             ) : null}{" "}
             {description ? (
-              <p className="sout-mobile-desc text-center">{description}</p>
+              <RichText as="p" className="sout-mobile-desc text-center" html={description} />
             ) : null}{" "}
             <div className="row sout-mobile-features">
               {" "}
@@ -132,12 +127,9 @@ export default function SoutSection({
                 <h3 className="main-title text-bold fw-bold">{title}</h3>
               ) : null}{" "}
               {description ? (
-                <p
+                <RichText as="p"
                   className="description text-secondary font-18 lh-lg"
-                  style={{ color: "rgba(90, 90, 90, 1) !important", textAlign: "justify" }}
-                >
-                  {description}
-                </p>
+                  style={{ color: "rgba(90, 90, 90, 1) !important", textAlign: "justify" }} html={description} />
               ) : null}{" "}
               <div className="features-grid row gap-2 my-4">
                 {" "}

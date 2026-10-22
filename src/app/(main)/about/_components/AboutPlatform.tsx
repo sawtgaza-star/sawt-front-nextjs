@@ -1,5 +1,6 @@
-import { localized, type AboutPlatformContent } from "@/lib/api/pages";
+import { localized, type AboutPlatformContent, localizedHtml } from "@/lib/api/pages";
 import { splitHeading } from "./about-text";
+import RichText from "@/components/ui/RichText";
 
 /* API `platform` block, and nothing else — see AboutHero. The heading's accent
    is on its last word ("…لنكون صوتك؟"); see ./about-text. The birds are the
@@ -12,7 +13,7 @@ export default function AboutPlatform({
   lang?: string;
 }) {
   const title = localized(data?.title, lang);
-  const description = localized(data?.description, lang);
+  const description = localizedHtml(data?.description, lang);
   const image = data?.image_url;
   const [titleHead, titleTail] = splitHeading(title, 1);
 
@@ -41,7 +42,7 @@ export default function AboutPlatform({
                 </h2>
               ) : null}{" "}
               {description ? (
-                <p className="about-the-platform-desc">{description}</p>
+                <RichText as="p" className="about-the-platform-desc" html={description} />
               ) : null}{" "}
             </div>{" "}
             {image ? (

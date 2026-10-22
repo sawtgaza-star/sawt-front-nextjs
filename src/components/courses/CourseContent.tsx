@@ -17,7 +17,7 @@
    hero, exactly as in the mock. */
 
 import { useEffect } from "react";
-import { localized } from "@/lib/api/pages";
+import { localized, localizedHtml } from "@/lib/api/pages";
 import { useCourse } from "@/lib/api/use-course";
 import { useLang } from "@/lib/use-lang";
 import CourseHero from "./CourseHero";
@@ -50,7 +50,7 @@ export default function CourseContent({ slug: segment }: { slug: string }) {
     ? {
         title,
         category: localized(course.category?.name, lang),
-        desc: localized(course.description, lang),
+        desc: localizedHtml(course.description, lang),
       }
     : null;
 

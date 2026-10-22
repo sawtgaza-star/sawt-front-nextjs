@@ -1,4 +1,5 @@
 import type { NewsArticle, NewsBodyBlock } from "./news-article-data";
+import RichText from "@/components/ui/RichText";
 
 /* One authored block — same elements the news prose below uses, so a story
    article renders through the identical CSS. */
@@ -33,8 +34,10 @@ function Block({ block }: { block: NewsBodyBlock }) {
    the article (see the mock's own prose below). The payload keeps the quote in
    a field of its own, so the body is cut after its first block and the quote
    is rendered into the gap. A body that is one block long — or none the regex
-   recognises — leaves `rest` empty and the quote simply closes the article. */
-const LEAD_END = /<\/(p|h1|h2|h3|h4|h5|blockquote|ul|ol|figure|table|div)>/i;
+   recognises — leaves `rest` empty and the quote simply closes the article.
+   A heading never ends the lead: an article that opens with one keeps it
+   together with its first paragraph, and the quote comes after both. */
+const LEAD_END = /<\/(p|blockquote|ul|ol|figure|table|div)>/i;
 
 function splitAfterLead(html: string): [string, string] {
   const match = LEAD_END.exec(html);
@@ -76,7 +79,7 @@ export default function NewsBody({ article }: { article: NewsArticle }) {
         <div className="nws-html" dangerouslySetInnerHTML={{ __html: lead }} />
         {article.quote ? (
           <blockquote className="nws-quote">
-            <p className="nws-quote-text">{article.quote.text}</p>
+            <RichText as="p" className="nws-quote-text" html={article.quote.text} />
             <cite className="nws-quote-by">{article.quote.by}</cite>
           </blockquote>
         ) : null}

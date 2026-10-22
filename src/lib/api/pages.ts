@@ -15,6 +15,7 @@
 
 import { API_ORIGIN, apiFetch } from "./client";
 import { htmlToLines } from "@/lib/html-text";
+import { richInline } from "@/lib/rich-text";
 
 /** One string in both languages; either side may be missing. */
 export type Localized = { ar?: string | null; en?: string | null };
@@ -154,6 +155,17 @@ export function localizedRich(
   if (typeof value === "string") return value.trim();
   const preferred = lang === "en" ? value.en : value.ar;
   return (preferred || value.ar || value.en || "").trim();
+}
+
+/** A prose field with the editor's formatting kept (paragraphs → lines, bold,
+    italic, links) as inline-safe HTML — render it with <RichText>. "" when the
+    field is missing, so the same truthiness checks as `localized` apply. */
+export function localizedHtml(
+  value: Localized | string | null | undefined,
+  lang: string,
+  options?: { oneLine?: boolean },
+): string {
+  return richInline(localizedRich(value, lang), options);
 }
 
 /** Cards in the order the editor arranged them. Entries without `sort_order`

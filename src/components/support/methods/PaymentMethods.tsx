@@ -2,7 +2,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import PaymentMethodCard from "./PaymentMethodCard";
-import { localized } from "@/lib/api/pages";
+import { localized, localizedHtml } from "@/lib/api/pages";
 import type { SupportMethodsPage } from "@/lib/api/support-methods";
 import SupportSectionHead from "../SupportSectionHead";
 import { resolvePaymentMethods } from "./payment-methods-data";
@@ -44,7 +44,7 @@ export default function PaymentMethods({
       <div className="container">
         <SupportSectionHead
           title={localized(data?.section?.title, lang)}
-          sub={localized(data?.section?.description, lang)}
+          sub={localizedHtml(data?.section?.description, lang)}
           fallback={{
             pre: "اختر طريقة الدعم التي",
             preKey: "support_methods_title_pre",

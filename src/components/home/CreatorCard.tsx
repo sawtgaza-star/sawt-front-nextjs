@@ -15,6 +15,7 @@
    picks one, so the DOM translator has nothing to do. */
 
 import { textDir } from "./home-text";
+import RichText from "@/components/ui/RichText";
 
 export type HomeCreatorCardData = {
   uuid: string;
@@ -117,7 +118,7 @@ export default function CreatorCard({
               ) : null}
             </h3>
             {/* always rendered: its two-line height keeps the names level */}
-            <p className="cc-card-bio">{creator.bio}</p>
+            <RichText as="p" className="cc-card-bio" html={creator.bio} />
             <div className="cc-card-foot">
               {creator.followers ? (
                 <span className="cc-card-stat">

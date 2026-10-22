@@ -34,9 +34,7 @@ export default function TestimonialQuote({
 
   return (
     <>
-      <p className="inc-testi-text" ref={textRef}>
-        {text}
-      </p>
+      <p className="inc-testi-text" ref={textRef} dangerouslySetInnerHTML={{ __html: text }} />
 
       {/* the mock's chevron control: it opens the quote past its 3-line
           clamp rather than navigating */}

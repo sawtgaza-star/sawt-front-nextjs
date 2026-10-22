@@ -8,6 +8,7 @@ import {
 import RatingStars from "@/components/ui/RatingStars";
 import WaitlistButton from "@/components/courses/course-register/WaitlistButton";
 import type { CourseBlock, PopularCourse } from "./popular-courses-data";
+import RichText from "@/components/ui/RichText";
 
 const CHIP_ICONS = {
   duration: IconClockCheck,
@@ -106,9 +107,7 @@ export default function CourseCard({ course }: { course: PopularCourse }) {
           {course.desc &&
             rv(
               "desc",
-              <p className="inc-course-desc">
-                {course.desc}
-              </p>,
+              <RichText as="p" className="inc-course-desc" html={course.desc} />,
             )}
 
           {course.tutor &&

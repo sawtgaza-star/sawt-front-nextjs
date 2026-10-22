@@ -1,4 +1,5 @@
 import type { ServiceTheme } from "./media-page-view";
+import RichText from "@/components/ui/RichText";
 
 /** One card of the services deck, already resolved to the current language. */
 export type ServiceCard = {
@@ -53,7 +54,7 @@ export default function MediaServiceCard({
           ))}
         </div>
 
-        <p className="sm-svc-desc">{service.description}</p>
+        <RichText as="p" className="sm-svc-desc" html={service.description} />
 
         {service.ctaLabel ? (
           <a className="sm-btn-green sm-svc-btn" href={service.href}>

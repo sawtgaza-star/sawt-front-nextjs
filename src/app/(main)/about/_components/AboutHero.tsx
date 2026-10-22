@@ -1,7 +1,8 @@
 import SiteNav from "@/components/site/SiteNav";
-import { localized, type AboutHeroContent } from "@/lib/api/pages";
+import { localized, type AboutHeroContent, localizedHtml } from "@/lib/api/pages";
 import { AboutHeroSkeleton } from "./AboutSkeleton";
 import BreadcrumbHome from "@/components/site/BreadcrumbHome";
+import RichText from "@/components/ui/RichText";
 
 /* Everything this section says comes from the API's `hero` block. There is no
    built-in copy behind it any more and no `data-i18n` key on the text: a field
@@ -27,7 +28,7 @@ export default function AboutHero({
   loading?: boolean;
 }) {
   const title = localized(data?.title, lang);
-  const description = localized(data?.description, lang);
+  const description = localizedHtml(data?.description, lang);
   const image = data?.image_url;
 
   return (
@@ -56,7 +57,7 @@ export default function AboutHero({
             <>
               {title ? <h1 className="about-hero-title">{title}</h1> : null}{" "}
               {description ? (
-                <p className="about-hero-desc">{description}</p>
+                <RichText as="p" className="about-hero-desc" html={description} />
               ) : null}
             </>
           )}{" "}

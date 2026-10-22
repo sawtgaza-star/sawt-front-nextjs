@@ -4,11 +4,11 @@ import CreatorCard from "./CreatorCard";
 import CreatorFollowWiring from "./CreatorFollowWiring";
 import CreatorPopWiring from "./CreatorPopWiring";
 import "@/styles/home-creator-card.css";
-import { localized } from "@/lib/api/pages";
+import { localized, localizedHtml } from "@/lib/api/pages";
 import { creatorHref } from "@/lib/api/creator-profile";
 import type { HomeCreators } from "@/lib/api/home";
 import { splitHeading, formatFollowers } from "./home-text";
-import { htmlToLines } from "@/lib/html-text";
+import RichText from "@/components/ui/RichText";
 
 /* The API's `creators` block. The heading's accent falls on its last two
    words ("… في صوت" / "… in Sawt") — see splitHeading in ./home-text.
@@ -31,7 +31,7 @@ export default function ContentCreators({
 }) {
   const title = localized(data?.title, lang);
   const [titleHead, titleTail] = splitHeading(title, 2);
-  const description = localized(data?.description, lang);
+  const description = localizedHtml(data?.description, lang);
   const viewAll = localized(data?.view_all?.label, lang);
   const followLabel = lang === "en" ? "Follow" : "متابعة";
   const unfollowLabel = lang === "en" ? "Unfollow" : "إلغاء المتابعة";
@@ -40,11 +40,11 @@ export default function ContentCreators({
     key: item.uuid || item.id,
     uuid: item.uuid || (item.id != null ? String(item.id) : ""),
     name: item.name || "",
-    // the excerpt may arrive as CMS HTML ('<p dir="rtl">…</p>') — words only,
-    // on one run so the card's two-line clamp applies
+    // the excerpt arrives as CMS HTML ('<p dir="rtl">…</p>') — its formatting
+    // kept, on one run so the card's two-line clamp applies
     bio:
-      htmlToLines(localized(item.experience_excerpt, lang)).replace(/\n/g, " ") ||
-      localized(item.role, lang),
+      localizedHtml(item.experience_excerpt, lang, { oneLine: true }) ||
+      localizedHtml(item.role, lang),
     avatar: item.avatar_url,
     followers: formatFollowers(item.followers_count),
     followersCount: item.followers_count,
@@ -84,12 +84,9 @@ export default function ContentCreators({
               </h1>
             ) : null}{" "}
             {description ? (
-              <h4
+              <RichText as="h4"
                 className="font-24 creators-subtitle"
-                style={{ color: "rgba(72, 72, 72, 1)", marginTop: "20px" }}
-              >
-                {description}
-              </h4>
+                style={{ color: "rgba(72, 72, 72, 1)", marginTop: "20px" }} html={description} />
             ) : null}{" "}
           </div>{" "}
           <div className="owl-carousel creators-carousel2">

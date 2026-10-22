@@ -1,4 +1,4 @@
-import { localized } from "@/lib/api/pages";
+import { localized, localizedHtml } from "@/lib/api/pages";
 import type { IncubatorExpertsContent } from "@/lib/api/incubator-page";
 import ExpertCard from "./ExpertCard";
 import IncubatorSectionHead from "./IncubatorSectionHead";
@@ -22,7 +22,7 @@ export default function ExpertsTeam({
       <div className="container">
         <IncubatorSectionHead
           title={localized(data.title, lang)}
-          sub={localized(data.subtitle, lang)}
+          sub={localizedHtml(data.subtitle, lang)}
         />
 
         <div className="inc-expert-row">

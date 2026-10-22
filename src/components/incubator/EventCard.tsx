@@ -3,10 +3,11 @@ import {
   IconHourglass,
   IconLocationPin,
 } from "@/components/ui/icons";
-import { localized } from "@/lib/api/pages";
+import { localized, localizedHtml } from "@/lib/api/pages";
 import type { IncubatorEvent } from "@/lib/api/incubator-page";
 import EventReserveButton from "./EventReserveButton";
 import { PLACEHOLDER } from "./incubator-page-view";
+import RichText from "@/components/ui/RichText";
 
 /* One "استكشف أحدث فعالياتنا" card: photo with the orange date badge straddling
    its bottom edge, the date/time chips, title, excerpt and the venue row
@@ -58,7 +59,7 @@ export default function EventCard({
         ) : null}
 
         <h3 className="inc-event-title">{localized(event.title, lang)}</h3>
-        <p className="inc-event-desc">{localized(event.description, lang)}</p>
+        <RichText as="p" className="inc-event-desc" html={localizedHtml(event.description, lang)} />
 
         <div className="inc-event-foot">
           {tags ? (

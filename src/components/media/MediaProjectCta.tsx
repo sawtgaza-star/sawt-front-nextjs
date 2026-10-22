@@ -1,6 +1,7 @@
-import { localized } from "@/lib/api/pages";
+import { localized, localizedHtml } from "@/lib/api/pages";
 import type { MediaServiceCtaContent } from "@/lib/api/media-service";
 import { ctaHref, splitBrand } from "./media-page-view";
+import RichText from "@/components/ui/RichText";
 
 /* The banner that closes a service page and a case study: a still under an
    olive wash, the headline with "صوت ميديا" in orange, and the button through
@@ -21,7 +22,7 @@ export default function MediaProjectCta({
   lang?: string;
 }) {
   const [lead, brand, tail] = splitBrand(localized(data.title, lang));
-  const body = localized(data.body, lang);
+  const body = localizedHtml(data.body, lang);
   const buttonLabel = localized(data.button?.label, lang);
 
   return (
@@ -41,7 +42,7 @@ export default function MediaProjectCta({
               {brand ? <span className="sm-pj-cta-hl">{brand}</span> : null}
               {tail}
             </h2>
-            {body ? <p className="sm-pj-cta-desc">{body}</p> : null}
+            {body ? <RichText as="p" className="sm-pj-cta-desc" html={body} /> : null}
             {buttonLabel ? (
               <a
                 className="sm-btn-green sm-btn-lg"

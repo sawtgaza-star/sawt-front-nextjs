@@ -2,6 +2,7 @@ import IncubatorNav from "@/components/incubator/IncubatorNav";
 import BreadcrumbHome from "@/components/site/BreadcrumbHome";
 import SkeletonText from "@/components/ui/SkeletonText";
 import { HERO } from "./course-skeleton/skeleton-data";
+import RichText from "@/components/ui/RichText";
 
 export type CourseHeroCopy = {
   title: string;
@@ -49,7 +50,7 @@ export default function CourseHero({
             <div className="crs-hero-copy">
               {copy.category && <span className="crs-badge">{copy.category}</span>}
               <h1 className="crs-hero-title">{copy.title}</h1>
-              {copy.desc && <p className="crs-hero-desc">{copy.desc}</p>}
+              {copy.desc && <RichText as="p" className="crs-hero-desc" html={copy.desc} />}
             </div>
           ) : loading ? (
             <div className="crs-hero-copy" aria-busy="true" aria-hidden="true">

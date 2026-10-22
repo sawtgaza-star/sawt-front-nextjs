@@ -1,5 +1,6 @@
 import { IconCircleCheck } from "@/components/ui/icons";
-import { localized } from "@/lib/api/pages";
+import { localized, localizedHtml } from "@/lib/api/pages";
+import RichText from "@/components/ui/RichText";
 import type { SupportImpactContent, SupportPlansContent } from "@/lib/api/support";
 import DonateForm from "./DonateForm";
 import SupportSectionHead from "./SupportSectionHead";
@@ -21,9 +22,9 @@ export default function DonateSection({
 }) {
   const pledgeTitle = localized(impact?.title, lang);
   const pledges = (impact?.items || [])
-    .map((item) => localized(item.text, lang))
+    .map((item) => localizedHtml(item.text, lang))
     .filter(Boolean);
-  const quote = localized(impact?.quote?.text, lang);
+  const quote = localizedHtml(impact?.quote?.text, lang);
   const author = localized(impact?.quote?.author, lang);
   const place = localized(impact?.quote?.location, lang);
 
@@ -32,7 +33,7 @@ export default function DonateSection({
       <div className="container">
         <SupportSectionHead
           title={localized(plans?.title, lang)}
-          sub={localized(plans?.description, lang)}
+          sub={localizedHtml(plans?.description, lang)}
           fallback={{
             pre: "كيف تريد ان",
             preKey: "support_donate_title_pre",
@@ -68,7 +69,7 @@ export default function DonateSection({
                         <i className="sp-pledge-check">
                           <IconCircleCheck />
                         </i>
-                        <span>{text}</span>
+                        <RichText as="span" html={text} />
                       </li>
                     ))
                   : PLEDGE_ITEMS.map((item) => (
@@ -84,7 +85,7 @@ export default function DonateSection({
 
             <figure className="sp-quote">
               {quote ? (
-                <blockquote className="sp-quote-text">«{quote}»</blockquote>
+                <RichText as="blockquote" className="sp-quote-text" html={`«${quote}»`} />
               ) : (
                 <blockquote
                   className="sp-quote-text"

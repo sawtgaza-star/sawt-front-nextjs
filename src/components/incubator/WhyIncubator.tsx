@@ -1,7 +1,8 @@
-import { localized } from "@/lib/api/pages";
+import { localized, localizedHtml } from "@/lib/api/pages";
 import type { IncubatorWhyContent } from "@/lib/api/incubator-page";
 import { IncubatorTitle } from "./IncubatorSectionHead";
 import { PLACEHOLDER, sortItems } from "./incubator-page-view";
+import RichText from "@/components/ui/RichText";
 
 /* "لماذا حاضنة صوت؟" — intro copy + 2×2 feature grid on the start side, and
    the filming photo layered over two rounded blocks + a dotted grid. Copy,
@@ -15,7 +16,7 @@ export default function WhyIncubator({
   lang: string;
 }) {
   const title = localized(data?.title, lang);
-  const desc = localized(data?.subtitle, lang);
+  const desc = localizedHtml(data?.subtitle, lang);
   const items = sortItems(data?.items);
   if (!data || (!title && !desc && !items.length)) return null;
 
@@ -36,7 +37,7 @@ export default function WhyIncubator({
 
           <div className="inc-why-text">
             <IncubatorTitle title={title} className="inc-section-title inc-why-title" />
-            {desc ? <p className="inc-why-desc">{desc}</p> : null}
+            {desc ? <RichText as="p" className="inc-why-desc" html={desc} /> : null}
 
             {items.length ? (
               <div className="inc-why-features">
@@ -49,9 +50,7 @@ export default function WhyIncubator({
                       <h3 className="inc-why-feature-title">
                         {localized(item.title, lang)}
                       </h3>
-                      <p className="inc-why-feature-desc">
-                        {localized(item.description, lang)}
-                      </p>
+                      <RichText as="p" className="inc-why-feature-desc" html={localizedHtml(item.description, lang)} />
                     </div>
                   </div>
                 ))}

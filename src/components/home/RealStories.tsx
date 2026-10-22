@@ -1,8 +1,9 @@
 // @ts-nocheck
 /* eslint-disable */
-import { localized } from "@/lib/api/pages";
+import { localized, localizedHtml } from "@/lib/api/pages";
 import type { HomeStories } from "@/lib/api/home";
 import { splitHeading } from "./home-text";
+import RichText from "@/components/ui/RichText";
 
 /* The API's `stories` block. Each card maps straight onto the legacy slots:
 
@@ -40,10 +41,10 @@ function StoryCard({ story }) {
               <h5 className="rs-card-title">{story.headline}</h5>
             ) : null}{" "}
             {story.subtitle ? (
-              <p className="rs-card-desc">{story.subtitle}</p>
+              <RichText as="p" className="rs-card-desc" html={story.subtitle} />
             ) : null}{" "}
             {story.excerpt ? (
-              <p className="rs-card-full">{story.excerpt}</p>
+              <RichText as="p" className="rs-card-full" html={story.excerpt} />
             ) : null}{" "}
           </div>{" "}
           <a
@@ -70,7 +71,7 @@ export default function RealStories({
 }) {
   const title = localized(data?.title, lang);
   const [titleHead, titleTail] = splitHeading(title, 1);
-  const description = localized(data?.description, lang);
+  const description = localizedHtml(data?.description, lang);
   const badge = localized(data?.badge, lang);
 
   const stories = (Array.isArray(data?.items) ? data.items : []).map((item) => ({
@@ -78,8 +79,8 @@ export default function RealStories({
     image: item.cover_image,
     badge: localized(item.badge, lang),
     headline: localized(item.headline, lang),
-    subtitle: localized(item.footer_subtitle, lang),
-    excerpt: localized(item.excerpt, lang),
+    subtitle: localizedHtml(item.footer_subtitle, lang, { oneLine: true }),
+    excerpt: localizedHtml(item.excerpt, lang, { oneLine: true }),
     /* /stories/{uuid} — the detail endpoint resolves the uuid only, so a row
        without one is not linkable (see lib/api/stories) */
     href: item.uuid ? `/stories/${item.uuid}` : "#",
@@ -117,7 +118,7 @@ export default function RealStories({
                     <span className="rs-title-word">{titleTail}</span>{" "}
                   </h2>
                 ) : null}{" "}
-                {description ? <p className="rs-desc">{description}</p> : null}{" "}
+                {description ? <RichText as="p" className="rs-desc" html={description} /> : null}{" "}
                 {badge ? (
                   <div className="rs-count">
                     {" "}

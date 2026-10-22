@@ -1,9 +1,10 @@
 import { IconPlay } from "@/components/ui/icons";
-import { localized } from "@/lib/api/pages";
+import { localized, localizedHtml } from "@/lib/api/pages";
 import type { IncubatorGalleryContent } from "@/lib/api/incubator-page";
 import { CHIP_POS, SLOT_AREAS } from "./album-data";
 import IncubatorSectionHead from "./IncubatorSectionHead";
 import { PLACEHOLDER, sortItems } from "./incubator-page-view";
+import RichText from "@/components/ui/RichText";
 
 /* "الحاضنة بيتك الثاني ، البوم الحاضنة" — a three-column photo album from the
    API's `gallery` block, each item placed by its `slot` (see ./album-data).
@@ -32,14 +33,14 @@ export default function IncubatorAlbum({
       <div className="container">
         <IncubatorSectionHead
           title={localized(data.title, lang)}
-          sub={localized(data.subtitle, lang)}
+          sub={localizedHtml(data.subtitle, lang)}
         />
 
         <div className="inc-album-grid">
           {items.map((item) => {
             const area = SLOT_AREAS[item.slot || ""];
             const caption = localized(item.caption, lang);
-            const sub = localized(item.subtitle, lang);
+            const sub = localizedHtml(item.subtitle, lang);
             const isVideo = item.type === "video";
 
             return (
@@ -77,7 +78,7 @@ export default function IncubatorAlbum({
                   {caption && sub ? (
                     <span className="inc-album-caption">
                       <b>{caption}</b>
-                      <span>{sub}</span>
+                      <RichText as="span" html={sub} />
                     </span>
                   ) : null}
                 </figcaption>

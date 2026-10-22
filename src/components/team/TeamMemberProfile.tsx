@@ -1,8 +1,9 @@
 import type { CSSProperties } from "react";
-import { localized } from "@/lib/api/pages";
+import { localized, localizedHtml } from "@/lib/api/pages";
 import type { TeamDetailLabels, TeamMemberDetail } from "@/lib/api/team";
 import { toSocialLinks } from "./team-data";
 import TeamDetailPhoto from "./TeamDetailPhoto";
+import RichText from "@/components/ui/RichText";
 
 /* Member detail hero: the mic-framed portrait (left in RTL) beside the member's
    name, role, experience, bio ("نبذة عنه") and social links ("تابعنا على :").
@@ -30,7 +31,7 @@ export default function TeamMemberProfile({
 }) {
   const name = localized(member.name, lang);
   const role = localized(member.role, lang);
-  const bio = localized(member.bio, lang);
+  const bio = localizedHtml(member.bio, lang);
   const bioTitle = localized(labels?.bio, lang);
   const followLabel = localized(labels?.follow, lang);
   const experienceSuffix = localized(labels?.experience_suffix, lang);
@@ -81,7 +82,7 @@ export default function TeamMemberProfile({
                 {bioTitle ? (
                   <h2 className="team-detail-about-title">{bioTitle}</h2>
                 ) : null}
-                <p className="team-detail-bio">{bio}</p>
+                <RichText as="p" className="team-detail-bio" html={bio} />
               </>
             ) : null}
 

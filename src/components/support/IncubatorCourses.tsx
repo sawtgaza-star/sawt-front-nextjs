@@ -1,7 +1,8 @@
-import { localized } from "@/lib/api/pages";
+import { localized, localizedHtml } from "@/lib/api/pages";
 import type { SupportSponsorContent } from "@/lib/api/support";
 import { resolveSponsorCards } from "./courses-data";
 import SupportSectionHead from "./SupportSectionHead";
+import RichText from "@/components/ui/RichText";
 
 /* "ساعد طلاب في الانضمام للحاضنة" — one sponsorship card per incubator track,
    from GET /pages/support's `sponsor` block. The editor can switch the whole
@@ -21,7 +22,7 @@ export default function IncubatorCourses({
       <div className="container">
         <SupportSectionHead
           title={localized(data?.title, lang)}
-          sub={localized(data?.subtitle, lang)}
+          sub={localizedHtml(data?.subtitle, lang)}
           fallback={{
             pre: "ساعد طلاب في الانضمام",
             preKey: "support_courses_title_pre",
@@ -38,9 +39,7 @@ export default function IncubatorCourses({
               <h3 className="sp-course-title" data-i18n={c.titleKey || undefined}>
                 {c.title}
               </h3>
-              <p className="sp-course-desc" data-i18n={c.descKey || undefined}>
-                {c.desc}
-              </p>
+              <RichText as="p" className="sp-course-desc" data-i18n={c.descKey || undefined} html={c.desc} />
               <div className="sp-course-meta">
                 <span>
                   <svg

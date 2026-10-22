@@ -1,10 +1,11 @@
 "use client";
-import { localized } from "@/lib/api/pages";
+import { localized, localizedHtml } from "@/lib/api/pages";
 import { sortItems, type MediaTestimonialsContent } from "@/lib/api/media-page";
 import MediaSectionHead from "./MediaSectionHead";
 import RatingStars from "@/components/ui/RatingStars";
 import { IconReviewQuote } from "./media-icons";
 import { useSnapSlider } from "./useSnapSlider";
+import RichText from "@/components/ui/RichText";
 
 /* "ماذا يقول عنّا عملاؤنا" — a centre-focused slider: the active card is
    full-strength while its neighbours sit behind it, dimmed and blurred (the
@@ -46,7 +47,7 @@ export default function MediaTestimonials({
         <MediaSectionHead
           pill={localized(data.eyebrow, lang)}
           title={localized(data.title, lang)}
-          sub={localized(data.subtitle, lang)}
+          sub={localizedHtml(data.subtitle, lang)}
         />
       </div>
 
@@ -77,7 +78,7 @@ export default function MediaTestimonials({
               <RatingStars value={item.rating ?? FALLBACK_RATING} />
             </div>
 
-            <p className="sm-testi-quote">{localized(item.quote, lang)}</p>
+            <RichText as="p" className="sm-testi-quote" html={localizedHtml(item.quote, lang)} />
 
             <b className="sm-testi-name">{item.name}</b>
             <span className="sm-testi-meta">{localized(item.role, lang)}</span>

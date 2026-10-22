@@ -1,4 +1,4 @@
-import { localized } from "@/lib/api/pages";
+import { localized, localizedHtml } from "@/lib/api/pages";
 import { localizedList, sortItems } from "@/lib/api/media-page";
 import type {
   MediaWorkAboutContent,
@@ -8,6 +8,7 @@ import type {
 } from "@/lib/api/media-work";
 import MediaProjectHead from "./MediaProjectHead";
 import { galleryLayout } from "./media-page-view";
+import RichText from "@/components/ui/RichText";
 
 /* "عن المشروع" panel — the brief, the challenges/solutions pair (orange card on
    the right, olive on the left, each with the design's quarter-circle notch in
@@ -61,7 +62,7 @@ export default function MediaProjectAbout({
   gallery?: MediaWorkGallery;
   lang?: string;
 }) {
-  const body = localized(data?.body, lang);
+  const body = localizedHtml(data?.body, lang);
   const figures = sortItems(results?.items);
   const shots = sortItems(gallery?.items)
     .map((shot) => shot.url)
@@ -73,7 +74,7 @@ export default function MediaProjectAbout({
   return (
     <div className="sm-pj-panel">
       {title ? <MediaProjectHead title={title} /> : null}
-      {body ? <p className="sm-pj-text">{body}</p> : null}
+      {body ? <RichText as="p" className="sm-pj-text" html={body} /> : null}
 
       <div className="sm-pj-duo">
         <Note note={data?.challenges} lang={lang} tone="orange" />

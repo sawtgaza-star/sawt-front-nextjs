@@ -1,6 +1,7 @@
-import { localized } from "@/lib/api/pages";
+import { localized, localizedHtml } from "@/lib/api/pages";
 import type { SupportPartnersContent } from "@/lib/api/support";
 import SupportSectionHead from "./SupportSectionHead";
+import RichText from "@/components/ui/RichText";
 
 /* "شركاؤنا في نشر الصوت" — scrolling partner logo row plus the dark funding
    CTA, from GET /pages/support's `partners` block. Without logos the mock's
@@ -24,7 +25,7 @@ export default function SupportPartners({
   const logos = fromApi.length ? fromApi : PLACEHOLDER_LOGOS;
 
   const ctaTitle = localized(data?.cta?.title, lang);
-  const ctaBody = localized(data?.cta?.body, lang);
+  const ctaBody = localizedHtml(data?.cta?.body, lang);
   const ctaLabel = localized(data?.cta?.label, lang);
 
   return (
@@ -32,7 +33,7 @@ export default function SupportPartners({
       <div className="container">
         <SupportSectionHead
           title={localized(data?.title, lang)}
-          sub={localized(data?.subtitle, lang)}
+          sub={localizedHtml(data?.subtitle, lang)}
           fallback={{
             pre: "شركاؤنا في نشر",
             preKey: "support_partners_title_pre",
@@ -69,7 +70,7 @@ export default function SupportPartners({
               </h3>
             )}
             {ctaBody ? (
-              <p className="sp-dark-cta-desc">{ctaBody}</p>
+              <RichText as="p" className="sp-dark-cta-desc" html={ctaBody} />
             ) : (
               <p className="sp-dark-cta-desc" data-i18n="support_fund_desc">
                 شراكات مؤسسية مع صوت — للجهات التي تريد أن يكون دورها في إيصال

@@ -31,9 +31,7 @@ export default function ExpertBio({ text }: { text: string }) {
 
   return (
     <>
-      <p ref={ref} className={"inc-expert-desc" + (open ? " is-open" : "")}>
-        {text}
-      </p>
+      <p ref={ref} className={"inc-expert-desc" + (open ? " is-open" : "")} dangerouslySetInnerHTML={{ __html: text }} />
       {overflows ? (
         <button
           type="button"

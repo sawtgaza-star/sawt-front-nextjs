@@ -1,8 +1,9 @@
-import { localized } from "@/lib/api/pages";
+import { localized, localizedHtml } from "@/lib/api/pages";
 import { sortItems, type MediaWhyContent } from "@/lib/api/media-page";
 import { WHY_ACCENTS, cycle } from "./media-page-view";
 import MediaSectionHead from "./MediaSectionHead";
 import MediaWhyStrip from "./MediaWhyStrip";
+import RichText from "@/components/ui/RichText";
 
 /* "لماذا صوت ميديا" — right-aligned heading over a horizontal card strip that
    deliberately bleeds past the container's left edge, exactly as the design
@@ -31,7 +32,7 @@ function WhyCard({ card, clone }: { card: WhyCardView; clone?: boolean }) {
         {card.iconUrl ? <img src={card.iconUrl} alt="" /> : null}
       </span>
       <h3 className="sm-why-card-title">{card.title}</h3>
-      <p className="sm-why-card-desc">{card.description}</p>
+      <RichText as="p" className="sm-why-card-desc" html={card.description} />
     </article>
   );
 }
@@ -46,7 +47,7 @@ export default function MediaWhy({
   const cards: WhyCardView[] = sortItems(data?.items).map((item, index) => ({
     iconUrl: item.icon_url || null,
     title: localized(item.title, lang),
-    description: localized(item.description, lang),
+    description: localizedHtml(item.description, lang),
     accent: cycle(WHY_ACCENTS, index),
   }));
 
@@ -59,7 +60,7 @@ export default function MediaWhy({
           align="start"
           pill={localized(data.eyebrow, lang)}
           title={localized(data.title, lang)}
-          sub={localized(data.subtitle, lang)}
+          sub={localizedHtml(data.subtitle, lang)}
         />
       </div>
 

@@ -1,6 +1,7 @@
-import { localized } from "@/lib/api/pages";
+import { localized, localizedHtml } from "@/lib/api/pages";
 import type { IncubatorJoinContent } from "@/lib/api/incubator-page";
 import { PLACEHOLDER } from "./incubator-page-view";
+import RichText from "@/components/ui/RichText";
 
 /* "ابدأ رحلتك مع حاضنة صوت" — the API's `join_cta` block on the home page's
    JoinUs banner (join-us-* classes from style.css, which the (main) layout
@@ -14,7 +15,7 @@ export default function IncubatorJoin({
   lang: string;
 }) {
   const title = localized(data?.title, lang);
-  const desc = localized(data?.description, lang);
+  const desc = localizedHtml(data?.description, lang);
   const button = localized(data?.button?.label, lang);
   if (!title && !desc && !button) return null;
 
@@ -24,7 +25,7 @@ export default function IncubatorJoin({
         <img src={data?.image_url || PLACEHOLDER.join} alt="" className="join-us-bg" />
         <div className="join-us-content text-center">
           {title ? <h2 className="join-us-title">{title}</h2> : null}
-          {desc ? <p className="join-us-desc">{desc}</p> : null}
+          {desc ? <RichText as="p" className="join-us-desc" html={desc} /> : null}
           {button ? (
             <a className="btn btn-dark-green join-us-btn" href="#">
               <span>{button}</span>
