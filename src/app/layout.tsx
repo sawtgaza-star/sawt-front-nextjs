@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next";
 import DocumentShell from "@/components/DocumentShell";
 import NetworkErrorScreen from "@/components/site/NetworkErrorScreen";
 import BackToTop from "@/components/site/BackToTop";
+import ScrollRestorer from "@/components/site/ScrollRestorer";
 import SessionKeepAlive from "@/components/site/SessionKeepAlive";
 
 /* The title here doubles as the home page's: (main)/page.tsx is a Client
@@ -33,6 +34,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <DocumentShell>
       {children}
       <BackToTop />
+      <ScrollRestorer />
       <SessionKeepAlive />
       <NetworkErrorScreen />
     </DocumentShell>

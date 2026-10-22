@@ -765,6 +765,20 @@ background: rgba(237, 239, 235, 0.50);
 .cr-flow-arrow-right .cr-flow-head {
   --flow-nudge: 4px 0;
 }
+/* On the wide, side-by-side diagram both heads point INTO the centre circle,
+   so the eye lands on صوت ميديا: the path drawn in FlowArrow points outward
+   (it is what the phone column rotates), so here it is mirrored and nudges
+   inward. The panel is always LTR (brands → centre → creators), so these
+   physical directions hold in both languages. */
+@media (min-width: 768px) {
+  .cr-flow-head {
+    transform: scaleX(-1);
+    --flow-nudge: 4px 0;
+  }
+  .cr-flow-arrow-right .cr-flow-head {
+    --flow-nudge: -4px 0;
+  }
+}
 
 @keyframes cr-flow-pulse {
   0%,

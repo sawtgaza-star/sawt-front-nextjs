@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { usePageParam } from "@/lib/use-page-param";
 import "@/styles/creators.css";
 import "@/styles/news.css";
 import LegacyInit from "@/components/LegacyInit";
@@ -24,7 +24,7 @@ import { localized, localizedHtml } from "@/lib/api/pages";
    renders throughout — SiteNav lives inside it — with the static hero copy and
    breadcrumb until the payload's own arrives. */
 export default function Page() {
-  const [page, setPage] = useState(1);
+  const [page, setPage] = usePageParam();
   const { lang } = useLang();
   const { page: data, meta, loading } = useStoriesList(page, STORIES_PER_PAGE);
 

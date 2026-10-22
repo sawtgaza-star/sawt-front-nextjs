@@ -19,8 +19,14 @@ import type { ServiceCard } from "./MediaServiceCard";
 
    Autoplay runs as soon as the section is on screen; it stops while the mouse
    moves over the section or something in it has focus, while dragging, while
-   the section is off-screen, and under prefers-reduced-motion. */
-const INTERVAL = 2000;
+   the section is off-screen, and under prefers-reduced-motion. Each card is
+   held for INTERVAL on a wide screen; on a phone the first one turns quickly
+   (PHONE_FIRST) and every later one is held for PHONE_INTERVAL, long enough to
+   read on a small screen. */
+const INTERVAL = 4000;
+const PHONE_FIRST = 2000;
+const PHONE_INTERVAL = 6000;
+const PHONE_MEDIA = "(max-width: 767.98px)";
 /* how far a drag must travel to count as a page turn, and as a real drag */
 const SNAP = 70;
 const SLOP = 6;
@@ -32,6 +38,10 @@ export default function MediaServicesSlider({ cards }: { cards: ServiceCard[] })
   const [visible, setVisible] = useState(false);
   const [dragging, setDragging] = useState(false);
   const [dir, setDir] = useState<"up" | "down" | null>(null);
+  /* the countdown to the next card, for the rail's filling tick: a fresh `key`
+     every time the timer (re)starts, so the fill restarts with it; null while
+     autoplay is stopped */
+  const [countdown, setCountdown] = useState<{ key: number; ms: number } | null>(null);
   const viewRef = useRef<HTMLDivElement>(null);
   const drag = useRef<{ id: number; y: number; moved: boolean } | null>(null);
   const swallowClick = useRef(false);
@@ -59,14 +69,21 @@ export default function MediaServicesSlider({ cards }: { cards: ServiceCard[] })
   }, []);
 
   useEffect(() => {
-    if (paused || dragging || !visible) return;
-    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
-    const id = window.setInterval(
-      () => setActive((i) => (i + 1) % count),
-      INTERVAL
-    );
-    return () => window.clearInterval(id);
-  }, [paused, dragging, visible, count]);
+    if (
+      paused ||
+      dragging ||
+      !visible ||
+      window.matchMedia("(prefers-reduced-motion: reduce)").matches
+    ) {
+      setCountdown(null);
+      return;
+    }
+    const phone = window.matchMedia(PHONE_MEDIA).matches;
+    const ms = !phone ? INTERVAL : active > 0 ? PHONE_INTERVAL : PHONE_FIRST;
+    setCountdown((c) => ({ key: (c?.key ?? 0) + 1, ms }));
+    const id = window.setTimeout(() => setActive((i) => (i + 1) % count), ms);
+    return () => window.clearTimeout(id);
+  }, [paused, dragging, visible, count, active]);
 
   /* dragging up pulls the next card in, dragging down pushes the top one off */
   const setOffset = (dy: number) => {
@@ -158,6 +175,7 @@ export default function MediaServicesSlider({ cards }: { cards: ServiceCard[] })
       <MediaServicesRail
         titles={cards.map((card) => card.title)}
         active={active}
+        countdown={countdown}
         onSelect={setActive}
       />
 

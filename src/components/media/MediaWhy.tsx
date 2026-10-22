@@ -7,7 +7,7 @@ import RichText from "@/components/ui/RichText";
 
 /* "لماذا صوت ميديا" — right-aligned heading over a horizontal card strip that
    deliberately bleeds past the container's left edge, exactly as the design
-   crops it. The set is rendered twice so MediaWhyStrip's hover auto-scroll can
+   crops it. The set is rendered twice so MediaWhyStrip's auto-scroll can
    loop without a seam; the clones are hidden from assistive tech.
 
    The icons are uploads now (`icon_url`), so each card shows one only once an

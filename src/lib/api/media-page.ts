@@ -287,6 +287,27 @@ export function localizedList(value: LocalizedList | null | undefined, lang: str
   return list.map(htmlToLines); // editor HTML → plain text, as `localized` does
 }
 
+/** A service's tags, one pill each. Editors don't always add one entry per
+    tag: several arrive typed into a single field, separated by a run of
+    spaces, a tab, a line break or a full stop ("tag one.  tag two"). So each
+    entry is split on those first — before htmlToLines, which collapses runs
+    of whitespace — and a trailing full stop is dropped from every piece. */
+export function localizedTags(value: LocalizedList | null | undefined, lang: string): string[] {
+  if (!value) return [];
+  const preferred = lang === "en" ? value.en : value.ar;
+  const list = preferred?.length ? preferred : value.ar?.length ? value.ar : value.en || [];
+  return list.flatMap((entry) =>
+    htmlToLines(
+      String(entry ?? "")
+        .replace(/&nbsp;|\u00a0/gi, " ")
+        .replace(/\t| {2,}|[.،](?=\s)/g, "\n"),
+    )
+      .split("\n")
+      .map((tag) => tag.replace(/[.،]+$/, "").trim())
+      .filter(Boolean),
+  );
+}
+
 /** Bundle features, which the API flattens per language rather than per field. */
 export function localizedFeatures(
   value: LocalizedFeatures | null | undefined,

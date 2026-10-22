@@ -3,24 +3,26 @@
 import { useEffect, useRef } from "react";
 
 /* The "لماذا صوت ميديا" strip. It stays a normal `overflow-x: auto` rail — you
-   can still drag/scroll it by hand — but while the pointer is over the cards it
-   scrolls itself, looping seamlessly because MediaWhy renders the cards twice.
+   can still drag/scroll it by hand — but whenever it is on screen it scrolls
+   itself, looping seamlessly because MediaWhy renders the cards twice.
 
-   The trigger is the rail, not the whole section, so the heading above it is
-   inert; the rail (rather than each card) keeps the motion from stuttering as
+   With a mouse, hovering the rail pauses it so a card can be read; it picks up
+   again from wherever it stopped (or a manual scroll left it) as the pointer
+   leaves. The trigger is the rail, not the whole section, so the heading above
+   it is inert; the rail (rather than each card) keeps it from stuttering as
    the pointer crosses the gaps between cards.
 
-   Touch screens have no hover, so there the rail drifts on its own — slower —
-   whenever it is on screen. A finger on it stops the drift so it can be swiped
-   by hand; it picks up again from wherever the swipe left it, a moment after
-   the finger lifts.
+   Touch screens have no hover, so there the rail drifts slower, and a finger
+   on it stops the drift so it can be swiped by hand. However it was swiped,
+   the drift always comes back: TOUCH_RESUME ms after the rail has come to
+   rest (the swipe's momentum glide included), from wherever it stopped.
 
    Only this leaf is a Client Component; the section and its heading stay on the
    server. */
 
 const SPEED = 0.9; // px per frame ≈ 54px/s
-const TOUCH_SPEED = 0.42; // px per frame ≈ 25px/s
-/** how long after a swipe the touch drift waits before it resumes */
+const TOUCH_SPEED = 0.7; // px per frame ≈ 42px/s
+/** how long the rail must sit still after a swipe before the drift resumes */
 const TOUCH_RESUME = 2000;
 
 export default function MediaWhyStrip({
@@ -66,7 +68,11 @@ export default function MediaWhyStrip({
 
     const start = () => {
       if (raf || reduce.matches) return;
-      offset = Math.abs(rail.scrollLeft); // pick up wherever a manual scroll left it
+      // pick up wherever a manual scroll left it — wrapped, should a swipe have
+      // carried it past the first set
+      const loop = loopWidth();
+      offset = Math.abs(rail.scrollLeft);
+      if (loop > 0) offset %= loop;
       raf = requestAnimationFrame(step);
     };
     const stop = () => {
@@ -75,24 +81,13 @@ export default function MediaWhyStrip({
       raf = 0;
     };
 
-    reduce.addEventListener("change", stop);
-
-    if (!touch) {
-      rail.addEventListener("pointerenter", start);
-      rail.addEventListener("pointerleave", stop);
-      return () => {
-        stop();
-        rail.removeEventListener("pointerenter", start);
-        rail.removeEventListener("pointerleave", stop);
-        reduce.removeEventListener("change", stop);
-      };
-    }
-
-    // touch: drift while on screen and not held
+    // drift while on screen and not held (hovered, or a finger on it)
     let visible = false;
     let held = false;
     let resume = 0;
     const update = () => (visible && !held ? start() : stop());
+    const onReduce = () => update();
+    reduce.addEventListener("change", onReduce);
     const observer = new IntersectionObserver(([entry]) => {
       visible = entry.isIntersecting;
       update();
@@ -105,23 +100,60 @@ export default function MediaWhyStrip({
     };
     const release = () => {
       window.clearTimeout(resume);
+      held = false;
+      update();
+    };
+    if (!touch) {
+      rail.addEventListener("pointerenter", hold);
+      rail.addEventListener("pointerleave", release);
+    }
+
+    /* Touch: the finger stops the drift. Once it lifts, the swipe may still
+       be gliding — every scroll the drift didn't make pushes the restart back,
+       so it only resumes once the rail is at rest (iOS ignores scrollLeft
+       writes mid-glide, so starting sooner would stall). The lift is heard on
+       the window as well, so a touch that ends off the rail still counts. */
+    let finger = false;
+    let touched = false; // held by a touch, not by a hovering mouse
+    const releaseLater = () => {
+      window.clearTimeout(resume);
       resume = window.setTimeout(() => {
-        held = false;
-        update();
+        if (finger) return;
+        touched = false;
+        release();
       }, TOUCH_RESUME);
     };
-    rail.addEventListener("touchstart", hold, { passive: true });
-    rail.addEventListener("touchend", release);
-    rail.addEventListener("touchcancel", release);
+    const onTouchStart = () => {
+      finger = true;
+      touched = true;
+      hold();
+    };
+    const onTouchEnd = (e: TouchEvent) => {
+      if (!finger || e.touches.length > 0) return;
+      finger = false;
+      releaseLater();
+    };
+    const onScroll = () => {
+      // the drift's own writes land while it runs; anything else is the visitor
+      if (raf || !touched || finger) return;
+      releaseLater();
+    };
+    rail.addEventListener("touchstart", onTouchStart, { passive: true });
+    window.addEventListener("touchend", onTouchEnd, { passive: true });
+    window.addEventListener("touchcancel", onTouchEnd, { passive: true });
+    rail.addEventListener("scroll", onScroll, { passive: true });
 
     return () => {
       stop();
       window.clearTimeout(resume);
       observer.disconnect();
-      rail.removeEventListener("touchstart", hold);
-      rail.removeEventListener("touchend", release);
-      rail.removeEventListener("touchcancel", release);
-      reduce.removeEventListener("change", stop);
+      rail.removeEventListener("pointerenter", hold);
+      rail.removeEventListener("pointerleave", release);
+      rail.removeEventListener("touchstart", onTouchStart);
+      window.removeEventListener("touchend", onTouchEnd);
+      window.removeEventListener("touchcancel", onTouchEnd);
+      rail.removeEventListener("scroll", onScroll);
+      reduce.removeEventListener("change", onReduce);
     };
   }, []);
 
