@@ -28,7 +28,6 @@ import { applyPose, poseAt, wrapRel } from "./hero-pose";
    hold the turn too. Once the page has loaded the front reel plays muted
    (HeroReelCard). */
 
-const PREVIEW_MEDIA = "(min-width: 992px) and (hover: hover)";
 const REDUCED_MOTION = "(prefers-reduced-motion: reduce)";
 /** after `load`, so the reels' files never compete with the page itself */
 const PREVIEW_DELAY = 1200;
@@ -158,9 +157,7 @@ export default function HeroReelStack({
   }, []);
 
   useEffect(() => {
-    if (!window.matchMedia(PREVIEW_MEDIA).matches || window.matchMedia(REDUCED_MOTION).matches) {
-      return;
-    }
+    if (window.matchMedia(REDUCED_MOTION).matches) return;
     const connection = (navigator as Navigator & { connection?: { saveData?: boolean } }).connection;
     if (connection?.saveData) return;
     let timer = 0;

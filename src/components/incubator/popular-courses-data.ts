@@ -37,7 +37,7 @@ export type PopularCourse = {
   soon?: boolean;
   title: string;
   meta?: CourseMeta[];
-  /* filled stars out of five */
+  /* out of five, as the API sends it — 4.5 fills half the fifth star */
   rating?: number;
   desc?: string;
   tutor?: { name: string; avatar: string };
@@ -84,7 +84,7 @@ export function toPopularCourse(
     soon,
     title: localized(course.title, lang),
     meta: meta.length ? meta : undefined,
-    rating: Number.isFinite(rating) && rating > 0 ? Math.min(5, Math.round(rating)) : undefined,
+    rating: Number.isFinite(rating) && rating > 0 ? Math.min(5, rating) : undefined,
     desc: localized(course.description, lang) || undefined,
     tutor: tutorName
       ? { name: tutorName, avatar: course.trainer?.avatar_url || PLACEHOLDER.person }

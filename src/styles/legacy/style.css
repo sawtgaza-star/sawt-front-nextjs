@@ -8856,17 +8856,12 @@ svg {
     min-height: 160px;
   }
 
-  /* phones: no photo — a gradient in its colours instead (the warm lamp
-     light on the left, the dark room in the middle, the teal on the right) */
+  /* phones: no photo — the site's own olive + orange glow instead, the same
+     gradient as the about page's banner below */
   .join-creator-banner {
-    background: linear-gradient(
-      90deg,
-      #6e4123 0%,
-      #33302b 30%,
-      #1f2a2b 55%,
-      #1c3d3b 80%,
-      #1d5752 100%
-    );
+    background:
+      radial-gradient(ellipse 70% 38% at 45% 62%, rgba(234, 130, 40, 0.42) 0%, rgba(234, 130, 40, 0) 70%),
+      linear-gradient(170deg, #3b4a3a 0%, #283428 45%, #1a211b 75%, #121612 100%);
   }
   .join-creator-banner .join-us-bg {
     display: none;

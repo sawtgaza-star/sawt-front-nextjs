@@ -22,8 +22,10 @@
 }
 
 /* ---------- floating blobs ---------- */
+/* also behind "أخبار ذات صلة" on /news/[id] and /stories/[id] (RelatedNews) */
 
-.latest-news .ln-shape {
+.latest-news .ln-shape,
+.nws-related .ln-shape {
   position: absolute;
   z-index: -1;
   border-radius: 50%;
@@ -32,7 +34,8 @@
   animation: ln-float 15s infinite ease-in-out alternate;
 }
 
-.latest-news .ln-shape-1 {
+.latest-news .ln-shape-1,
+.nws-related .ln-shape-1 {
   top: 5%;
   right: -5%;
   width: 400px;
@@ -40,7 +43,8 @@
   background: rgba(232, 93, 4, 0.15);
 }
 
-.latest-news .ln-shape-2 {
+.latest-news .ln-shape-2,
+.nws-related .ln-shape-2 {
   bottom: 10%;
   left: -10%;
   width: 500px;
@@ -49,7 +53,8 @@
   animation-delay: -7s;
 }
 
-.latest-news .ln-shape-3 {
+.latest-news .ln-shape-3,
+.nws-related .ln-shape-3 {
   top: 40%;
   left: 30%;
   width: 300px;
@@ -81,7 +86,8 @@
 
 /* ---------- card ---------- */
 
-.latest-news .news-card {
+.latest-news .news-card,
+.nws-related .news-card {
   position: relative;
   border: 1px solid #f3f4f6 !important;
   border-radius: 24px !important;
@@ -93,7 +99,8 @@
     border-color 0.5s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-.latest-news .news-card:hover {
+.latest-news .news-card:hover,
+.nws-related .news-card:hover {
   transform: translateY(-12px);
   border-color: rgba(75, 94, 64, 0.2) !important;
   border-width: 1px !important;
@@ -101,18 +108,21 @@
 }
 
 /* photo: cover-cropped, zooms on hover */
-.latest-news .news-card .card-img-top {
+.latest-news .news-card .card-img-top,
+.nws-related .news-card .card-img-top {
   height: 224px;
   object-fit: cover;
   transition: transform 0.7s ease;
 }
 
-.latest-news .news-card:hover .card-img-top {
+.latest-news .news-card:hover .card-img-top,
+.nws-related .news-card:hover .card-img-top {
   transform: scale(1.08);
 }
 
 /* dark gradient over the bottom of the photo */
-.latest-news .news-card::before {
+.latest-news .news-card::before,
+.nws-related .news-card::before {
   content: "";
   position: absolute;
   top: 0;
@@ -126,17 +136,21 @@
 
 /* the body sits above the zoomed photo, so the zoom never spills into it */
 .latest-news .news-card .card-body,
-.latest-news .news-card .card-footer {
+.latest-news .news-card .card-footer,
+.nws-related .news-card .card-body,
+.nws-related .news-card .card-footer {
   position: relative;
   z-index: 2;
   background: #fff;
 }
 
-.latest-news .news-card .card-body {
+.latest-news .news-card .card-body,
+.nws-related .news-card .card-body {
   padding: 1.75rem 1.75rem 0;
 }
 
-.latest-news .news-card .card-footer {
+.latest-news .news-card .card-footer,
+.nws-related .news-card .card-footer {
   padding: 0.5rem 1.75rem 1.75rem;
   /* date on one side, "اقرأ المزيد" on the other — a long date used to run
      straight into the button */
@@ -146,14 +160,16 @@
   gap: 12px;
 }
 
-.latest-news .news-card .card-footer > span:first-child {
+.latest-news .news-card .card-footer > span:first-child,
+.nws-related .news-card .card-footer > span:first-child {
   display: inline-flex;
   align-items: center;
   gap: 6px;
   white-space: nowrap;
 }
 
-.latest-news .news-card .card-title {
+.latest-news .news-card .card-title,
+.nws-related .news-card .card-title {
   font-size: 1.4rem;
   font-weight: 700;
   color: #111827;
@@ -163,22 +179,28 @@
 /* the date (icon + text) turns orange on hover — the card writes its grey
    inline, hence !important */
 .latest-news .news-card .card-footer > span:first-child i,
-.latest-news .news-card .card-footer > span:first-child span {
+.latest-news .news-card .card-footer > span:first-child span,
+.nws-related .news-card .card-footer > span:first-child i,
+.nws-related .news-card .card-footer > span:first-child span {
   transition: color 0.3s ease;
 }
 
 .latest-news .news-card:hover .card-footer > span:first-child i,
-.latest-news .news-card:hover .card-footer > span:first-child span {
+.latest-news .news-card:hover .card-footer > span:first-child span,
+.nws-related .news-card:hover .card-footer > span:first-child i,
+.nws-related .news-card:hover .card-footer > span:first-child span {
   color: #e85d04 !important;
 }
 
-.latest-news .news-card .card-text {
+.latest-news .news-card .card-text,
+.nws-related .news-card .card-text {
   border-bottom-color: #f0f0f0;
 }
 
 /* ---------- "اقرأ المزيد" as an olive button ---------- */
 
-.latest-news .news-card .readmore a {
+.latest-news .news-card .readmore a,
+.nws-related .news-card .readmore a {
   display: inline-flex;
   align-items: center;
   gap: 0.35rem;
@@ -194,53 +216,66 @@
 /* cancel the legacy beige .readmore:hover wrapper (the button's own hover
    animation is below) */
 .latest-news .news-card .readmore,
-.latest-news .news-card .readmore:hover {
+.latest-news .news-card .readmore:hover,
+.nws-related .news-card .readmore,
+.nws-related .news-card .readmore:hover {
   background: none;
   padding: 0;
 }
 
 /* hover: the button lifts, darkens and the arrow slides toward the reading
    direction (left in RTL) */
-.latest-news .news-card .readmore a {
+.latest-news .news-card .readmore a,
+.nws-related .news-card .readmore a {
   transition:
     transform 0.3s ease,
     background-color 0.3s ease,
     box-shadow 0.3s ease;
 }
 
-.latest-news .news-card .readmore a:hover {
+.latest-news .news-card .readmore a:hover,
+.nws-related .news-card .readmore a:hover {
   background: #3a4a31;
   transform: translateY(-3px);
   box-shadow: 0 10px 20px -6px rgba(75, 94, 64, 0.5);
 }
 
-.latest-news .news-card .readmore a:active {
+.latest-news .news-card .readmore a:active,
+.nws-related .news-card .readmore a:active {
   transform: translateY(0) scale(0.97);
 }
 
 html.sawt-anim .latest-news .news-card .readmore .arrow,
-.latest-news .news-card .readmore .arrow {
+.latest-news .news-card .readmore .arrow,
+html.sawt-anim .nws-related .news-card .readmore .arrow,
+.nws-related .news-card .readmore .arrow {
   translate: none;
   transition: transform 0.3s ease;
 }
 
 html.sawt-anim .latest-news .news-card .readmore:hover .arrow,
-.latest-news .news-card .readmore a:hover .arrow {
+.latest-news .news-card .readmore a:hover .arrow,
+html.sawt-anim .nws-related .news-card .readmore:hover .arrow,
+.nws-related .news-card .readmore a:hover .arrow {
   translate: none;
   transform: translateX(-5px);
 }
 
-[dir="ltr"] .latest-news .news-card .readmore a:hover .arrow {
+[dir="ltr"] .latest-news .news-card .readmore a:hover .arrow,
+[dir="ltr"] .nws-related .news-card .readmore a:hover .arrow {
   transform: translateX(5px);
 }
 
 /* the card writes these colours inline */
 .latest-news .news-card .readmore a span,
-.latest-news .news-card .readmore a i {
+.latest-news .news-card .readmore a i,
+.nws-related .news-card .readmore a span,
+.nws-related .news-card .readmore a i {
   color: #fff !important;
 }
 
-.latest-news .news-card .readmore a i {
+.latest-news .news-card .readmore a i,
+.nws-related .news-card .readmore a i {
   margin: 0 !important;
 }
 
@@ -283,39 +318,51 @@ html.sawt-anim .latest-news .news-card .readmore:hover .arrow,
 }
 
 @media (max-width: 575.98px) {
-  .latest-news .news-card .card-footer {
+  .latest-news .news-card .card-footer,
+  .nws-related .news-card .card-footer {
     padding-inline: 0.9rem;
     gap: 6px;
   }
 
-  .latest-news .news-card .card-footer > span:first-child {
+  .latest-news .news-card .card-footer > span:first-child,
+  .nws-related .news-card .card-footer > span:first-child {
     gap: 4px;
   }
 
   .latest-news .news-card .card-footer > span:first-child,
-  .latest-news .news-card .card-footer > span:first-child span {
+  .latest-news .news-card .card-footer > span:first-child span,
+  .nws-related .news-card .card-footer > span:first-child,
+  .nws-related .news-card .card-footer > span:first-child span {
     font-size: 12px !important;
   }
 
-  .latest-news .news-card .readmore a {
+  .latest-news .news-card .readmore a,
+  .nws-related .news-card .readmore a {
     padding: 0.45rem 0.8rem;
     gap: 0.25rem;
   }
 
   .latest-news .news-card .readmore a span,
-  .latest-news .news-card .readmore a i {
+  .latest-news .news-card .readmore a i,
+  .nws-related .news-card .readmore a span,
+  .nws-related .news-card .readmore a i {
     font-size: 12px !important;
   }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .latest-news .ln-shape {
+  .latest-news .ln-shape,
+  .nws-related .ln-shape {
     animation: none;
   }
   .latest-news .news-card,
   .latest-news .news-card .card-img-top,
   .latest-news .news-card .readmore a,
-  .latest-news .news-card .readmore .arrow {
+  .latest-news .news-card .readmore .arrow,
+  .nws-related .news-card,
+  .nws-related .news-card .card-img-top,
+  .nws-related .news-card .readmore a,
+  .nws-related .news-card .readmore .arrow {
     transition: none;
   }
 }
@@ -326,7 +373,11 @@ html.sawt-anim .latest-news .news-card .readmore:hover .arrow,
   .latest-news .news-card,
   .latest-news .news-card:hover,
   .latest-news .news-card .readmore a,
-  .latest-news .news-card .readmore a:hover {
+  .latest-news .news-card .readmore a:hover,
+  .nws-related .news-card,
+  .nws-related .news-card:hover,
+  .nws-related .news-card .readmore a,
+  .nws-related .news-card .readmore a:hover {
     box-shadow: none !important;
   }
 }

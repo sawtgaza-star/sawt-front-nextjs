@@ -892,7 +892,8 @@ body.ct-focus-mode::after {
     gap: 16px;
   }
   .ct-tabs .cr-content-tab {
-  font-family: var(--fontFamily-text, Rubik), "cairo", sans-serif;
+  /* the site's own font (style.css) */
+  font-family: "cairo", sans-serif;
 }
   .ct-tabs .cr-content-tab {
     white-space: nowrap;

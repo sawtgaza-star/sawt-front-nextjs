@@ -761,15 +761,12 @@ left: 12px;
   .team-filter > li {
     flex: 0 0 auto;
   }
-  /* The label sits in a child <span> (data-i18n), and style.css's
-     `* { font-family: "cairo", sans-serif }` sets Cairo DIRECTLY on that span —
-     a direct declaration always beats an inherited one, so setting the font on
-     the button alone never reached the text. Hence the `*` here. */
+  /* The label sits in a child <span> (data-i18n), so the font is set on the
+     button's children too, not just inherited. */
   .team-tab,
   .team-tab * {
-    /* no "cairo" fallback: fallback is per-glyph, so Cairo in the stack would
-       swallow the Arabic characters again */
-    font-family: var(--fontFamily-text, Rubik);
+    /* the site's own font (style.css) */
+    font-family: "cairo", sans-serif;
   }
   .team-tab {
     white-space: nowrap;

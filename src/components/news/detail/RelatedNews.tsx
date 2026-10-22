@@ -2,6 +2,7 @@
 import { useEffect, useRef, useState } from "react";
 import NewsCard from "@/components/news/NewsCard";
 import type { NewsItem } from "@/components/news/news-data";
+import "@/styles/home-news.css";
 
 /* "أخبار ذات صلة" — the strip that closes the article. Same olive band, mic
    watermarks, heading treatment and "عرض جميع الأخبار" link as the home
@@ -146,6 +147,10 @@ export default function RelatedNews({
 
   return (
     <section className="nws-related position-relative">
+      {/* the home slider's soft floating colour blobs — see home-news.css */}
+      <div className="ln-shape ln-shape-1" aria-hidden="true" />
+      <div className="ln-shape ln-shape-2" aria-hidden="true" />
+      <div className="ln-shape ln-shape-3" aria-hidden="true" />
       <div className="bg-icon bg-icon-right">
         <img src="/assets/images/fa-solid_microphone-alt.png" alt="" />
       </div>

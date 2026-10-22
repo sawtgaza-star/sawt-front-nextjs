@@ -1602,23 +1602,25 @@ button.inc-event-book {
 .inc-album-card:hover .inc-album-caption {
   transform: translateY(0);
 }
-/* Touch screens (AlbumTapWiring): a tap's :hover sticks, so hover is turned
-   off and `.is-open` takes its place — tap to show, tap again to hide. */
-html.inc-album-tap .inc-album-card:hover .inc-album-overlay {
-  opacity: 0;
-}
-html.inc-album-tap .inc-album-card:hover .inc-album-photo {
-  transform: none;
-}
-html.inc-album-tap .inc-album-card.is-open .inc-album-overlay {
-  opacity: 1;
-}
-html.inc-album-tap .inc-album-card.is-open .inc-album-photo {
-  transform: scale(1.06);
-}
-html.inc-album-tap .inc-album-card.is-open .inc-album-chip,
-html.inc-album-tap .inc-album-card.is-open .inc-album-caption {
-  transform: translateY(0);
+/* Touch screens have no hover: the copy is always on, over a deeper bottom
+   gradient so white text stays readable on any photo. */
+@media (hover: none) {
+  .inc-album-overlay {
+    opacity: 1;
+    background: linear-gradient(
+      0deg,
+      rgba(20, 20, 20, 0.82) 0%,
+      rgba(20, 20, 20, 0.35) 38%,
+      rgba(0, 0, 0, 0) 62%
+    );
+  }
+  .inc-album-chip,
+  .inc-album-caption {
+    transform: none;
+  }
+  .inc-album-card:hover .inc-album-photo {
+    transform: none;
+  }
 }
 
 .inc-album-chip {
@@ -1629,7 +1631,11 @@ html.inc-album-tap .inc-album-card.is-open .inc-album-caption {
   font-weight: 600;
   padding: 7px 14px;
   border-radius:100px;
+  /* never wider than its card: a long label ends in "…" */
+  max-width: calc(100% - 32px);
   white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 .inc-album-chip-top-end {
   top: 16px;
@@ -1648,17 +1654,29 @@ html.inc-album-tap .inc-album-card.is-open .inc-album-caption {
   position: absolute;
   bottom: 16px;
   inset-inline-start: 18px;
+  /* both edges pinned, so the copy wraps inside the card */
+  inset-inline-end: 18px;
   display: flex;
   flex-direction: column;
   gap: 4px;
   color: #ffffff;
   text-align: start;
 }
+.inc-album-caption b,
+.inc-album-caption span {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  overflow: hidden;
+  overflow-wrap: anywhere;
+}
 .inc-album-caption b {
   font-size: 18px;
   font-weight: 800;
+  line-height: 1.35;
 }
 .inc-album-caption span {
+  line-height: 1.45;
   font-size: 17px;
   opacity: 0.85;
   color: rgba(255, 255, 255, 0.70);
@@ -3055,15 +3073,39 @@ top: -23px;
   .inc-album-caption {
     transform: none;
   }
+  .inc-album-caption {
+    bottom: 12px;
+    inset-inline: 12px;
+    gap: 2px;
+  }
   .inc-album-caption b {
-    font-size: 15px;
+    font-size: 14px;
   }
   .inc-album-caption span {
     font-size: 12px;
   }
   .inc-album-chip {
-    padding: 6px 11px;
-    font-size: 12px;
+    padding: 5px 10px;
+    font-size: 11.5px;
+    max-width: calc(100% - 24px);
+    /* narrow cards: a long label wraps rather than being cut */
+    white-space: normal;
+    line-height: 1.45;
+    border-radius: 12px;
+  }
+  .inc-album-chip-top-end {
+    top: 12px;
+    inset-inline-end: 12px;
+  }
+  .inc-album-chip-bottom-end,
+  .inc-album-chip-bottom-start {
+    bottom: 12px;
+    inset-inline-start: 12px;
+  }
+  .inc-album-play {
+    width: 46px;
+    height: 46px;
+    font-size: 16px;
   }
 
   /* ---------- فريق خبراء متخصص ---------- */
@@ -3080,7 +3122,12 @@ top: -23px;
     overflow-x: auto;
     scroll-snap-type: x mandatory;
     scrollbar-width: none;
-    margin-inline-end: -28px;
+    /* exactly the container's 10px gutter: the strip runs to the screen edge,
+       and the matching end padding stops the LAST card at the page inset
+       instead of past the screen (it was -28px, 18px off-screen) */
+    margin-inline-end: -10px;
+    padding-inline-end: 10px;
+    scroll-padding-inline: 0 10px;
     /* a scrolling strip starts at its edge — centring would clip card 1 */
     flex-wrap: nowrap;
     justify-content: flex-start;
@@ -3098,6 +3145,7 @@ top: -23px;
      Two or more keep the swipe strip above. */
   .inc-expert-row:has(> .inc-expert-card:only-child) {
     margin-inline-end: 0;
+    padding-inline-end: 0;
     justify-content: center;
     overflow: visible;
   }

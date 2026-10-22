@@ -2800,7 +2800,8 @@ background: var(--White, #FFF);
   display: inline-flex;
   align-items: center;
   gap: 7px;
-  color: #fff;
+  /* beats style.css's global `a { color: black !important }` */
+  color: #fff !important;
   font-size: 13px;
   font-weight: 600;
   text-decoration: none;

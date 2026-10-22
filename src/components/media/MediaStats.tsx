@@ -2,6 +2,11 @@ import { localized } from "@/lib/api/pages";
 import { sortItems, type MediaStatsContent } from "@/lib/api/media-page";
 import MediaSectionHead from "./MediaSectionHead";
 
+/* Phones show four figures on one row: "عميل سعيد" is dropped there. The API
+   gives a figure no key, so it is picked by its Arabic label — whatever the
+   reader's language. */
+const PHONE_HIDDEN = "عميل سعيد";
+
 /* "أرقام نفخر بها" — the whole section sits inside one soft-gray rounded
    panel, heading included. Both the numbers and their captions are the API's
    `stats` block, so an editor can add a sixth figure and the row takes it. */
@@ -27,7 +32,13 @@ export default function MediaStats({
 
           <div className="sm-stats-row">
             {items.map((stat, index) => (
-              <div className="sm-stat" key={index}>
+              <div
+                className={
+                  "sm-stat" +
+                  (localized(stat.label, "ar").trim() === PHONE_HIDDEN ? " sm-stat-desktop" : "")
+                }
+                key={index}
+              >
                 {/* counted up from zero by initCounters() (lib/scroll-effects)
                     when the panel is scrolled into view — it claims
                     `.sm-stat-value` as it appears, which is after this

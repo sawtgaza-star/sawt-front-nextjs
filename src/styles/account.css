@@ -259,21 +259,6 @@ a.acc-btn-primary:hover {
   cursor: pointer;
 }
 
-.acc-profile-avatar-badge {
-  position: absolute;
-  bottom: 2px;
-  inset-inline-end: 2px;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 28px;
-  height: 28px;
-  border: 2px solid var(--acc-olive);
-  border-radius: 50%;
-  background: var(--acc-olive);
-  color: #fff;
-}
-
 .acc-profile-text {
   min-width: 0;
 }

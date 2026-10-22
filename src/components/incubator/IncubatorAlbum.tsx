@@ -2,13 +2,13 @@ import { IconPlay } from "@/components/ui/icons";
 import { localized } from "@/lib/api/pages";
 import type { IncubatorGalleryContent } from "@/lib/api/incubator-page";
 import { CHIP_POS, SLOT_AREAS } from "./album-data";
-import AlbumTapWiring from "./AlbumTapWiring";
 import IncubatorSectionHead from "./IncubatorSectionHead";
 import { PLACEHOLDER, sortItems } from "./incubator-page-view";
 
 /* "الحاضنة بيتك الثاني ، البوم الحاضنة" — a three-column photo album from the
    API's `gallery` block, each item placed by its `slot` (see ./album-data).
-   The chips and captions live on the dark gradient and only appear on hover;
+   The chips and captions live on the dark gradient: on hover with a mouse,
+   always on touch screens (no hover there — incubator.css);
    a video item carries the dark-green play badge and opens its video. The
    pale olive branch sits in the section's bottom-left corner, as in the mock. */
 export default function IncubatorAlbum({
@@ -23,8 +23,6 @@ export default function IncubatorAlbum({
 
   return (
     <section className="inc-album" id="inc-album">
-      {/* touch screens: tap to show, tap again to hide */}
-      <AlbumTapWiring />
       <img
         src="/assets/images/leaf_cutout.png"
         className="inc-album-leaf"

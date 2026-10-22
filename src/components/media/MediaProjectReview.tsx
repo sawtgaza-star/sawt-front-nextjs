@@ -1,19 +1,18 @@
 import { localized } from "@/lib/api/pages";
 import type { MediaWorkClient } from "@/lib/api/media-work";
-import { IconRatingStar } from "@/components/ui/icons";
+import RatingStars from "@/components/ui/RatingStars";
 import { IconReviewQuote } from "./media-icons";
 import MediaProjectHead from "./MediaProjectHead";
 
 /* "رأي العميل" panel — the client's card on the right and the two scores the
    design draws as orange meters on the left.
 
-   The card is the API's `client` block. The stars and the two meters are NOT
-   in the payload, so they stay the design's own: every card in the mockups
-   shows four filled stars, and the two meters are the fixed pair the artboard
-   carries. They keep their `data-i18n` keys because they are still static
-   markup — the day the API sends them, both constants go. */
-const STARS = 5;
-const FILLED = 4;
+   The card is the API's `client` block; its stars follow `client.rating`,
+   which the payload doesn't carry yet — until it does, the design's four.
+   The two meters are NOT in the payload, so they stay the fixed pair the
+   artboard carries. They keep their `data-i18n` keys because they are still
+   static markup — the day the API sends them, the constant goes. */
+const FALLBACK_RATING = 4;
 
 const BARS = [
   { key: "satisfaction", label: "رضا العميل", labelKey: "sm_pj_bar_satisfaction", pct: 96 },
@@ -45,9 +44,7 @@ export default function MediaProjectReview({
           </span>
 
           <div className="sm-pj-review-stars" aria-hidden="true">
-            {Array.from({ length: STARS }, (_, s) => (
-              <IconRatingStar key={s} filled={s < FILLED} />
-            ))}
+            <RatingStars value={data?.rating ?? FALLBACK_RATING} />
           </div>
 
           <p className="sm-pj-review-quote">{localized(data?.quote, lang)}</p>
