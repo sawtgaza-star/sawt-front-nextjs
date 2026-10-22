@@ -2,6 +2,7 @@
 import { useEffect, useState, type KeyboardEvent } from "react";
 import { useLang } from "@/lib/use-lang";
 import { formatCount, timeAgo } from "@/components/creators/creator-content/reel-data";
+import { useReelSocial } from "@/components/creators/creator-content/reel-social";
 import type { Reel } from "./content-data";
 
 const SAWT_MARK = encodeURI("/assets/images/شعار صوت اخضر.svg");
@@ -40,6 +41,9 @@ export default function ReelThumbCard({
 
   const { lang } = useLang();
   const d = reel.details;
+  // the counts as the viewer shows them: the API's, plus the visitor's own
+  // like / comments (keyed like ReelViewer's default "content" scope)
+  const social = useReelSocial(`content:${reel.id}`, d);
   const caption = d?.caption || "";
   const posted = d ? timeAgo(d.postedAt, lang) : "";
   const permalink = d?.permalink || "";
@@ -100,11 +104,11 @@ export default function ReelThumbCard({
           ) : null}
           <span>
             <i className="fa-solid fa-heart"></i>
-            {formatCount(d.likes, lang)}
+            {formatCount(social.likes, lang)}
           </span>
           <span>
             <i className="fa-solid fa-comment"></i>
-            {formatCount(d.commentsCount, lang)}
+            {formatCount(social.commentsCount, lang)}
           </span>
         </div>
       ) : null}
