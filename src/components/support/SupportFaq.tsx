@@ -4,6 +4,7 @@ import { IconChevronDownBold } from "@/components/ui/icons";
 import { localized } from "@/lib/api/pages";
 import type { SupportFaqContent } from "@/lib/api/support";
 import { resolveSupportFaqs } from "./support-faq-data";
+import RichText from "@/components/ui/RichText";
 
 /* "الأسئلة المتكررة" — accordion beside the student artwork. Mirrors the
    creators-page FAQ behaviour: one item open at a time, second one open by
@@ -71,9 +72,7 @@ export default function SupportFaq({
                   {isOpen && (
                     <div className="sp-faq-a">
                       <span className="sp-faq-a-bar" aria-hidden="true"></span>
-                      <p className="sp-faq-a-text" data-i18n={f.aKey}>
-                        {f.a}
-                      </p>
+                      <RichText as="p" className="sp-faq-a-text" data-i18n={f.aKey} html={f.a} />
                     </div>
                   )}
                 </div>

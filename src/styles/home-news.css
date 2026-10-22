@@ -381,3 +381,47 @@ html.sawt-anim .nws-related .news-card .readmore:hover .arrow,
     box-shadow: none !important;
   }
 }
+
+/* Touch screens: a tap leaves :hover stuck on the card until the next tap
+   elsewhere, so the hover look (lift, olive border, photo zoom, orange date,
+   darker lifted button) is cancelled there — the card stays as it rests. */
+@media (hover: none) {
+  .latest-news .news-card:hover,
+  .nws-related .news-card:hover {
+    transform: none;
+    border-color: #f3f4f6 !important;
+    border-width: 1px !important;
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.04);
+  }
+  .latest-news .news-card:hover .card-img-top,
+  .nws-related .news-card:hover .card-img-top {
+    transform: none;
+  }
+  .latest-news .news-card:hover .card-footer > span:first-child i,
+  .latest-news .news-card:hover .card-footer > span:first-child span,
+  .nws-related .news-card:hover .card-footer > span:first-child i,
+  .nws-related .news-card:hover .card-footer > span:first-child span {
+    color: rgba(109, 109, 109, 1) !important;
+  }
+  .latest-news .news-card .readmore a:hover,
+  .nws-related .news-card .readmore a:hover {
+    background: #4b5e40;
+    transform: none;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.1);
+  }
+  html.sawt-anim .latest-news .news-card .readmore:hover .arrow,
+  .latest-news .news-card .readmore a:hover .arrow,
+  html.sawt-anim .nws-related .news-card .readmore:hover .arrow,
+  .nws-related .news-card .readmore a:hover .arrow,
+  [dir="ltr"] .latest-news .news-card .readmore a:hover .arrow,
+  [dir="ltr"] .nws-related .news-card .readmore a:hover .arrow {
+    transform: none;
+  }
+}
+/* a touch tablet wide enough for the staggered row: the middle card keeps
+   its lowered seat instead of jumping up on tap */
+@media (hover: none) and (min-width: 1000px) {
+  .latest-news .owl-item.active:not(.owl-item.active + .owl-item.active) + .owl-item.active:has(+ .owl-item.active) .news-card:hover {
+    transform: translateY(2.5rem);
+  }
+}

@@ -18,7 +18,7 @@
    an empty picker. They keep their `data-i18n` keys, which the API's copy
    doesn't need — it carries ar and en at once and `lang` picks one. */
 
-import { localized } from "@/lib/api/pages";
+import { localized, localizedHtml } from "@/lib/api/pages";
 import type { CollaborateTypeItem } from "@/lib/api/collaborate";
 
 export type CollabIcon = "creator" | "funding" | "partnership" | "other";
@@ -111,7 +111,7 @@ export function resolveCollaborateTypes(
         icon: ICON_BY_KEY[key] || "other",
         iconUrl: type.icon_url,
         title: localized(type.title, lang),
-        desc: localized(type.description, lang),
+        desc: localizedHtml(type.description, lang),
       };
     })
     // an option with no title is an empty row in the admin

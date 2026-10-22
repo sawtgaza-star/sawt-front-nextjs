@@ -1,9 +1,9 @@
-import { localized } from "@/lib/api/pages";
+import { localized, localizedHtml } from "@/lib/api/pages";
 import type { FollowedCreator } from "@/lib/follows";
 import CreatorCard from "@/components/home/CreatorCard";
 import { formatFollowers } from "@/components/home/home-text";
 import { roleLabel } from "@/components/creators/creator-cards";
-import { htmlToLines } from "@/lib/html-text";
+import { richInline } from "@/lib/rich-text";
 
 /* One followed creator, in the site's own creator card (home/CreatorCard —
    the home slider's and the /creators grids'). Its pill is marked
@@ -20,8 +20,8 @@ export default function FollowedCreatorCard({
   tr: (key: string) => string;
 }) {
   const bio =
-    htmlToLines(localized(creator.excerpt, lang)).replace(/\n/g, " ") ||
-    roleLabel(localized(creator.role, lang), lang);
+    localizedHtml(creator.excerpt, lang, { oneLine: true }) ||
+    richInline(roleLabel(localized(creator.role, lang), lang));
 
   return (
     <CreatorCard

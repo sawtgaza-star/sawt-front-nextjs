@@ -1,10 +1,11 @@
 "use client";
 import { useState } from "react";
 import { IconChevronDownBold } from "@/components/ui/icons";
-import { localized } from "@/lib/api/pages";
+import { localized, localizedHtml } from "@/lib/api/pages";
 import type { IncubatorFaqContent } from "@/lib/api/incubator-page";
 import IncubatorSectionHead from "./IncubatorSectionHead";
 import { PLACEHOLDER, sortItems } from "./incubator-page-view";
+import RichText from "@/components/ui/RichText";
 
 /* "الأسئلة التي تدور ببالك؟" — the API's `faq` block. Same accordion as the
    support-page FAQ (one item open at a time; the third is open by default,
@@ -33,7 +34,7 @@ export default function IncubatorFaq({
       <div className="container">
         <IncubatorSectionHead
           title={localized(data.title, lang)}
-          sub={localized(data.subtitle, lang)}
+          sub={localizedHtml(data.subtitle, lang)}
         />
 
         <div className="inc-faq-row">
@@ -63,9 +64,7 @@ export default function IncubatorFaq({
                   {isOpen && (
                     <div className="inc-faq-a">
                       <span className="inc-faq-a-bar" aria-hidden="true"></span>
-                      <p className="inc-faq-a-text">
-                        {localized(f.answer, lang)}
-                      </p>
+                      <RichText as="p" className="inc-faq-a-text" html={localizedHtml(f.answer, lang)} />
                     </div>
                   )}
                 </div>

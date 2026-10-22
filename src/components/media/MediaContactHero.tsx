@@ -1,8 +1,9 @@
-import { localized } from "@/lib/api/pages";
+import { localized, localizedHtml } from "@/lib/api/pages";
 import type { MediaContactHeroContent } from "@/lib/api/media-contact";
 import MediaNav from "./MediaNav";
 import BreadcrumbHome from "@/components/site/BreadcrumbHome";
 import "@/styles/nav-skeleton.css";
+import RichText from "@/components/ui/RichText";
 
 /* Banner of /media/contact — the same dark collage the works listing and the
    case studies use (media.css styles them all through `.sm-wp-hero`), with the
@@ -31,7 +32,7 @@ export default function MediaContactHero({
   loading?: boolean;
 }) {
   const title = localized(data?.title, lang);
-  const subtitle = localized(data?.subtitle, lang);
+  const subtitle = localizedHtml(data?.subtitle, lang);
 
   return (
     <header className={`sm-wp-hero sm-wp-hero-plain sm-ct-hero${loading ? " hero-bg-loading" : ""}`}>
@@ -60,7 +61,7 @@ export default function MediaContactHero({
         ) : (
           <>
             {title ? <h1 className="sm-wp-hero-title">{title}</h1> : null}
-            {subtitle ? <p className="sm-ct-hero-sub">{subtitle}</p> : null}
+            {subtitle ? <RichText as="p" className="sm-ct-hero-sub" html={subtitle} /> : null}
           </>
         )}
       </div>

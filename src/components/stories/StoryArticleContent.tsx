@@ -18,7 +18,7 @@ import { storyArticle } from "./story-article";
 import { STORIES_PARENT } from "./story-chrome";
 import { useStory } from "@/lib/api/use-stories";
 import { useLang } from "@/lib/use-lang";
-import { localized } from "@/lib/api/pages";
+import { localized, localizedHtml } from "@/lib/api/pages";
 import { splitHeading } from "@/components/home/home-text";
 import { useRouteSegment } from "@/lib/use-route-segment";
 
@@ -50,7 +50,7 @@ export default function StoryArticleContent({ uuid: segment }: { uuid: string })
 
   const hero = data?.hero;
   const heroTitle = localized(hero?.title, lang);
-  const heroDesc = localized(hero?.description, lang);
+  const heroDesc = localizedHtml(hero?.description, lang);
 
   const story = data?.story;
   const article = story ? storyArticle(story, lang) : null;
@@ -61,7 +61,7 @@ export default function StoryArticleContent({ uuid: segment }: { uuid: string })
   const relatedItems = storyCards(related?.items, lang);
   const relatedTitle = localized(related?.title, lang);
   const [relatedPre, relatedHighlight] = splitHeading(relatedTitle, 1);
-  const relatedSub = localized(related?.subtitle, lang);
+  const relatedSub = localizedHtml(related?.subtitle, lang);
   const viewAll = localized(related?.view_all?.label, lang);
 
   return (

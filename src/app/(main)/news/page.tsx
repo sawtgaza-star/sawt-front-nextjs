@@ -11,7 +11,7 @@ import { blogCards } from "@/components/news/blog-cards";
 import { NEWS_PER_PAGE } from "@/components/news/news-data";
 import { useBlogsList } from "@/lib/api/use-blogs";
 import { useLang } from "@/lib/use-lang";
-import { localized } from "@/lib/api/pages";
+import { localized, localizedHtml } from "@/lib/api/pages";
 
 /* Full, paginated news listing — the "عرض جميع الأخبار" target from the home
    page slider. Breadcrumb hero + 3×3 grid of the shared NewsCard.
@@ -28,7 +28,7 @@ export default function Page() {
 
   const hero = data?.hero;
   const heroTitle = localized(hero?.title, lang);
-  const heroDesc = localized(hero?.description, lang);
+  const heroDesc = localizedHtml(hero?.description, lang);
   const items = blogCards(data?.items, lang);
   const totalPages = meta.last_page ?? 1;
 

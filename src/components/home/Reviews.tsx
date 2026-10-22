@@ -3,13 +3,14 @@
 /* eslint-disable */
 import "@/styles/home-reels.css";
 import { useEffect } from "react";
-import { localized } from "@/lib/api/pages";
+import { localized, localizedHtml } from "@/lib/api/pages";
 import type { HomeReviews, HomeReviewReel } from "@/lib/api/home";
 import { bySortOrder, splitHeading } from "./home-text";
 import ReviewReel from "./reviews/ReviewReel";
 import ReelsEmpty from "./reviews/ReelsEmpty";
 import { reviewComments } from "./reviews-data";
 import { useNearViewport } from "./use-near-viewport";
+import RichText from "@/components/ui/RichText";
 
 /* "آراؤكم في المحتوى" — the whole section is the API's `reviews` block now:
    the heading and the lead, the reel column beside them, and the comment
@@ -43,7 +44,7 @@ export default function Reviews({
 }) {
   const title = localized(data?.title, lang);
   const [titleHead, titleTail] = splitHeading(title, 1);
-  const description = localized(data?.description, lang);
+  const description = localizedHtml(data?.description, lang);
 
   /* `reels_enabled: false` is an editor switching the column off; an item with
      no playable file is one Instagram served nothing for, and would be a black
@@ -111,7 +112,7 @@ export default function Reviews({
                     <span className="reviews-highlight">{titleTail}</span>
                   </h2>
                 ) : null}
-                {description ? <p className="reviews-desc">{description}</p> : null}
+                {description ? <RichText as="p" className="reviews-desc" html={description} /> : null}
               </div>
             </div>
 

@@ -1,7 +1,8 @@
-import { localized, type Localized } from "@/lib/api/pages";
+import { localized, type Localized, localizedHtml } from "@/lib/api/pages";
 import type { CreatorCollaborationsBlock } from "@/lib/api/creator-profile";
 import { IconTag } from "@/components/ui/icons";
 import { bySortOrder } from "./creators-text";
+import RichText from "@/components/ui/RichText";
 
 /* "ابرز التعاونات" on a creator's page (/creators/[id]), from the profile
    payload's `collaborations` block: the title + description centered on top
@@ -68,7 +69,7 @@ export default function CreatorCollaborations({
   const words = title.trim().split(/\s+/).filter(Boolean);
   const titleHead = words.slice(0, -1).join(" ");
   const titleTail = words[words.length - 1] || "";
-  const description = localized(data?.description, lang);
+  const description = localizedHtml(data?.description, lang);
 
   return (
     <section className="cr-collabs-strip-section">
@@ -81,7 +82,7 @@ export default function CreatorCollaborations({
                 <span className="cr-highlight">{titleTail}</span>
               </h2>
             ) : null}
-            {description ? <p className="cr-section-sub">{description}</p> : null}
+            {description ? <RichText as="p" className="cr-section-sub" html={description} /> : null}
           </div>
         ) : null}
 

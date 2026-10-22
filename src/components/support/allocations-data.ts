@@ -3,7 +3,7 @@
    `color` drives the card border, top pill, percentage, bullets and progress
    fill; `tint` is the soft wash behind the icon and under the progress track. */
 
-import { localized } from "@/lib/api/pages";
+import { localized, localizedHtml } from "@/lib/api/pages";
 import type { SupportAllocationItem } from "@/lib/api/support";
 
 export type Allocation = {
@@ -92,7 +92,7 @@ export function resolveAllocations(
         tint: look.tint,
         icon: look.icon,
         title: localized(item.title, lang),
-        desc: localized(item.description, lang),
+        desc: localizedHtml(item.description, lang),
         items: (item.bullets || [])
           .map((bullet) => ({ text: localized(bullet, lang) }))
           .filter((bullet) => bullet.text),

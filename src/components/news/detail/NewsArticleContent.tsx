@@ -16,7 +16,7 @@ import { blogCards } from "@/components/news/blog-cards";
 import { blogArticle } from "./blog-article";
 import { useBlog } from "@/lib/api/use-blogs";
 import { useLang } from "@/lib/use-lang";
-import { localized } from "@/lib/api/pages";
+import { localized, localizedHtml } from "@/lib/api/pages";
 import { useRouteSegment } from "@/lib/use-route-segment";
 
 /* Everything /news/{uuid} shows, from GET /pages/blogs/{uuid}: the breadcrumb
@@ -39,7 +39,7 @@ export default function NewsArticleContent({ uuid: segment }: { uuid: string }) 
 
   const hero = data?.hero;
   const heroTitle = localized(hero?.title, lang);
-  const heroDesc = localized(hero?.description, lang);
+  const heroDesc = localizedHtml(hero?.description, lang);
 
   const blog = data?.blog;
   const article = blog ? blogArticle(blog, lang) : null;

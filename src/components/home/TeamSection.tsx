@@ -1,10 +1,11 @@
 // @ts-nocheck
 /* eslint-disable */
-import { localized } from "@/lib/api/pages";
+import { localized, localizedHtml } from "@/lib/api/pages";
 import type { HomeTeam } from "@/lib/api/home";
 import { splitHeading } from "./home-text";
 import MicCutouts from "./MicCutouts";
 import { micCutoutPath } from "@/lib/mic-cutout-file";
+import RichText from "@/components/ui/RichText";
 
 /* The API's `team` block. Each card shows the member's `mic_image` (the photo
    already composited inside the mic) — or, when it is null, the bare `image`
@@ -62,7 +63,7 @@ export default function TeamSection({
 }) {
   const title = localized(data?.title, lang);
   const [titleHead, titleTail] = splitHeading(title, 1);
-  const subtitle = localized(data?.subtitle, lang);
+  const subtitle = localizedHtml(data?.subtitle, lang);
   const profileCta = localized(data?.profile_cta, lang);
 
   const members = (Array.isArray(data?.items) ? data.items : []).map((item) => ({
@@ -103,7 +104,7 @@ export default function TeamSection({
             <span><span className="who-us">{titleTail}</span></span>
           </h1>
         ) : null}
-        {subtitle ? <p className="mb-5 describ-p">{subtitle}</p> : null}
+        {subtitle ? <RichText as="p" className="mb-5 describ-p" html={subtitle} /> : null}
         <div className="owl-carousel owl-theme team-carousel">
           {slides.map((member, index) => (
             <TeamCard key={member.key ?? index} member={member} profileCta={profileCta} />

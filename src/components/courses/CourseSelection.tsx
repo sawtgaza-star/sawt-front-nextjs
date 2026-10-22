@@ -1,5 +1,5 @@
 import type { ReactNode } from "react";
-import { localized } from "@/lib/api/pages";
+import { localized, localizedHtml } from "@/lib/api/pages";
 import { t } from "@/lib/translations";
 import type { CourseTitledItem } from "@/lib/api/courses";
 import { sortItems } from "./course-view";
@@ -10,6 +10,7 @@ import {
   IconSelUsers,
   IconSelDocCheck,
 } from "@/components/ui/icons";
+import RichText from "@/components/ui/RichText";
 
 /* "آلية اختيار المشاركين" — orange-bar section head + a two-column grid of
    selection steps (orange icon on an olive-50 roundel, bold title, muted
@@ -76,7 +77,7 @@ export default function CourseSelection({
             </span>
             <div>
               <h3 className="crs-sel-title">{localized(step.title, lang)}</h3>
-              <p className="crs-sel-desc">{localized(step.description, lang)}</p>
+              <RichText as="p" className="crs-sel-desc" html={localizedHtml(step.description, lang)} />
             </div>
           </li>
         ))}

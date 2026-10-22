@@ -1,12 +1,13 @@
 // @ts-nocheck
 /* eslint-disable */
-import { localized } from "@/lib/api/pages";
+import { localized, localizedHtml } from "@/lib/api/pages";
 import { creatorHref } from "@/lib/api/creator-profile";
 import type {
   CreatorsPartnerCompany,
   CreatorsPartnersContent,
 } from "@/lib/api/creators-page";
 import { bySortOrder, splitEnds } from "./creators-text";
+import RichText from "@/components/ui/RichText";
 
 /* "شركات إعلانية تعاونت مع صناع محتوى صوت" — the API's `partners` block.
 
@@ -75,7 +76,7 @@ export default function PartnerCompanies({
   // "شركات · إعلانية · تعاونت مع صناع محتوى · صوت"
   const [pair, titleMid, brand] = splitEnds(title, 2, 1);
   const [titlePre, , titleHl] = splitEnds(pair, 1, 1);
-  const description = localized(data?.description, lang);
+  const description = localizedHtml(data?.description, lang);
   const companies = bySortOrder(data?.companies);
 
   if (!title && !description && !companies.length) return null;
@@ -94,7 +95,7 @@ export default function PartnerCompanies({
               </h2>
             ) : null}
             {description ? (
-              <p className="cr-section-sub">{description}</p>
+              <RichText as="p" className="cr-section-sub" html={description} />
             ) : null}
           </div>
           <div className="cr-companies-grid">

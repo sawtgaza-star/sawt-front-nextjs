@@ -1,10 +1,11 @@
 "use client";
 import { useEffect, useRef, useState } from "react";
-import { localized } from "@/lib/api/pages";
+import { localized, localizedHtml } from "@/lib/api/pages";
 import type { SupportStoriesContent } from "@/lib/api/support";
 import { resolveStorySlides } from "./untold-stories-data";
 import SupportSectionHead from "./SupportSectionHead";
 import UntoldStoryCard from "./UntoldStoryCard";
+import RichText from "@/components/ui/RichText";
 
 const GAP = 20; // must match .sp-stories-track gap in support.css
 /* how far a press must travel before it counts as a drag rather than a click */
@@ -51,7 +52,7 @@ export default function UntoldStories({
 }) {
   const stories = resolveStorySlides(data?.items, lang);
   const ctaTitle = localized(data?.cta?.title, lang);
-  const ctaBody = localized(data?.cta?.body, lang);
+  const ctaBody = localizedHtml(data?.cta?.body, lang);
   const ctaLabel = localized(data?.cta?.label, lang);
   const [index, setIndex] = useState(0);
   const [perView, setPerView] = useState(3);
@@ -133,7 +134,7 @@ export default function UntoldStories({
       <div className="container">
         <SupportSectionHead
           title={localized(data?.title, lang)}
-          sub={localized(data?.subtitle, lang)}
+          sub={localizedHtml(data?.subtitle, lang)}
           fallback={{
             pre: "أصوات لم نقدر على",
             preKey: "support_untold_title_pre",
@@ -221,7 +222,7 @@ export default function UntoldStories({
                 </h3>
               )}
               {ctaBody ? (
-                <p className="sp-stories-strip-desc">{ctaBody}</p>
+                <RichText as="p" className="sp-stories-strip-desc" html={ctaBody} />
               ) : (
                 <p
                   className="sp-stories-strip-desc"

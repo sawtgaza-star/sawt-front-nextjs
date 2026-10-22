@@ -1,9 +1,10 @@
 "use client";
 import { useState } from "react";
-import { localized } from "@/lib/api/pages";
+import { localized, localizedHtml } from "@/lib/api/pages";
 import { sortItems, type MediaFaqContent } from "@/lib/api/media-page";
 import MediaSectionHead from "./MediaSectionHead";
 import { IconChevronDownBold } from "@/components/ui/icons";
+import RichText from "@/components/ui/RichText";
 
 /* "الأسئلة التي تدور ببالك؟" — the page's own pill heading over the incubator
    page's FAQ block: the thinking-student visual on the start side (right in
@@ -35,7 +36,7 @@ export default function MediaFaq({
         <MediaSectionHead
           pill={localized(data.eyebrow, lang)}
           title={localized(data.title, lang)}
-          sub={localized(data.subtitle, lang)}
+          sub={localizedHtml(data.subtitle, lang)}
         />
 
         <div className="sm-faq-row">
@@ -62,7 +63,7 @@ export default function MediaFaq({
                   {isOpen && (
                     <div className="sm-faq-a">
                       <span className="sm-faq-a-bar" aria-hidden="true"></span>
-                      <p className="sm-faq-a-text">{localized(item.answer, lang)}</p>
+                      <RichText as="p" className="sm-faq-a-text" html={localizedHtml(item.answer, lang)} />
                     </div>
                   )}
                 </div>

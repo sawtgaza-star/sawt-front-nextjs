@@ -1,4 +1,4 @@
-import { localized } from "@/lib/api/pages";
+import { localized, localizedHtml } from "@/lib/api/pages";
 import {
   contactChannels,
   type MediaContactIntroContent,
@@ -8,6 +8,7 @@ import {
 import { IconRatingStar } from "@/components/ui/icons";
 import MediaContactCard from "./MediaContactCard";
 import { MEDIA_PHOTOS } from "./media-photos";
+import RichText from "@/components/ui/RichText";
 
 /* "لنبدأ العمل سويا" — the whole body of /media/contact: the still on the right
    (RTL puts the first column there), the copy and the channel cards on the
@@ -34,7 +35,7 @@ export default function MediaContactSection({
   lang?: string;
 }) {
   const title = localized(intro?.title, lang);
-  const body = localized(intro?.body, lang);
+  const body = localizedHtml(intro?.body, lang);
   const cards = contactChannels(channels).filter((c) => localized(c.label, lang));
   const trustValue = (trust?.value || "").trim();
   const trustLabel = localized(trust?.label, lang);
@@ -49,7 +50,7 @@ export default function MediaContactSection({
 
           <div className="sm-ct-copy">
             {title ? <h2 className="sm-ct-title">{title}</h2> : null}
-            {body ? <p className="sm-ct-desc">{body}</p> : null}
+            {body ? <RichText as="p" className="sm-ct-desc" html={body} /> : null}
 
             {cards.length ? (
               <div className="sm-ct-cards">

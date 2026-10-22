@@ -1,6 +1,6 @@
 /* "ساعد طلاب في الانضمام للحاضنة" — sponsorable incubator courses. */
 
-import { localized } from "@/lib/api/pages";
+import { localized, localizedHtml } from "@/lib/api/pages";
 import type { SupportPackage } from "@/lib/api/support";
 
 export type Course = {
@@ -88,7 +88,7 @@ export function resolveSponsorCards(
       return {
         key: String(index),
         title: localized(pkg.title, lang),
-        desc: localized(pkg.description, lang),
+        desc: localizedHtml(pkg.description, lang),
         duration: localized(pkg.duration, lang),
         seatsLabel: localized(pkg.seats, lang),
         cta: localized(pkg.cta?.label, lang),

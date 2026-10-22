@@ -1,8 +1,9 @@
 import { IconArrowUpLeftSolid } from "@/components/ui/icons";
-import { localized } from "@/lib/api/pages";
+import { localized, localizedHtml } from "@/lib/api/pages";
 import type { IncubatorTestimonialsContent } from "@/lib/api/incubator-page";
 import TestimonialsSlider from "./TestimonialsSlider";
 import { sortItems, splitTitle } from "./incubator-page-view";
+import RichText from "@/components/ui/RichText";
 
 /* "شهادات وتجارب خريجينا" — last section of /incubator, from the API's
    `testimonials` block: a rounded olive canvas with the shared pattern.png
@@ -21,7 +22,7 @@ export default function IncubatorTestimonials({
   if (!data || !items.length) return null;
 
   const [head, highlight, tail] = splitTitle(localized(data.title, lang));
-  const sub = localized(data.subtitle, lang);
+  const sub = localizedHtml(data.subtitle, lang);
   const viewAll = localized(data.view_all?.label, lang);
 
   return (
@@ -42,7 +43,7 @@ export default function IncubatorTestimonials({
                   {tail}
                 </h2>
               ) : null}
-              {sub ? <p className="inc-testi-sub">{sub}</p> : null}
+              {sub ? <RichText as="p" className="inc-testi-sub" html={sub} /> : null}
               {viewAll ? (
                 <a className="inc-testi-btn" href="#">
                   <span>{viewAll}</span>

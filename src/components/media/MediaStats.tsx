@@ -1,4 +1,4 @@
-import { localized } from "@/lib/api/pages";
+import { localized, localizedHtml } from "@/lib/api/pages";
 import { sortItems, type MediaStatsContent } from "@/lib/api/media-page";
 import MediaSectionHead from "./MediaSectionHead";
 
@@ -27,7 +27,7 @@ export default function MediaStats({
           <MediaSectionHead
             pill={localized(data.eyebrow, lang)}
             title={localized(data.title, lang)}
-            sub={localized(data.subtitle, lang)}
+            sub={localizedHtml(data.subtitle, lang)}
           />
 
           <div className="sm-stats-row">

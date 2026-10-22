@@ -1,8 +1,9 @@
 import SiteNav from "@/components/site/SiteNav";
 import BreadcrumbHome from "@/components/site/BreadcrumbHome";
-import { localized } from "@/lib/api/pages";
+import { localized, localizedHtml } from "@/lib/api/pages";
 import type { SupportHeroContent } from "@/lib/api/support";
 import { SupportHeroSkeleton } from "./SupportSkeleton";
+import RichText from "@/components/ui/RichText";
 
 /* Breadcrumb hero for the Support page (ادعم صوت). Reuses the creators/team
    hero styling (cr-* classes from creators.css, imported by the support page)
@@ -26,7 +27,7 @@ export default function SupportHero({
   loading?: boolean;
 } = {}) {
   const title = localized(data?.title, lang);
-  const description = localized(data?.description, lang);
+  const description = localizedHtml(data?.description, lang);
 
   return (
     <header>
@@ -48,7 +49,7 @@ export default function SupportHero({
           ) : title || description ? (
             <>
               {title ? <h1 className="cr-hero-title">{title}</h1> : null}
-              {description ? <p className="cr-hero-desc">{description}</p> : null}
+              {description ? <RichText as="p" className="cr-hero-desc" html={description} /> : null}
             </>
           ) : (
             <>

@@ -1,6 +1,7 @@
-import { localized } from "@/lib/api/pages";
+import { localized, localizedHtml } from "@/lib/api/pages";
 import { sortItems, type MediaMethodologyContent } from "@/lib/api/media-page";
 import MediaSectionHead from "./MediaSectionHead";
+import RichText from "@/components/ui/RichText";
 
 /* "رحلتنا معك" — the methodology timeline. One horizontal rail with a node per
    step; odd steps hang their card above the rail, even steps below, and each
@@ -30,7 +31,7 @@ export default function MediaProcess({
         <MediaSectionHead
           pill={localized(data.eyebrow, lang)}
           title={localized(data.title, lang)}
-          sub={localized(data.subtitle, lang)}
+          sub={localizedHtml(data.subtitle, lang)}
         />
       </div>
 
@@ -50,7 +51,7 @@ export default function MediaProcess({
                   {step.number}
                 </span>
                 <h3 className="sm-step-title">{localized(step.title, lang)}</h3>
-                <p className="sm-step-desc">{localized(step.description, lang)}</p>
+                <RichText as="p" className="sm-step-desc" html={localizedHtml(step.description, lang)} />
               </article>
 
               <span className="sm-step-node" aria-hidden="true"></span>

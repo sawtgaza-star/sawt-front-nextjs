@@ -1,10 +1,11 @@
 // @ts-nocheck
 /* eslint-disable */
 import "@/styles/platform-accordion.css";
-import { localized } from "@/lib/api/pages";
+import { localized, localizedHtml } from "@/lib/api/pages";
 import type { HomePlatformSections } from "@/lib/api/home";
 import { splitHeading, bySortOrder } from "./home-text";
 import PlatformAccordion from "./platform-sections/PlatformAccordion";
+import RichText from "@/components/ui/RichText";
 
 /* The API's `platform_sections` block: image, title, copy, the figures and the
    button label all come from the payload, laid out as an expanding accordion
@@ -30,13 +31,13 @@ export default function PlatformSections({
 }) {
   const title = localized(data?.title, lang);
   const [titleHead, titleTail] = splitHeading(title, 1);
-  const subtitle = localized(data?.subtitle, lang);
+  const subtitle = localizedHtml(data?.subtitle, lang);
 
   const items = bySortOrder(data?.items).map((item, index) => ({
     image: item.image_url,
     iconUrl: item.icon_url,
     title: localized(item.title, lang),
-    desc: localized(item.description, lang),
+    desc: localizedHtml(item.description, lang),
     cta: localized(item.cta?.label, lang),
     href: CARD_HREFS[index] || CARD_HREFS[0],
     stats: (Array.isArray(item.stats) ? item.stats : [])
@@ -62,9 +63,7 @@ export default function PlatformSections({
               </h2>
             ) : null}{" "}
             {subtitle ? (
-              <p className="font-24" style={{ color: "rgba(72, 72, 72, 1)" }}>
-                {subtitle}
-              </p>
+              <RichText as="p" className="font-24" style={{ color: "rgba(72, 72, 72, 1)" }} html={subtitle} />
             ) : null}{" "}
           </div>{" "}
           {items.length ? <PlatformAccordion items={items} moreLabel={lang === "en" ? "View more" : "عرض المزيد"} /> : null}

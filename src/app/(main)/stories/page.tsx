@@ -12,7 +12,7 @@ import { storyCards } from "@/components/stories/story-cards";
 import { STORIES_PARENT } from "@/components/stories/story-chrome";
 import { useStoriesList } from "@/lib/api/use-stories";
 import { useLang } from "@/lib/use-lang";
-import { localized } from "@/lib/api/pages";
+import { localized, localizedHtml } from "@/lib/api/pages";
 
 /* Full, paginated stories listing — the "عرض جميع القصص" target from the story
    article page. Same page as /news down to the CSS pair, the 3×3 grid and the
@@ -30,7 +30,7 @@ export default function Page() {
 
   const hero = data?.hero;
   const heroTitle = localized(hero?.title, lang);
-  const heroDesc = localized(hero?.description, lang);
+  const heroDesc = localizedHtml(hero?.description, lang);
   const items = storyCards(data?.items, lang);
   const totalPages = meta.last_page ?? 1;
 

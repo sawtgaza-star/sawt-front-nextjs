@@ -1,6 +1,7 @@
 import type { CSSProperties } from "react";
-import { localized, sorted, type AboutStoryContent } from "@/lib/api/pages";
+import { localized, sorted, type AboutStoryContent, localizedHtml } from "@/lib/api/pages";
 import { splitHeading } from "./about-text";
+import RichText from "@/components/ui/RichText";
 
 /* API `story` block, and nothing else — the three built-in cards and their
    bundled icons are gone, so a card shows an icon only once an editor uploads
@@ -63,7 +64,7 @@ function StoryCard({
           ) : null}{" "}
         </div>{" "}
         <h3 className="sawt-story-card-title">{card.title}</h3>{" "}
-        <p className="sawt-story-card-desc">{card.desc}</p>{" "}
+        <RichText as="p" className="sawt-story-card-desc" html={card.desc} />{" "}
       </div>{" "}
     </div>
   );
@@ -77,12 +78,12 @@ export default function SawtStory({
   lang?: string;
 }) {
   const title = localized(data?.title, lang);
-  const subtitle = localized(data?.subtitle, lang);
+  const subtitle = localizedHtml(data?.subtitle, lang);
   const [titleHead, titleTail] = splitHeading(title, 1);
 
   const cards = sorted(data?.cards).map((card) => ({
     title: localized(card.title, lang),
-    desc: localized(card.description, lang),
+    desc: localizedHtml(card.description, lang),
     iconUrl: card.icon_url,
   }));
 
@@ -102,7 +103,7 @@ export default function SawtStory({
             <span className="sawt-story-highlight">{titleTail}</span>{" "}
           </h2>
         ) : null}{" "}
-        {subtitle ? <p className="sawt-story-subtitle">{subtitle}</p> : null}{" "}
+        {subtitle ? <RichText as="p" className="sawt-story-subtitle" html={subtitle} /> : null}{" "}
       </div>
     ) : null;
 

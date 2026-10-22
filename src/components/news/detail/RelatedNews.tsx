@@ -3,6 +3,7 @@ import { useEffect, useRef, useState } from "react";
 import NewsCard from "@/components/news/NewsCard";
 import type { NewsItem } from "@/components/news/news-data";
 import "@/styles/home-news.css";
+import RichText from "@/components/ui/RichText";
 
 /* "أخبار ذات صلة" — the strip that closes the article. Same olive band, mic
    watermarks, heading treatment and "عرض جميع الأخبار" link as the home
@@ -166,13 +167,10 @@ export default function RelatedNews({
               {heading.highlight}
             </span>
           </h2>
-          <p
+          <RichText as="p"
             className="news-subtitle font-24"
             style={{ color: "rgba(90, 90, 90, 1)" }}
-            data-i18n={heading.subKey}
-          >
-            {heading.sub}
-          </p>
+            data-i18n={heading.subKey} html={heading.sub} />
         </div>
 
         <div className="nws-related-slider">

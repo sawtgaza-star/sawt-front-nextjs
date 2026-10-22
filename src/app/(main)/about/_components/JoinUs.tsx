@@ -1,4 +1,5 @@
-import { localized, type AboutJoinContent } from "@/lib/api/pages";
+import { localized, type AboutJoinContent, localizedHtml } from "@/lib/api/pages";
+import RichText from "@/components/ui/RichText";
 
 /* API `join` block, and nothing else — see AboutHero. The link target is not
    part of the payload: the button opens "ادعم صوت" (/support). The banner
@@ -11,7 +12,7 @@ export default function JoinUs({
   lang?: string;
 }) {
   const title = localized(data?.title, lang);
-  const description = localized(data?.description, lang);
+  const description = localizedHtml(data?.description, lang);
   const button = localized(data?.button_text, lang);
   const image = data?.image_url;
 
@@ -28,7 +29,7 @@ export default function JoinUs({
         <div className="join-us-content text-center">
           {" "}
           {title ? <h2 className="join-us-title">{title}</h2> : null}{" "}
-          {description ? <p className="join-us-desc">{description}</p> : null}{" "}
+          {description ? <RichText as="p" className="join-us-desc" html={description} /> : null}{" "}
           {button ? (
             <a href="/support" className="btn btn-dark-green join-us-btn">
               {" "}

@@ -13,7 +13,7 @@
    identifier only, so it is the one every route into a story carries — the
    home slider included (see home/RealStories). */
 
-import { localized } from "@/lib/api/pages";
+import { localized, localizedHtml } from "@/lib/api/pages";
 import type { StoryListItem } from "@/lib/api/stories";
 import type { StoryCardItem } from "./story-data";
 
@@ -39,8 +39,8 @@ export function storyCards(
       badge: localized(item.badge, lang),
       title,
       footerTitle: footerTitle.trim() === title.trim() ? "" : footerTitle,
-      desc: localized(item.footer_subtitle, lang),
-      full: localized(item.excerpt, lang),
+      desc: localizedHtml(item.footer_subtitle, lang, { oneLine: true }),
+      full: localizedHtml(item.excerpt, lang, { oneLine: true }),
     };
   });
 }

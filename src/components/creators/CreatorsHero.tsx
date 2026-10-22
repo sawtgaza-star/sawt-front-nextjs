@@ -2,9 +2,10 @@
 /* eslint-disable */
 import SiteNav from "@/components/site/SiteNav";
 import BreadcrumbHome from "@/components/site/BreadcrumbHome";
-import { localized } from "@/lib/api/pages";
+import { localized, localizedHtml } from "@/lib/api/pages";
 import type { CreatorsHeroContent } from "@/lib/api/creators-page";
 import { CreatorsHeroSkeleton } from "./CreatorsSkeleton";
+import RichText from "@/components/ui/RichText";
 
 /* Breadcrumb hero for the Content Creators page.
    Mirrors the about-page header pattern but with cr- classes.
@@ -36,7 +37,7 @@ export default function CreatorsHero({
   loading?: boolean;
 }) {
   const title = localized(data?.title, lang);
-  const description = localized(data?.description, lang);
+  const description = localizedHtml(data?.description, lang);
 
   return (
     <header>
@@ -58,7 +59,7 @@ export default function CreatorsHero({
           ) : (
             <>
               {title ? <h1 className="cr-hero-title">{title}</h1> : null}
-              {description ? <p className="cr-hero-desc">{description}</p> : null}
+              {description ? <RichText as="p" className="cr-hero-desc" html={description} /> : null}
             </>
           )}
         </div>

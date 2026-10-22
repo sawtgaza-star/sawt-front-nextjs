@@ -1,5 +1,5 @@
 import { IconTarget } from "@/components/ui/icons";
-import { localized, type Localized } from "@/lib/api/pages";
+import { localized, type Localized, localizedHtml } from "@/lib/api/pages";
 import type { SupportCommunityGoal } from "@/lib/api/support";
 import SupportSectionHead from "./SupportSectionHead";
 import { currencySymbol, formatNumber, splitAmount } from "./support-text";
@@ -49,7 +49,7 @@ export default function SupportCommunity({
       <div className="container">
         <SupportSectionHead
           title={localized(data?.title, lang)}
-          sub={localized(data?.subtitle, lang)}
+          sub={localizedHtml(data?.subtitle, lang)}
           fallback={{
             pre: "مجتمع الدعم",
             preKey: "support_community_title_pre",

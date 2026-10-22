@@ -2,9 +2,10 @@
 /* eslint-disable */
 import "@/styles/home-news.css";
 import NewsCard from "@/components/news/NewsCard";
-import { localized } from "@/lib/api/pages";
+import { localized, localizedHtml } from "@/lib/api/pages";
 import type { HomeNews } from "@/lib/api/home";
 import { splitHeading, formatDate } from "./home-text";
+import RichText from "@/components/ui/RichText";
 
 /* The API's `news` block. The heading is one string in the payload but two
    spans in the design (the accent falls on the last word), so it is split
@@ -24,7 +25,7 @@ export default function LatestNews({
 }) {
   const title = localized(data?.title, lang);
   const [titleHead, titleTail] = splitHeading(title, 1);
-  const subtitle = localized(data?.subtitle, lang);
+  const subtitle = localizedHtml(data?.subtitle, lang);
   const readMore = localized(data?.read_more, lang);
   const viewAll = localized(data?.view_all?.label, lang);
 
@@ -33,7 +34,7 @@ export default function LatestNews({
     img: item.cover_image || "",
     alt: localized(item.title, lang),
     title: localized(item.title, lang),
-    desc: localized(item.excerpt, lang),
+    desc: localizedHtml(item.excerpt, lang, { oneLine: true }),
     date: formatDate(item.publish_date, lang),
     readMore,
     href: item.uuid ? `/news/${item.uuid}` : "#",
@@ -57,9 +58,7 @@ export default function LatestNews({
             </h2>
           ) : null}
           {subtitle ? (
-            <p className="news-subtitle font-24" style={{ color: "rgba(90, 90, 90, 1)", margin: "20px 0px 35px 0px !important" }}>
-              {subtitle}
-            </p>
+            <RichText as="p" className="news-subtitle font-24" style={{ color: "rgba(90, 90, 90, 1)", margin: "20px 0px 35px 0px !important" }} html={subtitle} />
           ) : null}
         </div>
         <div className="owl-carousel creators-carousel">

@@ -1,8 +1,9 @@
 import SiteNav from "@/components/site/SiteNav";
 import BreadcrumbHome from "@/components/site/BreadcrumbHome";
-import { localized } from "@/lib/api/pages";
+import { localized, localizedHtml } from "@/lib/api/pages";
 import type { TeamHeroContent } from "@/lib/api/team";
 import { TeamHeroSkeleton } from "./TeamSkeleton";
+import RichText from "@/components/ui/RichText";
 
 /* Breadcrumb hero for the Team page (الفريق). Uses the content-creators hero
    styling (cr-* classes, from creators.css) with the same collage background,
@@ -35,7 +36,7 @@ export default function TeamHero({
   loading?: boolean;
 }) {
   const title = localized(data?.title, lang);
-  const description = localized(data?.description, lang);
+  const description = localizedHtml(data?.description, lang);
 
   return (
     <header>
@@ -58,7 +59,7 @@ export default function TeamHero({
             <>
               {title ? <h1 className="cr-hero-title">{title}</h1> : null}
               {description ? (
-                <p className="cr-hero-desc">{description}</p>
+                <RichText as="p" className="cr-hero-desc" html={description} />
               ) : null}
             </>
           )}

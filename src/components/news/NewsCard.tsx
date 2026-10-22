@@ -1,5 +1,6 @@
 import { IconCalendar } from "@/components/ui/icons";
 import type { NewsItem } from "./news-data";
+import RichText from "@/components/ui/RichText";
 
 /* Single news card — the home slider card, extracted so the /news listing
    renders exactly the same markup. Keep classNames/data-i18n keys untouched.
@@ -28,7 +29,7 @@ export default function NewsCard({ item }: { item: NewsItem }) {
           <p className="card-text font-md-18" style={{ fontWeight: "500", color: "rgba(109, 109, 109, 1)" }}>
             {/* inner span: the clamp can't sit on the <p> — its padding above
                 the divider would show the top of a third line */}
-            <span className="news-card-desc">{item.desc}</span>
+            <RichText as="span" className="news-card-desc" html={item.desc} />
           </p>
         </div>
         <div className="card-footer bg-white border-0 d-flex font-16 text-dark pb-3 fw-bold">

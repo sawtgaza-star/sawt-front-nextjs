@@ -1,8 +1,9 @@
-import { localized } from "@/lib/api/pages";
+import { localized, localizedHtml } from "@/lib/api/pages";
 import type { CreatorsStatsContent } from "@/lib/api/creators-page";
 import { CreatorStatIcon } from "./creator-stat-icons";
 import { splitEnds } from "./creators-text";
 import { splitStatValue } from "@/components/home/stat-icons";
+import RichText from "@/components/ui/RichText";
 
 /* "إنجازات صناع محتوى صوت" — the API's `stats` block: four figures, each with
    the icon its `key` picks (see ./creator-stat-icons).
@@ -22,7 +23,7 @@ export default function CreatorsStats({
 }) {
   const title = localized(data?.title, lang);
   const [lead, titleMid, brand] = splitEnds(title, 1, 1);
-  const subtitle = localized(data?.subtitle, lang);
+  const subtitle = localizedHtml(data?.subtitle, lang);
   const items = Array.isArray(data?.items) ? data.items : [];
 
   if (!title && !subtitle && !items.length) return null;
@@ -38,7 +39,7 @@ export default function CreatorsStats({
               <span className="cr-highlight">{brand}</span>
             </h2>
           ) : null}
-          {subtitle ? <p className="cr-section-sub">{subtitle}</p> : null}
+          {subtitle ? <RichText as="p" className="cr-section-sub" html={subtitle} /> : null}
         </div>
         <div className="cr-stats-grid">
           {items.map((stat, index) => {

@@ -1,8 +1,9 @@
 import SiteNav from "@/components/site/SiteNav";
 import BreadcrumbHome from "@/components/site/BreadcrumbHome";
-import { localized } from "@/lib/api/pages";
+import { localized, localizedHtml } from "@/lib/api/pages";
 import type { CollaborateHeroContent } from "@/lib/api/collaborate";
 import { CollaborateHeroSkeleton } from "./CollaborateSkeleton";
+import RichText from "@/components/ui/RichText";
 
 /* Breadcrumb hero for the تعاون معنا pages. Same cr-* hero shell and collage
    background as SupportHero, so it lines up with the other secondary pages.
@@ -39,7 +40,7 @@ export default function CollaborateHero({
   loading?: boolean;
 } = {}) {
   const title = localized(data?.title, lang);
-  const description = localized(data?.description, lang);
+  const description = localizedHtml(data?.description, lang);
 
   return (
     <header>
@@ -76,7 +77,7 @@ export default function CollaborateHero({
           ) : title || description ? (
             <>
               {title ? <h1 className="cr-hero-title">{title}</h1> : null}
-              {description ? <p className="cr-hero-desc">{description}</p> : null}
+              {description ? <RichText as="p" className="cr-hero-desc" html={description} /> : null}
             </>
           ) : (
             <>

@@ -1,7 +1,8 @@
-import { localized } from "@/lib/api/pages";
+import { localized, localizedHtml } from "@/lib/api/pages";
 import { sortItems } from "@/lib/api/media-page";
 import type { MediaWorkIdentity } from "@/lib/api/media-work";
 import { IconCalendarDays } from "@/components/ui/icons";
+import RichText from "@/components/ui/RichText";
 
 /* Top of the case study: the project's still on the left, its identity on the
    right (chips, name + specialty, the one-line brief) and the headline figures
@@ -18,7 +19,7 @@ export default function MediaProjectIntro({
   const tag = localized(data?.tag, lang);
   const title = localized(data?.title, lang);
   const category = localized(data?.category, lang);
-  const summary = localized(data?.summary, lang);
+  const summary = localizedHtml(data?.summary, lang);
   const highlights = sortItems(data?.highlights);
 
   if (!data) return null;
@@ -45,7 +46,7 @@ export default function MediaProjectIntro({
               <span className="sm-pj-specialty">{category}</span>
             </div>
 
-            <p className="sm-pj-desc">{summary}</p>
+            <RichText as="p" className="sm-pj-desc" html={summary} />
 
             {/* the figures count up when the card scrolls into view — that is
                 initCounters() in scroll-effects.ts, which reads the class */}

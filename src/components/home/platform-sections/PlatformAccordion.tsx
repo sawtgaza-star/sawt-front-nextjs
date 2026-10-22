@@ -1,6 +1,7 @@
 import { Fragment } from "react";
 import { SECTION_ICONS } from "./platform-icons";
 import PlatformTapWiring from "./PlatformTapWiring";
+import RichText from "@/components/ui/RichText";
 
 const SAWT_LOGO = encodeURI("/assets/images/شعار صوت اخضر.svg");
 
@@ -73,7 +74,7 @@ export default function PlatformAccordion({
                   </span>
                 </a>
               </div>
-              <p className="ps-desc">{item.desc}</p>
+              <RichText as="p" className="ps-desc" html={item.desc} />
               <div className="ps-foot">
                 {item.stats.length ? (
                   <div className="ps-stats">

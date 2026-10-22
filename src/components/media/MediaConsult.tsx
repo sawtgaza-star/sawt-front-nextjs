@@ -1,4 +1,4 @@
-import { localized } from "@/lib/api/pages";
+import { localized, localizedHtml } from "@/lib/api/pages";
 import { localizedList, type MediaConsultationContent } from "@/lib/api/media-page";
 import { cycle } from "./media-page-view";
 import MediaSectionHead from "./MediaSectionHead";
@@ -9,6 +9,7 @@ import {
   IconReqUser,
   IconNavMic,
 } from "@/components/ui/icons";
+import RichText from "@/components/ui/RichText";
 
 /* "احجز استشارتك مع خبراء صوت ميديا" — copy + selling points on the right,
    the booking form card on the left.
@@ -30,7 +31,7 @@ export default function MediaConsult({
   data?: MediaConsultationContent;
   lang?: string;
 }) {
-  const body = localized(data?.body, lang);
+  const body = localizedHtml(data?.body, lang);
   const perks = localizedList(data?.bullets, lang);
 
   if (!data) return null;
@@ -45,7 +46,7 @@ export default function MediaConsult({
               pill={localized(data.eyebrow, lang)}
               title={localized(data.title, lang)}
             />
-            {body ? <p className="sm-consult-desc">{body}</p> : null}
+            {body ? <RichText as="p" className="sm-consult-desc" html={body} /> : null}
 
             {perks.length ? (
               <ul className="sm-consult-perks">

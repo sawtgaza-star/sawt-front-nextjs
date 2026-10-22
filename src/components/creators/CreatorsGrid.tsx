@@ -4,10 +4,11 @@ import CreatorCard from "@/components/home/CreatorCard";
 import CreatorFollowWiring from "@/components/home/CreatorFollowWiring";
 import CreatorPopWiring from "@/components/home/CreatorPopWiring";
 import "@/styles/home-creator-card.css";
-import { localized } from "@/lib/api/pages";
+import { localized, localizedHtml } from "@/lib/api/pages";
 import type { CreatorsGridContent } from "@/lib/api/creators-page";
 import { creatorCards } from "./creator-cards";
 import { splitEnds } from "./creators-text";
+import RichText from "@/components/ui/RichText";
 
 /* "+47 صانع محتوى ناجح في صوت" — the API's `grid` block, in the same card
    as the home page's creators slider (home/CreatorCard: the photo card with
@@ -32,7 +33,7 @@ export default function CreatorsGrid({
 }) {
   const title = localized(data?.title, lang);
   const [count, titleMid, brand] = splitEnds(title, 1, 1);
-  const subtitle = localized(data?.subtitle, lang);
+  const subtitle = localizedHtml(data?.subtitle, lang);
   const browse = localized(data?.browse_label, lang);
   const followLabel = lang === "en" ? "Follow" : "متابعة";
   const unfollowLabel = lang === "en" ? "Unfollow" : "إلغاء المتابعة";
@@ -64,7 +65,7 @@ export default function CreatorsGrid({
               <span className="cr-highlight">{brand}</span>
             </h2>
           ) : null}
-          {subtitle ? <p className="cr-section-sub">{subtitle}</p> : null}
+          {subtitle ? <RichText as="p" className="cr-section-sub" html={subtitle} /> : null}
         </div>
         {/* the home page's slider (lib/owl-sliders → .creators-carousel2),
             booted by CreatorsContent once the payload is in */}

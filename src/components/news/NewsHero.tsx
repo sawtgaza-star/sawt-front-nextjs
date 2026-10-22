@@ -1,6 +1,7 @@
 import SiteNav from "@/components/site/SiteNav";
 import BreadcrumbHome from "@/components/site/BreadcrumbHome";
 import { NewsCrumbSkeleton, NewsHeroSkeleton, type HeroSkeletonLen } from "./NewsSkeleton";
+import RichText from "@/components/ui/RichText";
 
 /* The key fields are optional: copy that comes from the API (GET /pages/blogs,
    GET /pages/stories) is already in the reader's language, and a `data-i18n`
@@ -111,9 +112,7 @@ export default function NewsHero({
                 </h1>
               ) : null}
               {hero?.desc ? (
-                <p className="about-hero-desc" data-i18n={hero.descKey}>
-                  {hero.desc}
-                </p>
+                <RichText as="p" className="about-hero-desc" data-i18n={hero.descKey} html={hero.desc} />
               ) : null}
             </>
           )}

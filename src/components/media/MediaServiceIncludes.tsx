@@ -1,8 +1,9 @@
-import { localized } from "@/lib/api/pages";
+import { localized, localizedHtml } from "@/lib/api/pages";
 import { localizedList } from "@/lib/api/media-page";
 import type { MediaServiceIncludesContent } from "@/lib/api/media-service";
 import { IconCircleCheck } from "@/components/ui/icons";
 import MediaProjectHead from "./MediaProjectHead";
+import RichText from "@/components/ui/RichText";
 
 /* "ماذا تشمل الخدمة" — the paragraph the design reuses from the service's own
    description, then the points of the scope, each a chip with the design's
@@ -16,7 +17,7 @@ export default function MediaServiceIncludes({
   lang?: string;
 }) {
   const title = localized(data?.title, lang);
-  const body = localized(data?.body, lang);
+  const body = localizedHtml(data?.body, lang);
   const items = localizedList(data?.items, lang);
 
   if (!title && !body && !items.length) return null;
@@ -24,7 +25,7 @@ export default function MediaServiceIncludes({
   return (
     <section className="sm-sv-includes">
       {title ? <MediaProjectHead title={title} dot="orange" /> : null}
-      {body ? <p className="sm-sv-text">{body}</p> : null}
+      {body ? <RichText as="p" className="sm-sv-text" html={body} /> : null}
 
       {items.length ? (
         <div className="sm-sv-features">

@@ -1,8 +1,9 @@
-import { localized } from "@/lib/api/pages";
+import { localized, localizedHtml } from "@/lib/api/pages";
 import { sortItems, type MediaAboutContent } from "@/lib/api/media-page";
 import { ABOUT_SLOTS, slotUrl } from "./media-page-view";
 import MediaSectionHead from "./MediaSectionHead";
 import MediaSatisfactionChip from "./MediaSatisfactionChip";
+import RichText from "@/components/ui/RichText";
 
 /* "شريكك الإعلامي المتكامل" — the about block. Copy column on the right (RTL
    first child), staggered four-photo collage on the left with the rating chip
@@ -19,7 +20,7 @@ export default function MediaAbout({
   data?: MediaAboutContent;
   lang?: string;
 }) {
-  const body = localized(data?.body, lang);
+  const body = localizedHtml(data?.body, lang);
   const images = sortItems(data?.images);
   /* listed in the order the payload sends them, so an upload with no key at
      all still lands in a sensible slot */
@@ -34,7 +35,7 @@ export default function MediaAbout({
     .map((entry) => ({
       ...entry,
       title: localized(entry.card?.title, lang),
-      text: localized(entry.card?.text, lang),
+      text: localizedHtml(entry.card?.text, lang),
     }))
     .filter((entry) => entry.title || entry.text);
 
@@ -50,7 +51,7 @@ export default function MediaAbout({
               pill={localized(data.eyebrow, lang)}
               title={localized(data.title, lang)}
             />
-            {body ? <p className="sm-about-desc">{body}</p> : null}
+            {body ? <RichText as="p" className="sm-about-desc" html={body} /> : null}
 
             {cards.length ? (
               <div className="sm-about-cards">
@@ -60,7 +61,7 @@ export default function MediaAbout({
                       <i className="sm-about-card-dot" aria-hidden="true"></i>
                       <span>{entry.title}</span>
                     </h3>
-                    <p>{entry.text}</p>
+                    <RichText as="p" html={entry.text} />
                   </article>
                 ))}
               </div>

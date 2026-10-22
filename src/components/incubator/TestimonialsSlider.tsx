@@ -2,7 +2,7 @@
 import { useEffect, useRef, useState } from "react";
 import { IconQuoteMarks } from "@/components/ui/icons";
 import RatingStars from "@/components/ui/RatingStars";
-import { localized } from "@/lib/api/pages";
+import { localized, localizedHtml } from "@/lib/api/pages";
 import type { IncubatorTestimonial } from "@/lib/api/incubator-page";
 import { t } from "@/lib/translations";
 import { PLACEHOLDER } from "./incubator-page-view";
@@ -282,7 +282,7 @@ export default function TestimonialsSlider({
             </div>
 
             <TestimonialQuote
-              text={localized(item.quote, lang)}
+              text={localizedHtml(item.quote, lang)}
               isOpen={isOpen}
               onToggle={() => toggleQuote(index)}
               moreLabel={readMore || t("inc_testi_read_more")}

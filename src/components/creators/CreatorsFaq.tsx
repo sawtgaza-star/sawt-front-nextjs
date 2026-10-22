@@ -1,8 +1,9 @@
 "use client";
 import { useState } from "react";
-import { localized } from "@/lib/api/pages";
+import { localized, localizedHtml } from "@/lib/api/pages";
 import type { CreatorsFaqContent } from "@/lib/api/creators-page";
 import { bySortOrder, splitTail } from "./creators-text";
+import RichText from "@/components/ui/RichText";
 
 /* The accordion at the foot of /creators — the API's `faq` block, in the order
    the editor arranged the questions.
@@ -27,7 +28,7 @@ export default function CreatorsFaq({
 
   const title = localized(data?.title, lang);
   const [titlePre, titleHl] = splitTail(title, 2);
-  const subtitle = localized(data?.subtitle, lang);
+  const subtitle = localizedHtml(data?.subtitle, lang);
 
   if (!title && !subtitle && !items.length) return null;
 
@@ -54,7 +55,7 @@ export default function CreatorsFaq({
               <span className="cr-title-orange">{titleHl}</span>
             </h2>
           ) : null}
-          {subtitle ? <p className="cr-section-sub">{subtitle}</p> : null}
+          {subtitle ? <RichText as="p" className="cr-section-sub" html={subtitle} /> : null}
         </div>
 
         <div className="cr-faq-row">
@@ -76,7 +77,7 @@ export default function CreatorsFaq({
                     <i className="fa-solid fa-chevron-down cr-faq-chevron"></i>
                   </button>
                   {isOpen && (
-                    <div className="cr-faq-a">{localized(item.answer, lang)}</div>
+                    <RichText as="div" className="cr-faq-a" html={localizedHtml(item.answer, lang)} />
                   )}
                 </div>
               );

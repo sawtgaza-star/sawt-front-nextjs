@@ -1,5 +1,6 @@
-import { localized, sorted, type AboutValuesContent } from "@/lib/api/pages";
+import { localized, sorted, type AboutValuesContent, localizedHtml } from "@/lib/api/pages";
 import { splitHeading } from "./about-text";
+import RichText from "@/components/ui/RichText";
 
 /* API `values` block, and nothing else — the four built-in cards and their
    bundled SVG icons are gone, so a card shows an icon only once an editor
@@ -18,12 +19,12 @@ export default function CoreValues({
   lang?: string;
 }) {
   const title = localized(data?.title, lang);
-  const subtitle = localized(data?.subtitle, lang);
+  const subtitle = localizedHtml(data?.subtitle, lang);
   const [titleHead, titleTail] = splitHeading(title, 2);
 
   const cards = sorted(data?.items).map((item) => ({
     title: localized(item.title, lang),
-    desc: localized(item.description, lang),
+    desc: localizedHtml(item.description, lang),
     iconUrl: item.icon_url,
   }));
 
@@ -53,7 +54,7 @@ export default function CoreValues({
             </h2>
           ) : null}{" "}
           {subtitle ? (
-            <p className="core-values-subtitle">{subtitle}</p>
+            <RichText as="p" className="core-values-subtitle" html={subtitle} />
           ) : null}{" "}
         </div>{" "}
         <div className="row g-4 justify-content-center core-values-grid">
@@ -82,7 +83,7 @@ export default function CoreValues({
                   ) : null}{" "}
                 </div>{" "}
                 <h3 className="value-card-title">{card.title}</h3>{" "}
-                <p className="value-card-desc">{card.desc}</p>{" "}
+                <RichText as="p" className="value-card-desc" html={card.desc} />{" "}
               </div>{" "}
             </div>
           ))}{" "}

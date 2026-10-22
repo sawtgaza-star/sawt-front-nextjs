@@ -1,7 +1,8 @@
-import { localized } from "@/lib/api/pages";
+import { localized, localizedHtml } from "@/lib/api/pages";
 import { localizedList, sortItems, type MediaAudiencesContent } from "@/lib/api/media-page";
 import MediaSectionHead from "./MediaSectionHead";
 import { IconSectorBadge } from "./media-icons";
+import RichText from "@/components/ui/RichText";
 
 /* "من نخدم ؟" — the audience cards side by side; the middle one is drawn with
    the orange top rule the design highlights it with. Which card that is comes
@@ -25,7 +26,7 @@ export default function MediaSectors({
         <MediaSectionHead
           pill={localized(data.eyebrow, lang)}
           title={localized(data.title, lang)}
-          sub={localized(data.subtitle, lang)}
+          sub={localizedHtml(data.subtitle, lang)}
         />
 
         <div className="sm-sectors-grid">
@@ -40,7 +41,7 @@ export default function MediaSectors({
 
               <h3 className="sm-sector-title">{localized(item.title, lang)}</h3>
               <p className="sm-sector-tagline">{localized(item.tagline, lang)}</p>
-              <p className="sm-sector-desc">{localized(item.description, lang)}</p>
+              <RichText as="p" className="sm-sector-desc" html={localizedHtml(item.description, lang)} />
 
               <ul className="sm-sector-points">
                 {localizedList(item.bullets, lang).map((point, i) => (

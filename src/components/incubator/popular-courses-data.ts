@@ -13,7 +13,7 @@
    `featured` (the mock's outlined, photo-less middle card) is unused; the type
    and its CSS are kept for when it's wanted again. */
 
-import { localized } from "@/lib/api/pages";
+import { localized, localizedHtml } from "@/lib/api/pages";
 import type { IncubatorCourse } from "@/lib/api/incubator-page";
 import { isWaitlistCta, waitlistPath } from "@/lib/api/courses";
 import { t } from "@/lib/translations";
@@ -85,7 +85,7 @@ export function toPopularCourse(
     title: localized(course.title, lang),
     meta: meta.length ? meta : undefined,
     rating: Number.isFinite(rating) && rating > 0 ? Math.min(5, rating) : undefined,
-    desc: localized(course.description, lang) || undefined,
+    desc: localizedHtml(course.description, lang) || undefined,
     tutor: tutorName
       ? { name: tutorName, avatar: course.trainer?.avatar_url || PLACEHOLDER.person }
       : undefined,

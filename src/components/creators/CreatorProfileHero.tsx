@@ -1,7 +1,7 @@
 "use client";
 import SiteNav from "@/components/site/SiteNav";
 import BreadcrumbHome from "@/components/site/BreadcrumbHome";
-import { localized } from "@/lib/api/pages";
+import { localized, localizedHtml } from "@/lib/api/pages";
 import type { CreatorsHeroContent } from "@/lib/api/creators-page";
 import type { CreatorProfile, CreatorProfileLabels } from "@/lib/api/creator-profile";
 import { CreatorsHeroSkeleton } from "./CreatorsSkeleton";
@@ -14,6 +14,7 @@ import { type NewsletterNotice } from "@/components/site/NewsletterToast";
 import LoginRequiredDialog from "@/components/site/LoginRequiredDialog";
 import { pushNotification } from "@/lib/notifications";
 import { t } from "@/lib/translations";
+import RichText from "@/components/ui/RichText";
 
 const HERO_IMAGE = "/assets/images/heroSectionImg.jpeg";
 const AVATAR_FALLBACK = encodeURI("/assets/images/Image (أحمد المنصور).png");
@@ -66,9 +67,12 @@ export default function CreatorProfileHero({
 }) {
   const label = (key: keyof CreatorProfileLabels) => localized(labels?.[key], lang);
   const title = localized(hero?.title, lang);
-  const description = localized(hero?.description, lang);
+  const description = localizedHtml(hero?.description, lang);
   const name = (creator?.name || "").trim();
-  const bio = localized(creator?.bio, lang);
+  // plain words for the length check and the cut preview; the open bio is
+  // shown with the editor's formatting
+  const bio = localized(creator?.bio, lang).replace(/\n/g, " ");
+  const bioHtml = localizedHtml(creator?.bio, lang);
   // a long bio is cut at a word near BIO_LIMIT characters, with "عرض المزيد"
   // beside it, so the card keeps its size until the visitor asks for the rest
   const bioLong = bio.length > BIO_LIMIT;
@@ -166,7 +170,7 @@ export default function CreatorProfileHero({
           ) : (
             <>
               {title ? <h1 className="cr-hero-title">{title}</h1> : null}
-              {description ? <p className="cr-hero-desc">{description}</p> : null}
+              {description ? <RichText as="p" className="cr-hero-desc" html={description} /> : null}
             </>
           )}
         </div>
@@ -239,7 +243,13 @@ export default function CreatorProfileHero({
 
               {bio && (
                 <p className="cr-profile-role">
-                  {bioLong && !bioOpen ? `${shortBio}… ` : `${bio} `}
+                  {bioLong && !bioOpen ? (
+                    `${shortBio}… `
+                  ) : (
+                    <>
+                      <RichText html={bioHtml} />{" "}
+                    </>
+                  )}
                   {bioLong ? (
                     <button
                       type="button"

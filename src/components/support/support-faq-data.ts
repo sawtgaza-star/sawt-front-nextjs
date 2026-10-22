@@ -1,6 +1,6 @@
 /* "الأسئلة المتكررة" — support page FAQ. */
 
-import { localized } from "@/lib/api/pages";
+import { localized, localizedHtml } from "@/lib/api/pages";
 import type { SupportFaqContent } from "@/lib/api/support";
 
 export type SupportFaq = {
@@ -51,7 +51,7 @@ export function resolveSupportFaqs(
   lang: string,
 ): SupportFaq[] {
   const resolved = (items || [])
-    .map((item) => ({ q: localized(item.question, lang), a: localized(item.answer, lang) }))
+    .map((item) => ({ q: localized(item.question, lang), a: localizedHtml(item.answer, lang) }))
     .filter((f) => f.q);
   return resolved.length ? resolved : SUPPORT_FAQS;
 }

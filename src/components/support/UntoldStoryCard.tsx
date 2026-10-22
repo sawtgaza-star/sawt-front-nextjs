@@ -1,4 +1,5 @@
 import type { StorySlide } from "./untold-stories-data";
+import RichText from "@/components/ui/RichText";
 
 /* One slide of "أصوات لم نقدر على توصيلها". Reuses the home page's `.rs-card`
    markup so the slide-up hover story is identical. API copy renders bare;
@@ -19,14 +20,10 @@ export default function UntoldStoryCard({ story }: { story: StorySlide }) {
               {story.title}
             </h5>
             {story.subtitle ? (
-              <p className="rs-card-desc" data-i18n={story.subtitleKey}>
-                {story.subtitle}
-              </p>
+              <RichText as="p" className="rs-card-desc" data-i18n={story.subtitleKey} html={story.subtitle} />
             ) : null}
             {story.full ? (
-              <p className="rs-card-full" data-i18n={story.fullKey}>
-                {story.full}
-              </p>
+              <RichText as="p" className="rs-card-full" data-i18n={story.fullKey} html={story.full} />
             ) : null}
           </div>
           <a

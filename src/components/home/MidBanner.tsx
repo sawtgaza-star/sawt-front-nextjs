@@ -1,9 +1,10 @@
 // @ts-nocheck
 /* eslint-disable */
-import { localized } from "@/lib/api/pages";
+import { localized, localizedHtml } from "@/lib/api/pages";
 import type { HomePartners } from "@/lib/api/home";
 import { splitHeading, bySortOrder } from "./home-text";
 import "@/styles/home-partners.css";
+import RichText from "@/components/ui/RichText";
 
 /* The API's `partners` block. The marquee scrolls one group of logos twice —
    the second copy is what makes the loop seamless, so it is rendered from the
@@ -33,7 +34,7 @@ export default function MidBanner({
 }) {
   const title = localized(data?.title, lang);
   const [titleHead, titleTail] = splitHeading(title, 2);
-  const subtitle = localized(data?.subtitle, lang);
+  const subtitle = localizedHtml(data?.subtitle, lang);
 
   const partners = bySortOrder(data?.items)
     .map((item) => ({ logo: item.logo_url, name: item.name || "" }))
@@ -55,7 +56,7 @@ export default function MidBanner({
             </h1>
           ) : null}{" "}
           {subtitle ? (
-            <p className="partners-description font-24">{subtitle}</p>
+            <RichText as="p" className="partners-description font-24" html={subtitle} />
           ) : null}{" "}
         </div>{" "}
         <div className="marquee">

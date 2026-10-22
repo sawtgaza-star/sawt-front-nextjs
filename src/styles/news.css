@@ -429,8 +429,31 @@
 .nws-html h3 {
   font-size: 24px;
   font-weight: 800;
+  line-height: 1.5;
   color: #000;
-  margin: 30px 0 14px;
+  margin: 36px 0 12px;
+}
+/* the editor's prose: headings open their section, bold reads as emphasis,
+   and long Arabic lines break without leaving a lone word on the last one */
+.nws-html > :first-child {
+  margin-top: 0;
+}
+.nws-html > :last-child {
+  margin-bottom: 0;
+}
+.nws-html h3 {
+  font-size: 21px;
+}
+.nws-html strong,
+.nws-html b {
+  font-weight: 700;
+  color: #000;
+}
+.nws-html p,
+.nws-html li,
+.nws-html blockquote {
+  overflow-wrap: break-word;
+  text-wrap: pretty;
 }
 
 .nws-quote {
@@ -731,6 +754,10 @@
   .nws-html h2,
   .nws-html h3 {
     font-size: 19px;
+    margin: 28px 0 8px;
+  }
+  .nws-html h3 {
+    font-size: 17px;
   }
   .nws-body-images {
     grid-template-columns: 1fr;

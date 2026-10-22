@@ -2,10 +2,11 @@
 "use client";
 /* eslint-disable */
 import { IconArrowUpLeft } from "@/components/ui/icons";
-import { localized } from "@/lib/api/pages";
+import { localized, localizedHtml } from "@/lib/api/pages";
 import type { CreatorsCollaborationContent } from "@/lib/api/creators-page";
-import { htmlToLines, splitTail, splitWord, stepNumber } from "./creators-text";
+import { splitTail, splitWord, stepNumber } from "./creators-text";
 import { STEPS } from "./collaboration-steps-data";
+import RichText from "@/components/ui/RichText";
 
 /* "كيف يبدأ التعاون مع صناع محتوى صوت؟" — flow diagram + steps + CTA.
 
@@ -66,7 +67,7 @@ export default function CollaborationSteps({
 }) {
   const title = localized(data?.title, lang);
   const [titlePre, titleHl] = splitTail(title, 3);
-  const description = localized(data?.description, lang);
+  const description = localizedHtml(data?.description, lang);
 
   const diagram = data?.diagram;
   const brandsTitle = localized(diagram?.brands?.title, lang);
@@ -89,7 +90,7 @@ export default function CollaborationSteps({
         num: stepNumber(step.number, i),
         title: STEPS[i]?.title,
         titleKey: STEPS[i]?.titleKey,
-        text: htmlToLines(localized(step.text, lang)),
+        text: localizedHtml(step.text, lang),
         key: undefined,
       }))
     : STEPS;
@@ -121,10 +122,13 @@ export default function CollaborationSteps({
               </span>
             </h2>
           )}
-          <p className="cr-section-sub" data-i18n={description ? undefined : "creators_collab_sub"}>
-            {description ||
-              "وصلنا شركات من حول العالم بصنّاع المحتوى في غزة — صوت ميديا هي الجسر الذي يوصلك"}
-          </p>
+          {description ? (
+            <RichText as="p" className="cr-section-sub" html={description} />
+          ) : (
+            <p className="cr-section-sub" data-i18n="creators_collab_sub">
+              {"وصلنا شركات من حول العالم بصنّاع المحتوى في غزة — صوت ميديا هي الجسر الذي يوصلك"}
+            </p>
+          )}
         </div>
 
         <div className="cr-flow-outer">
@@ -215,9 +219,7 @@ export default function CollaborationSteps({
                   {s.title}
                 </span>
               ) : null}
-              <span className="cr-step-text" data-i18n={s.key}>
-                {s.text}
-              </span>
+              <RichText as="span" className="cr-step-text" data-i18n={s.key} html={s.text} />
             </div>
           ))}
         </div>

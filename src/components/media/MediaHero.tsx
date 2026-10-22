@@ -1,4 +1,4 @@
-import { localized } from "@/lib/api/pages";
+import { localized, localizedHtml } from "@/lib/api/pages";
 import { sortItems, type MediaHeroContent } from "@/lib/api/media-page";
 import { ctaHref, heroDeck } from "./media-page-view";
 import MediaNav from "./MediaNav";
@@ -9,6 +9,7 @@ import MediaSatisfactionChip from "./MediaSatisfactionChip";
 import MediaTicker from "./MediaTicker";
 import SkeletonText from "@/components/ui/SkeletonText";
 import { SkButton, SkChip, SkTicker } from "./MediaSkeletonParts";
+import RichText from "@/components/ui/RichText";
 
 /* Hero of /media — hosts the page's own navbar, the headline whose second
    line names the service in focus, the two CTAs, the two floating rating
@@ -50,7 +51,7 @@ export default function MediaHero({
   loading?: boolean;
 }) {
   const eyebrow = localized(data?.eyebrow, lang);
-  const description = localized(data?.description, lang);
+  const description = localizedHtml(data?.description, lang);
   const phrases = sortItems(data?.phrases)
     .map((phrase) => localized(phrase.label, lang))
     .filter(Boolean);
@@ -107,7 +108,7 @@ export default function MediaHero({
                   <SkeletonText chars={LOADING.description} />
                 </p>
               ) : description ? (
-                <p className="sm-hero-desc">{description}</p>
+                <RichText as="p" className="sm-hero-desc" html={description} />
               ) : null}
               <div className="sm-hero-cta">
                 {loading ? (

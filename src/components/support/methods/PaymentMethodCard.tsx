@@ -9,6 +9,7 @@ import {
   LogoVisa,
 } from "./PaymentBrandLogos";
 import type { PaymentMethod } from "./payment-methods-data";
+import RichText from "@/components/ui/RichText";
 
 /* Card glyphs — kept here (not in payment-methods-data.ts) since that file is
    plain .ts and can't hold JSX. */
@@ -62,9 +63,7 @@ export default function PaymentMethodCard({
         <h3 className="sp-method-title">
           {method.title}
         </h3>
-        <p className="sp-method-desc">
-          {method.desc}
-        </p>
+        <RichText as="p" className="sp-method-desc" html={method.desc} />
       </label>
     </div>
   );

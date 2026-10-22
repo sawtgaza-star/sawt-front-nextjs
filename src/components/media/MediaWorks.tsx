@@ -1,4 +1,4 @@
-import { localized } from "@/lib/api/pages";
+import { localized, localizedHtml } from "@/lib/api/pages";
 import { sortItems, type MediaWorksContent } from "@/lib/api/media-page";
 import { dealIntoColumns } from "./media-page-view";
 import MediaSectionHead from "./MediaSectionHead";
@@ -46,7 +46,7 @@ export default function MediaWorks({
         <MediaSectionHead
           pill={localized(data.eyebrow, lang)}
           title={localized(data.title, lang)}
-          sub={localized(data.subtitle, lang)}
+          sub={localizedHtml(data.subtitle, lang)}
         />
 
         <div className="sm-works-wall">

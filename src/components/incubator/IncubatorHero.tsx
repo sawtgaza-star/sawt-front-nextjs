@@ -1,4 +1,4 @@
-import { localized } from "@/lib/api/pages";
+import { localized, localizedHtml } from "@/lib/api/pages";
 import type { IncubatorHeroContent, IncubatorStat } from "@/lib/api/incubator-page";
 import IncubatorNav from "./IncubatorNav";
 import { STAT_ICONS } from "./hero-stats-data";
@@ -8,6 +8,7 @@ import {
   HeroTextSkeleton,
 } from "./incubator-skeleton/HeroSkeleton";
 import { INCUBATOR_ROUTES, PLACEHOLDER, sortItems, splitHeroTitle } from "./incubator-page-view";
+import RichText from "@/components/ui/RichText";
 
 /* Hero of /incubator — headline + collage with two floating counters, and the
    stats strip that straddles the bottom of the gradient. Copy, images and
@@ -29,7 +30,7 @@ export default function IncubatorHero({
   loading: boolean;
 }) {
   const [plain, green, orange] = splitHeroTitle(localized(data?.title, lang));
-  const desc = localized(data?.description, lang);
+  const desc = localizedHtml(data?.description, lang);
   const cta = localized(data?.cta?.label, lang);
   const image = data?.foreground_url || data?.image_url || PLACEHOLDER.heroImage;
   const top = data?.badges?.top;
@@ -65,7 +66,7 @@ export default function IncubatorHero({
                     </>
                   ) : null}
                 </h1>
-                {desc ? <p className="inc-hero-desc">{desc}</p> : null}
+                {desc ? <RichText as="p" className="inc-hero-desc" html={desc} /> : null}
                 {cta ? (
                   <a className="inc-btn-green" href={INCUBATOR_ROUTES.heroCta}>
                     <span>{cta}</span>

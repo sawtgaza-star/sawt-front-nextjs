@@ -1,8 +1,9 @@
 import { IconCalendarWeeks } from "@/components/ui/icons";
-import { localized } from "@/lib/api/pages";
+import { localized, localizedHtml } from "@/lib/api/pages";
 import type { IncubatorSponsorContent } from "@/lib/api/incubator-page";
 import IncubatorSectionHead from "./IncubatorSectionHead";
 import { INCUBATOR_ROUTES, sortItems } from "./incubator-page-view";
+import RichText from "@/components/ui/RichText";
 
 /* "ساعد طلاب في الانضمام للحاضنة" — a 2×2 grid of sponsorship packages on the
    start side, and a sidebar with the waiting-students list plus the orange
@@ -36,7 +37,7 @@ export default function SponsorStudents({
       <div className="container">
         <IncubatorSectionHead
           title={localized(data.title, lang)}
-          sub={localized(data.subtitle, lang)}
+          sub={localizedHtml(data.subtitle, lang)}
         />
 
         <div className="inc-sponsor-grid">
@@ -50,9 +51,7 @@ export default function SponsorStudents({
                   <h3 className="inc-sponsor-card-title">
                     {localized(pack.title, lang)}
                   </h3>
-                  <p className="inc-sponsor-card-desc">
-                    {localized(pack.description, lang)}
-                  </p>
+                  <RichText as="p" className="inc-sponsor-card-desc" html={localizedHtml(pack.description, lang)} />
                   {duration || seats ? (
                     <div className="inc-sponsor-meta">
                       {duration ? (

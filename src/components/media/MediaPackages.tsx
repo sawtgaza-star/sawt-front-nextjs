@@ -1,5 +1,5 @@
 "use client";
-import { localized } from "@/lib/api/pages";
+import { localized, localizedHtml } from "@/lib/api/pages";
 import {
   localizedFeatures,
   sortItems,
@@ -9,6 +9,7 @@ import MediaSectionHead from "./MediaSectionHead";
 import { IconChevronLeftSmall } from "@/components/ui/icons";
 import { PACKAGE_TONES, ctaHref, cycle, splitHighlight } from "./media-page-view";
 import { useSnapSlider } from "./useSnapSlider";
+import RichText from "@/components/ui/RichText";
 
 /* "اختر باقتك" — the bundle cards on a snap track with the arrow+dot pager
    under them. Three cards fit at desktop width and the rest are paged in, so
@@ -41,7 +42,7 @@ export default function MediaPackages({
           pill={localized(data.eyebrow, lang)}
           title={title}
           titleHl={titleHl}
-          sub={localized(data.subtitle, lang)}
+          sub={localizedHtml(data.subtitle, lang)}
         />
 
         <div className="sm-pkg-track" ref={trackRef} onScroll={onScroll} {...dragProps}>
@@ -55,7 +56,7 @@ export default function MediaPackages({
               <div className="sm-pkg-body">
                 <h3 className="sm-pkg-title">{localized(item.title, lang)}</h3>
                 <p className="sm-pkg-tagline">{localized(item.tagline, lang)}</p>
-                <p className="sm-pkg-desc">{localized(item.description, lang)}</p>
+                <RichText as="p" className="sm-pkg-desc" html={localizedHtml(item.description, lang)} />
 
                 <ul className="sm-pkg-features">
                   {localizedFeatures(item.features, lang).map((feature, i) => (

@@ -3,7 +3,7 @@
    one neutral look (grey border, olive icon tile) — only the copy and the
    glyph change. */
 
-import { localized } from "@/lib/api/pages";
+import { localized, localizedHtml } from "@/lib/api/pages";
 import type { SupportMethodCategory } from "@/lib/api/support";
 
 export type PaymentMethodValue = "gateway" | "transfer" | "crypto";
@@ -43,7 +43,7 @@ export function resolvePaymentMethods(
       return {
         value,
         title,
-        desc: localized(c.description, lang),
+        desc: localizedHtml(c.description, lang),
         href: `/support/checkout?method=${encodeURIComponent(key)}`,
       };
     })

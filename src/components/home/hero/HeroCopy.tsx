@@ -1,7 +1,8 @@
-import { localized } from "@/lib/api/pages";
+import { localized, localizedHtml } from "@/lib/api/pages";
 import type { HomeHero } from "@/lib/api/home";
 import { splitHeading } from "../home-text";
 import { splitHeroTitle } from "./hero-copy";
+import RichText from "@/components/ui/RichText";
 
 /* The hero's text column, all of it the API's `hero` block: kicker, the
    two-line title (the second line in the brand green over a hand-drawn
@@ -35,7 +36,7 @@ export default function HeroCopy({
   const [titleLead, titleAccent] = splitHeroTitle(localized(hero?.title, lang), lang);
   // the stroke runs under the accent line's last three words
   const [accentHead, accentMark] = splitHeading(titleAccent, 3);
-  const description = localized(hero?.description, lang);
+  const description = localizedHtml(hero?.description, lang);
   const tagline = localized(hero?.tagline, lang);
   const support = localized(hero?.buttons?.support?.label, lang);
   const collaborate = localized(hero?.buttons?.collaborate?.label, lang);
@@ -70,7 +71,7 @@ export default function HeroCopy({
           ) : null}
         </h1>
       ) : null}
-      {description ? <p className="hh-lead hh-rise">{description}</p> : null}
+      {description ? <RichText as="p" className="hh-lead hh-rise" html={description} /> : null}
       {support || collaborate ? (
         <div className="hh-actions hh-rise">
           {support ? (
