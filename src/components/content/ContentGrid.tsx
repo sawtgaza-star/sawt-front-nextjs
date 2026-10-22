@@ -9,6 +9,14 @@ import { useReelBatches } from "./use-reel-batches";
 const PHONE_PREVIEW = 4;
 const PHONE_MEDIA = "(max-width: 767.98px)";
 
+/* The hero-strip tap's highlight (see the focus effect): it starts once the
+   card has held still for STILL_FRAMES frames — no sooner than LAND_MIN ms,
+   no later than LAND_CAP ms — and a scroll of more than SCROLL_AWAY px ends it. */
+const STILL_FRAMES = 4;
+const LAND_MIN = 150;
+const LAND_CAP = 1500;
+const SCROLL_AWAY = 80;
+
 /* The filtered reel grid — five posters per row on desktop. Each card is the
    reel's thumbnail (ReelThumbCard); clicking it opens the full-screen viewer —
    the creator page's — where the video plays. Cards are drawn a batch at a
@@ -114,12 +122,29 @@ export default function ContentGrid({
     /* `ct-focus-mode` on <body> lays a page-wide blur; the card itself can't
        rise above it (an ancestor's stacking context caps its z-index), so a
        sharp copy of it is pinned over the blur at exactly the card's spot.
-       The copy is click-through to the real card; a scroll ends the moment
-       early, since the copy would no longer sit on the card. */
+       The copy is click-through to the real card and follows it through
+       small scrolls (a phone's address bar showing / hiding, the last px of
+       a momentum scroll); the visitor scrolling away ends the moment early. */
     let clone: HTMLElement | null = null;
+    let landedY = 0;
+    const pin = () => {
+      if (!clone) return;
+      const r = card.getBoundingClientRect();
+      Object.assign(clone.style, {
+        top: `${r.top}px`,
+        left: `${r.left}px`,
+        width: `${r.width}px`,
+        height: `${r.height}px`,
+      });
+    };
+    const onScroll = () => {
+      if (Math.abs(window.scrollY - landedY) > SCROLL_AWAY) off();
+      else pin();
+    };
     const off = () => {
       document.body.classList.remove("ct-focus-mode");
-      window.removeEventListener("scroll", off);
+      window.removeEventListener("scroll", onScroll);
+      window.removeEventListener("resize", pin);
       const c = clone;
       clone = null;
       if (!c) return;
@@ -127,53 +152,53 @@ export default function ContentGrid({
       window.setTimeout(() => c.remove(), 300);
     };
     const on = () => {
-      const r = card.getBoundingClientRect();
       clone = card.cloneNode(true) as HTMLElement;
       clone.removeAttribute("data-reel-id");
       clone.removeAttribute("tabindex");
       clone.setAttribute("aria-hidden", "true");
       clone.classList.add("ct-focus-clone");
-      Object.assign(clone.style, {
-        top: `${r.top}px`,
-        left: `${r.left}px`,
-        width: `${r.width}px`,
-        height: `${r.height}px`,
-      });
+      pin();
       document.body.appendChild(clone);
       void clone.offsetWidth;
       clone.classList.add("is-shown");
       document.body.classList.add("ct-focus-mode");
-      window.addEventListener("scroll", off, { passive: true });
+      landedY = window.scrollY;
+      window.addEventListener("scroll", onScroll, { passive: true });
+      window.addEventListener("resize", pin);
     };
-    /* start the moment the smooth scroll lands: `scrollend` where the browser
-       has it, else 60ms without a scroll event; 900ms at most, and at once if
-       the card was already in place (no scroll at all) */
+    /* start the moment the smooth scroll has really landed: the card holds
+       still for a few frames in a row. Scroll-event gaps are no guide — a
+       phone's smooth scroll can stall longer than a frame mid-way, and the
+       moment then started too early and the rest of the scroll ended it.
+       LAND_CAP ms at most, and almost at once if the card was already in
+       place (no scroll at all). */
     let end = 0;
-    let settle = 0;
+    let frame = 0;
     let started = false;
+    let lastTop = Number.NaN;
+    let still = 0;
     const begin = () => {
       if (started) return;
       started = true;
-      window.removeEventListener("scroll", waitScroll);
-      window.removeEventListener("scrollend", begin);
-      window.clearTimeout(settle);
+      window.cancelAnimationFrame(frame);
       window.clearTimeout(cap);
       on();
       end = window.setTimeout(off, 3200);
     };
-    const waitScroll = () => {
-      window.clearTimeout(settle);
-      settle = window.setTimeout(begin, 60);
+    const watch = () => {
+      const top = card.getBoundingClientRect().top;
+      still = Math.abs(top - lastTop) < 0.5 ? still + 1 : 0;
+      lastTop = top;
+      // a smooth scroll can take a frame or two to start moving at all
+      if (still >= STILL_FRAMES && performance.now() - asked > LAND_MIN) begin();
+      else frame = window.requestAnimationFrame(watch);
     };
-    window.addEventListener("scroll", waitScroll, { passive: true });
-    window.addEventListener("scrollend", begin);
-    settle = window.setTimeout(begin, 120);
-    const cap = window.setTimeout(begin, 900);
+    const asked = performance.now();
+    frame = window.requestAnimationFrame(watch);
+    const cap = window.setTimeout(begin, LAND_CAP);
     stopHighlight.current = () => {
       stopHighlight.current = null;
-      window.removeEventListener("scroll", waitScroll);
-      window.removeEventListener("scrollend", begin);
-      window.clearTimeout(settle);
+      window.cancelAnimationFrame(frame);
       window.clearTimeout(cap);
       window.clearTimeout(end);
       off();

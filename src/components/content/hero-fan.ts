@@ -3,8 +3,9 @@
    sit exactly where the posters will land. */
 
 /* The fan: a size GRADIENT out from the focused poster. Each whole step away
-   (Swiper's slide progress: 0 for the focus, ±1 its neighbours, ±2 …; POSITIVE
-   is a poster to the RIGHT — measured, despite the page being dir="rtl") has a
+   (a slide progress: 0 for the focus, ±1 its neighbours, ±2 …; POSITIVE
+   is a poster to the RIGHT — Swiper's own sign in RTL; HeroReelsSlider flips
+   it in LTR) has a
    fixed scale, turn and look; between two steps everything is interpolated
    from the exact progress, so a moving strip grows and shrinks continuously.
 

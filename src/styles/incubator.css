@@ -366,7 +366,11 @@
 /* the API's foreground upload is shown whole at its own size, with the CSS
    border hugging it */
 .inc-hero-img.inc-hero-img--composite {
-  aspect-ratio: auto;
+  /* the upload's own ratio once it has loaded; until then the box holds the
+     payload's 791×459 (the skeleton's, incubator-skeleton/skeleton-data), so
+     the photo isn't a 0px sliver with both counters stacked on it and the
+     stats card doesn't jump down when it arrives */
+  aspect-ratio: auto 791 / 459;
   height: auto;
   object-fit: contain;
 }
@@ -445,6 +449,30 @@ border: 1px solid  #DADADA;
 .inc-stat-icon svg {
   width: 40px;
   height: 40px;
+}
+/* hover = the home page's stats bar (home-stats.css): the icon turns the site
+   green and slowly lifts a little; the brush stroke behind it stays put.
+   These glyphs are filled, not stroked, so it's their orange `fill` that is
+   swapped (the "none" frame fills are left alone). */
+.inc-stat-icon svg {
+  transition: transform 0.6s ease;
+}
+.inc-stat-icon svg [fill]:not([fill="none"]) {
+  transition: fill 0.6s ease;
+}
+.inc-stat:hover .inc-stat-icon svg {
+  transform: translateY(-6px);
+}
+.inc-stat:hover .inc-stat-icon svg [fill]:not([fill="none"]) {
+  fill: #4c5c37;
+}
+@media (prefers-reduced-motion: reduce) {
+  .inc-stat-icon svg {
+    transition: none;
+  }
+  .inc-stat:hover .inc-stat-icon svg {
+    transform: none;
+  }
 }
 .inc-stat-value {
   font-size: 32px;

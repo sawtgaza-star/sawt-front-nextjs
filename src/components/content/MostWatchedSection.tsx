@@ -152,42 +152,42 @@ export default function MostWatchedSection({
             )
           )}
         </div>
-      </div>
 
-      <div className="ct-mw-slider">
-        <button
-          type="button"
-          className="ct-mw-nav ct-mw-prev"
-          onClick={() => scroll(-1)}
-          disabled={atStart}
-          aria-label="previous"
-        >
-          <i className="fa-solid fa-angle-right"></i>
-        </button>
-        <button
-          type="button"
-          className="ct-mw-nav ct-mw-next"
-          onClick={() => scroll(1)}
-          disabled={atEnd}
-          aria-label="next"
-        >
-          <i className="fa-solid fa-angle-left"></i>
-        </button>
-
-        <div className="ct-mw-track" ref={trackRef}>
-          {loading ? (
-            <MostWatchedCardsSkeleton />
-          ) : (
-            reels.slice(0, shown).map((reel, i) => (
-              <ContentCard
-                key={reel.id}
-                card={reel}
-                index={i}
-                onOpen={setOpenIndex}
-                fallbackPoster={null}
-              />
-            ))
-          )}
+        <div className="ct-mw-slider">
+          <button
+            type="button"
+            className="ct-mw-nav ct-mw-prev"
+            onClick={() => scroll(-1)}
+            disabled={atStart}
+            aria-label="previous"
+          >
+            <i className="fa-solid fa-angle-right"></i>
+          </button>
+          <button
+            type="button"
+            className="ct-mw-nav ct-mw-next"
+            onClick={() => scroll(1)}
+            disabled={atEnd}
+            aria-label="next"
+          >
+            <i className="fa-solid fa-angle-left"></i>
+          </button>
+  
+          <div className="ct-mw-track" ref={trackRef}>
+            {loading ? (
+              <MostWatchedCardsSkeleton />
+            ) : (
+              reels.slice(0, shown).map((reel, i) => (
+                <ContentCard
+                  key={reel.id}
+                  card={reel}
+                  index={i}
+                  onOpen={setOpenIndex}
+                  fallbackPoster={null}
+                />
+              ))
+            )}
+          </div>
         </div>
       </div>
 

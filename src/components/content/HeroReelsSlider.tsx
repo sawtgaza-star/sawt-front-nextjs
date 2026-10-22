@@ -35,6 +35,29 @@ function measureArc(swiper: SwiperClass): Arc | undefined {
 
 type FanSlide = HTMLElement & { progress?: number };
 
+/** The poster under a tap, found from where the finger landed rather than from
+    the element the browser reports. iOS Safari hit-tests the fan's 3D-turned
+    posters (rotateY inside a preserve-3d wrapper) badly: the tap lands on the
+    wrapper or the swiper box, Swiper finds no slide, and nothing happens.
+    getBoundingClientRect does include the 3D transform, so the posters' own
+    boxes say which one is under the point — the nearest to the focus (highest
+    z-index) where two overlap; faded-out ones are skipped. */
+function slideAtTap(swiper: SwiperClass, e: Event): HTMLElement | undefined {
+  const touch = "changedTouches" in e ? (e as TouchEvent).changedTouches[0] : undefined;
+  const x = touch ? touch.clientX : (e as MouseEvent).clientX;
+  const y = touch ? touch.clientY : (e as MouseEvent).clientY;
+  let best: HTMLElement | undefined;
+  if (Number.isFinite(x) && Number.isFinite(y)) {
+    for (const slide of swiper.slides as HTMLElement[]) {
+      if (Number(slide.style.opacity || 1) < 0.5) continue;
+      const r = slide.getBoundingClientRect();
+      if (x < r.left || x > r.right || y < r.top || y > r.bottom) continue;
+      if (!best || Number(slide.style.zIndex) > Number(best.style.zIndex)) best = slide;
+    }
+  }
+  return best ?? (swiper.clickedSlide as HTMLElement | undefined);
+}
+
 /* Entrance spin: on arriving at the page the strip rolls through at least
    SPIN_MIN_STEPS posters (whole laps, so it lands back on the first one),
    then normal autoplay takes over — in the same direction as autoplay, and
@@ -87,8 +110,11 @@ type LoopSwiper = SwiperClass & { loopFix: () => void; setTransition: (ms: numbe
    written per slide from its own progress: 0 for the focused slide, ±1 for its
    neighbours, ±2 for theirs …
 
-   Sign note: a POSITIVE progress is a slide to the RIGHT of the focused one
-   (see FAN_STEPS).
+   Sign note: fanPose wants a POSITIVE progress for a slide to the RIGHT of
+   the focused one. Swiper's own sign follows its direction — right in RTL,
+   left in LTR — so `fan` flips it in English. The language toggle changes the
+   page's dir live (no reload), so the strip is told about it too
+   (changeLanguageDirection), or it would keep laying out the old way.
 
    `slides` are the reels' thumbnails (else the API's `hero.items`), already
    padded out for the loop by heroSlides() — see content-data. A tap on a
@@ -103,7 +129,25 @@ export default function HeroReelsSlider({
 }) {
   const spinFrame = useRef<number | undefined>(undefined);
   const arc = useRef<Arc | undefined>(undefined);
+  const swiperRef = useRef<SwiperClass | null>(null);
   useEffect(() => () => window.cancelAnimationFrame(spinFrame.current ?? 0), []);
+
+  // follow the AR / EN toggle, which rewrites <html dir> in place
+  useEffect(() => {
+    const root = document.documentElement;
+    const observer = new MutationObserver(() => {
+      const swiper = swiperRef.current;
+      if (!swiper || swiper.destroyed) return;
+      const dir = root.getAttribute("dir") === "ltr" ? "ltr" : "rtl";
+      if (swiper.rtlTranslate === (dir === "rtl")) return;
+      swiper.changeLanguageDirection(dir);
+      arc.current = measureArc(swiper);
+      fan(swiper);
+    });
+    observer.observe(root, { attributes: true, attributeFilter: ["dir"] });
+    return () => observer.disconnect();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const introSpin = (swiper: SwiperClass) => {
     if (slides.length < 2) return;
@@ -200,8 +244,10 @@ export default function HeroReelsSlider({
     const width = swiper.slidesSizesGrid[0] ?? 0;
     const gap = Number(swiper.params.spaceBetween ?? 0);
     const centres = fanCentres(width, gap);
+    // Swiper's progress counts toward the reading direction; fanPose wants + = right
+    const side = swiper.rtlTranslate ? 1 : -1;
     (swiper.slides as FanSlide[]).forEach((slide) => {
-      const pose = fanPose(slide.progress ?? 0, width, gap, centres, arc.current);
+      const pose = fanPose(side * (slide.progress ?? 0), width, gap, centres, arc.current);
       slide.style.transform = pose.transform;
       slide.style.setProperty("--fan-blur", `${pose.blur.toFixed(2)}px`);
       // nearer posters on top, should a turned edge ever touch a neighbour
@@ -229,6 +275,9 @@ export default function HeroReelsSlider({
         className="ct-hero-swiper"
         modules={[Autoplay]}
         grabCursor
+        /* touches anywhere on the swiper box count, not only those Safari
+           reports on the wrapper — see slideAtTap */
+        touchEventsTarget="container"
         centeredSlides
         loop
         /* two spare posters past each edge, so the outer fan positions never
@@ -244,6 +293,7 @@ export default function HeroReelsSlider({
         }}
         autoplay={{ delay: 2000, disableOnInteraction: false }}
         onAfterInit={(swiper) => {
+          swiperRef.current = swiper;
           arc.current = measureArc(swiper);
           fan(swiper);
           introSpin(swiper);
@@ -255,8 +305,8 @@ export default function HeroReelsSlider({
           fan(swiper);
         }}
         onSetTransition={syncTransition}
-        onClick={(swiper) => {
-          const id = (swiper.clickedSlide as HTMLElement | undefined)?.dataset.reelId;
+        onClick={(swiper, e) => {
+          const id = slideAtTap(swiper, e)?.dataset.reelId;
           if (id && onSelect) onSelect(id);
         }}
       >

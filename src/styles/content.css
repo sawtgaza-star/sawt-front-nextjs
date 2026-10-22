@@ -724,9 +724,10 @@ body.ct-focus-mode::after {
 }
 .ct-mw-slider {
   position: relative;
-  /* full-bleed: the row starts at the container edge and runs off-screen */
-  width: 100vw;
-  margin-inline: calc(50% - 50vw);
+  /* inside the heading's .container, so the first card starts right under
+     "الأكثر مشاهدة"; the far end stretches to the viewport edge, so the row
+     runs off-screen and reads as a slider */
+  margin-inline-end: calc(50% - 50vw);
 }
 .ct-mw-track {
   display: flex;
@@ -734,7 +735,6 @@ body.ct-focus-mode::after {
   overflow-x: auto;
   scroll-behavior: smooth;
   padding: 26px 0 30px;
-  padding-inline-start: max(calc((100vw - 1320px) / 2 + 12px), 12px);
   scrollbar-width: none;
   /* press-and-drag scrolling (see MostWatchedSection) */
   cursor: grab;
@@ -796,9 +796,6 @@ body.ct-focus-mode::after {
   .ct-grid {
     grid-template-columns: repeat(4, 1fr);
   }
-  .ct-mw-track {
-    padding-inline-start: max(calc((100vw - 1140px) / 2 + 12px), 12px);
-  }
 }
 @media (max-width: 991.98px) {
   .ct-grid {
@@ -806,10 +803,6 @@ body.ct-focus-mode::after {
   }
   .ct-hero-slide {
     height: 240px;
-  }
-  .ct-mw-track {
-    /* first card starts on the container grid; the row still runs off-screen */
-    padding-inline-start: 10px;
   }
 }
 @media (max-width: 767.98px) {

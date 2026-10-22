@@ -1,7 +1,7 @@
 "use client";
 import { useLang } from "@/lib/use-lang";
 import { useReelSocial } from "./reel-social";
-import type { ReelDetails } from "./reel-data";
+import { formatCount, type ReelDetails } from "./reel-data";
 import { IconHeart, IconComment, IconBookmark, IconShare } from "./reel-icons";
 
 export type ReelPanel = "comments" | "share" | null;
@@ -19,7 +19,7 @@ type Props = {
    shared store on top of them (so it survives closing the viewer); the other
    two toggle the panel the viewer renders over the video. */
 export default function ReelActions({ reelKey, details, panel, onPanel }: Props) {
-  const { tr } = useLang();
+  const { tr, lang } = useLang();
   const { liked, likes, saved, commentsCount, toggleLike, toggleSave } =
     useReelSocial(reelKey, details);
 
@@ -37,7 +37,7 @@ export default function ReelActions({ reelKey, details, panel, onPanel }: Props)
         title={tr(liked ? "reel_action_unlike" : "reel_action_like")}
       >
         <IconHeart liked={liked} />
-        <span>{likes}</span>
+        <span>{formatCount(likes, lang)}</span>
       </button>
       <button
         type="button"
@@ -48,7 +48,7 @@ export default function ReelActions({ reelKey, details, panel, onPanel }: Props)
         title={tr("reel_action_comment")}
       >
         <IconComment />
-        <span>{commentsCount}</span>
+        <span>{formatCount(commentsCount, lang)}</span>
       </button>
       <button
         type="button"

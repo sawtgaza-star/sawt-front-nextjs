@@ -14,18 +14,22 @@
   }
 
   /* Same motion as the hero copy's hero-fade-up (home-hero.css):
-     30px rise, ease-out — sped up to 0.6s. */
+     30px rise, ease-out — sped up to 0.6s. On the standalone `translate`
+     property, so it composes with a block's own `transform` instead of
+     wiping it for the length of the animation (e.g. /incubator's stats card,
+     translateY(50%) over the hero's edge, rose into the hero copy and then
+     jumped back down). */
   html.sawt-anim [data-sawt-reveal] {
     opacity: 0;
-    transform: translateY(30px);
+    translate: 0 30px;
     transition:
       opacity 0.6s ease-out var(--sawt-delay, 0ms),
-      transform 0.6s ease-out var(--sawt-delay, 0ms);
+      translate 0.6s ease-out var(--sawt-delay, 0ms);
   }
 
   html.sawt-anim [data-sawt-reveal].sawt-in {
     opacity: 1;
-    transform: none;
+    translate: none;
   }
 }
 
