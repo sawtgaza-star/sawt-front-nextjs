@@ -1,5 +1,5 @@
 import { localized, localizedHtml } from "@/lib/api/pages";
-import { localizedList, sortItems, type MediaServicesContent } from "@/lib/api/media-page";
+import { localizedTags, sortItems, type MediaServicesContent } from "@/lib/api/media-page";
 import { SERVICE_THEMES, cycle } from "./media-page-view";
 import MediaSectionHead from "./MediaSectionHead";
 import MediaServicesSlider from "./MediaServicesSlider";
@@ -27,7 +27,7 @@ export default function MediaServices({
     title: localized(item.title, lang),
     tagline: localized(item.tagline, lang),
     description: localizedHtml(item.description, lang),
-    tags: localizedList(item.tags, lang),
+    tags: localizedTags(item.tags, lang),
     imageUrl: item.image_url || null,
     href: item.path || (item.slug ? "/media/services/" + item.slug : "#"),
     ctaLabel,

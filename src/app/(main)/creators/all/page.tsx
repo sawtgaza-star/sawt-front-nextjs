@@ -1,6 +1,6 @@
 "use client";
 import "@/styles/creators.css";
-import { useState } from "react";
+import { usePageParam } from "@/lib/use-page-param";
 import LegacyInit from "@/components/LegacyInit";
 import CreatorsHero from "@/components/creators/CreatorsHero";
 import CreatorCard from "@/components/home/CreatorCard";
@@ -48,7 +48,7 @@ function buildPages(current: number, total: number): (number | string)[] {
 }
 
 export default function Page() {
-  const [page, setPage] = useState(1);
+  const [page, setPage] = usePageParam();
   const { lang } = useLang();
   const { page: data, meta, loading } = useAllCreators(page, PER_PAGE);
 

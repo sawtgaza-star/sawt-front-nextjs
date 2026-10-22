@@ -13,17 +13,15 @@ import { useHeroRotation } from "./MediaHeroRotation";
    sized the list to the seats the CSS defines), so an image can legitimately
    appear twice and the key has to be the seat, not the URL. */
 export default function MediaHeroFan({ deck }: { deck: string[] }) {
-  const { step, setPaused } = useHeroRotation();
+  const { step } = useHeroRotation();
   const seats = deck.length;
 
   if (!seats) return null;
 
   return (
-    <div
-      className="sm-hero-fan"
-      onMouseEnter={() => setPaused(true)}
-      onMouseLeave={() => setPaused(false)}
-    >
+    /* never paused: hover used to hold it, and a cursor merely resting over
+       the deck (after a scroll) left it stuck */
+    <div className="sm-hero-fan">
       {/* the 3D stage the cards are depth-sorted in (media.css) */}
       <div className="sm-fan-stage">
         {deck.map((src, i) => (

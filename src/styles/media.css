@@ -625,8 +625,11 @@ html.sm-drawer-open .sm-nav-wrap > .container {
 .sm-hero-word {
   display: block;
   margin-top: 10px;
-  color: #FFB181;
-  animation: sm-word-in 0.5s ease both;
+  /* a notch deeper than the design's orange-200 (#FFB181), which read faded */
+  color: #FF8F4D;
+  /* the deck's own glide (.sm-fan-card: 1.4s, same curve), so the word
+     rises in exactly as the cards move seat — both change on the same tick */
+  animation: sm-word-in 1.4s cubic-bezier(0.65, 0, 0.35, 1) both;
   font-size: 58px !important;
 }
 @keyframes sm-word-in {
@@ -994,11 +997,25 @@ html.sm-drawer-open .sm-nav-wrap > .container {
 
 }
 .sm-stats-row {
-  display: grid;
-  grid-template-columns: repeat(5, 1fr);
-  gap: 18px;
+  /* a centred flex row of fixed-width columns rather than a grid, so however
+     many stats the API sends (four today, in five slots) they sit centred —
+     a grid left the unused slots empty at the end */
+  --sm-stats-cols: 5;
+  --sm-stats-gap-x: 18px;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 18px var(--sm-stats-gap-x);
   margin-top: 34px;
   text-align: center;
+}
+.sm-stats-row > .sm-stat {
+  flex: 0 0
+    calc(
+      (100% - (var(--sm-stats-cols) - 1) * var(--sm-stats-gap-x)) /
+        var(--sm-stats-cols)
+    );
+  min-width: 0;
 }
 .sm-stat-value {
   margin: 0;
@@ -1101,11 +1118,45 @@ html.sm-drawer-open .sm-nav-wrap > .container {
   height: 26px;
   background: var(--sm-olive-500);
 }
+/* the autoplay countdown (MediaServicesRail): the current tick fills up while
+   its card waits its turn — grey track, olive bar growing down the rail (the
+   row of dots under the deck, ≤991px, fills sideways instead) */
+.sm-rail-tick.active:has(.sm-rail-fill) {
+  position: relative;
+  overflow: hidden;
+  background: #C3C8C3;
+}
+.sm-rail-fill {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: var(--sm-olive-500);
+  transform-origin: top;
+  animation: sm-rail-fill-y linear forwards;
+}
+@keyframes sm-rail-fill-y {
+  from {
+    transform: scaleY(0);
+  }
+  to {
+    transform: scaleY(1);
+  }
+}
+@keyframes sm-rail-fill {
+  from {
+    transform: scaleX(0);
+  }
+  to {
+    transform: scaleX(1);
+  }
+}
 
 .sm-svc {
   position: relative;
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  /* two strictly equal halves: with bare 1fr a long tag or title widened the
+     copy column, so every card's photo came out a different size */
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
   align-items: center;
   gap: 40px;
   border-radius: 24px;
@@ -1197,7 +1248,8 @@ html.sm-drawer-open .sm-nav-wrap > .container {
   border: 0.8px solid var(--sm-gray-200);
   font-size: 12px;
   font-weight: 500;
-  white-space: nowrap;
+  /* a long tag wraps inside its pill instead of widening the column */
+  white-space: normal;
 }
 .sm-svc-desc {
   margin: 16px 0 0;
@@ -1312,7 +1364,7 @@ html.sm-drawer-open .sm-nav-wrap > .container {
   padding-inline-start: 30px;
   padding-inline-end: max(24px, calc((100vw - 1140px) / 2));
   scrollbar-width: none;
-  /* the hover auto-scroll drives scrollLeft per frame — smooth would fight it */
+  /* the auto-scroll drives scrollLeft per frame — smooth would fight it */
   scroll-behavior: auto;
 }
 .sm-why-strip::-webkit-scrollbar {
@@ -1992,10 +2044,10 @@ color:#6D6D6D;
   align-items: center;
 }
 .sm-partners-marquee .marquee-group img {
-  width: auto;
-  height: auto;
-  max-height: 56px;
-  max-width: 190px;
+  /* the home page's partner box (home-partners.css): every logo is fitted
+     into the same 220×110, whatever the upload's own size */
+  width: 220px;
+  height: 110px;
   object-fit: contain;
   flex: 0 0 auto;
 }
@@ -2982,16 +3034,22 @@ color:#6D6D6D;
   }
 
   .sm-stats-row {
-    grid-template-columns: repeat(3, 1fr);
-    gap: 26px 18px;
+    --sm-stats-cols: 3;
+    gap: 26px var(--sm-stats-gap-x);
   }
   .sm-sectors-grid {
     grid-template-columns: 1fr;
   }
   .sm-svc {
-    grid-template-columns: 1fr;
+    /* minmax(0, …): a bare 1fr can't shrink below its content's min width, so
+       a long tag or title stretched the card past the screen and the copy was
+       clipped off its far edge */
+    grid-template-columns: minmax(0, 1fr);
     gap: 26px;
     padding: 28px;
+  }
+  .sm-svc-title {
+    overflow-wrap: anywhere;
   }
   .sm-svc-reverse .sm-svc-media {
     order: 0;
@@ -3023,6 +3081,14 @@ color:#6D6D6D;
   .sm-rail-tick.active {
     width: 26px;
     height: 4px;
+  }
+  /* lying down, the dash fills from the reading-start side */
+  .sm-rail-fill {
+    transform-origin: right;
+    animation-name: sm-rail-fill;
+  }
+  [dir="ltr"] .sm-rail-fill {
+    transform-origin: left;
   }
   .sm-works-wall {
     height: 460px;
@@ -3314,8 +3380,9 @@ color:#6D6D6D;
     padding: 30px 12px 34px;
   }
   .sm-stats-row {
-    grid-template-columns: repeat(4, minmax(0, 1fr));
-    gap: 24px 6px;
+    --sm-stats-cols: 4;
+    --sm-stats-gap-x: 6px;
+    gap: 24px var(--sm-stats-gap-x);
     margin-top: 26px;
   }
   .sm-stat-desktop {
@@ -3356,9 +3423,8 @@ color:#6D6D6D;
     text-align: center;
   }
   
-  .sm-svc-media {
-    aspect-ratio: 1 / 1;
-  }
+  /* the photo keeps the desktop's 4:3 here too, so every card's still is the
+     same shape on every screen */
   .sm-svc-watermark,
   .sm-svc-reverse .sm-svc-watermark {
     font-size: 200px;
@@ -3571,8 +3637,8 @@ color:#6D6D6D;
   align-items: center;
 }
 .sm-partners-marquee .marquee-group img {
-    max-height: 40px;
-    max-width: 140px;
+    width: 124px;
+    height: 62px;
   }
   .sm-partners-marquee .marquee-group {
     gap: 28px;
