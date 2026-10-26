@@ -22,6 +22,17 @@ export type ServiceTheme = (typeof SERVICE_THEMES)[number];
     (The icon itself is an upload now, so it carries its own colour.) */
 export const WHY_ACCENTS = ["#879279", "#FFB181", "#4C5C37", "#FF7420", "#364127"];
 
+/** CSS filter that paints a card's icon in its accent: brightness(0) turns the
+    upload into a black silhouette, the rest tints it. Uploads are <img>s from a
+    host without CORS, so a mask can't recolour them — a filter can. */
+export const WHY_ICON_FILTERS: Record<string, string> = {
+  "#879279": "brightness(0) saturate(100%) invert(40%) sepia(67%) saturate(346%) hue-rotate(44deg) brightness(186%) contrast(16%)",
+  "#FFB181": "brightness(0) saturate(100%) invert(61%) sepia(68%) saturate(2393%) hue-rotate(324deg) brightness(151%) contrast(109%)",
+  "#4C5C37": "brightness(0) saturate(100%) invert(100%) sepia(100%) saturate(8473%) hue-rotate(24deg) brightness(26%) contrast(59%)",
+  "#FF7420": "brightness(0) saturate(100%) invert(50%) sepia(34%) saturate(6699%) hue-rotate(341deg) brightness(140%) contrast(162%)",
+  "#364127": "brightness(0) saturate(100%) invert(3%) sepia(49%) saturate(3650%) hue-rotate(67deg) brightness(276%) contrast(70%)",
+};
+
 /** Bundle card tab colour / border / accent, cycling down the list. */
 export const PACKAGE_TONES = ["orange", "olive", "gray"] as const;
 export type PackageTone = (typeof PACKAGE_TONES)[number];
