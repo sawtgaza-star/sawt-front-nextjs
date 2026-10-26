@@ -1,6 +1,5 @@
 import SkeletonText from "@/components/ui/SkeletonText";
 import {
-  IconArrowUpLeftSolid,
   IconChevronDownBold,
   IconQuoteMarks,
   IconRatingStar,
@@ -78,12 +77,6 @@ export function TestimonialsSkeleton() {
               <p className="inc-testi-sub">
                 <SkeletonText chars={TESTI.sub} />
               </p>
-              <a className="inc-testi-btn incskel-media">
-                <span>
-                  <SkeletonText chars={TESTI.viewAll} />
-                </span>
-                <IconArrowUpLeftSolid />
-              </a>
             </div>
 
             <div className="inc-testi-slider">

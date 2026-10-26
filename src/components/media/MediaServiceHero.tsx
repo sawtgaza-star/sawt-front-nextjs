@@ -1,3 +1,4 @@
+import type { CSSProperties } from "react";
 import { localized } from "@/lib/api/pages";
 import type { MediaServiceHeroContent } from "@/lib/api/media-service";
 import { ctaHref } from "./media-page-view";
@@ -20,8 +21,8 @@ import SkeletonText from "@/components/ui/SkeletonText";
    `loading` — see MediaHero for the full reasoning.
 
    Only the background photo is an override: `.sm-wp-hero` already carries the
-   design's collage, so `backgroundImage` alone is set and the CSS keeps saying
-   how it is positioned and sized. */
+   design's collage, so `--sm-wp-hero-img` alone is set and the CSS keeps saying
+   how it is positioned and sized (and drops it on a phone). */
 export default function MediaServiceHero({
   data,
   lang = "ar",
@@ -39,7 +40,11 @@ export default function MediaServiceHero({
   return (
     <header
       className={`sm-wp-hero sm-wp-hero-plain${loading ? " hero-bg-loading" : ""}`}
-      style={image ? { backgroundImage: `url("${image}")` } : undefined}
+      style={
+        image
+          ? ({ "--sm-wp-hero-img": `url("${image}")` } as CSSProperties)
+          : undefined
+      }
     >
       <span className="sm-wp-hero-veil" aria-hidden="true" />
 

@@ -1,4 +1,3 @@
-import { IconArrowUpLeftSolid } from "@/components/ui/icons";
 import { localized, localizedHtml } from "@/lib/api/pages";
 import type { IncubatorTestimonialsContent } from "@/lib/api/incubator-page";
 import TestimonialsSlider from "./TestimonialsSlider";
@@ -7,8 +6,8 @@ import RichText from "@/components/ui/RichText";
 
 /* "شهادات وتجارب خريجينا" — last section of /incubator, from the API's
    `testimonials` block: a rounded olive canvas with the shared pattern.png
-   scatter showing through a translucent inner panel; the copy + "عرض الكل"
-   button sit on the start side and the testimonial card strip
+   scatter showing through a translucent inner panel; the copy sits on the
+   start side (the API's `view_all` is not rendered — removed on request) and the testimonial card strip
    (TestimonialsSlider) on the end side. The heading breaks before its olive
    tail, as in the mock. */
 export default function IncubatorTestimonials({
@@ -23,7 +22,6 @@ export default function IncubatorTestimonials({
 
   const [head, highlight, tail] = splitTitle(localized(data.title, lang));
   const sub = localizedHtml(data.subtitle, lang);
-  const viewAll = localized(data.view_all?.label, lang);
 
   return (
     <section className="inc-testi">
@@ -44,12 +42,6 @@ export default function IncubatorTestimonials({
                 </h2>
               ) : null}
               {sub ? <RichText as="p" className="inc-testi-sub" html={sub} /> : null}
-              {viewAll ? (
-                <a className="inc-testi-btn" href="#">
-                  <span>{viewAll}</span>
-                  <IconArrowUpLeftSolid />
-                </a>
-              ) : null}
             </div>
 
             <TestimonialsSlider

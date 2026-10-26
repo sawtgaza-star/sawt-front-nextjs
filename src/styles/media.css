@@ -3888,8 +3888,10 @@ color:#6D6D6D;
   flex-direction: column;
   overflow: hidden;
   isolation: isolate;
-  background: url("/assets/images/heroSectionImg.jpeg") center top / cover
-    no-repeat;
+  /* --sm-wp-hero-img is the payload's `hero.image_url` (set inline by the
+     plain banners), so the phone rule's `background: none` still wins */
+  background: var(--sm-wp-hero-img, url("/assets/images/heroSectionImg.jpeg"))
+    center top / cover no-repeat;
 }
 /* the collage is light, so the veil is what the white headline reads against */
 .sm-wp-hero-veil {
@@ -3909,6 +3911,14 @@ background: rgba(0, 0, 0, 0.40);
 }
 .sm-wp-hero .sm-nav-back:hover {
   background: rgba(255, 255, 255, 0.14);
+}
+/* …but once the bar pins, it floats over the white page below the hero, so
+   the link goes back to the default olive */
+.sm-wp-hero .sm-nav-wrap.is-pinned .sm-nav-back {
+  color: #4C5C37 !important;
+}
+.sm-wp-hero .sm-nav-wrap.is-pinned .sm-nav-back:hover {
+  background: rgba(76, 92, 55, 0.08);
 }
 
 .sm-wp-hero-text {
@@ -5514,6 +5524,14 @@ transform: rotate(-90deg);
   z-index: 1030;
   padding-top: 10px;
   transition: transform 0.3s ease;
+}
+/* On the works/contact/service/case-study banners the bar lives inside
+   `.sm-wp-hero`, which is its own stacking context (`isolation: isolate`), so
+   the pinned bar's z-index only counted inside the hero and the sections below
+   (the works grid) painted over it. Lift the hero with it while it is pinned;
+   the hero clips everything else it holds, so only the bar shows the change. */
+.sm-wp-hero:has(.sm-nav-wrap.is-pinned) {
+  z-index: 1030;
 }
 .sm-nav-wrap.is-pinned.is-scroll-hidden {
   transform: translateY(calc(-100% - 20px));

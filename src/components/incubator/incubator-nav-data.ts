@@ -57,7 +57,7 @@ export const SECTION_IDS = SECTIONS.map((section) => section.id);
 /* The entries that leave the section list, by key — never by payload url. */
 const ROUTE_BY_KEY: Record<string, string> = {
   platform: "/",
-  join: "/incubator#inc-join",
+  join: "/incubator#inc-courses",
   support_students: "/support",
 };
 
@@ -130,7 +130,7 @@ export function resolveIncubatorNav(
     socials: rawSocials.filter((social) => social?.url),
     langLabel: text(topbar?.language?.label, lang),
     links,
-    join: slot(data?.actions?.join, lang, "join", "/incubator#inc-join"),
+    join: slot(data?.actions?.join, lang, "join", "/incubator#inc-courses"),
     support: slot(data?.actions?.support, lang, "support_students", "/support"),
   };
 }
