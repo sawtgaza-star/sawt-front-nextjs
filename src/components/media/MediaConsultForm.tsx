@@ -187,7 +187,7 @@ export default function MediaConsultForm({
           {requiredMark("phone")}
         </label>
         <div className="sm-phone-wrap">
-          <MediaCountrySelect name={codeKey} />
+          <MediaCountrySelect name={codeKey} initial={fields?.country_code?.default} />
           <div className="sm-input-wrap sm-phone-num">
             <i className="sm-input-icon">
               <IconFormPhone />

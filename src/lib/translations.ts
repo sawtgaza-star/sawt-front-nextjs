@@ -976,6 +976,11 @@ export const translations: any = {
       "كلنا نملك قصة تستحق أن تُروى. في هذا القسم، نضع مساحة لك لتشارك قصتك الحقيقية. سواء كانت قصة نجاح، تحدي، إبداع، أو تجربة حياتية مؤثرة.",
     realstories_count: "+100 قصة واقعية نقلتها صوت الى العالم",
     realstories_input_placeholder: "شاركنا قصتك",
+    story_share_too_short: "اكتب قصتك في عشرين حرفاً على الأقل.",
+    story_share_sent: "شكراً لك! وصلتنا قصتك وسيراجعها فريق صوت قريباً.",
+    story_share_sending: "جارٍ الإرسال…",
+    story_login_title: "سجّل دخولك لتشاركنا قصتك",
+    story_login_required: "القصص مرتبطة بحسابك. سجّل دخولك أولاً وسنعيدك إلى هنا، وما كتبته محفوظ لك.",
     rs_intro_title_pre: "هل لديك صوت يستحق أن",
     rs_intro_title_word: "يُسمع ؟",
     rs_intro_desc:
@@ -3295,6 +3300,11 @@ export const translations: any = {
       "We all have a story worth telling. In this section, we give you space to share your real story — whether it's a story of success, challenge, creativity, or an impactful life experience.",
     realstories_count: "+100 real stories Sawt shared with the world",
     realstories_input_placeholder: "Share your story",
+    story_share_too_short: "Write at least twenty characters.",
+    story_share_sent: "Thank you! Your story reached us and the Sawt team will review it soon.",
+    story_share_sending: "Sending…",
+    story_login_title: "Sign in to share your story",
+    story_login_required: "Stories are tied to your account. Sign in first and we'll bring you back here — what you wrote is kept for you.",
     rs_intro_title_pre: "Do you have a voice that deserves",
     rs_intro_title_word: "to be heard?",
     rs_intro_desc:

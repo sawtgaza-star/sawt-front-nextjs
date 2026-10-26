@@ -1,0 +1,11 @@
+$kind: http-request
+url: http://127.0.0.1:8000/api/v1/pages/incubator/events/d4c9eddd/reserve
+method: POST
+headers:
+  Accept: application/json
+  Content-Type: application/json
+auth:
+  type: bearer
+  credentials:
+    token: "{{json_web_token_0jm7}}"
+order: 5000

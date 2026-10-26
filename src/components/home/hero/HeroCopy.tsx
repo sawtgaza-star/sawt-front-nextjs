@@ -5,8 +5,8 @@ import { splitHeroTitle } from "./hero-copy";
 import RichText from "@/components/ui/RichText";
 
 /* The hero's text column, all of it the API's `hero` block: kicker, the
-   two-line title (the second line in the brand green over a hand-drawn
-   orange stroke), the description, the two buttons and the tagline. What
+   two-line title (the second line in the brand green over the site's
+   peach brush stroke, as under the section titles), the description, the two buttons and the tagline. What
    the editor leaves empty renders empty. Static — its entrance is pure CSS
    (home-hero.css), staggered through --hh-delay.
 
@@ -55,17 +55,7 @@ export default function HeroCopy({
             <span className="hh-line">
               <span className="hh-line-text hh-accent">
                 {accentHead ? `${accentHead} ` : null}
-                <span className="hh-mark">
-                  {accentMark}
-                  <svg
-                    className="hh-stroke"
-                    viewBox="0 0 300 24"
-                    preserveAspectRatio="none"
-                    aria-hidden="true"
-                  >
-                    <path d="M297 15C232 7.5 140 6 3 14.5" pathLength={1} />
-                  </svg>
-                </span>
+                <span className="hh-mark">{accentMark}</span>
               </span>
             </span>
           ) : null}

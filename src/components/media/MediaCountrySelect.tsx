@@ -8,9 +8,18 @@ import { FlagIconsCss } from "@/components/ui/CdnStylesheets";
    flag + name + code menu the join modal has, written as a React leaf so the
    form around it can stay a Server Component. The value rides in a hidden
    input, so a future submit handler reads it off the form like any other field. */
-export default function MediaCountrySelect({ name = "dial_code" }: { name?: string }) {
+export default function MediaCountrySelect({
+  name = "dial_code",
+  initial,
+}: {
+  name?: string;
+  /** the dial code to start on (the payload's `country_code.default`, "+970") */
+  initial?: string | null;
+}) {
   const [open, setOpen] = useState(false);
-  const [index, setIndex] = useState(0);
+  const [index, setIndex] = useState(() =>
+    Math.max(0, COUNTRIES.findIndex((co) => co.d === initial)),
+  );
   const [query, setQuery] = useState("");
   const boxRef = useRef<HTMLDivElement>(null);
   const searchRef = useRef<HTMLInputElement>(null);

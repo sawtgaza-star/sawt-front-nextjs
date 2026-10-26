@@ -1451,6 +1451,10 @@ background: rgba(237, 239, 235, 0.33);
   display: flex;
   align-items: stretch;
   gap: 14px;
+  /* every FAQ answer on the site shares one weight: regular + a hairline
+     stroke (Cairo ships only 400 / 700, so a 500 wouldn't show) */
+  font-weight: 400;
+  -webkit-text-stroke: 0.3px currentColor;
   font-size: 14px;
   color: #5A5A5A;
   line-height: 2;

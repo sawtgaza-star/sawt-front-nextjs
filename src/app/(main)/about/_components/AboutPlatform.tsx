@@ -22,6 +22,9 @@ export default function AboutPlatform({
   return (
     <section className="about-the-platform">
       {" "}
+      {/* the same .container as the values section above, so the card's
+          edges line up with the value cards' at every width */}
+      <div className="container">
       <div className="about-the-platform-card">
         {" "}
         <div className="about-the-platform-card-inner">
@@ -54,6 +57,7 @@ export default function AboutPlatform({
           </div>{" "}
         </div>{" "}
       </div>{" "}
+      </div>
     </section>
   );
 }

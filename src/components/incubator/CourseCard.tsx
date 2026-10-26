@@ -92,7 +92,8 @@ export default function CourseCard({ course }: { course: PopularCourse }) {
               {course.title}
             </h3>
 
-            {course.rating !== undefined &&
+            {/* a "قريبًا" course hasn't run yet — nothing to rate */}
+            {course.rating !== undefined && !course.soon &&
               rv(
                 "rating",
                 <div

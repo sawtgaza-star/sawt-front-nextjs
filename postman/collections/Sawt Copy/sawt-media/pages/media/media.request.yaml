@@ -1,7 +1,0 @@
-$kind: http-request
-url: "{{Base_Url}}/pages/media"
-method: GET
-headers:
-  Accept: application/json
-  Content-Type: application/json
-order: 1000

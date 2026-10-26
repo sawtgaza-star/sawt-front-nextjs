@@ -1,4 +1,0 @@
-$kind: http-request
-url: "{{Base_Url}}/pages/stories"
-method: GET
-order: 1000

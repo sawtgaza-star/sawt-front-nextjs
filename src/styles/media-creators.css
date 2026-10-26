@@ -1,0 +1,722 @@
+/* ============================================================
+   /media — "تعاون مع صنّاع المحتوى" (components/media/creators)
+   The soft panel (pitch · featured reel · creator card · picker), then
+   the collaboration steps and the CTA. Same `sm-` namespace and tokens
+   as media.css; `sm-cc-` = creator collaborations.
+   Type follows the page's scale (36px section titles, 18px leads, 11px+
+   for the smallest labels); the reel and the card share one row height.
+   ============================================================ */
+
+.sm-cc {
+  padding: 60px 0 70px;
+}
+
+/* ---------- the panel ----------
+   start column: the pitch, over both rows; then the reel and the card,
+   and the picker under those two */
+.sm-cc-panel {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 300px 500px;
+  grid-template-rows: 470px auto;
+  column-gap: 24px;
+  row-gap: 20px;
+  padding: 40px;
+  border-radius: 24px;
+  background: #edeeea;
+}
+.sm-cc-intro {
+  grid-column: 1;
+  grid-row: 1 / span 2;
+  align-self: center;
+  padding-inline-end: 24px;
+  text-align: start;
+}
+.sm-cc-reel {
+  grid-column: 2;
+  grid-row: 1;
+}
+.sm-cc-profile {
+  grid-column: 3;
+  grid-row: 1;
+}
+.sm-cc-picker {
+  grid-column: 2 / span 2;
+  grid-row: 2;
+}
+
+/* ---------- pitch ---------- */
+.sm-cc-title {
+  margin: 18px 0 0;
+  font-size: 32px;
+  line-height: 1.35;
+  color: #1e1e1e;
+}
+.sm-cc-sub {
+  max-width: 440px;
+  margin: 16px 0 0;
+  font-size: 17px;
+  line-height: 1.8;
+  font-weight: 500;
+  color: var(--sm-gray-800);
+}
+
+/* ---------- featured reel ----------
+   The home reel card (`.review-reels .reel-item`, style.css + home-reels.css)
+   — only its box is fitted to the panel: full column width and the row's
+   height instead of the home column's fixed 300×470. */
+.sm-cc-reel.review-reels {
+  max-width: none;
+  height: 100%;
+  margin: 0;
+  overflow: hidden;
+  scroll-snap-type: none;
+  border-radius: 22px;
+  animation: sm-cc-in 0.45s ease both;
+}
+.sm-cc-reel .reel-item {
+  height: 100%;
+}
+.sm-cc-reel .reel-media {
+  min-height: 0;
+  background: #2e3526;
+}
+/* out of flow, so a portrait video's own height can't stretch the card */
+.sm-cc-reel .reel-media video,
+.sm-cc-reel .reel-media .sm-cc-reel-still {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.sm-cc-reel .reel-actions span {
+  padding: 0;
+  font-size: 16px;
+}
+.sm-cc-reel .reel-actions span.is-liked {
+  color: #e5484d;
+}
+/* no reel yet: the home column's empty state over the creator's portrait,
+   blurred and dimmed */
+.sm-cc-reel.is-empty {
+  position: relative;
+  isolation: isolate;
+}
+.sm-cc-reel-backdrop {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  filter: blur(18px) grayscale(0.35) brightness(0.45);
+  transform: scale(1.2);
+}
+.sm-cc-reel.is-empty .reels-empty {
+  min-height: 0;
+  gap: 12px;
+  padding: 36px 28px;
+  background:
+    radial-gradient(circle at 50% 40%, rgba(76, 92, 55, 0.45), transparent 62%),
+    linear-gradient(to bottom, rgba(27, 27, 27, 0.55), rgba(27, 27, 27, 0.85));
+  animation: sm-cc-in 0.45s ease both;
+}
+.sm-cc-reel.is-empty .reels-empty-icon {
+  width: 76px;
+  height: 76px;
+  font-size: 32px;
+  color: #c9d6b3;
+  background: rgba(255, 255, 255, 0.08);
+  box-shadow: 0 0 0 10px rgba(255, 255, 255, 0.04);
+}
+.sm-cc-reel.is-empty .reels-empty-title {
+  font-size: 19px;
+}
+.sm-cc-reel.is-empty .reels-empty-text {
+  max-width: 240px;
+  font-size: 14px;
+  color: #cfcfcf;
+}
+.sm-cc-reel.is-empty .reels-empty-text bdi {
+  color: #fff;
+  font-weight: 700;
+}
+.sm-cc-reel-follow {
+  margin-top: 10px;
+  text-decoration: none;
+  max-width: 100%;
+}
+.sm-cc-reel-follow bdi {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  opacity: 0.85;
+}
+.sm-page .sm-cc-reel-follow,
+.sm-page .sm-cc-reel-follow:hover {
+  color: #fff;
+}
+
+.sm-cc-reel .reel-caption {
+  padding: 14px 18px 16px;
+}
+.sm-cc-reel .reel-byline {
+  margin-top: 2px;
+}
+.sm-cc-reel .reel-date {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  flex-shrink: 1;
+}
+/* figures wrap instead of running off the edge; the Instagram link takes
+   its own line at the end when there is no room beside them */
+.sm-cc-reel .reel-stats {
+  flex-wrap: wrap;
+  column-gap: 14px;
+  row-gap: 8px;
+}
+.sm-cc-reel .reel-stat {
+  white-space: nowrap;
+}
+
+/* ---------- creator card ---------- */
+.sm-cc-profile {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  padding: 44px 24px 24px;
+  border: 1px solid #e3e3e3;
+  border-radius: 18px;
+  background: #fff;
+  text-align: center;
+  animation: sm-cc-in 0.45s ease both;
+}
+.sm-cc-badge {
+  position: absolute;
+  top: 14px;
+  left: 14px;
+  padding: 2px 10px;
+  border-radius: 999px;
+  background: var(--sm-olive-500);
+  color: #fff;
+  font-size: 12px;
+  font-weight: 700;
+  line-height: 18px;
+}
+/* the portrait in a thick white ring with a hairline rim and a soft
+   shadow; the blue verified seal sits on the ring, lower left */
+.sm-cc-avatar {
+  position: relative;
+  display: block;
+  flex: 0 0 112px;
+  width: 112px;
+  height: 112px;
+  padding: 6px;
+  border: 1px solid #ececec;
+  border-radius: 50%;
+  background: #fff;
+  box-shadow: 0 8px 22px -10px rgba(0, 0, 0, 0.22);
+}
+.sm-cc-avatar img {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  background: #d9d9d9;
+  object-fit: cover;
+}
+.sm-cc-verified {
+  position: absolute;
+  bottom: 4px;
+  left: 2px;
+  display: grid;
+  place-items: center;
+  font-size: 26px;
+  line-height: 0;
+  filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.18));
+}
+.sm-cc-name {
+  margin: 16px 0 0;
+  font-size: 18px;
+  line-height: 26px;
+  color: #1e1e1e;
+}
+.sm-page .sm-cc-name {
+  font-weight: 700;
+}
+.sm-cc-role {
+  margin: 2px 0 0;
+  font-size: 14px;
+  line-height: 22px;
+  color: var(--sm-gray-800);
+}
+.sm-cc-bio-wrap {
+  position: relative;
+  width: 100%;
+  max-width: 420px;
+  margin: 10px 0 0;
+}
+.sm-cc-bio {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3;
+  overflow: hidden;
+  margin: 0;
+  font-size: 14px;
+  line-height: 22px;
+  color: #4a4a4a;
+}
+/* "… عرض المزيد" laid over the end of the third line, on the card's plain
+   white so the clipped words don't show through */
+.sm-cc-bio-more {
+  position: absolute;
+  bottom: 0;
+  inset-inline-end: 0;
+  padding-inline-start: 4px;
+  font-size: 14px;
+  line-height: 22px;
+  color: #4a4a4a;
+  background: #fff;
+}
+/* open: the whole bio, scrolling inside the card (4 lines tall) so the
+   card keeps its height */
+.sm-cc-bio-wrap.is-open .sm-cc-bio {
+  display: block;
+  max-height: 88px;
+  overflow-y: auto;
+  padding-inline: 6px;
+  scrollbar-width: thin;
+  scrollbar-color: #c9c9c9 transparent;
+}
+.sm-cc-bio-toggle {
+  display: inline;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--sm-olive-500);
+  font: inherit;
+  font-weight: 700;
+  cursor: pointer;
+  transition: color 0.2s ease;
+}
+.sm-cc-bio-toggle:hover {
+  color: var(--sm-olive-700);
+  text-decoration: underline;
+}
+.sm-cc-figures {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+  width: 100%;
+  margin: 24px 0 0;
+  padding: 0;
+  list-style: none;
+}
+.sm-cc-figures li {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  height: 76px;
+  border: 1px solid #e4e4e4;
+  border-radius: 14px;
+  background: #f6f6f4;
+}
+.sm-cc-figures b {
+  font-size: 20px;
+  font-weight: 800;
+  line-height: 1;
+  color: #1e1e1e;
+  direction: ltr;
+}
+.sm-cc-figures span {
+  font-size: 13px;
+  line-height: 1;
+  color: var(--sm-gray-800);
+}
+
+/* ---------- picker ---------- */
+.sm-cc-picker {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 0;
+}
+.sm-cc-picker-track {
+  display: flex;
+  flex: 1;
+  gap: 12px;
+  min-width: 0;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  scrollbar-width: none;
+}
+.sm-cc-picker-track::-webkit-scrollbar {
+  display: none;
+}
+.sm-cc-chip {
+  display: flex;
+  flex: 0 0 calc((100% - 24px) / 3);
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+  height: 72px;
+  padding: 0 14px;
+  border: 1px solid transparent;
+  border-radius: 14px;
+  background: #fff;
+  text-align: start;
+  scroll-snap-align: start;
+  transition: background-color 0.25s ease, border-color 0.25s ease;
+}
+.sm-cc-chip:hover {
+  border-color: #e7d3c5;
+}
+.sm-cc-chip.is-active {
+  background: #efe5de;
+  border-color: #e6d6cb;
+}
+.sm-cc-chip-avatar {
+  flex: 0 0 44px;
+  width: 44px;
+  height: 44px;
+  overflow: hidden;
+  border-radius: 50%;
+  background: #ddd;
+}
+.sm-cc-chip-avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.sm-cc-chip-text {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+.sm-cc-chip-text b,
+.sm-cc-chip-text small {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+.sm-cc-chip-text b {
+  font-size: 14px;
+  font-weight: 700;
+  line-height: 22px;
+  color: #1e1e1e;
+}
+.sm-cc-chip-text small {
+  font-size: 12px;
+  line-height: 18px;
+  color: #6d6d6d;
+}
+/* the followers tag and the picked dot sit at the end edge, in the flow,
+   so they never cover the name */
+.sm-cc-chip-tag {
+  flex-shrink: 0;
+  align-self: flex-start;
+  margin-top: 10px;
+  margin-inline-start: auto;
+  padding: 1px 8px;
+  border-radius: 999px;
+  background: #f0f0ee;
+  color: #444;
+  font-size: 11px;
+  line-height: 18px;
+  white-space: nowrap;
+}
+.sm-cc-chip.is-active .sm-cc-chip-tag {
+  display: none;
+}
+.sm-cc-chip-dot {
+  display: none;
+  flex-shrink: 0;
+  width: 8px;
+  height: 8px;
+  margin-inline-start: auto;
+  border-radius: 50%;
+  background: var(--sm-orange-400);
+}
+.sm-cc-chip.is-active .sm-cc-chip-dot {
+  display: block;
+}
+.sm-cc-next {
+  display: grid;
+  flex: 0 0 44px;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  border: 1px solid #4a4a4a;
+  border-radius: 50%;
+  background: transparent;
+  color: #2b2b2b;
+  font-size: 18px;
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+.sm-cc-next:hover {
+  background: var(--sm-olive-500);
+  border-color: var(--sm-olive-500);
+  color: #fff;
+}
+[dir="ltr"] .sm-cc-next svg {
+  transform: scaleX(-1);
+}
+
+/* ---------- steps + CTA ---------- */
+.sm-cc-steps {
+  margin-top: 56px;
+}
+.sm-cc-steps-title {
+  display: flex;
+  align-items: center;
+  gap: 22px;
+  margin: 0;
+  font-size: 24px;
+  line-height: 1.4;
+  color: #1e1e1e;
+}
+.sm-page .sm-cc-steps-title {
+  font-weight: 800;
+}
+.sm-cc-steps-title::before,
+.sm-cc-steps-title::after {
+  content: "";
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(to left, rgba(76, 92, 55, 0.4), rgba(76, 92, 55, 0.05));
+}
+.sm-cc-steps-title::before {
+  background: linear-gradient(to right, rgba(76, 92, 55, 0.4), rgba(76, 92, 55, 0.05));
+}
+.sm-cc-steps-list {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 24px;
+  margin: 32px 0 0;
+  padding: 0;
+  list-style: none;
+}
+.sm-cc-steps-list li {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  min-height: 72px;
+  padding: 16px 20px;
+  border: 1px solid var(--sm-olive-500);
+  border-radius: 16px;
+  background: #fff;
+  font-size: 16px;
+  line-height: 1.6;
+  font-weight: 600;
+  color: #2b2b2b;
+  text-align: start;
+}
+.sm-cc-step-num {
+  display: grid;
+  flex: 0 0 34px;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  background: var(--sm-orange-400);
+  color: #fff;
+  font-size: 13px;
+  font-weight: 700;
+}
+.sm-cc-cta-wrap {
+  margin-top: 36px;
+  text-align: center;
+}
+.sm-cc-cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  padding: 13px 32px;
+  border-radius: 999px;
+  background: var(--sm-olive-500);
+  color: #fff;
+  font-size: 17px;
+  font-weight: 700;
+  text-decoration: none;
+  transition: background-color 0.2s ease, transform 0.2s ease;
+}
+.sm-cc-cta:hover {
+  background: var(--sm-olive-700);
+  color: #fff;
+  transform: translateY(-1px);
+}
+/* the label and arrow stay white over the green, whatever the page's
+   link / span colours say */
+.sm-page .sm-cc-cta,
+.sm-page .sm-cc-cta:hover,
+.sm-page .sm-cc-cta:focus,
+.sm-page .sm-cc-cta > * {
+  color: #fff !important;
+}
+[dir="ltr"] .sm-cc-cta svg {
+  transform: scaleX(-1);
+}
+
+@keyframes sm-cc-in {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: none; }
+}
+
+/* ---------- laptops: narrower reel + card ---------- */
+@media (max-width: 1199.98px) {
+  .sm-cc-panel {
+    grid-template-columns: minmax(0, 1fr) 260px 410px;
+    padding: 32px;
+    column-gap: 20px;
+  }
+  .sm-cc-title {
+    font-size: 28px;
+  }
+  .sm-cc-sub {
+    font-size: 16px;
+  }
+}
+
+/* ---------- tablet: pitch on top, reel + card side by side ---------- */
+@media (max-width: 991.98px) {
+  .sm-cc-panel {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    grid-template-rows: auto;
+    padding: 28px 24px;
+  }
+  .sm-cc-intro {
+    grid-column: 1 / -1;
+    grid-row: auto;
+    padding: 0;
+  }
+  .sm-cc-reel,
+  .sm-cc-profile {
+    grid-row: auto;
+  }
+  .sm-cc-reel { grid-column: 1; }
+  .sm-cc-profile { grid-column: 2; }
+  .sm-cc-reel.review-reels {
+    height: 470px;
+  }
+  .sm-cc-profile {
+    height: auto;
+  }
+  .sm-cc-picker {
+    grid-column: 1 / -1;
+    grid-row: auto;
+  }
+  .sm-cc-title {
+    font-size: 28px;
+    margin-top: 14px;
+  }
+  .sm-cc-sub {
+    max-width: none;
+    margin-top: 12px;
+    font-size: 16px;
+  }
+  .sm-cc-chip {
+    flex-basis: calc((100% - 12px) / 2);
+  }
+  .sm-cc-steps-title {
+    font-size: 22px;
+  }
+  .sm-cc-steps-list {
+    grid-template-columns: 1fr;
+    gap: 14px;
+  }
+  .sm-cc-steps-list li {
+    min-height: 0;
+    font-size: 16px;
+  }
+}
+
+/* ---------- phones: one column ---------- */
+@media (max-width: 575.98px) {
+  .sm-cc {
+    padding: 44px 0 50px;
+  }
+  .sm-cc-panel {
+    grid-template-columns: minmax(0, 1fr);
+    padding: 22px 16px;
+    border-radius: 20px;
+  }
+  .sm-cc-reel,
+  .sm-cc-profile {
+    grid-column: 1;
+    min-height: 0;
+  }
+  /* the home reel on a phone: a 560px card, the caption under the video;
+     while it plays the caption folds down and the video takes its room
+     (style.css's .playing rules), and it comes back on pause */
+  .sm-cc-reel.review-reels {
+    width: 100%;
+    max-width: 340px;
+    height: 560px;
+    margin-inline: auto;
+  }
+  .sm-cc-reel .reel-item:not(.playing) .reel-caption {
+    max-height: 180px;
+  }
+  .sm-cc-reel .reel-stats {
+    flex-wrap: nowrap;
+  }
+  .sm-cc-reel.is-empty .reels-empty {
+    min-height: 420px;
+  }
+  .sm-cc-profile {
+    padding-top: 48px;
+  }
+  /* phones: the creator's card first, then their reel, then the picker */
+  .sm-cc-intro {
+    order: 0;
+    text-align: center;
+  }
+  .sm-cc-sub {
+    margin-inline: auto;
+  }
+  .sm-cc-profile { order: 1; }
+  .sm-cc-reel { order: 2; }
+  .sm-cc-picker { order: 3; }
+  .sm-cc-title {
+    font-size: 24px;
+  }
+  .sm-cc-sub {
+    font-size: 15px;
+  }
+  .sm-cc-chip {
+    flex-basis: 80%;
+  }
+  .sm-cc-steps {
+    margin-top: 40px;
+  }
+  .sm-cc-steps-title {
+    gap: 14px;
+    font-size: 21px;
+  }
+  .sm-cc-steps-list li {
+    padding: 14px 16px;
+    font-size: 16px;
+  }
+  .sm-cc-step-num {
+    flex-basis: 34px;
+    width: 34px;
+    height: 34px;
+    font-size: 13px;
+  }
+  .sm-cc-cta {
+    font-size: 17px;
+    padding: 14px 28px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sm-cc-reel,
+  .sm-cc-profile {
+    animation: none;
+  }
+}

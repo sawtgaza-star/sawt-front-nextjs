@@ -63,6 +63,9 @@ export default function MidBanner({
           {" "}
           <PartnerLogos partners={partners} hidden={false} />{" "}
           <PartnerLogos partners={partners} hidden={true} />{" "}
+          {/* a third copy: the groups are 85% of the screen wide
+              (home-partners.css), so two no longer cover it while scrolling */}
+          <PartnerLogos partners={partners} hidden={true} />{" "}
         </div>{" "}
       </section>
     </>

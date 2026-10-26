@@ -160,7 +160,6 @@ export default function SoutSection({
                 <Link
                   href="/about"
                   className="btn btn-dark-green rounded-pill px-4 py-2 font-16 text-bold fw-bold"
-                  style={{ borderRadius: "18px !important" }}
                 >
                   {" "}
                   <span className="">{cta}</span>{" "}

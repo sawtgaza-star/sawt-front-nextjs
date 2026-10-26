@@ -52,13 +52,17 @@
    `.hero-reveal-text`): white fading to grey, painted through the glyphs.
    text-fill beats each title's own `color`. Left out on purpose: the
    incubator and the media landing heroes, whose titles are dark ink on a
-   light background — a white fill would vanish there. */
+   light background — a white fill would vanish there. The about page's
+   "صوت لمن لا صوت له" is plain white instead, on request. */
 .cr-hero-title,
 .crs-hero-title,
-.about-hero-title,
 .sm-wp-hero-title {
   background-image: linear-gradient(to bottom, #fff, #9ca3af);
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;
+}
+
+.about-hero-title {
+  color: #fff;
 }

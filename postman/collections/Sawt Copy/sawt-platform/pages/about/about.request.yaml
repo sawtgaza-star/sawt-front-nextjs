@@ -1,7 +1,0 @@
-$kind: http-request
-url: https://api.sawtgaza.com/api/v1/pages/about
-method: GET
-headers:
-  Accept: application/json
-  Content-Type: application/json
-order: 1000

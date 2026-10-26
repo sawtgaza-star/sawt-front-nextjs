@@ -1,5 +1,5 @@
 "use client";
-import { useCallback, useEffect, useRef, useState, type PointerEvent } from "react";
+import { useCallback, useEffect, useLayoutEffect, useRef, useState, type PointerEvent } from "react";
 import type { HomeReviewReel } from "@/lib/api/home";
 import HeroOrbit from "./HeroOrbit";
 import HeroReelCard from "./HeroReelCard";
@@ -137,11 +137,16 @@ export default function HeroReelStack({
     kick();
   }, [kick]);
 
-  // first paint, and again whenever the set of reels changes
-  useEffect(() => {
+  /* first paint, and again whenever the set of reels changes — including when
+     the browser's fresh payload swaps a reel for another at the same count:
+     React moves the kept cards to their new index, and a moved card would
+     otherwise keep the pose of its old spot (two cards on one side, an empty
+     slot until autoplay next turns the stack). Before the browser paints. */
+  const reelKeys = reels.map((reel, index) => reel.id ?? `#${index}`).join("|");
+  useLayoutEffect(() => {
     motion.current.instant = window.matchMedia(REDUCED_MOTION).matches;
     paint();
-  }, [paint, loading]);
+  }, [paint, loading, reelKeys]);
 
   useEffect(() => {
     const m = motion.current;

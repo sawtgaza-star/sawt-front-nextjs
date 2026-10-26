@@ -310,8 +310,10 @@ left: 12px;
 [dir="ltr"] .team-detail-grid.has-bg::before {
   transform: scaleX(-1) translateX(-12%);
 }
+/* the text's start edge sits on the page container's, in line with the
+   "اعضاء الفريق" cards below */
 .team-detail-grid.has-bg .team-detail-info {
-  padding-inline: 56px 24px;
+  padding-inline: 0 24px;
 }
 .team-detail-grid.has-bg .team-detail-photo {
   width: 100%;

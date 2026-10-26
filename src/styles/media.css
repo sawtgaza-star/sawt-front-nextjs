@@ -1041,6 +1041,16 @@ html.sm-drawer-open .sm-nav-wrap > .container {
 
 /* the slider viewport: every slide shares one grid cell, so the box is as tall
    as the tallest card and the slides move against each other inside it */
+/* touch: holding a finger on the deck pauses it (MediaServicesSlider) —
+   no text-selection / callout menu popping up under that long press */
+@media (hover: none) {
+  .sm-services-view {
+    -webkit-user-select: none;
+    user-select: none;
+    -webkit-touch-callout: none;
+  }
+}
+
 .sm-services-view {
   display: grid;
   overflow: hidden;
@@ -2937,6 +2947,10 @@ color:#6D6D6D;
   display: flex;
   align-items: stretch;
   gap: 14px;
+  /* every FAQ answer on the site shares one weight: regular + a hairline
+     stroke (Cairo ships only 400 / 700, so a 500 wouldn't show) */
+  font-weight: 400;
+  -webkit-text-stroke: 0.3px currentColor;
   font-size: 14px;
   color: #5a5a5a;
   line-height: 2;
@@ -3236,6 +3250,10 @@ color:#6D6D6D;
   .sm-wp-hero-plain .sm-wp-hero-title {
     font-size: 20px;
     line-height: 1.25;
+  }
+  /* keep the headline off the screen edges */
+  .sm-wp-hero-plain .sm-wp-hero-text {
+    padding-inline: 24px;
   }
 
   .sm-fan-card {
@@ -4085,8 +4103,12 @@ background: rgba(0, 0, 0, 0.40);
   .sm-wp-hero-plain .sm-wp-crumb-sep {
     color: var(--sm-gray-300);
   }
+  /* hero-size.css paints hero titles with a white→grey text fill meant for
+     the dark collage; on this white banner it washes out, so drop it */
   .sm-wp-hero-plain .sm-wp-hero-title {
     color: var(--sm-ink);
+    background-image: none;
+    -webkit-text-fill-color: currentColor;
   }
   .sm-wp-body {
     padding: 34px 0 0px;

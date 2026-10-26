@@ -13,15 +13,17 @@
   border-radius: 10px;
 }
 
-/* web: a little more air between the tiles, and bigger icons (the icon is
-   sized in em, so the box's font-size scales it) */
+/* web: more air between the rows of tiles, and a smaller box behind the
+   icon — the icon itself keeps its size (it is sized in em, so the box's
+   font-size scales it) */
 @media (min-width: 768px) {
+  /* !important: the grid's Bootstrap `gap-2` sets gap with !important */
   .sout-section .features-grid {
-    row-gap: 1.25rem;
+    row-gap: 1.5rem !important;
   }
   .sout-section .features-grid .icon-box.icon-box {
-    width: 62px;
-    height: 62px;
+    width: 52px;
+    height: 52px;
     font-size: 1.85rem;
   }
 }
@@ -39,5 +41,19 @@
 @media (prefers-reduced-motion: reduce) {
   .sout-section .feature-item .icon-box.icon-box {
     transition: none;
+  }
+}
+
+/* web: "اكتشف المزيد" at the hero buttons' size (.hh-btn in home-hero.css) —
+   50px tall, 10px × 30px padding, a full pill. !important beats the
+   Bootstrap px-4 / py-2 utilities on the link. */
+@media (min-width: 768px) {
+  .sout-section .d-md-flex .btn-dark-green {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 50px;
+    padding: 10px 30px !important;
+    border-radius: 999px !important;
   }
 }
