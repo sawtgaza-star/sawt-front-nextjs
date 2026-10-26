@@ -1,4 +1,0 @@
-$kind: http-request
-url: "{{Base_Url}}/pages/blogs/5jg3y"
-method: GET
-order: 2000

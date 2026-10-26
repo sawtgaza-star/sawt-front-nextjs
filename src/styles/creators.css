@@ -865,10 +865,10 @@ background: rgba(237, 239, 235, 0.50);
 }
 [dir ='ltr'] .cr-step-card {
   text-align:start;
-  padding: 20px 46px 20px 47px;
+  padding: 20px 24px 20px 62px;
 }
 [dir='ltr'] .cr-step-num{
-  left:7px;
+  left:18px;
 }
 
 .cr-step-card {
@@ -876,7 +876,7 @@ background: rgba(237, 239, 235, 0.50);
   background: #fff;
   border: 1px solid #4C5C37;
   border-radius: 12px;
-  padding: 20px 46px 20px 5px;
+  padding: 20px 62px 20px 24px;
   font-size: 14px;
   font-weight: 500;
   color: #4a4a4a;
@@ -955,10 +955,20 @@ background: rgba(237, 239, 235, 0.50);
 .cr-step-title {
   display: none;
 }
+/* the CMS sends the step's heading as the text's first line
+   ("إختر صانع المحتوى المناسب" …) — a little larger than the rest */
+.cr-step-text {
+  display: block;
+  color: #7a7a7a; /* the description, softer than its heading */
+}
+.cr-step-text::first-line {
+  font-size: 17px;
+  color: #2b2b2b;
+}
 .cr-step-num {
   position: absolute;
   top: 50%;
-  right: 7px;
+  right: 18px;
   transform: translateY(-50%);
   width: 30px;
   height: 30px;
@@ -1107,6 +1117,10 @@ background: rgba(237, 239, 235, 0.50);
   padding: 16px 20px 18px;
   margin: 0 14px;
   font-size: 14px;
+  /* every FAQ answer on the site shares one weight: regular + a hairline
+     stroke (Cairo ships only 400 / 700, so a 500 wouldn't show) */
+  font-weight: 400;
+  -webkit-text-stroke: 0.3px currentColor;
   color: #6d6d6d;
   line-height: 2;
   text-align: start;

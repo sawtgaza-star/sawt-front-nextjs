@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import { Cairo } from "next/font/google";
 import "@/styles/media.css";
+import "@/styles/home-reels.css";
+import "@/styles/media-creators.css";
 import LegacyInit from "@/components/LegacyInit";
 import MediaContent from "@/components/media/MediaContent";
 

@@ -213,3 +213,25 @@ export async function fetchAllStoryUuids(perPage = 100): Promise<string[]> {
 
   return uuids;
 }
+
+/** Least the API accepts for a submitted story (its own 422 says so too). */
+export const STORY_MIN_LENGTH = 20;
+
+export type ShareStoryResponse = { message?: string };
+
+/** A visitor's own story, from the home page's "شاركنا قصتك" box.
+
+      POST /pages/stories/share { body } + bearer → 2xx { message }
+
+    The signed-in account is the author, so a guest gets 401; a body under
+    STORY_MIN_LENGTH characters is a 422 with `errors.body`. */
+export function shareStory(
+  body: string,
+  token: string | null,
+): Promise<ShareStoryResponse> {
+  return apiFetch<ShareStoryResponse>("/pages/stories/share", {
+    method: "POST",
+    body: { body },
+    token,
+  });
+}

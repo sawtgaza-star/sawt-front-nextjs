@@ -1,5 +1,5 @@
 $kind: http-request
-url: "{{Base_Url}}/pages/blogs"
+url: http://127.0.0.1:8000/api/v1/pages/blogs
 method: GET
 headers:
   Accept: application/json

@@ -1,9 +1,0 @@
-$kind: http-request
-url: http://127.0.0.1:8000/api/v1/reels?extras=1
-method: GET
-headers:
-  Accept: application/json
-  Content-Type: application/json
-queryParams:
-  extras: "1"
-order: 1000

@@ -324,6 +324,13 @@ html.sawt-anim .nws-related .news-card .readmore:hover .arrow,
     gap: 6px;
   }
 
+  /* the title and excerpt share the footer's tighter edge, so they line up
+     with the date and the button below them */
+  .latest-news .news-card .card-body,
+  .nws-related .news-card .card-body {
+    padding-inline: 0.9rem;
+  }
+
   .latest-news .news-card .card-footer > span:first-child,
   .nws-related .news-card .card-footer > span:first-child {
     gap: 4px;

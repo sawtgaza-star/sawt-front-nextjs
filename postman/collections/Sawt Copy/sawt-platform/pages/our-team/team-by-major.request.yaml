@@ -1,6 +1,0 @@
-$kind: http-request
-url: "{{Base_Url}}/pages/team?major=design"
-method: GET
-queryParams:
-  major: design
-order: 2000

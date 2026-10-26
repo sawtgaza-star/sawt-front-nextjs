@@ -538,3 +538,15 @@
     transition: none;
   }
 }
+
+/* Touch screens: a tap leaves the reel :hover, and style.css's "reveal the
+   caption on hover while playing" then kept it up — there the caption always
+   folds down while a reel plays, leaving the video and its seek bar. */
+@media (hover: none) {
+  .review-reels .reel-item.playing:hover .reel-caption {
+    max-height: 0;
+    padding-top: 0;
+    padding-bottom: 0;
+    opacity: 0;
+  }
+}

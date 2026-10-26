@@ -58,8 +58,9 @@
   display: flex;
   flex-wrap: wrap;
   align-items: flex-end;
-  /* text and form side by side, not pushed to the two ends */
-  justify-content: flex-start;
+  /* text and form side by side, not pushed to the two ends — and the pair
+     centred on the screen */
+  justify-content: center;
   gap: 16px 40px;
   padding-bottom: 24px;
   border-bottom: 1px solid rgba(234, 230, 215, 0.14);

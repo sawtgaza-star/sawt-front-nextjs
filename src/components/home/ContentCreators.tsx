@@ -59,18 +59,20 @@ export default function ContentCreators({
       {/* id: sign-in from a card's "متابعة" comes back to /#creators */}
       <section id="creators" className="content-section my-5">
         {" "}
+        {/* the branches hang on the full-width section, not the centred
+            container, so they sit at the screen's edges at any width */}
+        <img loading="lazy" decoding="async"
+          src="/assets/images/leaf_cutout.png"
+          className="olive-branch branch-right-top-home-section"
+          alt="Olive Branch"
+        />{" "}
+        <img loading="lazy" decoding="async"
+          src="/assets/images/leaf_cutout.png"
+          className="olive-branch branch-left-bottom-home-section"
+          alt="Olive Branch"
+        />{" "}
         <div className="container position-relative">
           {" "}
-          <img loading="lazy" decoding="async"
-            src="/assets/images/leaf_cutout.png"
-            className="olive-branch branch-right-top-home-section"
-            alt="Olive Branch"
-          />{" "}
-          <img loading="lazy" decoding="async"
-            src="/assets/images/leaf_cutout.png"
-            className="olive-branch branch-left-bottom-home-section"
-            alt="Olive Branch"
-          />{" "}
           <div className="text-center mb-5">
             {" "}
             {title ? (

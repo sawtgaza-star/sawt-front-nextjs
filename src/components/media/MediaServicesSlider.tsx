@@ -22,10 +22,11 @@ import type { ServiceCard } from "./MediaServiceCard";
    the section is off-screen, and under prefers-reduced-motion. Each card is
    held for INTERVAL on a wide screen; on a phone the first one turns quickly
    (PHONE_FIRST) and every later one is held for PHONE_INTERVAL, long enough to
-   read on a small screen. */
+   read on a small screen. A finger held on the deck holds the card too; it
+   moves on again once the finger lifts. */
 const INTERVAL = 4000;
-const PHONE_FIRST = 2000;
-const PHONE_INTERVAL = 6000;
+const PHONE_FIRST = 4000;
+const PHONE_INTERVAL = 9000;
 const PHONE_MEDIA = "(max-width: 767.98px)";
 /* how far a drag must travel to count as a page turn, and as a real drag */
 const SNAP = 70;
@@ -37,6 +38,8 @@ export default function MediaServicesSlider({ cards }: { cards: ServiceCard[] })
   const [paused, setPaused] = useState(false);
   const [visible, setVisible] = useState(false);
   const [dragging, setDragging] = useState(false);
+  /* a finger resting on the deck (touch only) */
+  const [held, setHeld] = useState(false);
   const [dir, setDir] = useState<"up" | "down" | null>(null);
   /* the countdown to the next card, for the rail's filling tick: a fresh `key`
      every time the timer (re)starts, so the fill restarts with it; null while
@@ -71,6 +74,7 @@ export default function MediaServicesSlider({ cards }: { cards: ServiceCard[] })
   useEffect(() => {
     if (
       paused ||
+      held ||
       dragging ||
       !visible ||
       window.matchMedia("(prefers-reduced-motion: reduce)").matches
@@ -83,7 +87,7 @@ export default function MediaServicesSlider({ cards }: { cards: ServiceCard[] })
     setCountdown((c) => ({ key: (c?.key ?? 0) + 1, ms }));
     const id = window.setTimeout(() => setActive((i) => (i + 1) % count), ms);
     return () => window.clearTimeout(id);
-  }, [paused, dragging, visible, count, active]);
+  }, [paused, held, dragging, visible, count, active]);
 
   /* dragging up pulls the next card in, dragging down pushes the top one off */
   const setOffset = (dy: number) => {
@@ -95,7 +99,11 @@ export default function MediaServicesSlider({ cards }: { cards: ServiceCard[] })
   };
 
   const onPointerDown = (e: React.PointerEvent<HTMLDivElement>) => {
-    if (e.pointerType === "touch" || e.button !== 0) return;
+    if (e.pointerType === "touch") {
+      setHeld(true);
+      return;
+    }
+    if (e.button !== 0) return;
     swallowClick.current = false;
     drag.current = { id: e.pointerId, y: e.clientY, moved: false };
   };
@@ -119,6 +127,8 @@ export default function MediaServicesSlider({ cards }: { cards: ServiceCard[] })
   };
 
   const endDrag = (e: React.PointerEvent<HTMLDivElement>) => {
+    /* the finger lifted (or the browser took it over to scroll the page) */
+    if (e.pointerType === "touch") setHeld(false);
     const d = drag.current;
     if (!d || e.pointerId !== d.id) return;
     drag.current = null;

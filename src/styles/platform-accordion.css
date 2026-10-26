@@ -19,7 +19,7 @@
 .ps-item {
   position: relative;
   flex: 1;
-  border-radius: 100px;
+  border-radius: 48px;
   overflow: hidden;
   isolation: isolate;
   cursor: pointer;
@@ -389,7 +389,7 @@
   }
 
   .ps-item {
-    border-radius: 40px;
+    border-radius: 28px;
   }
 
   .ps-pill-title {

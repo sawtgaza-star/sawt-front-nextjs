@@ -528,9 +528,11 @@ a {
   transition: all 0.2s ease-in-out;
   
 }
+/* hover: a pale green behind the green text (as the nav's "تسجيل الدخول"),
+   not the dark green fill with white text */
 .show-more-news:hover {
-  background-color: rgb(50, 59, 38);
-  color: white !important;
+  background-color: #e5e9df;
+  color: rgba(76, 92, 55, 1) !important;
 }
 
 .nav-link-back:hover {
@@ -4362,12 +4364,13 @@ svg {
   color: rgba(76, 92, 55, 1) !important;
   /* صُغّر بطلب المالك: كان بعرض 72% من البطاقة وحشوة 6×18 وخط 0.95rem —
      الآن بعرض نصه فقط */
+  /* ثم كُبّر قليلاً بطلب المالك: حشوة 7×18 وخط 0.9rem (كان 5×14 و0.82rem) */
   gap: 6px;
-  padding: 5px 14px;
+  padding: 7px 18px;
   border-radius: 24px;
   border: 1px solid rgba(76, 92, 55, 1) !important;
   text-decoration: none;
-  font-size: 0.82rem;
+  font-size: 0.9rem;
   font-weight: 500;
   transition: 0.2s ease-in-out !important;
   font-weight: 600;
@@ -5561,7 +5564,8 @@ svg {
 .about-breadcrumb a {
   color: rgba(255, 255, 255, 1) !important;
   text-decoration: none;
-  opacity: 0.9;
+  /* full white, like the title under it (was 0.9, which read as grey) */
+  opacity: 1;
   transition: opacity 0.2s ease;
 }
 
@@ -5959,6 +5963,15 @@ svg {
 }
 
 /* About the Platform Section */
+/* The card sits in a .container (AboutPlatform) and fills it, so its edges
+   match the value cards above at every width — the section's own side
+   padding and the card's 1320px cap used to put it elsewhere. */
+.about-the-platform.about-the-platform {
+  padding-inline: 0 !important;
+}
+.about-the-platform > .container > .about-the-platform-card {
+  max-width: none;
+}
 .about-the-platform {
   padding: 40px 16px;
   margin-top: 40px;
@@ -6440,6 +6453,10 @@ svg {
     margin-top: 10px;
     font-size: 15.5px;
     line-height: 1.7;
+    /* every card the same height: room for four lines, the longest copy
+       ("رحلتنا") — the two columns are separate stacks, so a shorter card
+       can't simply stretch to its neighbour */
+    min-height: calc(4 * 1.7em);
   }
   .sawt-story-grid-rest {
     padding-top: 60px;
@@ -8856,12 +8873,12 @@ svg {
     min-height: 160px;
   }
 
-  /* phones: no photo — the site's own olive + orange glow instead, the same
-     gradient as the about page's banner below */
+  /* phones: not the desktop photo — "كون صوت 2.png" instead, cropped to the
+     shorter card, under a very light dark wash */
   .join-creator-banner {
     background:
-      radial-gradient(ellipse 70% 38% at 45% 62%, rgba(234, 130, 40, 0.42) 0%, rgba(234, 130, 40, 0) 70%),
-      linear-gradient(170deg, #3b4a3a 0%, #283428 45%, #1a211b 75%, #121612 100%);
+      linear-gradient(rgba(0, 0, 0, 0.18), rgba(0, 0, 0, 0.18)),
+      url("/assets/images/كون صوت 2.png") center / cover no-repeat;
   }
   .join-creator-banner .join-us-bg {
     display: none;

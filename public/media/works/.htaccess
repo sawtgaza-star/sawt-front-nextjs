@@ -8,6 +8,9 @@
 RewriteEngine On
 RewriteBase /media/works/
 
+# /media/works/ -> the listing page, as the root rules served it
+RewriteRule ^$ /media/works.html [L]
+
 # real files (<segment>.html, <segment>.txt, _.html)
 RewriteCond %{REQUEST_FILENAME} -f
 RewriteRule ^ - [L]

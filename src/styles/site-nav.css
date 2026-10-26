@@ -33,20 +33,24 @@
   font-size: 15px;
 }
 
+/* "تسجيل الدخول": white, outlined and lettered in the site's green */
 .nav-face .nav-cta-login {
-  background: #f5f5f2;
-  border: 1px solid #e3e3dc;
-  color: #1e1e1e !important;
+  background: #ffffff;
+  border: 1px solid #4c5c37;
+  color: #4c5c37 !important;
+}
+
+.nav-face .nav-cta-login svg {
+  color: #4c5c37;
 }
 
 .nav-face .nav-cta-login:hover {
-  background: #ebebe4;
+  background: #e5e9df;
 }
 
 /* "ادعم صوت" — the one filled pill in the top bar, so it is the first thing
-   the eye lands on: the site's green (as the hero's "ادعم صوت"), a soft halo
-   that ripples out every few seconds, a light sweep across it, and a lift
-   on hover. All motion stops under prefers-reduced-motion. */
+   the eye lands on: the site's green (as the hero's "ادعم صوت"), a light
+   sweep across it, and a lift on hover. No ripple ring around it. All motion stops under prefers-reduced-motion. */
 .nav-face .nav-cta-support {
   position: relative;
   isolation: isolate;
@@ -59,18 +63,6 @@
     transform 0.2s ease,
     box-shadow 0.2s ease,
     background 0.2s ease;
-}
-
-/* the halo: a ring of the same green growing out and fading */
-.nav-face .nav-cta-support::before {
-  content: "";
-  position: absolute;
-  inset: -1px;
-  z-index: -1;
-  border-radius: inherit;
-  box-shadow: 0 0 0 0 rgba(76, 92, 55, 0.5);
-  animation: nav-support-halo 2.8s ease-out infinite;
-  pointer-events: none;
 }
 
 /* the sweep, clipped to the pill by its own rounded box */
@@ -119,16 +111,6 @@
   outline-offset: 3px;
 }
 
-@keyframes nav-support-halo {
-  0% {
-    box-shadow: 0 0 0 0 rgba(76, 92, 55, 0.5);
-  }
-  70%,
-  100% {
-    box-shadow: 0 0 0 10px rgba(76, 92, 55, 0);
-  }
-}
-
 @keyframes nav-support-sweep {
   0%,
   50% {
@@ -153,7 +135,6 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .nav-face .nav-cta-support::before,
   .nav-face .nav-cta-support::after,
   .nav-face .nav-cta-support:hover svg {
     animation: none;

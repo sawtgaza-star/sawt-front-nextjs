@@ -29,6 +29,7 @@ import MediaSectors from "./MediaSectors";
 import MediaPartners from "./MediaPartners";
 import MediaConsult from "./MediaConsult";
 import MediaPackages from "./MediaPackages";
+import MediaCreators from "./creators/MediaCreators";
 import MediaTestimonials from "./MediaTestimonials";
 import MediaFaq from "./MediaFaq";
 import MediaSkeleton from "./MediaSkeleton";
@@ -72,6 +73,7 @@ export default function MediaContent() {
             <MediaPartners data={page?.partners} lang={lang} />
             <MediaConsult data={page?.consultation} lang={lang} />
             <MediaPackages data={page?.packages} lang={lang} />
+            <MediaCreators data={page?.creators} lang={lang} />
             <MediaTestimonials data={page?.testimonials} lang={lang} />
             <MediaFaq data={page?.faq} lang={lang} />
           </>

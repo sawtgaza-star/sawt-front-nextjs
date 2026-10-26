@@ -3,6 +3,7 @@
 
      GET /pages/media → { data: { hero, about, stats, services, why,
                                   methodology, works, audiences, partners,
+                                  creators,
                                   consultation, packages, testimonials, faq } }
 
    Same conventions as ./pages: every text field arrives as { ar, en } and is
@@ -22,6 +23,7 @@
 
 import { apiFetch } from "./client";
 import { assetUrl, type Localized } from "./pages";
+import type { CreatorReelItem } from "./creator-profile";
 import { htmlToLines } from "@/lib/html-text";
 
 type Envelope<T> = { message?: string; data?: T };
@@ -184,6 +186,35 @@ export type MediaConsultationContent = {
   form?: MediaConsultForm;
 };
 
+/* --- creators ------------------------------------------------------------- */
+
+/** One creator in the "تعاون مع صنّاع المحتوى" panel — everything the card,
+    the picker and the featured reel show, in one entry. */
+export type MediaCreatorItem = {
+  uuid?: string;
+  name?: string | null;
+  role?: Localized;
+  bio?: Localized;
+  avatar_url?: string | null;
+  is_verified?: boolean;
+  instagram_username?: string | null;
+  stats?: { views?: number | null; followers?: number | null; videos?: number | null };
+  /** the creator's featured collaboration reel, null when there is none */
+  reel?: CreatorReelItem | null;
+  sort_order?: number;
+};
+
+export type MediaCreatorsContent = {
+  eyebrow?: Localized;
+  title?: Localized;
+  description?: Localized;
+  stats_labels?: { views?: Localized; followers?: Localized; videos?: Localized };
+  steps_title?: Localized;
+  steps?: { number?: string | null; text?: Localized }[];
+  cta?: MediaCta;
+  items?: MediaCreatorItem[];
+};
+
 /* --- packages / testimonials / faq --------------------------------------- */
 
 /** A bundle's feature row: bold name over a muted note. Unlike every other
@@ -229,6 +260,7 @@ export type MediaPage = {
   works?: MediaWorksContent;
   audiences?: MediaAudiencesContent;
   partners?: MediaPartnersContent;
+  creators?: MediaCreatorsContent;
   consultation?: MediaConsultationContent;
   packages?: MediaPackagesContent;
   testimonials?: MediaTestimonialsContent;
@@ -262,6 +294,10 @@ function withAssetUrls(page: MediaPage): MediaPage {
     partners: page.partners && {
       ...page.partners,
       items: map(page.partners.items, (p) => ({ ...p, logo_url: assetUrl(p.logo_url) })),
+    },
+    creators: page.creators && {
+      ...page.creators,
+      items: map(page.creators.items, (c) => ({ ...c, avatar_url: assetUrl(c.avatar_url) })),
     },
     testimonials: page.testimonials && {
       ...page.testimonials,
