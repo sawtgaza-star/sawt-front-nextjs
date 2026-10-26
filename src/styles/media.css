@@ -627,19 +627,79 @@ html.sm-drawer-open .sm-nav-wrap > .container {
   margin-top: 10px;
   /* a notch deeper than the design's orange-200 (#FFB181), which read faded */
   color: #FF8F4D;
-  /* the deck's own glide (.sm-fan-card: 1.4s, same curve), so the word
-     rises in exactly as the cards move seat — both change on the same tick */
-  animation: sm-word-in 1.4s cubic-bezier(0.65, 0, 0.35, 1) both;
   font-size: 58px !important;
+  /* the two phrases (outgoing + incoming) share one grid cell, so the line
+     keeps its height while they roll; perspective gives the roll its depth */
+  display: grid;
+  justify-items: center;
+  /* a far viewpoint keeps the turn shallow and soft rather than dramatic */
+  perspective: 2400px;
 }
-@keyframes sm-word-in {
-  from {
-    opacity: 0;
-    transform: translateY(14px);
-  }
-  to {
+/* A cube roll, word by word. Every word pivots on an axis half a line BEHIND
+   the text (transform-origin's z), so the old phrase's words tip up and away
+   over the top while the new phrase's words come up into place from below —
+   two faces of one cube. Each word starts a beat after the one before it
+   (--i, set by MediaHeroWord), so the change ripples across the line.
+
+   Out and in share one clock — duration, easing, delay — so at every instant
+   the two faces stay exactly 90° apart, as on a real cube; rotateX turns about
+   a line parallel to the text, so words at different x still share that axis.
+   It is tuned to be felt rather than seen: a soft ease, a far viewpoint, a
+   barely-there ripple between words and a long crossfade, so the phrase
+   seems to glide into the next. Same tick as the deck (MediaHeroRotation),
+   finishing just before its 1.4s glide does. */
+.sm-hero-word-face {
+  grid-area: 1 / 1;
+}
+.sm-hero-word-part {
+  display: inline-block;
+  transform-origin: 50% 50% -0.55em;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+}
+.sm-hero-word.is-rolling .sm-hero-word-part {
+  will-change: transform, opacity, filter;
+}
+.sm-hero-word.is-rolling .sm-hero-word-part {
+  animation-duration: 1.2s;
+  /* a soft ease-in-out with no hard acceleration at either end */
+  animation-timing-function: cubic-bezier(0.45, 0.05, 0.25, 1);
+  animation-fill-mode: both;
+  animation-delay: calc(var(--i, 0) * 40ms);
+}
+.sm-hero-word.is-rolling .is-out .sm-hero-word-part {
+  animation-name: sm-word-roll-out;
+}
+.sm-hero-word.is-rolling .is-in .sm-hero-word-part {
+  animation-name: sm-word-roll-in;
+}
+/* the two keyframe sets mirror each other, 90° apart at every stop */
+/* No overshoot, no blur or shading: the turn and a long, overlapping
+   crossfade carry it, so the change reads as one glide rather than a flip */
+@keyframes sm-word-roll-out {
+  0% {
+    transform: rotateX(0deg);
     opacity: 1;
-    transform: none;
+  }
+  65% {
+    opacity: 0;
+  }
+  100% {
+    transform: rotateX(90deg);
+    opacity: 0;
+  }
+}
+@keyframes sm-word-roll-in {
+  0% {
+    transform: rotateX(-90deg);
+    opacity: 0;
+  }
+  35% {
+    opacity: 0;
+  }
+  100% {
+    transform: rotateX(0deg);
+    opacity: 1;
   }
 }
 .sm-hero-desc {
@@ -708,7 +768,9 @@ html.sm-drawer-open .sm-nav-wrap > .container {
   top: 0;
   width: 367px;
   height: 258px;
-  border-radius: 22px;
+  /* square at the bottom, where the cards meet the ticker — on every card, so
+     nothing snaps from round to square while a card glides between seats */
+  border-radius: 22px 22px 0 0;
   overflow: hidden;
   box-shadow: 0 18px 40px rgba(0, 0, 0, 0.16);
   transform-origin: 50% 50%;
@@ -1418,6 +1480,16 @@ html.sm-drawer-open .sm-nav-wrap > .container {
 .sm-why-icon img {
   object-fit: contain;
   display: block;
+  /* each icon in its card's accent, whatever colour its upload is painted in:
+     the filter (set per card by MediaWhy, from media-page-view's
+     WHY_ICON_FILTERS) turns it into a black silhouette and tints that. A CSS
+     mask can't do it — the icons are served without CORS. The fallback is the
+     grey-green #879279. */
+  filter: var(
+    --sm-why-icon-filter,
+    brightness(0) saturate(100%) invert(40%) sepia(67%) saturate(346%)
+      hue-rotate(44deg) brightness(186%) contrast(16%)
+  );
 }
 .sm-why-card-title {
   margin: 20px 0 0;
@@ -2039,8 +2111,15 @@ color:#6D6D6D;
 /* space-around already spreads them on wide screens; the gap only kicks in
    once the row is narrower than its logos */
 .sm-partners-marquee .marquee-group {
-  gap: 40px;
-  padding-inline: 20px;
+  /* style.css spreads each group across the whole screen (min-width 100% +
+     space-around), so a short list (three logos) ended up far apart. Here the
+     group is only as wide as its logos, at the home strip's spacing (~100px
+     between logos — home-partners.css); half the gap on each end keeps the
+     same distance across the seam between copies. MediaPartners renders
+     enough copies to keep the row full. */
+  min-width: 0;
+  gap: 100px;
+  padding-inline: 50px;
 }
 /* style.css sizes .marquee img at `height: 80%` (no parent height → auto), so
    the Figma exports land at wildly different sizes. Cap them to one row height
@@ -3239,8 +3318,11 @@ color:#6D6D6D;
 
   /* the deck narrows to three cards: the outer two seats keep their places so
      the carousel still slides in and out of them, they just do it invisibly */
+  /* exactly the middle card's height (141px, below), so the card in focus
+     shows uncropped and sits flush on the ticker; the tilted side cards
+     still run under it */
   .sm-hero-fan {
-    height: 122px;
+    height: 141px;
     margin-top: 12px;
   }
   .sm-wp-crumb {
@@ -3256,10 +3338,14 @@ color:#6D6D6D;
     padding-inline: 24px;
   }
 
+  /* the card in focus stands flush on the ticker, so the bottom corners are
+     square — rounded ones left notches against the strip. Every card gets
+     them, not just seat 3, so nothing snaps from round to square while a card
+     glides into or out of the middle. */
   .sm-fan-card {
     width: 200px;
     height: 141px;
-    border-radius: 16px;
+    border-radius: 16px 16px 0 0;
   }
   .sm-fan-1 {
     transform: translate(240px, 92px) rotate(25deg) var(--sm-fan-depth);
@@ -3660,6 +3746,7 @@ color:#6D6D6D;
   }
   .sm-partners-marquee .marquee-group {
     gap: 28px;
+    padding-inline: 14px;
   }
 
   /* ---- consultation: the perks stay a 2×2 block, the form fills the width ---- */
@@ -3756,8 +3843,12 @@ color:#6D6D6D;
   .sm-works-loop {
     animation: none;
   }
-  .sm-hero-word {
+  /* no roll: the new phrase simply replaces the old */
+  .sm-hero-word.is-rolling .sm-hero-word-part {
     animation: none;
+  }
+  .sm-hero-word-face.is-out {
+    display: none;
   }
   .sm-about-card-dot::before,
   .sm-about-card-dot::after {

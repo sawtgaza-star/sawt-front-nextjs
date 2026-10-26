@@ -1,6 +1,6 @@
 import { localized, localizedHtml } from "@/lib/api/pages";
 import { sortItems, type MediaWhyContent } from "@/lib/api/media-page";
-import { WHY_ACCENTS, cycle } from "./media-page-view";
+import { WHY_ACCENTS, WHY_ICON_FILTERS, cycle } from "./media-page-view";
 import MediaSectionHead from "./MediaSectionHead";
 import MediaWhyStrip from "./MediaWhyStrip";
 import RichText from "@/components/ui/RichText";
@@ -11,8 +11,10 @@ import RichText from "@/components/ui/RichText";
    loop without a seam; the clones are hidden from assistive tech.
 
    The icons are uploads now (`icon_url`), so each card shows one only once an
-   editor has added it and the colour is the SVG's own. `accent` — the dot in
-   the card's top corner — stays a design token walked down the list. */
+   editor has added it. `accent` — a design token walked down the list — paints
+   both the dot in the card's top corner and the icon (recoloured through
+   `--sm-why-icon-filter`, whatever colour the SVG was uploaded in), so no two
+   neighbouring cards share a colour. */
 type WhyCardView = {
   iconUrl: string | null;
   title: string;
@@ -24,7 +26,12 @@ function WhyCard({ card, clone }: { card: WhyCardView; clone?: boolean }) {
   return (
     <article
       className="sm-why-card"
-      style={{ "--sm-why-accent": card.accent } as React.CSSProperties}
+      style={
+        {
+          "--sm-why-accent": card.accent,
+          "--sm-why-icon-filter": WHY_ICON_FILTERS[card.accent],
+        } as React.CSSProperties
+      }
       aria-hidden={clone || undefined}
     >
       <i className="sm-why-dot" aria-hidden="true"></i>

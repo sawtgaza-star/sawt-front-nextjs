@@ -65,6 +65,11 @@ export default function MediaPartners({
 
       <div className="marquee sm-partners-marquee">
         <Logos items={items} />
+        {/* more copies than home's: a group is only as wide as its logos
+            (media.css), so with a short list two don't cover the screen while
+            scrolling */}
+        <Logos items={items} hidden />
+        <Logos items={items} hidden />
         <Logos items={items} hidden />
       </div>
     </section>
