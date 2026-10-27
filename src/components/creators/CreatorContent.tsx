@@ -81,7 +81,7 @@ export default function CreatorContent({ content, creator, lang }) {
   const instagram = (content?.instagram_username || creator?.instagram_username || "").trim();
   const moreHref = instagram ? `https://instagram.com/${encodeURIComponent(instagram)}` : "";
   const meta = creator && {
-    user: creator.name || "",
+    user: localized(creator.name, lang),
     avatar: creator.avatar_url || undefined,
     profile: creatorHref(creator) !== "#" ? creatorHref(creator) : undefined,
   };

@@ -46,8 +46,8 @@ export type CreatorProfile = {
   uuid?: string;
   id?: number;
   username?: string | null;
-  /** One name, not localized. */
-  name?: string | null;
+  /** Localized (`{ ar, en }`); a plain string is still accepted. */
+  name?: Localized | string | null;
   role?: Localized;
   bio?: Localized;
   avatar_url?: string | null;

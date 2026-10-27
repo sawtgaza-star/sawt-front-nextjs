@@ -10,6 +10,7 @@ import ReviewReel from "./reviews/ReviewReel";
 import ReelsEmpty from "./reviews/ReelsEmpty";
 import { reviewComments } from "./reviews-data";
 import { useNearViewport } from "./use-near-viewport";
+import { useReelAutoplay } from "./reviews/use-reel-autoplay";
 import RichText from "@/components/ui/RichText";
 
 /* "آراؤكم في المحتوى" — the whole section is the API's `reviews` block now:
@@ -69,6 +70,8 @@ export default function Reviews({
      use-near-viewport for why. Until then each reel is its own dark frame,
      the same box it has with a poster, so nothing moves when they appear. */
   const [reelsRef, reelsNear] = useNearViewport<HTMLDivElement>();
+  /* the reel on screen starts by itself once the column is in view */
+  useReelAutoplay(reelsRef, reels.length > 0);
 
   /* Hand the thread to lib/legacy-main. The copy on `window` is for ordering:
      LegacyInit imports that module dynamically, so on the first paint the

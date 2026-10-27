@@ -68,7 +68,7 @@ export default function CreatorProfileHero({
   const label = (key: keyof CreatorProfileLabels) => localized(labels?.[key], lang);
   const title = localized(hero?.title, lang);
   const description = localizedHtml(hero?.description, lang);
-  const name = (creator?.name || "").trim();
+  const name = localized(creator?.name, lang);
   // plain words for the length check and the cut preview; the open bio is
   // shown with the editor's formatting
   const bio = localized(creator?.bio, lang).replace(/\n/g, " ");

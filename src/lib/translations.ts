@@ -1449,7 +1449,7 @@ export const translations: any = {
       "اكتشف كيف غيّرت حاضنة صوت حياة المئات من الطلاب الذين بدأوا رحلتهم من الصفر وأصبحوا اليوم محترفين مطلوبين في سوق العمل.",
     /* the card's chevron control — opens / closes the clamped quote */
     inc_testi_read_more: "اقرأ المزيد",
-    inc_testi_read_less: "اقرأ أقل",
+    inc_testi_read_less: "عرض أقل",
     inc_testi_sara_quote:
       "التوجيه الذي تلقيته من المرشدين كان له تأثير كبير على مسيرتي. نصائحهم القيمة ساعدتني في اتخاذ قرارات مدروسة في مشاريعي.",
     inc_testi_sara_cta: "انضم إلينا",
@@ -3785,7 +3785,7 @@ export const translations: any = {
     inc_testi_sub:
       "Discover how the Sawt incubator changed the lives of hundreds of students who started their journey from scratch and are now sought-after professionals in the job market.",
     inc_testi_read_more: "Read more",
-    inc_testi_read_less: "Read less",
+    inc_testi_read_less: "Show less",
     inc_testi_sara_quote:
       "The guidance I received from the mentors had a huge impact on my journey. Their valuable advice helped me make well-considered decisions in my projects.",
     inc_testi_sara_cta: "Join us",

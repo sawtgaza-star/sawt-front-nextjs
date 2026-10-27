@@ -47,7 +47,7 @@ export function creatorCards(
   return creators.map((creator, index) => ({
     key: creator.uuid || creator.id || index,
     uuid: creator.uuid || (creator.id != null ? String(creator.id) : ""),
-    name: creator.name || "",
+    name: localized(creator.name, lang),
     // the excerpt arrives as CMS HTML — its formatting kept, on one run so
     // the card's two-line clamp applies
     bio:
