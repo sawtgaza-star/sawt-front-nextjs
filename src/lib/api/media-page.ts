@@ -212,7 +212,8 @@ export type MediaCreatorsContent = {
   steps_title?: Localized;
   steps?: { number?: string | null; text?: Localized }[];
   cta?: MediaCta;
-  items?: MediaCreatorItem[];
+  /** `name` arrives localized — MediaCreators picks the language. */
+  items?: (Omit<MediaCreatorItem, "name"> & { name?: Localized | string | null })[];
 };
 
 /* --- packages / testimonials / faq --------------------------------------- */

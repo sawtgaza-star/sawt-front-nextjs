@@ -186,6 +186,10 @@ export default function TestimonialsSlider({
   const onPointerDown = (e: React.PointerEvent) => {
     const el = trackRef.current;
     if (!el || e.pointerType !== "mouse" || e.button !== 0) return;
+    /* pointer capture would retarget the click to the track, so a press on
+       the quote's "اقرأ المزيد" toggle never starts a drag — nor does a
+       press inside an open quote, which scrolls on its own */
+    if ((e.target as Element).closest("button, .is-open .inc-testi-text")) return;
     drag.current = {
       active: true,
       startX: e.clientX,

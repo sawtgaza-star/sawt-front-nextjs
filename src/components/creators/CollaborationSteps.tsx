@@ -156,9 +156,9 @@ export default function CollaborationSteps({
             <FlowArrow dir="left" />
 
             <div className="cr-flow-center">
-              {/* opens the incubator — a plain <a>: /incubator is in another
+              {/* opens صوت ميديا — a plain <a>: /media is in another
                   CSS group (see CLAUDE.md) */}
-              <a className="cr-flow-center-circle" href="/incubator">
+              <a className="cr-flow-center-circle" href="/media">
                 <img src={mediaImage} alt="" />
                 <span data-i18n={mediaTitle ? undefined : "creators_flow_media"}>
                   {mediaTitle || "ميديا صوت"}

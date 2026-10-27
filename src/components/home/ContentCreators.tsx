@@ -39,7 +39,7 @@ export default function ContentCreators({
   const creators = (Array.isArray(data?.items) ? data.items : []).map((item) => ({
     key: item.uuid || item.id,
     uuid: item.uuid || (item.id != null ? String(item.id) : ""),
-    name: item.name || "",
+    name: localized(item.name, lang),
     // the excerpt arrives as CMS HTML ('<p dir="rtl">…</p>') — its formatting
     // kept, on one run so the card's two-line clamp applies
     bio:

@@ -3846,6 +3846,8 @@ display:none;
   border-radius: 999px;
   font-size: 13px;
   color: #3a3a3a;
+  /* follows the tag's own dir — a wrapped English field reads from the left */
+  text-align: start;
   overflow-wrap: anywhere;
 }
 

@@ -58,12 +58,12 @@ export type CreatorsHeroContent = {
 
 /* ---------------------------------------------------------------- grid */
 
-/** A creator as the grid lists them. `name` is not localized — one name, shown
-    in both languages, exactly as on the home page. */
+/** A creator as the grid lists them. `name` is localized (`{ ar, en }`),
+    exactly as on the home page. */
 export type CreatorsGridCreator = {
   uuid?: string;
   id?: number;
-  name?: string | null;
+  name?: Localized | string | null;
   role?: Localized;
   avatar_url?: string | null;
   followers_count?: number | null;
@@ -131,7 +131,7 @@ export type CreatorsPartnerCreator = {
   id?: number;
   uuid?: string;
   username?: string;
-  name?: string | null;
+  name?: Localized | string | null;
   role?: Localized;
   bio?: Localized;
   avatar_url?: string | null;

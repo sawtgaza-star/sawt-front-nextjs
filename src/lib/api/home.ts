@@ -103,8 +103,8 @@ export type HomeNews = {
 export type HomeCreator = {
   uuid?: string;
   id?: number;
-  /** Not localized by the API — one name, shown in both languages. */
-  name?: string | null;
+  /** Localized by the API (`{ ar, en }`); a plain string is still accepted. */
+  name?: Localized | string | null;
   role?: Localized;
   avatar_url?: string | null;
   followers_count?: number | null;

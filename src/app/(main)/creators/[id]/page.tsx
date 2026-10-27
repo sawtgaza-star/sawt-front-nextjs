@@ -45,7 +45,7 @@ export async function generateMetadata({
 
   try {
     const page = await fetchCreatorProfile(id);
-    const name = (page?.creator?.name || "").trim();
+    const name = localized(page?.creator?.name, "ar");
     const bio = localized(page?.creator?.bio, "ar");
     if (name) return { title: `${name} | Sawt Creator`, description: bio || undefined };
   } catch {

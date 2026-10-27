@@ -24,7 +24,8 @@ export default function MediaCreators({
   // creators with a featured reel lead the picker (and open first); the
   // editor's order holds within each group — sort() is stable
   const hasReel = (c: MediaCreatorItem) => (c.reel?.video_url || c.reel?.media_url ? 0 : 1);
-  const creators = sortItems(data?.items)
+  const creators: MediaCreatorItem[] = sortItems(data?.items)
+    .map((c) => ({ ...c, name: localized(c.name, lang) }))
     .filter((c) => c.name)
     .sort((a, b) => hasReel(a) - hasReel(b));
   const creator = creators[selected] ?? creators[0];

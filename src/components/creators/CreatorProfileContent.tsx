@@ -20,6 +20,7 @@
 import { useEffect } from "react";
 import { useCreatorProfile } from "@/lib/api/use-creator-profile";
 import { useLang } from "@/lib/use-lang";
+import { localized } from "@/lib/api/pages";
 import { initTranslate } from "@/lib/translations";
 import CreatorProfileHero from "./CreatorProfileHero";
 import CreatorContent from "./CreatorContent";
@@ -39,7 +40,7 @@ export default function CreatorProfileContent({ creator: segment }: { creator: s
   }, [loading, lang]);
 
   /* The export's <title> was baked at build time; name the creator once known. */
-  const name = (page?.creator?.name || "").trim();
+  const name = localized(page?.creator?.name, lang);
   useEffect(() => {
     if (name) document.title = `${name} | Sawt Creator`;
   }, [name]);

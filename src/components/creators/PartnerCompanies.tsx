@@ -53,8 +53,8 @@ function CompanyCard({
               key={creator.uuid || i}
               className="cr-company-avatar"
               href={creatorHref(creator)}
-              title={creator.name || undefined}
-              aria-label={creator.name || undefined}
+              title={localized(creator.name, lang) || undefined}
+              aria-label={localized(creator.name, lang) || undefined}
             >
               <img src={creator.avatar_url} alt="" />
             </a>

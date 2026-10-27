@@ -2286,7 +2286,14 @@ top: -23px;
 .inc-testi-card.is-open .inc-testi-text {
   -webkit-line-clamp: unset;
   line-clamp: unset;
-  overflow: visible;
+  /* the full quote scrolls inside the same 3-line box — the card keeps its height */
+  display: block;
+  max-height: calc(1.7em * 3);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  scrollbar-width: thin;
+  scrollbar-color: #c9d1bd transparent;
+  padding-inline-end: 4px;
 }
 .inc-testi-cta {
   display: inline-flex;
@@ -2315,6 +2322,18 @@ top: -23px;
 }
 .inc-testi-card.is-open .inc-testi-cta svg {
   transform: rotate(180deg);
+}
+/* the toggle sits inline, straight after the quote's last word / "…" */
+.inc-testi-cta--inline {
+  margin: 0;
+  vertical-align: baseline;
+  white-space: nowrap;
+  gap: 4px;
+}
+.inc-testi-cta--inline svg {
+  width: 14px;
+  height: 14px;
+  align-self: center;
 }
 .inc-testi-name {
   display: block;
