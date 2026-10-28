@@ -3237,6 +3237,16 @@ top: -23px;
       "community mentor";
     gap: 12px;
   }
+  /* the video photo is the tall portrait card on desktop — in this wide
+     banner it's scaled down to fit whole, and the card is painted the
+     photo's own flat backdrop so the sides blend in instead of reading
+     as bars */
+  .inc-album-card-video {
+    background: #202b2c;
+  }
+  .inc-album-card-video .inc-album-photo {
+    object-fit: contain;
+  }
   .inc-album-chip,
   .inc-album-caption {
     transform: none;
