@@ -8,6 +8,7 @@ import type {
 } from "@/lib/api/creators-page";
 import { bySortOrder, splitEnds } from "./creators-text";
 import RichText from "@/components/ui/RichText";
+import CompanyField from "./CompanyField";
 
 /* "شركات إعلانية تعاونت مع صناع محتوى صوت" — the API's `partners` block.
 
@@ -43,7 +44,7 @@ function CompanyCard({
       <div className="cr-company-name">
         {name}
         {/* above the name's divider line, so the card keeps one rule */}
-        {field ? <span className="cr-company-field">{field}</span> : null}
+        {field ? <CompanyField text={field} /> : null}
       </div>
       <div className="cr-company-avatars">
         {/* each avatar opens that creator's profile (/creators/{uuid}) */}

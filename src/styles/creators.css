@@ -469,20 +469,27 @@ margin-top:20px !important;
 .cr-companies-panel {
   background: #EDEFEB;
   border-radius: 20px;
-  padding: 46px 40px;
+  /* slimmer side padding and gaps than the panel's other uses: the room goes
+     to the four company cards */
+  padding: 46px 12px;
 }
 .cr-companies-grid {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  gap: 22px;
+  gap: 12px;
   margin-top: 34px;
 }
 .cr-company-card {
   background: #fff;
   border: 1px solid #C8C8C8;
   border-radius: 14px;
-  padding: 26px 18px 20px;
+  padding: 24px 14px 20px;
   text-align: center;
+  /* a column, so the name block can stretch and every card's divider and
+     avatars line up along the row however long its text is */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 .cr-company-logo {
   height: 100px;
@@ -490,35 +497,94 @@ margin-top:20px !important;
   opacity: 0.28;
   margin-bottom: 16px;
 }
-/* the company's line of business, under its name (API partners.field) */
+/* the company's line of business, under its name (API partners.field) —
+   cut at three lines so one long blurb doesn't stretch the whole row */
 .cr-company-field {
-  display: block;
-  margin-top: 4px;
-  font-size: 17px;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3;
+  overflow: hidden;
+  margin-top: 6px;
+  font-size: 15px;
+  line-height: 1.6;
   font-weight: 500;
   color: #8a8a8a;
 }
+/* open ("عرض المزيد"): the same three-line box, the rest scrolls inside it,
+   so the card keeps its height */
+.cr-company-field.is-open {
+  display: block;
+  -webkit-line-clamp: unset;
+  max-height: calc(3 * 1.6em);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  scrollbar-width: thin;
+  scrollbar-color: #c6c9c0 transparent;
+}
+.cr-company-field-wrap {
+  position: relative;
+  display: block;
+}
+.cr-company-more {
+  padding: 0;
+  border: 0;
+  background: none;
+  color: #4c5c37;
+  font: inherit;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+}
+.cr-company-more:hover {
+  text-decoration: underline;
+}
+/* closed: "… عرض المزيد" laid over the end of the third line, so it always
+   follows the ellipsis; its plain white background hides the words under it
+   and the clamp's own "…". The line box matches the field's (15px × 1.6). */
+.cr-company-more-inline {
+  position: absolute;
+  bottom: 0;
+  inset-inline-end: 0;
+  line-height: calc(15px * 1.6);
+  padding-inline-start: 4px;
+  background: #fff;
+}
+.cr-company-more-inline span {
+  color: #8a8a8a;
+  font-weight: 500;
+}
+.cr-company-more-inline:hover {
+  text-decoration: none;
+}
+/* name + field; flex: 1 pushes its bottom rule (the divider) down to the
+   same height in every card */
 .cr-company-name {
-  font-size: 22px;
+  flex: 1 0 auto;
+  width: 94%;
+  margin: 0 auto 14px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid #C8C8C8;
+  font-size: 20px;
+  line-height: 1.4;
   font-weight: 700;
   color: #2b2b2b;
-  padding-bottom:8px;
-  border-bottom:1px solid #C8C8C8;
-  width:80%;
-  margin:0 auto 12px auto;
 }
 .cr-company-avatars {
   display: flex;
   justify-content: center;
 }
 .cr-company-avatars img {
-  width: 52px;
-  height: 52px;
+  width: 48px;
+  height: 48px;
   border-radius: 50%;
   object-fit: cover;
   border: 2px solid #fff;
-  margin-right: -16px;
   background: #d9d9d9;
+}
+/* overlap only BETWEEN avatars — a margin on every one pushed a lone avatar
+   off the card's centre */
+.cr-company-avatar + .cr-company-avatar {
+  margin-inline-start: -14px;
 }
 /* the avatar is a link to the creator's profile: it rises above its
    overlapping neighbours on hover */
@@ -1421,16 +1487,24 @@ background: rgba(237, 239, 235, 0.50);
     margin-bottom: 12px;
   }
   .cr-company-name {
-    font-size: 17px;
+    font-size: 16px;
     width: 90%;
   }
   .cr-company-field {
-    font-size: 14px;
+    font-size: 13px;
+  }
+  .cr-company-more {
+    font-size: 12px;
+  }
+  .cr-company-more-inline {
+    line-height: calc(13px * 1.6);
   }
   .cr-company-avatars img {
     width: 40px;
     height: 40px;
-    margin-right: -12px;
+  }
+  .cr-company-avatar + .cr-company-avatar {
+    margin-inline-start: -12px;
   }
   .cr-join-title {
     font-size: 22px;
@@ -3851,10 +3925,9 @@ a.cr-flow-center-circle {
 }
 
 /* ---------- "تواصل مع فريق صوت": a contact button that feels alive ----------
-   A chat bubble in a light disc leads the label, with a small "online" dot
-   pulsing on it; a soft light sweeps across the pill every few seconds; on
-   hover the bubble tilts and the arrow nudges toward the corner, and a press
-   sinks the pill a touch. Colours stay the hero "ادعم صوت" green. */
+   A soft light sweeps across the pill every few seconds; on hover the arrow
+   nudges toward the corner, and a press sinks the pill a touch. (The chat
+   bubble that led the label was removed by request.) Colours stay the hero "ادعم صوت" green. */
 .cr-collab-cta a {
   position: relative;
   overflow: hidden;
@@ -3895,39 +3968,6 @@ a.cr-flow-center-circle {
   outline: 3px solid rgba(76, 92, 55, 0.45);
   outline-offset: 3px;
 }
-.cr-cta-icon {
-  position: relative;
-  flex: none;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 36px;
-  height: 36px;
-  border-radius: 50%;
-  background: rgba(255, 255, 255, 0.16);
-  transition: transform 0.25s ease;
-}
-.cr-collab-cta a:hover .cr-cta-icon {
-  transform: rotate(-10deg) scale(1.06);
-}
-.cr-cta-dot {
-  position: absolute;
-  top: 3px;
-  inset-inline-end: 3px;
-  width: 9px;
-  height: 9px;
-  border-radius: 50%;
-  background: #9ee37d;
-  box-shadow: 0 0 0 2px #4c5c37;
-}
-.cr-cta-dot::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  border-radius: 50%;
-  background: #9ee37d;
-  animation: cr-cta-ping 1.8s ease-out infinite;
-}
 .cr-collab-cta a > svg {
   transition: translate 0.25s ease;
 }
@@ -3946,32 +3986,16 @@ a.cr-flow-center-circle {
     translate: 120% 0;
   }
 }
-@keyframes cr-cta-ping {
-  0% {
-    transform: scale(1);
-    opacity: 0.7;
-  }
-  100% {
-    transform: scale(2.6);
-    opacity: 0;
-  }
-}
 @media (max-width: 767.98px) {
-  .cr-cta-icon {
-    width: 32px;
-    height: 32px;
-  }
   .cr-collab-cta a {
     padding-block: 12px;
   }
 }
 @media (prefers-reduced-motion: reduce) {
-  .cr-collab-cta a::after,
-  .cr-cta-dot::after {
+  .cr-collab-cta a::after {
     animation: none;
   }
   .cr-collab-cta a,
-  .cr-cta-icon,
   .cr-collab-cta a > svg {
     transition: none;
   }

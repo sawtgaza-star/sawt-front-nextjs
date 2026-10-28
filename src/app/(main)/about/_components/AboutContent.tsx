@@ -33,8 +33,9 @@ export default function AboutContent() {
       ) : (
         <>
           <AboutIntro data={page?.intro} lang={lang} />
-          <CoreValues data={page?.values} lang={lang} />
+          {/* "ما الذي يدفعنا لنكون صوتك؟" before the values cards, by request */}
           <AboutPlatform data={page?.platform} lang={lang} />
+          <CoreValues data={page?.values} lang={lang} />
           <SawtStory data={page?.story} lang={lang} />
           <JoinUs data={page?.join} lang={lang} />
         </>
