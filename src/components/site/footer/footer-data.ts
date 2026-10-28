@@ -27,12 +27,11 @@ import { localized, type Localized } from "@/lib/api/pages";
 import type { FooterContent, FooterLink } from "@/lib/api/layout";
 // the navbar's top bar renders the same editor-managed row — see ../social-icons
 import { socialIcon, GENERIC_SOCIAL_ICON } from "../social-icons";
-import { whatsappUrl, gmailComposeUrl } from "@/lib/contact-links";
 
 export type FooterNavLink = { label: string; url: string };
 
 export type FooterSocialLink = {
-  /** The API's platform slug, lowercased — FooterBrand picks the design's
+  /** The API's platform slug, lowercased — FooterBottomBar picks the design's
       own mark from it. */
   platform: string;
   /** Font Awesome class for the platform, e.g. "fab fa-instagram". Only used
@@ -66,7 +65,27 @@ export type FooterView = {
 /* Both contact lines are links, not plain text: the number opens WhatsApp,
    the address opens the visitor's mail app. The destinations are DERIVED from
    the payload's two values rather than written out a second time, so an
-   editor who changes the number changes where it dials (@/lib/contact-links). */
+   editor who changes the number changes where it dials.
+
+   wa.me wants the number in full international form and nothing else — no
+   "+", spaces or dashes, or WhatsApp answers with "phone number shared via
+   url is invalid" — hence the strip. */
+function whatsappUrl(phone: string): string {
+  const digits = phone.replace(/\D/g, "");
+  return digits ? `https://wa.me/${digits}` : "";
+}
+
+/* Gmail's compose window, by request, rather than a mailto: — clicking the
+   address should land the visitor in Gmail with the To: field filled, not in
+   whatever mail client their OS happens to have registered. Someone not
+   signed in gets Google's login first and arrives at the same compose box.
+   No /u/0 in the path: that pins the FIRST signed-in account, which is the
+   wrong one for anyone using more than one. */
+function gmailComposeUrl(email: string): string {
+  if (!email) return "";
+  const to = encodeURIComponent(email);
+  return `https://mail.google.com/mail/?view=cm&fs=1&to=${to}`;
+}
 
 /* ---------------------------------------------------------------------------
    Destinations stay with the site. The API's `url` is never used.
@@ -103,6 +122,10 @@ const ROUTE_BY_KEY: Record<string, string> = {
    first column, so the labels follow the API and the ORDER stays here. A key
    that isn't listed keeps the API's own position, after these. */
 const MAIN_LINK_ORDER = ["home", "about", "team", "creators", "content"];
+
+/** How many main-section links the first of the two columns takes. The design
+    is 3 + the rest, on desktop and on mobile alike. */
+export const MAIN_LINKS_FIRST_COLUMN = 3;
 
 /* --------------------------------------------------------------------------- */
 
