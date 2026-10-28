@@ -7,7 +7,6 @@ import {
 } from "@/lib/api/media-contact";
 import { IconRatingStar } from "@/components/ui/icons";
 import MediaContactCard from "./MediaContactCard";
-import { MEDIA_PHOTOS } from "./media-photos";
 import RichText from "@/components/ui/RichText";
 
 /* "لنبدأ العمل سويا" — the whole body of /media/contact: the still on the right
@@ -15,10 +14,13 @@ import RichText from "@/components/ui/RichText";
    left, both columns the same height so the photo runs from the headline down
    to the trust row. Stacked, the copy comes first — media.css reorders it.
 
-   Every word comes from GET /pages/media/contact, cards included; only the
-   still is the design's own (it isn't in the payload). The trust row's faces
-   are the payload's `trust.avatars` — the clients' logos — every one of them,
-   however many the API sends, last one first; a logo with no url is skipped. */
+   Everything comes from GET /pages/media/contact — the words, the cards, the
+   still (`intro.image_url`; its frame stays empty and grey without one,
+   never a built-in picture) and the trust row. The row's faces are the
+   payload's `trust.avatars` — the clients' logos — every one of them,
+   however many the API sends, last one first; a logo with no url is skipped.
+   Its number counts the logos actually shown, so the two always agree; the
+   payload's `trust.value` (or `count`) only stands in when there are none. */
 
 export default function MediaContactSection({
   intro,
@@ -39,18 +41,18 @@ export default function MediaContactSection({
   const trustLogos = (Array.isArray(trust?.avatars) ? trust.avatars : [])
     .filter((avatar) => (avatar?.avatar_url || "").trim())
     .reverse();
-  /* the number counts the logos actually shown, so the two always agree —
-     the payload's `value` only stands in when there are no logos */
   const trustValue = trustLogos.length
     ? String(trustLogos.length)
-    : (trust?.value || "").trim();
+    : (trust?.value || "").trim() ||
+      (typeof trust?.count === "number" ? String(trust.count) : "");
+  const photo = intro?.image_url;
 
   return (
     <section className="sm-ct-body">
       <div className="container">
         <div className="sm-ct-row">
           <figure className="sm-ct-photo">
-            <img src={MEDIA_PHOTOS.crew} alt="" />
+            {photo ? <img src={photo} alt="" /> : null}
           </figure>
 
           <div className="sm-ct-copy">

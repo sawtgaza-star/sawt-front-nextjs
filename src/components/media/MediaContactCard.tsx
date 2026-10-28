@@ -6,6 +6,24 @@ import {
   IconContactWhatsapp,
 } from "./media-icons";
 import { contactStyle } from "./media-contact-data";
+import { gmailComposeUrl, whatsappUrl } from "@/lib/contact-links";
+
+/* Where the card goes. Same destinations as the footer's contact row: a
+   mailto: (which the API sends for email) becomes Gmail's compose window —
+   a mailto: click does nothing on a machine with no mail app registered —
+   and a WhatsApp card with no href is built from its number. */
+function channelHref(channel: MediaContactChannel): string {
+  const href = (channel.href || "").trim();
+  const value = (channel.value || "").trim();
+
+  const mailto = /^mailto:([^?]*)/i.exec(href);
+  if (mailto) return gmailComposeUrl(decodeURIComponent(mailto[1]) || value) || href;
+  if (href) return href;
+
+  if (channel.key === "whatsapp" || channel.key === "phone") return whatsappUrl(value);
+  if (channel.key === "email" || channel.key === "mail") return gmailComposeUrl(value);
+  return "";
+}
 
 /* One channel of "لنبدأ العمل سويا" — the whole card is the link. RTL puts the
    glyph tile on the right and the chevron on the left, which is the order the
@@ -25,11 +43,15 @@ export default function MediaContactCard({
 }) {
   const style = contactStyle(channel.key, index);
   const hint = localized(channel.hint, lang);
+  const href = channelHref(channel);
+  // WhatsApp / Gmail open beside the site rather than navigating away from it
+  const external = /^https?:\/\//i.test(href);
 
   return (
     <a
       className="sm-ct-card"
-      href={channel.href || "#"}
+      href={href || "#"}
+      {...(external ? { target: "_blank", rel: "noopener noreferrer" } : {})}
       style={{ background: style.color }}
     >
       <span className="sm-ct-card-icon" style={{ background: style.tint }}>

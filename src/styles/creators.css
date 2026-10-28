@@ -1865,57 +1865,41 @@ background: var(--White, #FFF);
   border-color: #4c5c37;
   color: #fff;
 }
+/* Built like محتوانا's "الأكثر مشاهدة" row (.ct-mw-* in content.css): no
+   edge fades, no arrows — it scrolls by press-and-drag (useDragScroll).
+   The track runs the full width of the screen on BOTH sides, so a card that
+   scrolls past the heading keeps going to the screen's edge instead of being
+   cut off at the container. The same padding on both ends lines the row up
+   with the container: at rest the first card sits right under "المحتوى",
+   and scrolled to the end the last card stops at the container's other
+   edge. (% here is the container's width, the slider's.) */
 .cr-content-slider {
   position: relative;
-  /* break out of the container so the cards run edge-to-edge like the mock
-     (.cr-page has overflow:hidden, so 100vw adds no horizontal scrollbar) */
-  width: 100vw;
-  margin-inline: calc(50% - 50vw);
-}
-/* white fade on both edges — the outermost (half) cards dissolve into the
-   page, giving the "half video on each side" look. Sits above the cards but
-   below the nav arrows (z-index 3). */
-.cr-content-slider::before,
-.cr-content-slider::after {
-  content: "";
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  width: clamp(140px, 18vw, 320px);
-  z-index: 2;
-  pointer-events: none;
-}
-.cr-content-slider::before {
-  right: -100px;
-  background: linear-gradient(to left, #fff 15%, rgba(255, 255, 255, 0) 100%);
-}
-.cr-content-slider::after {
-  left: -100px;
-  background: linear-gradient(90deg, #FFF 0%, rgba(255, 255, 255, 0.00) 100%);
 }
 .cr-content-track {
   display: flex;
-  gap: 30px;
+  gap: 18px;
   overflow-x: auto;
   scroll-behavior: smooth;
-  /* generous vertical padding so the card drop-shadows aren't clipped by
-     the scroll container (overflow-x also clips overflow-y) */
-  margin: 34px 0 44px;
+  margin-inline: calc(50% - 50vw);
+  padding: 26px 0 30px;
+  padding-inline: calc(50vw - 50%);
   scrollbar-width: none;
+  cursor: grab;
+  user-select: none;
+}
+.cr-content-track:active {
+  cursor: grabbing;
 }
 .cr-content-track::-webkit-scrollbar {
   display: none;
 }
-/* few reels: the row sits centred. Auto margins (not justify-content:center)
-   absorb only the free space, so once the cards overflow they collapse to 0
-   and the track scrolls from its start edge as before — nothing gets cut off */
-@media (min-width: 768px) {
-  .cr-content-track > :first-child {
-    margin-inline-start: auto;
-  }
-  .cr-content-track > :last-child {
-    margin-inline-end: auto;
-  }
+.cr-content-track .cr-content-card {
+  flex: 0 0 clamp(160px, 18vw, 265px);
+  width: auto;
+  height: auto;
+  aspect-ratio: 9 / 16;
+  border-radius: 18px;
 }
 /* the creator has no reels — a panel the height of one card stands in for
    the slider so the section keeps its place on the page */
@@ -2077,45 +2061,6 @@ background: var(--White, #FFF);
   transform: translate(-50%, -50%);
   box-shadow: 0 1px 4px rgba(0, 0, 0, 0.45);
   pointer-events: none;
-}
-.cr-content-nav {
-  position: absolute;
-  top: 50%;
-  transform: translateY(-50%);
-  z-index: 3;
-  width: 48px;
-  height: 48px;
-  border-radius: 50%;
-  border: none;
-  background: rgba(76, 92, 55, 0.85);
-  color: #fff;
-  font-size: 18px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.18);
-  transition: background 0.2s ease;
-}
-.cr-content-nav:hover:not(:disabled) {
-  background: var(--sout-orange);
-  color: #fff;
-}
-/* greyed out when the slider can't scroll further that way */
-.cr-content-nav:disabled {
-  background: #DEDEDE;
-  color: #919191;
-  cursor: default;
-  box-shadow: none;
-}
-/* sit over the partial edge cards, inset from the viewport edges */
-.cr-content-prev {
-  right: clamp(20px, 6vw, 130px);
-  border-radius:20px !important;
-}
-.cr-content-next {
-  left: clamp(20px, 6vw, 130px);
-  border-radius:20px !important;
 }
 
 /* ---------- Reel viewer layer ---------- */
@@ -3658,11 +3603,6 @@ display:none;
     width: auto;
     margin-inline: 0;
   }
-  .cr-content-slider::before,
-  .cr-content-slider::after,
-  .cr-content-nav {
-    display: none;
-  }
   .cr-content-empty {
     min-height: 260px;
     margin: 0;
@@ -3675,6 +3615,10 @@ display:none;
     gap: 12px;
     overflow: visible;
     margin: 0;
+    /* the desktop row's drag padding and cursor don't apply to the grid */
+    padding: 0;
+    cursor: auto;
+    user-select: auto;
   }
   .cr-content-card {
     width: 100%;

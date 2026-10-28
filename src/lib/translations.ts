@@ -590,6 +590,7 @@ export const translations: any = {
       "تجربتي مع صوت كانت مختلفة، أخيراً لقيت مكان بيفهمني كمبدع ....",
     creator_overlay_title: "تجربتي مع صوت",
     view_more: "عرض المزيد",
+    view_less: "عرض أقل",
 
     // Creator detail page (/creators/[id])
     creator_detail_name: "محمود عبد الله زعيتر",
@@ -2940,6 +2941,7 @@ export const translations: any = {
       "My experience with Sawt was different — finally, a place that understands me as a creator....",
     creator_overlay_title: "My Experience with Sawt",
     view_more: "View More",
+    view_less: "View Less",
 
     // Creator detail page (/creators/[id])
     creator_detail_name: "Mahmoud Abdullah Zeiter",

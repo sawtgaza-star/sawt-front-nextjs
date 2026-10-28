@@ -548,6 +548,8 @@ background: #FFF;
   /* Primary-oliveGreen-300 */
   border: 5px solid #879279;
   display: block;
+  /* the empty frame while the API's picture downloads (or if it sends none) */
+  background: #eceeea;
 }
 .sp-badge {
   position: absolute;

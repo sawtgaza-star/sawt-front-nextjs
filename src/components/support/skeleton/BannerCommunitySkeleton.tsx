@@ -6,6 +6,7 @@ import {
   IconVideoPlay,
 } from "@/components/ui/icons";
 import SkeletonHead from "./SkeletonHead";
+import { BLANK_IMAGE } from "../SupportBanner";
 
 /* SupportBanner and SupportCommunity while GET /pages/support is in flight —
    their real markup, every text a <SkeletonText /> of the current copy's
@@ -66,7 +67,9 @@ export function BannerSkeleton() {
             </div>
 
             <div className="sp-banner-media">
-              <img src="/assets/images/tree.jpg" alt="" />
+              {/* an empty box, never the old built-in artwork — the picture
+                  is only ever the API's (SupportBanner) */}
+              <img src={BLANK_IMAGE} alt="" />
               {BADGES.map((badge, i) => (
                 <div className={badge.className} key={i}>
                   <span className="sp-badge-num">

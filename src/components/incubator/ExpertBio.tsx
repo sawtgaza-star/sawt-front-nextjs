@@ -3,7 +3,12 @@
    The toggle only appears when the text actually runs past the clamp —
    measured, since how many lines a bio takes depends on the card's width —
    and is re-checked on resize. Strings go through tr(): the bio arrives with
-   the payload, after initTranslate() has walked the page. */
+   the payload, after initTranslate() has walked the page.
+
+   The card never changes height. Closed, "… عرض المزيد" sits ON the last
+   line, right after the ellipsis (it covers the clamp's own "…" — see
+   .inc-expert-more-inline). Open, the bio keeps the same three-line box and
+   scrolls inside it, with "عرض أقل" at the very end of the text. */
 
 import { useEffect, useRef, useState } from "react";
 import { useLang } from "@/lib/use-lang";
@@ -29,19 +34,36 @@ export default function ExpertBio({ text }: { text: string }) {
     return () => observer.disconnect();
   }, [text]);
 
+  const toggle = () => {
+    // closing goes back to the first lines, not wherever the scroll was left
+    if (open && ref.current) ref.current.scrollTop = 0;
+    setOpen((current) => !current);
+  };
+
   return (
-    <>
-      <p ref={ref} className={"inc-expert-desc" + (open ? " is-open" : "")} dangerouslySetInnerHTML={{ __html: text }} />
-      {overflows ? (
+    <div className="inc-expert-bio">
+      <p ref={ref} className={"inc-expert-desc" + (open ? " is-open" : "")}>
+        <span dangerouslySetInnerHTML={{ __html: text }} />
+        {open ? (
+          <>
+            {" "}
+            <button type="button" className="inc-expert-more" aria-expanded onClick={toggle}>
+              {tr("inc_expert_less")}
+            </button>
+          </>
+        ) : null}
+      </p>
+      {overflows && !open ? (
         <button
           type="button"
-          className="inc-expert-more"
-          aria-expanded={open}
-          onClick={() => setOpen((current) => !current)}
+          className="inc-expert-more inc-expert-more-inline"
+          aria-expanded={false}
+          onClick={toggle}
         >
-          {tr(open ? "inc_expert_less" : "inc_expert_more")}
+          <span aria-hidden="true">… </span>
+          {tr("inc_expert_more")}
         </button>
       ) : null}
-    </>
+    </div>
   );
 }

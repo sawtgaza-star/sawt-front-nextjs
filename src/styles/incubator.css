@@ -1860,13 +1860,21 @@ border: 1px solid  #4C5C37;
   -webkit-line-clamp: 3;
   overflow: hidden;
 }
+/* open: same three-line box, the rest scrolls inside it — the card keeps its
+   height (and the slider's row stays even) */
 .inc-expert-desc.is-open {
   display: block;
   -webkit-line-clamp: unset;
-  overflow: visible;
+  max-height: calc(3 * 1.85em);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  scrollbar-width: thin;
+  scrollbar-color: #c6c9c0 transparent;
+}
+.inc-expert-bio {
+  position: relative;
 }
 .inc-expert-more {
-  margin-top: 6px;
   padding: 0;
   border: 0;
   background: none;
@@ -1877,6 +1885,109 @@ border: 1px solid  #4C5C37;
 }
 .inc-expert-more:hover {
   text-decoration: underline;
+}
+/* closed: "… عرض المزيد" laid over the end of the third line, so it always
+   follows the ellipsis. Its line box matches the bio's (15px × 1.85) so it
+   sits on that line's baseline; its plain white background (no fade) hides
+   the words it covers, and the clamp's own "…" under it. */
+.inc-expert-more-inline {
+  position: absolute;
+  bottom: 0;
+  inset-inline-end: 0;
+  line-height: calc(15px * 1.85);
+  padding-inline-start: 4px;
+  background: #ffffff;
+}
+.inc-expert-more-inline span {
+  color: #7A8572;
+  font-weight: 400;
+}
+.inc-expert-more-inline:hover {
+  text-decoration: none;
+}
+
+/* More experts than one row holds (ExpertsSlider): a single scroll-snap row
+   with a round arrow on each side instead of a wrapped second line. From sm
+   up only — below that the plain row is already a swipe strip (the <576px
+   block) and the arrows stay hidden. */
+.inc-expert-slider {
+  position: relative;
+}
+.inc-expert-arrow {
+  display: none;
+}
+@media (min-width: 576px) {
+  .inc-expert-row.is-slider {
+    flex-wrap: nowrap;
+    justify-content: flex-start;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    scrollbar-width: none;
+    /* room for the hover lift and its shadow, which the scroller would clip */
+    padding: 10px 0 30px;
+    margin: -10px 0 -30px;
+  }
+  .inc-expert-row.is-slider::-webkit-scrollbar {
+    display: none;
+  }
+  .inc-expert-row.is-slider > .inc-expert-card {
+    flex: 0 0 calc((100% - 3 * 20px) / 4);
+    min-width: 0;
+    scroll-snap-align: start;
+  }
+  .inc-expert-arrow {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: absolute;
+    /* the middle of the card — the row's lift padding is cancelled by its
+       negative margin, so the slider box is exactly the cards' height */
+    top: 50%;
+    z-index: 2;
+    width: 44px;
+    height: 44px;
+    padding: 0;
+    border-radius: 50%;
+    border: 0;
+    background: #4c5c37;
+    color: #ffffff;
+    font-size: 16px;
+    box-shadow: 0 6px 18px rgba(28, 28, 28, 0.15);
+    transform: translateY(-50%);
+    cursor: pointer;
+    transition: background-color 0.2s ease, box-shadow 0.2s ease;
+  }
+  /* at its end of the row the arrow stays in place, greyed out and inert */
+  .inc-expert-arrow:disabled {
+    background: #c6c9c0;
+    color: #ffffff;
+    box-shadow: none;
+    cursor: default;
+    pointer-events: none;
+  }
+  /* The arrows hang OUTSIDE the cards, in the page gutter, so the cards keep
+     their exact size: 44px arrow + 12px clear of the card = -56px. Where the
+     screen's gutter is narrower than that, max() pulls the arrow in so it
+     stays 12px inside the viewport (100vw counts the scrollbar, hence the
+     extra margin) — it then overlaps the card edge instead of leaving the
+     screen. The slider is centred, so (100% - 100vw) / 2 is the distance from
+     its edge to the screen's, negated. */
+  .inc-expert-arrow-left {
+    left: max(-56px, calc((100% - 100vw) / 2 + 20px));
+  }
+  .inc-expert-arrow-right {
+    right: max(-56px, calc((100% - 100vw) / 2 + 20px));
+  }
+}
+@media (min-width: 576px) and (max-width: 991.98px) {
+  .inc-expert-row.is-slider > .inc-expert-card {
+    flex-basis: calc((100% - 18px) / 2);
+  }
+  /* a slightly smaller arrow on tablets, where the gutter is thin */
+  .inc-expert-arrow {
+    width: 40px;
+    height: 40px;
+  }
 }
 
 /* ============================================================
@@ -3226,6 +3337,9 @@ top: -23px;
   }
   .inc-expert-more {
     font-size: 13px;
+  }
+  .inc-expert-more-inline {
+    line-height: calc(14px * 1.85);
   }
 
   /* ---------- يعمل خريجونا لدى جهات موثوقة ---------- */

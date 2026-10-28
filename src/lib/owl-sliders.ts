@@ -4,10 +4,42 @@
 // @ts-nocheck
 "use client";
 
+/* Owl 2.3.4 bug: with `rtl + center` and no loop, coordinates(i) centres item
+   i using the NEXT item's edge (_coordinates[i + 1]); the last item has none,
+   so it reads 0 and the stage is sent ~half the track past the end — on the
+   phone's صناع المحتوى slider, reaching the last creator emptied the whole
+   row. The last item now sits one step past the item before it, which is
+   exactly where the formula puts every other item. Patched once, on the
+   prototype, and only for that combination. */
+function patchRtlCenterLastItem($) {
+  const Owl = $.fn.owlCarousel?.Constructor;
+  if (!Owl || Owl.prototype.__rtlCenterLastFix) return;
+  const coordinates = Owl.prototype.coordinates;
+  Owl.prototype.coordinates = function (position) {
+    const s = this.settings;
+    if (
+      position !== undefined &&
+      position > 0 &&
+      s.center &&
+      s.rtl &&
+      !s.loop &&
+      this._coordinates[position + 1] === undefined
+    ) {
+      return (
+        coordinates.call(this, position - 1) +
+        Math.ceil(this._coordinates[position] - this._coordinates[position - 1])
+      );
+    }
+    return coordinates.call(this, position);
+  };
+  Owl.prototype.__rtlCenterLastFix = true;
+}
+
 export async function initOwlSliders() {
   const $ = (await import("jquery")).default;
   (window as any).$ = (window as any).jQuery = $;
   await import("owl.carousel");
+  patchRtlCenterLastItem($);
 
   // NO global run-once guard: on client-side navigation React mounts a brand new
   // (un-initialized) DOM, and Owl's CSS keeps `.owl-carousel` display:none until

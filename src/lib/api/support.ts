@@ -65,6 +65,22 @@ export type SupportTrustContent = {
   items?: ({ label?: Localized } & Sortable)[];
 };
 
+/** "ادعم المنصة التي توصل أصواتهم" — the beige banner: its artwork, the
+    eyebrow over the title (`image_label`), the two floating counters, both
+    buttons and the feature row (`trust`, the same list as the top-level
+    `trust` block). */
+export type SupportInviteContent = {
+  image_url?: string | null;
+  image_label?: Localized;
+  title?: Localized;
+  badges?: {
+    donors?: { value?: string | null; label?: Localized };
+    stories?: { value?: string | null; label?: Localized };
+  };
+  cta?: { primary?: Localized; secondary?: Localized };
+  trust?: SupportTrustContent;
+};
+
 export type SupportCommunityGoal = {
   title?: Localized;
   subtitle?: Localized;
@@ -170,6 +186,7 @@ export type SupportPage = {
   hero?: SupportHeroContent;
   plans?: SupportPlansContent;
   impact?: SupportImpactContent;
+  invite?: SupportInviteContent;
   trust?: SupportTrustContent;
   community_goal?: SupportCommunityGoal;
   fund_allocation?: SupportFundAllocation;
@@ -198,11 +215,16 @@ function sorted<T extends Sortable>(list: T[] | undefined): T[] {
 /** Same payload with every upload URL pointed at the host that actually serves
     it, and every list in the order it is to be shown. */
 function normalize(page: SupportPage): SupportPage {
-  const { hero, impact, trust, fund_allocation, partners, sponsor, stories, faq } = page;
+  const { hero, impact, invite, trust, fund_allocation, partners, sponsor, stories, faq } = page;
   return {
     ...page,
     hero: hero && { ...hero, image_url: assetUrl(hero.image_url) },
     impact: impact && { ...impact, items: sorted(impact.items) },
+    invite: invite && {
+      ...invite,
+      image_url: assetUrl(invite.image_url),
+      trust: invite.trust && { ...invite.trust, items: sorted(invite.trust.items) },
+    },
     trust: trust && { ...trust, items: sorted(trust.items) },
     fund_allocation: fund_allocation && {
       ...fund_allocation,

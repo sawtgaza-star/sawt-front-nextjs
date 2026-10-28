@@ -2,7 +2,6 @@ import SkeletonText from "@/components/ui/SkeletonText";
 import { IconRatingStar } from "@/components/ui/icons";
 import { IconContactChevron, IconContactMail, IconContactWhatsapp } from "./media-icons";
 import { contactStyle } from "./media-contact-data";
-import { MEDIA_PHOTOS } from "./media-photos";
 import "@/styles/media-skeleton.css";
 
 /* "لنبدأ العمل سويا" while GET /pages/media/contact is in flight — the same
@@ -10,9 +9,10 @@ import "@/styles/media-skeleton.css";
    for <SkeletonText /> of the current payload's length, so the still, the
    cards and the trust row are already where they will stay.
 
-   The photos are the design's own, not the payload's (see MediaContactSection),
-   so they are drawn for real from the first paint and only the words are bars.
-   The banner's own bars live in <MediaContactHero />. */
+   Nothing static stands in: the still is the payload's (`intro.image_url`),
+   so its frame stays empty and grey until it lands, and only the cards'
+   design glyphs and colours are drawn for real. The banner's own bars live
+   in <MediaContactHero />. */
 const COPY = { title: 16, body: 119, trustValue: 4, trustLabel: 14 };
 /** key, label, hint — the channels the payload currently sends */
 const CHANNELS: [string, number, number][] = [
@@ -27,9 +27,7 @@ export default function MediaContactSkeleton() {
     <section className="sm-ct-body" aria-busy="true">
       <div className="container">
         <div className="sm-ct-row">
-          <figure className="sm-ct-photo">
-            <img src={MEDIA_PHOTOS.crew} alt="" />
-          </figure>
+          <figure className="sm-ct-photo" />
 
           <div className="sm-ct-copy" aria-hidden="true">
             <h2 className="sm-ct-title">
