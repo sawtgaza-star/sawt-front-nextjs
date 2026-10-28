@@ -176,8 +176,8 @@ export default function AboutSkeleton() {
   return (
     <div className="ask" aria-busy="true" aria-hidden="true">
       <IntroSkeleton />
-      <ValuesSkeleton />
       <PlatformSkeleton />
+      <ValuesSkeleton />
       <StorySkeleton />
       <JoinSkeleton />
     </div>

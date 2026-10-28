@@ -228,14 +228,6 @@ export default function CollaborationSteps({
           {/* straight to the contact page — a plain <a>: /media is in
               another CSS group (see CLAUDE.md) */}
           <a href="/media/contact">
-            {/* a chat bubble with a pulsing "online" dot: a real team answers */}
-            <span className="cr-cta-icon" aria-hidden="true">
-              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M21 11.5a8.4 8.4 0 0 1-9 8.4 9 9 0 0 1-3.7-.8L3 20.5l1.4-4.3A8 8 0 0 1 3 11.5 8.4 8.4 0 0 1 12 3a8.4 8.4 0 0 1 9 8.5Z" />
-                <path d="M8.5 11.5h.01M12 11.5h.01M15.5 11.5h.01" strokeWidth="2.6" />
-              </svg>
-              <span className="cr-cta-dot"></span>
-            </span>
             <span>
             {ctaLabel || "تواصل مع فريق صوت للانضمام"}
             </span>

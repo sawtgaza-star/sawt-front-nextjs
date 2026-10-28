@@ -23,10 +23,14 @@ export default function ExpertBio({ text }: { text: string }) {
     const el = ref.current;
     if (!el) return;
     // measured while clamped; once opened the toggle stays to close it again
+    /* More than three lines of text? Compared with three real line heights,
+       not with clientHeight: a fractional line box (15px × 1.85) and the
+       font's descenders can make scrollHeight run a pixel or two past a
+       short bio, which would show the button on it. */
     const check = () => {
-      if (!el.classList.contains("is-open")) {
-        setOverflows(el.scrollHeight - el.clientHeight > 1);
-      }
+      if (el.classList.contains("is-open")) return;
+      const line = parseFloat(getComputedStyle(el).lineHeight) || 0;
+      setOverflows(line > 0 && el.scrollHeight > line * 3 + line / 2);
     };
     check();
     const observer = new ResizeObserver(check);

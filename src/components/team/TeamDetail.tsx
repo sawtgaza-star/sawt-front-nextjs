@@ -22,7 +22,7 @@ import TeamMemberProfile from "./TeamMemberProfile";
 import TeamMembersSection from "./TeamMembersSection";
 import { toCards } from "./team-data";
 import { TeamProfileSkeleton } from "./TeamSkeleton";
-import { useTeamMember } from "@/lib/api/use-team-page";
+import { useTeamMember, useTeamPage } from "@/lib/api/use-team-page";
 import { useLang } from "@/lib/use-lang";
 import { localized } from "@/lib/api/pages";
 import { useRouteSegment } from "@/lib/use-route-segment";
@@ -30,10 +30,22 @@ import { useRouteSegment } from "@/lib/use-route-segment";
 export default function TeamDetail({ uuid: segment }: { uuid: string }) {
   const uuid = useRouteSegment(segment);
   const { page, loading } = useTeamMember(uuid);
+  /* the whole roster: the profile's own `related.members` is only a handful */
+  const { page: roster, loading: rosterLoading } = useTeamPage();
   const { lang } = useLang();
 
   const related = page?.related;
-  const members = toCards(related?.members, lang);
+  /* "أعضاء الفريق" under the profile is the WHOLE current team — every
+     member of GET /pages/team, not just the few the profile payload lists in
+     `related.members` (that list stands in only if the roster request
+     fails). A member who has left Sawt (`status` other than "active") is
+     left out, and so is the member being viewed. */
+  const current = page?.member?.uuid || uuid;
+  const pool = roster?.members?.length ? roster.members : related?.members;
+  const members = toCards(
+    pool?.filter((m) => m.status === "active" && m.uuid !== current),
+    lang,
+  );
 
   return (
     <>
@@ -54,7 +66,7 @@ export default function TeamDetail({ uuid: segment }: { uuid: string }) {
           title={localized(related?.title, lang)}
           viewAllLabel={localized(related?.view_all?.label, lang)}
           viewAllHref={related?.view_all?.url || "/team"}
-          loading={loading}
+          loading={loading || rosterLoading}
         />
       </main>
     </>

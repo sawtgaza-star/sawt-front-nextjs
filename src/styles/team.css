@@ -575,13 +575,105 @@ left: 12px;
   padding-bottom: 6px;
 }
 
+/* Five to a row, each a fifth of the row — as fixed tracks under auto-fit,
+   so a short list (fewer members than a full row) keeps the same card size
+   and sits in the middle: auto-fit collapses the empty tracks and
+   justify-content centres the rest. */
 .team-members-row {
   display: grid;
-  grid-template-columns: repeat(5, 1fr);
+  grid-template-columns: repeat(auto-fit, calc((100% - 4 * 22px) / 5));
+  justify-content: center;
   gap: 22px;
 }
 
+/* More members than one row holds (TeamMembersSlider): one scroll-snap line
+   with a round arrow on each side instead of wrapped rows. From md up only —
+   below 768px the row is already the phone slider and the arrows stay
+   hidden. */
+.team-members-slider {
+  position: relative;
+}
+.team-members-arrow {
+  display: none;
+}
+@media (min-width: 768px) {
+  /* A scroller clips everything outside its box, and the hover needs room
+     on every side: the portrait's head climbs ~16% of the card above the
+     frame (.team-member-pop) on top of a 6px lift, and the soft shadow
+     spreads below. The padding gives it that room and the matching negative
+     margin cancels it, so the layout doesn't move. */
+  .team-members-row.is-slider {
+    display: flex;
+    gap: 22px;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    scrollbar-width: none;
+    padding: 76px 0 44px;
+    margin: -76px 0 -44px;
+    scroll-padding-inline: 0;
+  }
+  .team-members-row.is-slider::-webkit-scrollbar {
+    display: none;
+  }
+  .team-members-row.is-slider > .team-member-card {
+    flex: 0 0 calc((100% - 4 * 22px) / 5);
+    min-width: 0;
+    scroll-snap-align: start;
+  }
+  .team-members-arrow {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: absolute;
+    /* the middle of the cards: the row's shadow padding is cancelled by its
+       negative margin, so the slider box is exactly the cards' height */
+    top: 50%;
+    z-index: 2;
+    width: 44px;
+    height: 44px;
+    padding: 0;
+    border-radius: 50%;
+    border: 0;
+    background: #4c5c37;
+    color: #fff;
+    font-size: 16px;
+    box-shadow: 0 6px 18px rgba(28, 28, 28, 0.15);
+    transform: translateY(-50%);
+    cursor: pointer;
+    transition: background-color 0.2s ease, box-shadow 0.2s ease;
+  }
+  /* at its end of the row the arrow stays in place, greyed out and inert */
+  .team-members-arrow:disabled {
+    background: #c6c9c0;
+    box-shadow: none;
+    cursor: default;
+    pointer-events: none;
+  }
+  /* outside the cards, in the page gutter (44px arrow + 12px clear); where
+     the screen's gutter is narrower, max() keeps it 20px inside the viewport
+     and it overlaps the card edge instead of leaving the screen */
+  .team-members-arrow-left {
+    left: max(-56px, calc((100% - 100vw) / 2 + 20px));
+  }
+  .team-members-arrow-right {
+    right: max(-56px, calc((100% - 100vw) / 2 + 20px));
+  }
+}
+@media (min-width: 768px) and (max-width: 991.98px) {
+  .team-members-row.is-slider > .team-member-card {
+    flex-basis: calc((100% - 2 * 22px) / 3);
+  }
+  .team-members-arrow {
+    width: 40px;
+    height: 40px;
+  }
+}
+
 .team-members-more {
+  /* above the slider's hover room (its bottom padding overlaps this line) so
+     "عرض الكل" stays clickable */
+  position: relative;
+  z-index: 3;
   text-align: center;
   margin-top: 34px;
 }
@@ -622,7 +714,7 @@ left: 12px;
      overflows the centered column, so pin it back to the box width. */
 
   .team-members-row {
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(auto-fit, calc((100% - 2 * 22px) / 3));
   }
 }
 @media (max-width: 767.98px) {
