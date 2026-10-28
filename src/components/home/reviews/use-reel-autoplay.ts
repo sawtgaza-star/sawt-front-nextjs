@@ -5,6 +5,11 @@ import { useEffect, type RefObject } from "react";
    pauses it once the column leaves — the same overlay / `.playing` state
    lib/legacy-main's togglePlay sets, so a tap afterwards toggles as before.
 
+   Scrolling the column up or down (wheel, swipe, mouse drag) plays the reel
+   it settles on by itself: once the scroll has stopped, every other reel is
+   paused and the one now in view starts. lib/legacy-main's own scroll
+   handler still pauses the reels that left and swaps the comment thread.
+
    Browsers refuse to start a video with sound before the visitor has
    interacted with the page: it tries with sound, falls back to muted, and
    the visitor's first tap or key press anywhere turns the sound back on. */
@@ -47,8 +52,13 @@ export function useReelAutoplay(ref: RefObject<HTMLElement | null>, enabled: boo
       window.removeEventListener("keydown", unmute, true);
     };
 
+    /* the reel autoplay last handed playback to — a scroll that settles back
+       on it leaves it alone, so a reel the visitor paused stays paused */
+    let lastAuto: HTMLElement | null = null;
+
     const play = async () => {
       const item = currentReel(container);
+      lastAuto = item;
       const video = item?.querySelector("video");
       if (!item || !video || !video.paused) return;
       setPlaying(item, true);
@@ -79,17 +89,48 @@ export function useReelAutoplay(ref: RefObject<HTMLElement | null>, enabled: boo
       });
     };
 
+    let inView = false;
     const observer = new IntersectionObserver(
       ([entry]) => {
-        if (entry.isIntersecting) void play();
+        inView = entry.isIntersecting;
+        if (inView) void play();
         else pauseAll();
       },
       { threshold: 0.5 },
     );
     observer.observe(container);
 
+    /* the column scrolled to another reel: once it settles (snap included),
+       hand playback to that one. `scrollend` where the browser has it, a
+       short quiet period otherwise — the timer also covers a scroll that
+       ends without the event. */
+    let settleTimer = 0;
+    const settle = () => {
+      window.clearTimeout(settleTimer);
+      if (!inView) return;
+      const current = currentReel(container);
+      if (current === lastAuto) return;
+      container.querySelectorAll(".reel-item").forEach((item) => {
+        const video = item.querySelector("video");
+        if (item !== current && video && !video.paused) {
+          video.pause();
+          setPlaying(item, false);
+        }
+      });
+      void play();
+    };
+    const onScroll = () => {
+      window.clearTimeout(settleTimer);
+      settleTimer = window.setTimeout(settle, 180);
+    };
+    container.addEventListener("scroll", onScroll, { passive: true });
+    container.addEventListener("scrollend", settle);
+
     return () => {
       observer.disconnect();
+      window.clearTimeout(settleTimer);
+      container.removeEventListener("scroll", onScroll);
+      container.removeEventListener("scrollend", settle);
       window.removeEventListener("pointerdown", unmute, true);
       window.removeEventListener("keydown", unmute, true);
     };
