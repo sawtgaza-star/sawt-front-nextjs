@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import "@/styles/creators.css";
 import "@/styles/collaborate.css";
 import LegacyInit from "@/components/LegacyInit";
-import CollaborateHero from "@/components/collaborate/CollaborateHero";
+import CollaborateFlowHero from "@/components/collaborate/CollaborateFlowHero";
 import OtherWizard from "@/components/collaborate/other/OtherWizard";
 
 /* /collaborate/other — the "تعاون آخر" application, reached by picking that
@@ -18,7 +18,7 @@ export default function Page() {
   return (
     <div className="cl-page">
       <LegacyInit page="collaborate" />
-      <CollaborateHero crumb="تعاون آخر" crumbKey="collab_type_other_title" />
+      <CollaborateFlowHero crumb="تعاون آخر" crumbKey="collab_type_other_title" />
       <main>
         <section className="cl-section">
           <div className="container">

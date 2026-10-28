@@ -10,11 +10,11 @@ import RichText from "@/components/ui/RichText";
    `crumb` adds the deepest level of the trail (الرئيسية > تعاون معنا > …) —
    without it "تعاون معنا" is the active crumb, which is /collaborate itself.
 
-   The copy and the backdrop come from GET /pages/collaborate's `hero` block,
-   which only /collaborate fetches (<CollaborateContent />). The four flow
-   pages render this hero with no `data`, and so does /collaborate itself if
-   the request fails — both then show the built-in copy below, which is why it
-   keeps its `data-i18n` keys. What the API sends does not: it carries ar and
+   The copy and the backdrop come from GET /pages/collaborate's `hero` block —
+   fetched by <CollaborateContent /> on /collaborate and by
+   <CollaborateFlowHero /> on the four flow pages, so all five share one
+   banner. Only a failed request leaves `data` empty; the built-in copy below
+   then stands in, which is why it keeps its `data-i18n` keys. What the API sends does not: it carries ar and
    en at once and `lang` picks one, so the DOM translator has nothing to do and
    nothing of React's to overwrite.
 
