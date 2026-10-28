@@ -3,7 +3,7 @@ import { IconCoinBitcoin, IconHandsGive, IconPayCard } from "@/components/ui/ico
 import AllocationSkeleton from "./skeleton/AllocationSkeleton";
 import { BannerSkeleton, CommunitySkeleton } from "./skeleton/BannerCommunitySkeleton";
 import DonateSkeleton from "./skeleton/DonateSkeleton";
-import { CoursesSkeleton, PartnersSkeleton } from "./skeleton/PartnersCoursesSkeleton";
+import { PartnersSkeleton } from "./skeleton/PartnersCoursesSkeleton";
 import SkeletonHead from "./skeleton/SkeletonHead";
 import { FaqSkeleton, StoriesSkeleton } from "./skeleton/StoriesFaqSkeleton";
 import "@/styles/support-skeleton.css";
@@ -83,7 +83,7 @@ export function PaymentMethodsSkeleton() {
   );
 }
 
-/** /support's body: the eight sections of <SupportContent />, in order. The
+/** /support's body: the seven sections of <SupportContent />, in order. The
     wrapper is display:contents so the sections stay <main>'s own children:
     on phones main is a flex column that moves the banner first (order: -1),
     and their margins must not collapse through a block parent. */
@@ -95,7 +95,6 @@ export function SupportBodySkeleton() {
       <CommunitySkeleton />
       <AllocationSkeleton />
       <PartnersSkeleton />
-      <CoursesSkeleton />
       <StoriesSkeleton />
       <FaqSkeleton />
     </div>

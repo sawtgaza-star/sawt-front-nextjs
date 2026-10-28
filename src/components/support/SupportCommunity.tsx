@@ -34,10 +34,19 @@ export default function SupportCommunity({
 }) {
   const goal = figure(data?.target) ?? GOAL;
   const raised = figure(data?.raised) ?? RAISED;
-  const remaining = figure(data?.remaining) ?? Math.max(0, goal - raised);
+  /* Remaining and the percentage are DERIVED from goal and raised, never read
+     from the payload's own `remaining` / `progress_percent`: those are a second
+     copy of the same fact, and an editor who changes the goal or the raised
+     amount leaves them stale — the bar then disagrees with the figures above
+     it. The payload's percentage only stands in when there is no goal to
+     divide by. */
+  const remaining = Math.max(0, goal - raised);
   const rawPercent =
-    figure(data?.progress_percent) ?? (goal > 0 ? (raised / goal) * 100 : 0);
-  const percent = Math.min(100, Math.max(0, Math.round(rawPercent)));
+    goal > 0 ? (raised / goal) * 100 : figure(data?.progress_percent) ?? 0;
+  // the bar is drawn at the exact share; the label shows it rounded, but never
+  // "100%" while there is still an amount left to raise
+  const fill = Math.min(100, Math.max(0, rawPercent));
+  const percent = remaining > 0 ? Math.min(99, Math.round(fill)) : Math.round(fill);
   const symbol = currencySymbol(data?.currency);
 
   const message = localized(data?.message, lang);
@@ -102,7 +111,7 @@ export default function SupportCommunity({
             aria-valuemin={0}
             aria-valuemax={100}
           >
-            <div className="sp-progress-bar" style={{ width: `${percent}%` }}></div>
+            <div className="sp-progress-bar" style={{ width: `${fill}%` }}></div>
           </div>
 
           {message ? (

@@ -21,7 +21,6 @@ import SupportBanner from "./SupportBanner";
 import SupportCommunity from "./SupportCommunity";
 import WhereDonationsGo from "./WhereDonationsGo";
 import SupportPartners from "./SupportPartners";
-import IncubatorCourses from "./IncubatorCourses";
 import UntoldStories from "./UntoldStories";
 import SupportFaq from "./SupportFaq";
 import { SupportBodySkeleton } from "./SupportSkeleton";
@@ -58,11 +57,10 @@ export default function SupportContent() {
         ) : (
           <>
             <DonateSection plans={page?.plans} impact={page?.impact} lang={lang} />
-            <SupportBanner trust={page?.trust} lang={lang} />
+            <SupportBanner invite={page?.invite} trust={page?.trust} lang={lang} />
             <SupportCommunity data={page?.community_goal} lang={lang} />
             <WhereDonationsGo data={page?.fund_allocation} lang={lang} />
             <SupportPartners data={page?.partners} lang={lang} />
-            <IncubatorCourses data={page?.sponsor} lang={lang} />
             <UntoldStories data={page?.stories} lang={lang} />
             <SupportFaq data={page?.faq} lang={lang} />
           </>

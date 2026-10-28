@@ -4,31 +4,56 @@ import {
   IconVideoPlay,
 } from "@/components/ui/icons";
 import { localized } from "@/lib/api/pages";
-import type { SupportTrustContent } from "@/lib/api/support";
+import type { SupportInviteContent, SupportTrustContent } from "@/lib/api/support";
 
 const FEATURE_ICONS = [IconPeoplePair, IconHandStar, IconVideoPlay];
 
-const BUILT_IN_FEATURES = [
-  { text: "سهولة الدفع", key: "support_banner_feature_2" },
-  { text: "وصول فوري للمستحقين", key: "support_banner_feature_1" },
-  { text: "تبرع آمن ومشفر", key: "support_banner_feature_3" },
-];
+/** A transparent 1×1 GIF: keeps the artwork's box (and its grey frame,
+    support.css) without showing any picture the API didn't send. Also the
+    loading skeleton's. */
+export const BLANK_IMAGE =
+  "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7";
 
-/* "ادعم المنصة التي توصل أصواتهم" — beige banner with the olive-tree artwork
-   and the two floating counters from the mock. */
+/* "ادعم المنصة التي توصل أصواتهم" — beige banner with the artwork and the two
+   floating counters from the mock, from GET /pages/support's `invite` block:
+   the picture, the eyebrow (`image_label`), the title — its last word carries
+   the brush stroke — the counters, both buttons and the feature row (which
+   may also come from the top-level `trust` block).
+
+   THE API IS THE ONLY SOURCE: nothing here has built-in copy or artwork
+   standing behind it. A field the payload leaves out renders nothing (a
+   counter or button without its text is left out whole), and the picture's
+   frame stays empty and grey until the API's image arrives. */
 export default function SupportBanner({
+  invite,
   trust,
   lang = "ar",
 }: {
+  invite?: SupportInviteContent;
   trust?: SupportTrustContent;
   lang?: string;
 }) {
-  const fromApi = (trust?.items || [])
-    .map((item) => ({ text: localized(item.label, lang), key: undefined }))
-    .filter((f) => f.text);
-  const features: { text: string; key?: string }[] = fromApi.length
-    ? fromApi
-    : BUILT_IN_FEATURES;
+  const features = (invite?.trust?.items || trust?.items || [])
+    .map((item) => localized(item.label, lang))
+    .filter(Boolean);
+
+  const eyebrow = localized(invite?.image_label, lang);
+  const title = localized(invite?.title, lang).trim();
+  const cut = title.lastIndexOf(" ");
+  const titleHead = cut > 0 ? title.slice(0, cut) : "";
+  const titleTail = cut > 0 ? title.slice(cut + 1) : title;
+  const primary = localized(invite?.cta?.primary, lang);
+  const secondary = localized(invite?.cta?.secondary, lang);
+  const badges = [
+    { className: "sp-badge sp-badge-green", badge: invite?.badges?.donors },
+    { className: "sp-badge sp-badge-orange", badge: invite?.badges?.stories },
+  ]
+    .map(({ className, badge }) => ({
+      className,
+      value: (badge?.value || "").trim(),
+      label: localized(badge?.label, lang),
+    }))
+    .filter((b) => b.value || b.label);
 
   return (
     <section className="sp-section sp-banner-section" style={{ paddingTop: 0 }}>
@@ -38,77 +63,59 @@ export default function SupportBanner({
         <div className="sp-banner">
           <div className="sp-banner-inner">
             <div className="sp-banner-text">
-              <p
-                className="sp-banner-eyebrow"
-                data-i18n="support_banner_eyebrow"
-              >
-                قصص إنسانية من غزة
-              </p>
-              <h2 className="sp-banner-title">
-                <span data-i18n="support_banner_title_pre">
-                  ادعم المنصة التي توصل
-                </span>{" "}
-                <span
-                  className="cr-highlight"
-                  data-i18n="support_banner_title_hl"
-                >
-                  أصواتهم
-                </span>
-              </h2>
+              {eyebrow ? <p className="sp-banner-eyebrow">{eyebrow}</p> : null}
+              {title ? (
+                <h2 className="sp-banner-title">
+                  {titleHead ? <span>{titleHead}</span> : null}{" "}
+                  <span className="cr-highlight">{titleTail}</span>
+                </h2>
+              ) : null}
 
-              {/* mock order: سهولة الدفع / وصول فوري on the first row. The
-                  labels come from the API's `trust` block when it sends them;
-                  the glyphs stay the design's, matched by position. */}
-              <div className="sp-banner-features">
-                {features.map((f, i) => {
-                  const Icon = FEATURE_ICONS[i % FEATURE_ICONS.length];
-                  return (
-                    <div className="sp-banner-feature" key={i}>
-                      <span className="sp-feature-icon">
-                        <Icon />
-                      </span>
-                      <span data-i18n={f.key}>{f.text}</span>
-                    </div>
-                  );
-                })}
-              </div>
+              {/* the glyphs stay the design's, matched by position */}
+              {features.length ? (
+                <div className="sp-banner-features">
+                  {features.map((text, i) => {
+                    const Icon = FEATURE_ICONS[i % FEATURE_ICONS.length];
+                    return (
+                      <div className="sp-banner-feature" key={i}>
+                        <span className="sp-feature-icon">
+                          <Icon />
+                        </span>
+                        <span>{text}</span>
+                      </div>
+                    );
+                  })}
+                </div>
+              ) : null}
 
               {/* wrapper is display:contents on desktop; becomes the two-button
                   row of the mobile mock, where the outline button appears */}
-              <div className="sp-banner-cta">
-                <a href="/support/methods" className="sp-btn-green">
-                  <span data-i18n="support_donate_now">تبرع الآن</span>
-                </a>
-                <a href="#where-donations" className="sp-btn-where">
-                  <span data-i18n="support_banner_where">
-                    أين تذهب تبرعاتي؟
-                  </span>
-                </a>
-              </div>
+              {primary || secondary ? (
+                <div className="sp-banner-cta">
+                  {primary ? (
+                    <a href="/support/methods" className="sp-btn-green">
+                      <span>{primary}</span>
+                    </a>
+                  ) : null}
+                  {secondary ? (
+                    <a href="#where-donations" className="sp-btn-where">
+                      <span>{secondary}</span>
+                    </a>
+                  ) : null}
+                </div>
+              ) : null}
             </div>
 
             <div className="sp-banner-media">
-              <img src="/assets/images/tree.jpg" alt="" />
+              <img src={invite?.image_url || BLANK_IMAGE} alt="" />
               {/* .counter: runCounters() counts each figure up from 0 once it
                   scrolls into view (SupportContent starts it) */}
-              <div className="sp-badge sp-badge-green">
-                <span className="sp-badge-num counter">1,247</span>
-                <span
-                  className="sp-badge-label"
-                  data-i18n="support_badge_donors"
-                >
-                  متبرع هذا الشهر
-                </span>
-              </div>
-              <div className="sp-badge sp-badge-orange">
-                <span className="sp-badge-num counter">340+</span>
-                <span
-                  className="sp-badge-label"
-                  data-i18n="support_badge_stories"
-                >
-                  قصة وثقت
-                </span>
-              </div>
+              {badges.map((b) => (
+                <div className={b.className} key={b.className}>
+                  {b.value ? <span className="sp-badge-num counter">{b.value}</span> : null}
+                  {b.label ? <span className="sp-badge-label">{b.label}</span> : null}
+                </div>
+              ))}
             </div>
           </div>
         </div>

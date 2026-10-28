@@ -141,19 +141,33 @@
   color: #fff;
   font-weight: 700;
 }
+/* icon, label and @handle as ONE centred group: the pill hugs its content
+   (no stretching across the empty state), the label never wraps, and only
+   the handle gives way — cut with an ellipsis — when the card is narrow */
 .sm-cc-reel-follow {
   margin-top: 10px;
   text-decoration: none;
   max-width: 100%;
+  align-self: center;
+  justify-content: center;
+  white-space: nowrap;
+}
+.sm-cc-reel-follow i,
+.sm-cc-reel-follow span {
+  flex: 0 0 auto;
 }
 .sm-cc-reel-follow bdi {
+  flex: 0 1 auto;
+  min-width: 0;
   overflow: hidden;
   text-overflow: ellipsis;
   opacity: 0.85;
 }
-.sm-page .sm-cc-reel-follow,
-.sm-page .sm-cc-reel-follow:hover {
-  color: #fff;
+/* !important: legacy style.css paints every link `color: black !important`,
+   which beat the plain white here and turned the label black */
+.sm-cc-reel-follow,
+.sm-cc-reel-follow:hover {
+  color: #fff !important;
 }
 
 .sm-cc-reel .reel-caption {
@@ -465,6 +479,13 @@
 }
 [dir="ltr"] .sm-cc-next svg {
   transform: scaleX(-1);
+}
+/* the back arrow — same button on the start side, pointing the other way */
+.sm-cc-prev svg {
+  transform: scaleX(-1);
+}
+[dir="ltr"] .sm-cc-prev svg {
+  transform: none;
 }
 /* the last creator is picked: no wrapping round to the first */
 .sm-cc-next:disabled {

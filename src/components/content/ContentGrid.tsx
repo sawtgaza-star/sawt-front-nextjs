@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import ReelThumbCard from "./ReelThumbCard";
 import ReelViewer from "./ReelViewer";
 import ContentGridMore from "./ContentGridMore";
@@ -25,7 +25,7 @@ const SCROLL_AWAY = 80;
    time (useReelBatches); the viewer still gets the whole list. Only the
    first PREVIEW_ROWS rows show (as many reels as the grid has columns,
    twice) until "عرض المزيد" is pressed — back to that on every new filter /
-   sort.
+   sort, or on "عرض أقل" under the open grid.
 
    An empty grid says why when the API does: `reels.message` (e.g. the
    Instagram account's token expired) replaces the stock "nothing here" line. */
@@ -80,6 +80,25 @@ export default function ContentGrid({
   const showMore = useSmoothExpand(gridRef, expanded, columns, () =>
     reveal(Math.min(reels.length, preview + REEL_BATCH) - 1),
   );
+  /* "عرض أقل": fold back to the preview rows. The rows above the button
+     vanish, which would leave the visitor far down the page — so the button
+     is held at the same spot on screen and the preview rows end right above
+     it. Measured before the fold, corrected in a layout effect after it (no
+     painted jump in between). */
+  const moreRef = useRef<HTMLDivElement>(null);
+  const foldFrom = useRef<number | null>(null);
+  const showLess = () => {
+    foldFrom.current = moreRef.current?.getBoundingClientRect().top ?? null;
+    setExpanded(false);
+  };
+  useLayoutEffect(() => {
+    const before = foldFrom.current;
+    foldFrom.current = null;
+    if (expanded || before === null || !moreRef.current) return;
+    const after = moreRef.current.getBoundingClientRect().top;
+    window.scrollBy({ top: after - before, behavior: "instant" as ScrollBehavior });
+  }, [expanded]);
+
   /** Make sure reel `i` is drawn — past the preview, that opens it up. */
   const reveal = (i: number) => {
     if (i >= preview) setExpanded(true);
@@ -229,8 +248,12 @@ export default function ContentGrid({
           />
         ))}
       </div>
-      {collapsed && (
-        <ContentGridMore onMore={showMore} />
+      {reels.length > preview && (
+        <ContentGridMore
+          ref={moreRef}
+          open={!collapsed}
+          onToggle={collapsed ? showMore : showLess}
+        />
       )}
 
       {openIndex !== null && toViewer(openIndex) >= 0 && (

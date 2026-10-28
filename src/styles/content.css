@@ -483,6 +483,10 @@ filter: drop-shadow(0 0 12px rgba(214, 232, 96, 0.75)) drop-shadow(0 4px 10px #0
 .ct-grid-more:hover i {
   transform: translateY(2px);
 }
+/* "عرض أقل": the chevron points up and nudges up */
+.ct-grid-more.is-less:hover i {
+  transform: translateY(-2px);
+}
 @media (max-width: 575.98px) {
   .ct-grid-more-wrap {
     gap: 12px;
@@ -771,17 +775,22 @@ body.ct-focus-mode::after {
 }
 .ct-mw-slider {
   position: relative;
-  /* inside the heading's .container, so the first card starts right under
-     "الأكثر مشاهدة"; the far end stretches to the viewport edge, so the row
-     runs off-screen and reads as a slider */
-  margin-inline-end: calc(50% - 50vw);
 }
+/* The track runs the full width of the screen on BOTH sides, so a card
+   scrolling past the heading keeps going to the screen's edge instead of
+   being cut off at the container. The same padding on both ends lines the
+   row up with the container: at rest the first card sits right under
+   "الأكثر مشاهدة", and scrolled to the end the last card stops at the
+   container's other edge. (% here is the container's width, the slider's.)
+   .cr-content-track in creators.css is the same row — keep the two in step. */
 .ct-mw-track {
   display: flex;
   gap: 18px;
   overflow-x: auto;
   scroll-behavior: smooth;
+  margin-inline: calc(50% - 50vw);
   padding: 26px 0 30px;
+  padding-inline: calc(50vw - 50%);
   scrollbar-width: none;
   /* press-and-drag scrolling (see MostWatchedSection) */
   cursor: grab;

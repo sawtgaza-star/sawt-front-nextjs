@@ -10,6 +10,7 @@ export const pick = (copy: Copy, lang: string) => (lang === "en" ? copy.en : cop
 
 export const CC_COPY = {
   next: { ar: "صانع المحتوى التالي", en: "Next creator" },
+  prev: { ar: "صانع المحتوى السابق", en: "Previous creator" },
   save: { ar: "حفظ", en: "Save" },
   like: { ar: "إعجاب", en: "Like" },
   share: { ar: "مشاركة", en: "Share" },

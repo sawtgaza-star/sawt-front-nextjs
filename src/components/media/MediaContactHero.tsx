@@ -1,3 +1,4 @@
+import type { CSSProperties } from "react";
 import { localized, localizedHtml } from "@/lib/api/pages";
 import type { MediaContactHeroContent } from "@/lib/api/media-contact";
 import MediaNav from "./MediaNav";
@@ -16,12 +17,20 @@ import RichText from "@/components/ui/RichText";
    into the still, so the headline and its line step out below md (media.css).
    Desktop is untouched.
 
+   Unlike the other plain banners it has no `.sm-wp-hero-veil`: the dark
+   overlay was taken off by request, so the backdrop shows at full strength.
+
    The headline and the line under it come from GET /pages/media/contact; the
    crumb does not — the payload carries no breadcrumb, so it stays the page's
    own translated markup. The banner is NOT conditional on the payload:
    <MediaNav /> lives inside it and its `.language-btn` is bound once by
    initTranslate(), so the shell is on screen from the first paint and only its
-   text is drawn as bars while `loading` (same as MediaWorksHero). */
+   text is drawn as bars while `loading` (same as MediaWorksHero).
+
+   The backdrop is the payload's `hero.image_url`, handed to the CSS as
+   `--sm-wp-hero-img`; while it is null the design's collage stays. While
+   loading neither shows — `.hero-bg-loading` lays a flat ground
+   (hero-loading.css), so no built-in picture flashes first. */
 export default function MediaContactHero({
   data,
   lang = "ar",
@@ -33,11 +42,15 @@ export default function MediaContactHero({
 }) {
   const title = localized(data?.title, lang);
   const subtitle = localizedHtml(data?.subtitle, lang);
+  const image = data?.image_url;
 
   return (
-    <header className={`sm-wp-hero sm-wp-hero-plain sm-ct-hero${loading ? " hero-bg-loading" : ""}`}>
-      <span className="sm-wp-hero-veil" aria-hidden="true" />
-
+    <header
+      className={`sm-wp-hero sm-wp-hero-plain sm-ct-hero${loading ? " hero-bg-loading" : ""}`}
+      style={
+        image ? ({ "--sm-wp-hero-img": `url("${image}")` } as CSSProperties) : undefined
+      }
+    >
       <MediaNav base="/media" />
 
       <div className="container sm-wp-hero-text">

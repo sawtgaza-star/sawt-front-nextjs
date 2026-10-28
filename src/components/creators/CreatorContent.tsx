@@ -1,7 +1,7 @@
 // @ts-nocheck
 "use client";
 /* eslint-disable */
-import { useEffect, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import { localized } from "@/lib/api/pages";
 import { creatorHref } from "@/lib/api/creator-profile";
 import { useLang } from "@/lib/use-lang";
@@ -10,9 +10,12 @@ import { reelDetails } from "./creator-content/reel-data";
 /* same full-screen viewer the محتوانا page uses: portalled above the navbar
    and carrying the Reels-style swipe gesture */
 import ReelViewer from "@/components/content/ReelViewer";
+import { useDragScroll } from "@/components/content/use-drag-scroll";
 
-/* "المحتوى" — a horizontal slider of the creator's reels (vertical poster
-   cards) with circular prev/next nav arrows, from the profile payload's
+/* "المحتوى" — a horizontal row of the creator's reels (vertical poster
+   cards), built like محتوانا's "الأكثر مشاهدة": it starts under the heading,
+   runs off the far edge of the screen and scrolls by press-and-drag (no
+   arrows) — see .cr-content-slider in creators.css. From the profile payload's
    `content` block. The reels come from the creator's Instagram; while that is
    switched off in the admin (`status: "disabled"`) or nothing is synced, the
    list is empty and the whole section is left out (heading included). A
@@ -30,39 +33,6 @@ export default function CreatorContent({ content, creator, lang }) {
   const { tr } = useLang();
   const [openIndex, setOpenIndex] = useState(null);
   const trackRef = useRef(null);
-  // disable a nav arrow once the track can't scroll any further that way
-  const [atStart, setAtStart] = useState(true);
-  const [atEnd, setAtEnd] = useState(false);
-
-  const scroll = (dir) => {
-    const el = trackRef.current;
-    if (!el) return;
-    el.scrollBy({ left: dir * 330, behavior: "smooth" });
-  };
-
-  useEffect(() => {
-    const el = trackRef.current;
-    if (!el) return;
-    const updateEdges = () => {
-      const max = el.scrollWidth - el.clientWidth;
-      if (max <= 1) {
-        setAtStart(true);
-        setAtEnd(true);
-        return;
-      }
-      // RTL scrollLeft can be negative; Math.abs normalizes to 0..max
-      const pos = Math.abs(el.scrollLeft);
-      setAtEnd(pos <= 1); // scroll(+1) direction exhausted
-      setAtStart(pos >= max - 1); // scroll(-1) direction exhausted
-    };
-    updateEdges();
-    el.addEventListener("scroll", updateEdges, { passive: true });
-    window.addEventListener("resize", updateEdges);
-    return () => {
-      el.removeEventListener("scroll", updateEdges);
-      window.removeEventListener("resize", updateEdges);
-    };
-  }, [content]);
 
   const cards = (Array.isArray(content?.items) ? content.items : [])
     .map((item, i) => ({
@@ -75,6 +45,8 @@ export default function CreatorContent({ content, creator, lang }) {
     }))
     .filter((card) => card.video);
   const isEmpty = !cards.length;
+  // the track only mounts once there are reels — bind the drag to it then
+  useDragScroll(trackRef, [isEmpty]);
 
   const title = localized(content?.title, lang) || tr("cr_content_title");
   const viewMore = localized(content?.view_more, lang);
@@ -120,25 +92,6 @@ export default function CreatorContent({ content, creator, lang }) {
           <p className="cr-content-empty">{tr("cr_content_empty")}</p>
         ) : (
         <div className="cr-content-slider">
-          <button
-            type="button"
-            className="cr-content-nav cr-content-prev"
-            onClick={() => scroll(-1)}
-            disabled={atStart}
-            aria-label="previous"
-          >
-            <i className="fa-solid fa-angle-right"></i>
-          </button>
-          <button
-            type="button"
-            className="cr-content-nav cr-content-next"
-            onClick={() => scroll(1)}
-            disabled={atEnd}
-            aria-label="next"
-          >
-            <i className="fa-solid fa-angle-left"></i>
-          </button>
-
           <div className="cr-content-track" ref={trackRef} dir="rtl">
             {cards.map((card, i) => (
               <ContentCard card={card} index={i} key={card.id} onOpen={setOpenIndex} />
