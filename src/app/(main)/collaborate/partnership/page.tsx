@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import "@/styles/creators.css";
 import "@/styles/collaborate.css";
 import LegacyInit from "@/components/LegacyInit";
-import CollaborateHero from "@/components/collaborate/CollaborateHero";
+import CollaborateFlowHero from "@/components/collaborate/CollaborateFlowHero";
 import PartnershipWizard from "@/components/collaborate/partnership/PartnershipWizard";
 
 /* /collaborate/partnership — the "شراكة استراتيجية" application, reached by
@@ -18,7 +18,7 @@ export default function Page() {
   return (
     <div className="cl-page">
       <LegacyInit page="collaborate" />
-      <CollaborateHero
+      <CollaborateFlowHero
         crumb="شراكة استراتيجية"
         crumbKey="collab_type_partnership_title"
       />

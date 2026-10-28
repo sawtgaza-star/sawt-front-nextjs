@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import "@/styles/creators.css";
 import "@/styles/collaborate.css";
 import LegacyInit from "@/components/LegacyInit";
-import CollaborateHero from "@/components/collaborate/CollaborateHero";
+import CollaborateFlowHero from "@/components/collaborate/CollaborateFlowHero";
 import FundingWizard from "@/components/collaborate/funding/FundingWizard";
 
 /* /collaborate/funding — the "رعاية أو تمويل" application, reached by picking
@@ -18,7 +18,7 @@ export default function Page() {
   return (
     <div className="cl-page">
       <LegacyInit page="collaborate" />
-      <CollaborateHero
+      <CollaborateFlowHero
         crumb="رعاية أو تمويل"
         crumbKey="collab_type_funding_title"
       />

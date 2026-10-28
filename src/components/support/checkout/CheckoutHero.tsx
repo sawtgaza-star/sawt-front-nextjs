@@ -1,16 +1,15 @@
 import SiteNav from "@/components/site/SiteNav";
 import BreadcrumbHome from "@/components/site/BreadcrumbHome";
+import CheckoutHeroBackdrop from "./CheckoutHeroBackdrop";
 
 /* Breadcrumb hero for /support/checkout. Same cr-* hero shell as MethodsHero,
    with the trail extended by the wizard's own level
-   (الرئيسية > ادعم صوت > طرق الدعم > اختيار المنصة). */
+   (الرئيسية > ادعم صوت > طرق الدعم > اختيار المنصة). The backdrop is the
+   methods page's own, from the API — see CheckoutHeroBackdrop. */
 export default function CheckoutHero() {
   return (
     <header>
-      <div
-        className="cr-header py-1"
-        style={{ background: 'url("/assets/images/heroSectionImg.jpeg")' }}
-      >
+      <CheckoutHeroBackdrop>
         <SiteNav />
         <div className="container cr-hero">
           <nav className="cr-breadcrumb" aria-label="breadcrumb">
@@ -39,7 +38,7 @@ export default function CheckoutHero() {
             من قلب غزة
           </p>
         </div>
-      </div>
+      </CheckoutHeroBackdrop>
     </header>
   );
 }

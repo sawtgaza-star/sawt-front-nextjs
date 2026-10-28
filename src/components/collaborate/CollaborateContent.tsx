@@ -4,9 +4,9 @@
    subscription, handed down as props so the hero and the picker stay plain
    functions of their own block.
 
-   The four flow pages (/collaborate/creator …) render <CollaborateHero /> on
-   their own, without this — they show the same breadcrumb shell and the hero's
-   built-in copy, and make no request of their own.
+   The four flow pages (/collaborate/creator …) don't render this: they get the
+   same hero, backdrop and copy included, through <CollaborateFlowHero />,
+   which makes the same request for it.
 
    An outage leaves `page` null: the hero falls back to its built-in copy and
    the picker to the built-in four, so the flows stay reachable — see
