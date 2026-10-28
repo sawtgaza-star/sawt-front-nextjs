@@ -1,6 +1,6 @@
-/* <FooterSkeleton /> — the real footer frame with <SkeletonText /> in place
-   of its copy (styles/skeleton-text.css, light bars set in site-footer.css).
-   Only the blocks that aren't text need sizes here. */
+/* <FooterSkeleton /> — the real footer markup with <SkeletonText /> in place
+   of its copy (styles/skeleton-text.css). Only the blocks that aren't text
+   need sizes here. */
 
 /* the API logo: <img width="100"> of a 151×95 image */
 .fsk-logo {
@@ -8,15 +8,12 @@
   width: 100px;
   aspect-ratio: 151 / 95;
   border-radius: 8px;
-  background: rgba(255, 255, 255, 0.1);
+  background: rgba(128, 128, 128, 0.22);
 }
 
-/* the social icons' 44px box with a faint mark-sized dot */
+/* the social circles keep their real 40px box and ground, minus the icon */
 .fsk .fsk-social {
-  display: block;
-  width: 44px;
-  height: 44px;
-  background: radial-gradient(circle, rgba(255, 255, 255, 0.12) 0 11px, transparent 12px);
+  opacity: 0.5;
 }
 
 /* the inert newsletter boxes shouldn't look clickable */
