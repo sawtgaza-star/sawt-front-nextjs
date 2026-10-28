@@ -57,8 +57,13 @@ export type CreatorsListState = {
 };
 
 /** One page of /creators/all. Re-runs on every pager click; the in-flight
-    request for the page the visitor just left is aborted. */
-export function useAllCreators(page: number, perPage?: number): CreatorsListState {
+    request for the page the visitor just left is aborted. A `null` perPage
+    means "not known yet" (e.g. before the viewport is read) — nothing is
+    fetched until it is, so the first request already has the right size. */
+export function useAllCreators(
+  page: number,
+  perPage?: number | null,
+): CreatorsListState {
   const [state, setState] = useState<CreatorsListState>({
     page: null,
     meta: {},
@@ -66,6 +71,7 @@ export function useAllCreators(page: number, perPage?: number): CreatorsListStat
   });
 
   useEffect(() => {
+    if (perPage === null) return;
     const controller = new AbortController();
     setState((current) => ({ ...current, loading: true }));
 

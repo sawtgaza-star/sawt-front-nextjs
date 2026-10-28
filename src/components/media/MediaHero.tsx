@@ -55,11 +55,10 @@ export default function MediaHero({
   const phrases = sortItems(data?.phrases)
     .map((phrase) => localized(phrase.label, lang))
     .filter(Boolean);
-  const deck = heroDeck(
-    sortItems(data?.images)
-      .map((image) => image.url)
-      .filter((url): url is string => Boolean(url)),
-  );
+  const stills = sortItems(data?.images)
+    .map((image) => image.url)
+    .filter((url): url is string => Boolean(url));
+  const deck = heroDeck(stills);
   const primary = data?.cta?.primary;
   const secondary = data?.cta?.secondary;
   const badge = {
@@ -83,7 +82,8 @@ export default function MediaHero({
 
         <MediaNav />
 
-        <MediaHeroRotation>
+        {/* one pass: stops once every phrase and every still has had its turn */}
+        <MediaHeroRotation lastStep={Math.max(phrases.length, stills.length) - 1}>
           <div className="container">
             <div className="sm-hero-text">
               <h1 className="sm-hero-title">

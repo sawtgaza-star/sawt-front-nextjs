@@ -21,6 +21,14 @@
   padding: 110px 0 40px;
   overflow: hidden;
 }
+/* "أصوات توقفت من صوت" — the former members, right under the main grid */
+.team-grid-section.team-former-section {
+  padding: 40px 0 90px;
+}
+/* its heading sits at the reading start — right in Arabic, left in English */
+.team-former-section .team-members-title {
+  text-align: start;
+}
 
 /* ---------- Filter pills (right-aligned in RTL) ---------- */
 .team-filter {
@@ -236,6 +244,12 @@ left: 12px;
 .team-member-card:hover .team-member-badge {
   text-align: start;
   padding-inline-end: 50px;
+}
+/* a card without the arrow (former members) has nothing to clear — its
+   name/role stay centred on hover */
+.team-member-card--static:hover .team-member-badge {
+  text-align: center;
+  padding-inline-end: 12px;
 }
 
 /* ---------- Decorative olive branches (match the mock watermarks) ---------- */
@@ -732,6 +746,9 @@ left: 12px;
   }
   .team-grid-section {
        padding: 20px 0 40px
+  }
+  .team-grid-section.team-former-section {
+    padding: 10px 0 50px;
   }
 
   /* On phones the pills stop wrapping and become ONE horizontally scrollable

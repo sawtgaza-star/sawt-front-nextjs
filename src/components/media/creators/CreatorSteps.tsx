@@ -1,7 +1,6 @@
 import { localized } from "@/lib/api/pages";
 import type { MediaCreatorsContent } from "@/lib/api/media-page";
 import { IconChevronLeftSmall } from "@/components/ui/icons";
-import { ctaHref } from "@/components/media/media-page-view";
 
 /* "خطوات التعاون" under the creators panel — the block's `steps_title`
    between two hairlines, its numbered `steps`, and its `cta` as the green
@@ -43,7 +42,8 @@ export default function CreatorSteps({
       ) : null}
       {ctaLabel ? (
         <div className="sm-cc-cta-wrap">
-          <a className="sm-cc-cta" href={ctaHref(data.cta, "/media/contact")}>
+          {/* Always تواصل معنا, whatever key/path the API sends. */}
+          <a className="sm-cc-cta" href="/media/contact">
             <span>{ctaLabel}</span>
             <IconChevronLeftSmall />
           </a>

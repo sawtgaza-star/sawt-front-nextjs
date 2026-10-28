@@ -18,11 +18,13 @@ export async function initOwlSliders() {
   // الديسكتوب) لا يوجد ما يُسحب إليه — فلا loop ولا سحب ولا أسهم، وإلا كان
   // السحب يدوّر نسخاً مكرّرة من نفس البطاقات
   const $news = $(".creators-carousel:not(.owl-loaded)");
+  // لا loop في السلايدرات (عدا الفريق — انظر أدناه): لا نسخ مكرّرة، ويتوقف عند
+  // آخر بطاقة فيُعطَّل سهمه (Owl يضع .disabled على السهم — شكله في owl-preinit.css)
   const newsAt = (items, extra = {}) => {
     const fits = $news.children().length <= items;
     return {
       items,
-      loop: !fits,
+      loop: false,
       mouseDrag: !fits,
       touchDrag: !fits,
       pullDrag: !fits,
@@ -31,7 +33,8 @@ export async function initOwlSliders() {
     };
   };
   $news.owlCarousel({
-    loop: true,
+    loop: false,
+    rewind: false,
     margin: 20,
     rtl: true, // مهم عشان العربي
     nav: true,
@@ -55,7 +58,7 @@ export async function initOwlSliders() {
   const creatorsCount = $creators2.children(".item").length;
   const creatorsAt = (items, extra = {}) => ({
     items,
-    loop: creatorsCount > items,
+    loop: false,
     ...extra,
   });
   $creators2.on("initialized.owl.carousel refreshed.owl.carousel resized.owl.carousel", (e) => {
@@ -67,7 +70,8 @@ export async function initOwlSliders() {
     e.target.style.setProperty("--cc-gap", `${owl.settings.margin || 0}px`);
   });
   $creators2.owlCarousel({
-    loop: true,
+    loop: false,
+    rewind: false,
     margin: 25,
     rtl: true,
     nav: true,
@@ -88,7 +92,8 @@ export async function initOwlSliders() {
   });
 
   $(".real-stories-carousel:not(.owl-loaded)").owlCarousel({
-    loop: true,
+    loop: false,
+    rewind: false,
     margin: 20,
     rtl: true,
     nav: false,
@@ -100,6 +105,8 @@ export async function initOwlSliders() {
   });
 
   const owl = $(".team-carousel:not(.owl-loaded)");
+  // الفريق هو الاستثناء الوحيد: يبقى loop — البطاقتان الوسطيان فقط واضحتان،
+  // وبدون loop لا تصل الأولى ولا الأخيرة إلى الوسط إلا بترك خانات فارغة
   owl.owlCarousel({
     rtl: true,
     loop: true,

@@ -466,6 +466,12 @@
 [dir="ltr"] .sm-cc-next svg {
   transform: scaleX(-1);
 }
+/* the last creator is picked: no wrapping round to the first */
+.sm-cc-next:disabled {
+  opacity: 0.35;
+  cursor: default;
+  pointer-events: none;
+}
 
 /* ---------- steps + CTA ---------- */
 .sm-cc-steps {

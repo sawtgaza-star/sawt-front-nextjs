@@ -24,7 +24,7 @@ export default function MediaServiceGallery({
   title: string;
   gallery: string[];
 }) {
-  const { trackRef, stops, active, activeSlide, onScroll, goTo, next, prev, dragProps } =
+  const { trackRef, stops, active, activeSlide, atStart, atEnd, onScroll, goTo, next, prev, dragProps } =
     useSnapSlider(gallery.length, OPENING_SLIDE, true);
 
   if (!gallery.length) return null;
@@ -54,7 +54,7 @@ export default function MediaServiceGallery({
       <SnapSliderPlacer trackId={TRACK_ID} slide={OPENING_SLIDE} />
 
       <div className="sm-pager sm-pager-olive">
-        <button type="button" className="sm-pager-arrow" onClick={prev} aria-label="السابق">
+        <button type="button" className="sm-pager-arrow" onClick={prev} disabled={atStart} aria-label="السابق">
           <i className="fa-solid fa-angle-right"></i>
         </button>
 
@@ -70,7 +70,7 @@ export default function MediaServiceGallery({
           ))}
         </span>
 
-        <button type="button" className="sm-pager-arrow" onClick={next} aria-label="التالي">
+        <button type="button" className="sm-pager-arrow" onClick={next} disabled={atEnd} aria-label="التالي">
           <i className="fa-solid fa-angle-left"></i>
         </button>
       </div>

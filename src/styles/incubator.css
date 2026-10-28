@@ -2380,6 +2380,12 @@ top: -23px;
 }
 /* pager arrows flanking the dots — phone mock only (see the <576px block);
    filled olive on the start edge, outlined on the end one */
+/* first/last page: the slider doesn't wrap round, so that arrow goes inert */
+.inc-testi-arrow:disabled {
+  opacity: 0.35;
+  cursor: default;
+  pointer-events: none;
+}
 .inc-testi-arrow {
   display: none;
   align-items: center;

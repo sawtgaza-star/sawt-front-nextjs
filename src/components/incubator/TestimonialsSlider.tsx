@@ -311,6 +311,8 @@ export default function TestimonialsSlider({
             type="button"
             className="inc-testi-arrow inc-testi-arrow-next"
             aria-label={rtl ? "السابق" : "التالي"}
+            /* no wrapping round: inert on the page it can't move past */
+            disabled={rtl ? active <= 0 : active >= pages - 1}
             onClick={() => step(1)}
           >
             <i className="fa-solid fa-angle-right"></i>
@@ -329,6 +331,7 @@ export default function TestimonialsSlider({
             type="button"
             className="inc-testi-arrow inc-testi-arrow-prev"
             aria-label={rtl ? "التالي" : "السابق"}
+            disabled={rtl ? active >= pages - 1 : active <= 0}
             onClick={() => step(-1)}
           >
             <i className="fa-solid fa-angle-left"></i>

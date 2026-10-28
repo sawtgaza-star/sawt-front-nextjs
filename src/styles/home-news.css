@@ -149,6 +149,17 @@
   padding: 1.75rem 1.75rem 0;
 }
 
+/* .card's `align-items: center` sizes the body to its text, so a card with a
+   short title and excerpt had its whole text block shrunk into the middle.
+   style.css stretches it on phones only; it is needed at every width. */
+.latest-news .news-card .card-body,
+.latest-news .news-card .card-footer,
+.nws-related .news-card .card-body,
+.nws-related .news-card .card-footer {
+  align-self: stretch;
+  min-width: 0;
+}
+
 .latest-news .news-card .card-footer,
 .nws-related .news-card .card-footer {
   padding: 0.5rem 1.75rem 1.75rem;

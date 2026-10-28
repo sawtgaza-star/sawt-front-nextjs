@@ -30,6 +30,7 @@ export default function ContentHero({
   data,
   reelsBlock,
   reelPosters = [],
+  postersPending = false,
   onSelectReel,
   lang = "ar",
   loading = false,
@@ -40,6 +41,8 @@ export default function ContentHero({
   /** The reels' thumbnails — what the strip fans out; a tap on one scrolls
       down to that reel (`onSelectReel`). */
   reelPosters?: HeroSlide[];
+  /** The reels' covers are still being checked and none is in yet. */
+  postersPending?: boolean;
   onSelectReel?: (reelId: string) => void;
   lang?: string;
   /** The payload is still on its way — hold the hero's height with bars. */
@@ -53,6 +56,10 @@ export default function ContentHero({
   // editor's `hero.items`; else no strip
   const reels = reelPosters.filter((poster) => poster.src);
   const posters = reels.length ? reels : heroPosters;
+  /* while the reels' covers are still being checked, the strip holds its
+     skeleton — falling back to `hero.items` meanwhile flashed the editor's
+     older images and then swapped them for the reels */
+  const stripLoading = loading || (postersPending && !reels.length);
 
   return (
     <header>
@@ -75,7 +82,7 @@ export default function ContentHero({
           </nav>
         </div>
         {loading ? null : <ContentHeroStats reels={reelsBlock} lang={lang} />}
-        {loading ? (
+        {stripLoading ? (
           <div className="ct-hero-slider">
             <ContentPostersSkeleton />
           </div>

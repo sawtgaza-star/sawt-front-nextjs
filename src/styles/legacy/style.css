@@ -5736,7 +5736,7 @@ svg {
     height: auto;
     aspect-ratio: 920 / 780;
     object-fit: cover;
-    object-position: left center;
+    object-position: right center;
     transform: none;
   }
   .about-the-platform-content {
@@ -6041,15 +6041,39 @@ svg {
    column and the text beside it keep their size and place — and let the
    column overflow so the leaf tips aren't cut. The rest of the upload is
    white, which `mix-blend-mode: multiply` makes invisible. */
+/* The upload is now a wide banner — logo on the right, empty space on the
+   left — so on desktop it covers the whole card and the text sits over the
+   empty left side (the row is dir="ltr", so the content column is on the left
+   in both languages). The banner carries its own birds, so the decorative
+   birds.png is hidden while an image is shown. */
 @media (min-width: 992px) {
-  .about-the-platform-visual {
-    overflow: visible;
+  .about-the-platform-card-inner {
+    position: relative;
+    overflow: hidden;
   }
-  /* 1.17 (was 1.25) with the shift to match: the logo keeps clear of the
-     text beside it (~80px) and of the card's edges, tail included */
+  .about-the-platform-visual {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    max-width: none;
+    padding: 0;
+    z-index: 0;
+    overflow: hidden;
+  }
   .about-platform-img {
-    transform: translateX(42%) scale(1.17);
-    transform-origin: 24% 15%;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: right center;
+    transform: none;
+    mix-blend-mode: normal;
+  }
+  .about-the-platform-content {
+    position: relative;
+    z-index: 1;
+  }
+  .about-the-platform-card-inner:has(.about-the-platform-visual) .birds-img {
+    display: none;
   }
 }
 
@@ -10206,5 +10230,44 @@ svg {
   .team-section .title,
   .team-section .describ-p {
     padding-inline: 10px;
+  }
+}
+
+/* Phone: the platform image runs the full width of the card — it bleeds
+   past the inner card's 10px padding on the top and sides and takes the
+   card's top corners. Last in the file so it wins over the 992/576 blocks. */
+@media (max-width: 767.98px) {
+  .about-the-platform-card-inner {
+    overflow: hidden;
+  }
+  .about-the-platform-card .about-the-platform-visual {
+    margin: -10px -10px 0;
+    width: calc(100% + 20px);
+    max-width: none;
+    padding: 0;
+    position: relative;
+    aspect-ratio: 16 / 10;
+    overflow: hidden;
+    border-radius: 20px 20px 0 0;
+    /* the upload's own backdrop tones, for the strip right of the logo */
+    background: linear-gradient(to bottom, #f8f9f2 0%, #efeee5 75%, #e4e1d5 100%);
+  }
+  /* The upload's logo runs right to its edge (its centre is ~74.5% across),
+     so no crop can centre it. Instead the image is full height and slid so
+     that point sits at the frame's centre; the strip left on the right is the
+     backdrop above, and the image's cut edge fades into it. */
+  .about-the-platform-card .about-platform-img {
+    position: absolute;
+    top: 0;
+    left: 50%;
+    height: 100%;
+    width: auto;
+    max-width: none;
+    aspect-ratio: auto;
+    object-fit: fill;
+    transform: translateX(-74.5%);
+    mix-blend-mode: normal;
+    -webkit-mask-image: linear-gradient(to left, transparent 0, #000 12%);
+    mask-image: linear-gradient(to left, transparent 0, #000 12%);
   }
 }

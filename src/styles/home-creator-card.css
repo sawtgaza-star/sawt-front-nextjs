@@ -174,6 +174,13 @@
   /* overlaps the edge by 3px so the head covers the outline's seam */
   clip-path: inset(-60% 0 calc(100% - 3px) 0);
   pointer-events: none;
+  /* at rest that 3px overlap showed as a thin square-cornered line above the
+     card (on phones always — they have no hover), so the layer only shows
+     while a mouse is over the card; see the hover block below. Hidden only
+     once the head has sunk back (the photo's 0.4s), not the moment the
+     pointer leaves. */
+  visibility: hidden;
+  transition: visibility 0s linear 0.4s;
 }
 :is(.creators-carousel2, .cr-creators-grid) .cc-card-pop img {
   display: block;
@@ -190,6 +197,10 @@
   :is(.creators-carousel2, .cr-creators-grid) .cc-card:hover .cc-card-photo,
   :is(.creators-carousel2, .cr-creators-grid) .cc-card:hover .cc-card-pop img {
     transform: scale(1.14);
+  }
+  :is(.creators-carousel2, .cr-creators-grid) .cc-card:hover .cc-card-pop {
+    visibility: visible;
+    transition-delay: 0s;
   }
 }
 

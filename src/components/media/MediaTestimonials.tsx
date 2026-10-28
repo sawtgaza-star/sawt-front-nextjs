@@ -32,6 +32,8 @@ export default function MediaTestimonials({
     stops,
     active,
     activeSlide,
+    atStart,
+    atEnd,
     onScroll,
     goTo,
     next,
@@ -87,7 +89,7 @@ export default function MediaTestimonials({
       </div>
 
       <div className="sm-pager sm-pager-olive">
-        <button type="button" className="sm-pager-arrow" onClick={prev} aria-label="السابق">
+        <button type="button" className="sm-pager-arrow" onClick={prev} disabled={atStart} aria-label="السابق">
           <i className="fa-solid fa-angle-right"></i>
         </button>
 
@@ -103,7 +105,7 @@ export default function MediaTestimonials({
           ))}
         </span>
 
-        <button type="button" className="sm-pager-arrow" onClick={next} aria-label="التالي">
+        <button type="button" className="sm-pager-arrow" onClick={next} disabled={atEnd} aria-label="التالي">
           <i className="fa-solid fa-angle-left"></i>
         </button>
       </div>

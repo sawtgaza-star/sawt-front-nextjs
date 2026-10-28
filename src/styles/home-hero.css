@@ -499,7 +499,8 @@
   border-radius: inherit;
   background: var(--hh-green);
   transform-origin: right center;
-  animation: hh-fill 5.5s linear both;
+  /* = TURN_MS in HeroReelStack, whose timer does the turning */
+  animation: hh-fill 3s linear both;
 }
 [dir="ltr"] .hh-pager-fill {
   transform-origin: left center;

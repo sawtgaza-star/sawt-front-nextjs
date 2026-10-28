@@ -22,11 +22,16 @@ import { applyPose, poseAt, wrapRel } from "./hero-pose";
    and the one on the right comes forward. Mouse, finger and pen alike; a
    vertical swipe still scrolls the page (touch-action: pan-y).
 
-   The pager is the autoplay clock: the active segment's fill is a CSS
-   animation and its `animationend` turns the stack on. Dragging, the stack
-   off screen, the tab hidden and reduced motion all hold the fill, so they
-   hold the turn too. Once the page has loaded the front reel plays muted
-   (HeroReelCard). */
+   Autoplay is a plain timer: every TURN_MS the stack turns on, on every
+   device. It used to wait for the pager fill's CSS `animationend`, and on
+   phones set to reduce motion (some turn it on in battery saver) that
+   animation is off, so the stack never moved. The fill is only its picture
+   now (its CSS duration matches TURN_MS). Dragging or the stack off screen
+   holds the turn; it starts its full TURN_MS over once they end. Once the
+   page has loaded the front reel plays muted (HeroReelCard). */
+
+/** how long each reel stays in front — keep .hh-pager-fill's duration in step */
+const TURN_MS = 3000;
 
 const REDUCED_MOTION = "(prefers-reduced-motion: reduce)";
 /** after `load`, so the reels' files never compete with the page itself */
@@ -161,10 +166,9 @@ export default function HeroReelStack({
     return () => observer.disconnect();
   }, []);
 
+  /* the front reel plays on every phone: reduced motion or data saver used to
+     switch the preview off, which read as "the video doesn't open" */
   useEffect(() => {
-    if (window.matchMedia(REDUCED_MOTION).matches) return;
-    const connection = (navigator as Navigator & { connection?: { saveData?: boolean } }).connection;
-    if (connection?.saveData) return;
     let timer = 0;
     const start = () => {
       timer = window.setTimeout(() => setPreview(true), PREVIEW_DELAY);
@@ -235,6 +239,20 @@ export default function HeroReelStack({
 
   const paused = offscreen || dragging;
 
+  /* the autoplay clock — restarts with every turn (`round`) and after a pause */
+  useEffect(() => {
+    if (count < 2 || paused) return;
+    const timer = window.setTimeout(next, TURN_MS);
+    return () => window.clearTimeout(timer);
+  }, [count, paused, active, round, next]);
+
+  /* a pause throws the fill's progress away too, so it restarts with the timer */
+  const wasPaused = useRef(paused);
+  useEffect(() => {
+    if (wasPaused.current && !paused) setRound((r) => r + 1);
+    wasPaused.current = paused;
+  }, [paused]);
+
   return (
     <div className="hh-stack-wrap">
       <div
@@ -280,7 +298,7 @@ export default function HeroReelStack({
               onClick={() => goTo(index)}
             >
               {index === active ? (
-                <span key={`${active}-${round}`} className="hh-pager-fill" onAnimationEnd={next}></span>
+                <span key={`${active}-${round}`} className="hh-pager-fill"></span>
               ) : null}
             </button>
           ))}

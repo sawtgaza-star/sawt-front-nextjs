@@ -1,5 +1,6 @@
 "use client";
 import "@/styles/creators.css";
+import { useSyncExternalStore } from "react";
 import { usePageParam } from "@/lib/use-page-param";
 import LegacyInit from "@/components/LegacyInit";
 import CreatorsHero from "@/components/creators/CreatorsHero";
@@ -16,12 +17,31 @@ import { useLang } from "@/lib/use-lang";
 /* Full, paginated listing of every content creator — the "عرض الكل" target
    from CreatorsGrid. Reuses the breadcrumb hero + the shared CreatorCard.
 
-   The roster comes from GET /pages/creators/all, one request per page of
-   fifteen. The pager is the API's: `meta.last_page` decides how many pages
-   there are, so a click fetches rather than slices. The header renders
-   throughout — SiteNav lives inside it — and paints the payload's own hero,
-   which that endpoint answers alongside the cards. */
-const PER_PAGE = 15;
+   The roster comes from GET /pages/creators/all, one request per page — ten
+   cards on desktop, six on a phone. The pager is the API's: `meta.last_page`
+   decides how many pages there are, so a click fetches rather than slices.
+   The header renders throughout — SiteNav lives inside it — and paints the
+   payload's own hero, which that endpoint answers alongside the cards. */
+const PER_PAGE_DESKTOP = 10;
+const PER_PAGE_MOBILE = 6;
+/* the phone breakpoint the creators grid itself switches at */
+const MOBILE_MEDIA = "(max-width: 767.98px)";
+
+/* Page size for the current viewport, kept live across resizes. On the server
+   (and the hydration pass) it is `null`, so the fetch waits for the real
+   value instead of loading a desktop page and refetching on a phone. */
+function subscribeViewport(onChange: () => void) {
+  const mq = window.matchMedia(MOBILE_MEDIA);
+  mq.addEventListener("change", onChange);
+  return () => mq.removeEventListener("change", onChange);
+}
+function usePerPage(): number | null {
+  return useSyncExternalStore(
+    subscribeViewport,
+    () => (window.matchMedia(MOBILE_MEDIA).matches ? PER_PAGE_MOBILE : PER_PAGE_DESKTOP),
+    () => null,
+  );
+}
 
 /* How many cards the first page currently holds — the skeleton's count before
    `meta` is known; after that it is the size of the page being fetched. */
@@ -50,7 +70,8 @@ function buildPages(current: number, total: number): (number | string)[] {
 export default function Page() {
   const [page, setPage] = usePageParam();
   const { lang } = useLang();
-  const { page: data, meta, loading } = useAllCreators(page, PER_PAGE);
+  const perPage = usePerPage();
+  const { page: data, meta, loading } = useAllCreators(page, perPage);
 
   const totalPages = meta.last_page ?? 1;
   const pageItems = creatorCards(data?.creators, lang);
@@ -89,8 +110,8 @@ export default function Page() {
             {loading ? (
               <CreatorsGridSkeleton
                 count={
-                  typeof meta.total === "number"
-                    ? Math.max(0, Math.min(PER_PAGE, meta.total - (page - 1) * PER_PAGE))
+                  typeof meta.total === "number" && perPage
+                    ? Math.max(0, Math.min(perPage, meta.total - (page - 1) * perPage))
                     : FIRST_PAGE_CARDS
                 }
               />

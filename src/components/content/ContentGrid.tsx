@@ -230,7 +230,7 @@ export default function ContentGrid({
         ))}
       </div>
       {collapsed && (
-        <ContentGridMore hidden={reels.length - preview} onMore={showMore} />
+        <ContentGridMore onMore={showMore} />
       )}
 
       {openIndex !== null && toViewer(openIndex) >= 0 && (
