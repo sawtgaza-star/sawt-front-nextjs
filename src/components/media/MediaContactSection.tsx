@@ -15,13 +15,10 @@ import RichText from "@/components/ui/RichText";
    left, both columns the same height so the photo runs from the headline down
    to the trust row. Stacked, the copy comes first — media.css reorders it.
 
-   Every word comes from GET /pages/media/contact, cards included; only the two
-   photos are the design's own. The still isn't in the payload, and the design
-   reuses one stock portrait for the four faces in the trust row which isn't
-   exported from the design file yet, so the site's placeholder stands in (same
-   as the testimonials cards). */
-const TRUST_PHOTO = encodeURI("/assets/images/Image (أحمد المنصور).png");
-const TRUST_FACES = 4;
+   Every word comes from GET /pages/media/contact, cards included; only the
+   still is the design's own (it isn't in the payload). The trust row's faces
+   are the payload's `trust.avatars` — the clients' logos — every one of them,
+   however many the API sends, last one first; a logo with no url is skipped. */
 
 export default function MediaContactSection({
   intro,
@@ -37,8 +34,16 @@ export default function MediaContactSection({
   const title = localized(intro?.title, lang);
   const body = localizedHtml(intro?.body, lang);
   const cards = contactChannels(channels).filter((c) => localized(c.label, lang));
-  const trustValue = (trust?.value || "").trim();
   const trustLabel = localized(trust?.label, lang);
+  // shown in reverse of the API's order
+  const trustLogos = (Array.isArray(trust?.avatars) ? trust.avatars : [])
+    .filter((avatar) => (avatar?.avatar_url || "").trim())
+    .reverse();
+  /* the number counts the logos actually shown, so the two always agree —
+     the payload's `value` only stands in when there are no logos */
+  const trustValue = trustLogos.length
+    ? String(trustLogos.length)
+    : (trust?.value || "").trim();
 
   return (
     <section className="sm-ct-body">
@@ -62,11 +67,18 @@ export default function MediaContactSection({
 
             {trustValue || trustLabel ? (
               <div className="sm-ct-trust">
-                <span className="sm-ct-avatars" aria-hidden="true">
-                  {Array.from({ length: TRUST_FACES }, (_, i) => (
-                    <img src={TRUST_PHOTO} alt="" key={i} />
-                  ))}
-                </span>
+                {trustLogos.length ? (
+                  <span className="sm-ct-avatars">
+                    {trustLogos.map((avatar, i) => (
+                      <img
+                        src={avatar.avatar_url as string}
+                        alt={avatar.name || ""}
+                        title={avatar.name || undefined}
+                        key={i}
+                      />
+                    ))}
+                  </span>
+                ) : null}
 
                 <span className="sm-ct-trust-text">
                   <span className="sm-ct-stars" aria-hidden="true">

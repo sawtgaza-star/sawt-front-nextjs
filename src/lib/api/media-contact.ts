@@ -48,10 +48,19 @@ export type MediaContactChannel = {
   href?: string | null;
 };
 
+/** One face in the trust row — a client's logo, the same upload as their
+    card in /media's testimonials. */
+export type MediaContactTrustAvatar = {
+  name?: string | null;
+  avatar_url?: string | null;
+};
+
 /** The "+150 عميل يثقون بنا" row under the cards. */
 export type MediaContactTrust = {
   value?: string | null;
+  count?: number | null;
   label?: Localized;
+  avatars?: MediaContactTrustAvatar[] | null;
 };
 
 export type MediaContactPage = {

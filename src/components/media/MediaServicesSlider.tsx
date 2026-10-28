@@ -17,16 +17,18 @@ import type { ServiceCard } from "./MediaServiceCard";
    direction follows it live (transition off), then snaps on release. Touch
    pointers are left alone so a finger on the card still scrolls the page.
 
-   Autoplay runs as soon as the section is on screen; it stops while the mouse
-   moves over the section or something in it has focus, while dragging, while
-   the section is off-screen, and under prefers-reduced-motion. Each card is
-   held for INTERVAL on a wide screen; on a phone the first one turns quickly
-   (PHONE_FIRST) and every later one is held for PHONE_INTERVAL, long enough to
-   read on a small screen. A finger held on the deck holds the card too; it
-   moves on again once the finger lifts. */
-const INTERVAL = 4000;
-const PHONE_FIRST = 4000;
-const PHONE_INTERVAL = 9000;
+   Autoplay runs as soon as the section is on screen; it stops while a mouse
+   button or a finger is held down on the deck (hovering alone doesn't), while
+   something in it has keyboard focus, while dragging, while the section is
+   off-screen, and under prefers-reduced-motion. It moves on again once the
+   button/finger lifts. Each card is held for INTERVAL on a wide screen; on a
+   phone the first one turns quickly (PHONE_FIRST) and every later one is held
+   for PHONE_INTERVAL, long enough to read on a small screen. A stop doesn't
+   reset the card's time: it picks up where it left off, and so does the
+   rail's fill. */
+const INTERVAL = 3000;
+const PHONE_FIRST = 3000;
+const PHONE_INTERVAL = 7000;
 const PHONE_MEDIA = "(max-width: 767.98px)";
 /* how far a drag must travel to count as a page turn, and as a real drag */
 const SNAP = 70;
@@ -38,19 +40,35 @@ export default function MediaServicesSlider({ cards }: { cards: ServiceCard[] })
   const [paused, setPaused] = useState(false);
   const [visible, setVisible] = useState(false);
   const [dragging, setDragging] = useState(false);
-  /* a finger resting on the deck (touch only) */
+  /* a mouse button or a finger held down on the deck */
   const [held, setHeld] = useState(false);
   const [dir, setDir] = useState<"up" | "down" | null>(null);
   /* the countdown to the next card, for the rail's filling tick: a fresh `key`
-     every time the timer (re)starts, so the fill restarts with it; null while
-     autoplay is stopped */
-  const [countdown, setCountdown] = useState<{ key: number; ms: number } | null>(null);
+     per card, so the fill starts over only when the card changes; `running`
+     false freezes it mid-way while autoplay is stopped */
+  const [countdown, setCountdown] = useState<{
+    key: number;
+    ms: number;
+    running: boolean;
+  } | null>(null);
+  /* how long the current card has already been on its timer, across stops */
+  const spent = useRef({ card: -1, ms: 0, key: 0 });
   const viewRef = useRef<HTMLDivElement>(null);
   const drag = useRef<{ id: number; y: number; moved: boolean } | null>(null);
   const swallowClick = useRef(false);
-  /* where the cursor was the last time it was seen over the section — see
-     onSectionPointerMove */
-  const pointer = useRef<{ x: number; y: number } | null>(null);
+
+  /* A mouse button can be let go anywhere — off the deck, or after a click
+     that never captured the pointer — so the hold is released from window. */
+  useEffect(() => {
+    if (!held) return;
+    const release = () => setHeld(false);
+    window.addEventListener("pointerup", release);
+    window.addEventListener("pointercancel", release);
+    return () => {
+      window.removeEventListener("pointerup", release);
+      window.removeEventListener("pointercancel", release);
+    };
+  }, [held]);
 
   useEffect(() => {
     const el = viewRef.current;
@@ -72,21 +90,30 @@ export default function MediaServicesSlider({ cards }: { cards: ServiceCard[] })
   }, []);
 
   useEffect(() => {
-    if (
-      paused ||
-      held ||
-      dragging ||
-      !visible ||
-      window.matchMedia("(prefers-reduced-motion: reduce)").matches
-    ) {
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
       setCountdown(null);
       return;
     }
+    const s = spent.current;
+    if (s.card !== active) spent.current = { card: active, ms: 0, key: s.key + 1 };
+    const { key } = spent.current;
     const phone = window.matchMedia(PHONE_MEDIA).matches;
     const ms = !phone ? INTERVAL : active > 0 ? PHONE_INTERVAL : PHONE_FIRST;
-    setCountdown((c) => ({ key: (c?.key ?? 0) + 1, ms }));
-    const id = window.setTimeout(() => setActive((i) => (i + 1) % count), ms);
-    return () => window.clearTimeout(id);
+    if (paused || held || dragging || !visible) {
+      /* freeze the fill where it is (none yet before the first run) */
+      setCountdown((c) => (c ? { key, ms, running: false } : null));
+      return;
+    }
+    setCountdown({ key, ms, running: true });
+    const start = Date.now();
+    const id = window.setTimeout(
+      () => setActive((i) => (i + 1) % count),
+      Math.max(0, ms - spent.current.ms)
+    );
+    return () => {
+      window.clearTimeout(id);
+      if (spent.current.card === active) spent.current.ms += Date.now() - start;
+    };
   }, [paused, held, dragging, visible, count, active]);
 
   /* dragging up pulls the next card in, dragging down pushes the top one off */
@@ -104,6 +131,7 @@ export default function MediaServicesSlider({ cards }: { cards: ServiceCard[] })
       return;
     }
     if (e.button !== 0) return;
+    setHeld(true);
     swallowClick.current = false;
     drag.current = { id: e.pointerId, y: e.clientY, moved: false };
   };
@@ -144,23 +172,11 @@ export default function MediaServicesSlider({ cards }: { cards: ServiceCard[] })
     else if (dy >= SNAP) setActive((i) => Math.max(0, i - 1));
   };
 
-  /* Scrolling the page under a RESTING cursor fires pointermove all the same —
-     the element under the pointer changes, so the browser reports one at the
-     very same coordinates. That was enough to pause the deck the moment it
-     came into view, and nothing resumed it: mouseleave can't fire for a cursor
-     that never entered deliberately and never leaves. So a move only counts as
-     interaction once the coordinates actually change. */
-  const onSectionPointerMove = (e: React.PointerEvent<HTMLDivElement>) => {
-    if (e.pointerType === "touch") return;
-    const last = pointer.current;
-    pointer.current = { x: e.clientX, y: e.clientY };
-    if (!last || (last.x === e.clientX && last.y === e.clientY)) return;
-    setPaused(true);
-  };
-
-  const onSectionLeave = () => {
-    pointer.current = null;
-    setPaused(false);
+  /* Only keyboard focus pauses: a mouse click focuses the rail's buttons and
+     the card's CTA too, and that would leave the deck stopped until the user
+     happened to click somewhere else. */
+  const onFocus = (e: React.FocusEvent<HTMLDivElement>) => {
+    if (e.target.matches(":focus-visible")) setPaused(true);
   };
 
   /* a drag that ended on a link/button must not also trigger it */
@@ -171,15 +187,10 @@ export default function MediaServicesSlider({ cards }: { cards: ServiceCard[] })
     e.stopPropagation();
   };
 
-  /* Paused by a pointer that MOVES over the section, not by one that merely
-     ends up on it — see onSectionPointerMove for what "moves" has to mean for
-     that to hold. Moving the mouse is the deliberate act; leaving resumes. */
   return (
     <div
       className="sm-services-body"
-      onPointerMove={onSectionPointerMove}
-      onMouseLeave={onSectionLeave}
-      onFocusCapture={() => setPaused(true)}
+      onFocusCapture={onFocus}
       onBlurCapture={() => setPaused(false)}
     >
       <MediaServicesRail

@@ -4,7 +4,8 @@ import { useEffect, useRef } from "react";
 
 /* The "لماذا صوت ميديا" strip. It stays a normal `overflow-x: auto` rail — you
    can still drag/scroll it by hand — but whenever it is on screen it scrolls
-   itself, looping seamlessly because MediaWhy renders the cards twice.
+   itself towards the last card and stops there for good: no loop, no
+   repeated set.
 
    With a mouse, hovering the rail pauses it so a card can be read; it picks up
    again from wherever it stopped (or a manual scroll left it) as the pointer
@@ -46,33 +47,27 @@ export default function MediaWhyStrip({
 
     let raf = 0;
     let offset = 0;
+    /* the drift reached the last card — it never starts again */
+    let done = false;
 
-    /* One loop = the distance from a card to its clone, i.e. the width of one
-       full set. Measured from layout so the rail's own padding never skews it. */
-    const loopWidth = () => {
-      const cards = rail.querySelectorAll<HTMLElement>(".sm-why-card");
-      if (cards.length < 2) return 0;
-      const clone = cards[cards.length / 2];
-      return clone ? Math.abs(clone.offsetLeft - cards[0].offsetLeft) : 0;
-    };
+    const maxScroll = () => rail.scrollWidth - rail.clientWidth;
 
     const step = () => {
-      const loop = loopWidth();
-      if (loop > 0) {
-        offset += speed;
-        if (offset >= loop) offset -= loop;
-        rail.scrollLeft = dir * offset;
+      const max = maxScroll();
+      offset = Math.min(max, offset + speed);
+      rail.scrollLeft = dir * offset;
+      if (offset >= max) {
+        done = true;
+        raf = 0;
+        return;
       }
       raf = requestAnimationFrame(step);
     };
 
     const start = () => {
-      if (raf || reduce.matches) return;
-      // pick up wherever a manual scroll left it — wrapped, should a swipe have
-      // carried it past the first set
-      const loop = loopWidth();
+      if (raf || done || reduce.matches) return;
+      // pick up wherever a manual scroll left it
       offset = Math.abs(rail.scrollLeft);
-      if (loop > 0) offset %= loop;
       raf = requestAnimationFrame(step);
     };
     const stop = () => {

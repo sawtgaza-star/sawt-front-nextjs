@@ -294,12 +294,17 @@ export function useSnapSlider(
      measurement it answers with the opening slide, so the track is painted
      with that slide already at full size instead of growing into it. */
   const activeSlide = stops[active]?.slide ?? initialSlide;
+  /* the pager's arrows go inert at either end — the track never wraps round */
+  const atStart = active <= 0;
+  const atEnd = active >= stops.length - 1;
 
   return {
     trackRef,
     stops,
     active,
     activeSlide,
+    atStart,
+    atEnd,
     onScroll,
     goTo,
     next,

@@ -476,21 +476,6 @@ filter: drop-shadow(0 0 12px rgba(214, 232, 96, 0.75)) drop-shadow(0 4px 10px #0
   outline: 3px solid rgba(76, 92, 55, 0.35);
   outline-offset: 3px;
 }
-/* how many reels are still hidden */
-.ct-grid-more-count {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  min-width: 34px;
-  height: 26px;
-  padding: 0 8px;
-  border-radius: 999px;
-  background: rgba(76, 92, 55, 1);
-  color: #fff;
-  font-size: 13px;
-  font-weight: 700;
-  direction: ltr;
-}
 .ct-grid-more i {
   font-size: 12px;
   transition: transform 0.2s ease;

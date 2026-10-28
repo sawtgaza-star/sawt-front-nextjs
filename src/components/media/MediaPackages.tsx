@@ -27,7 +27,7 @@ export default function MediaPackages({
   lang?: string;
 }) {
   const items = sortItems(data?.items);
-  const { trackRef, stops, active, onScroll, goTo, next, prev, dragProps } =
+  const { trackRef, stops, active, atStart, atEnd, onScroll, goTo, next, prev, dragProps } =
     useSnapSlider(items.length);
 
   if (!data || !items.length) return null;
@@ -89,6 +89,7 @@ export default function MediaPackages({
             type="button"
             className="sm-pager-arrow"
             onClick={prev}
+            disabled={atStart}
             aria-label="السابق"
           >
             <i className="fa-solid fa-angle-right"></i>
@@ -110,6 +111,7 @@ export default function MediaPackages({
             type="button"
             className="sm-pager-arrow"
             onClick={next}
+            disabled={atEnd}
             aria-label="التالي"
           >
             <i className="fa-solid fa-angle-left"></i>

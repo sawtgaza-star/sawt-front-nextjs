@@ -168,6 +168,7 @@ export default function Page() {
         data={page?.hero}
         reelsBlock={page?.reels}
         reelPosters={heroReels}
+        postersPending={rowProbing}
         onSelectReel={selectReel}
         lang={lang}
         loading={loading}

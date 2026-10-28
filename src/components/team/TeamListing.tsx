@@ -20,6 +20,7 @@ import TeamMemberCard from "./TeamMemberCard";
 import { toCards } from "./team-data";
 import { TeamFiltersSkeleton, TeamGridSkeleton } from "./TeamSkeleton";
 import { useTeamPage } from "@/lib/api/use-team-page";
+import type { TeamMember } from "@/lib/api/team";
 import { useLang } from "@/lib/use-lang";
 import { localized } from "@/lib/api/pages";
 
@@ -33,7 +34,14 @@ export default function TeamListing() {
 
   // nothing has arrived yet — as opposed to a filter that is still in flight
   const empty = !page;
-  const members = toCards(page?.members, lang);
+  /* The roster splits on each member's `status`: "active" members are the
+     grid; the rest (the API sends "inactive") move to "أصوات توقفت من صوت"
+     below it. A member with no status counts as active. Both lists follow
+     the selected pill, since the API already filtered the roster by it. */
+  const roster = Array.isArray(page?.members) ? page.members : [];
+  const isActive = (member: TeamMember) => (member.status ?? "active") === "active";
+  const members = toCards(roster.filter(isActive), lang);
+  const formerMembers = toCards(roster.filter((member) => !isActive(member)), lang);
   const majors = Array.isArray(page?.majors) ? page.majors : [];
 
   /* How many cards the grid is about to hold — `members_count` for a named
@@ -110,6 +118,35 @@ export default function TeamListing() {
             )}
           </div>
         </section>
+
+        {!loading && formerMembers.length ? (
+          <section className="team-grid-section team-former-section position-relative">
+            <div className="container">
+              <h2 className="team-members-title">
+                {lang === "en" ? (
+                  <>
+                    <span>Voices that left</span>{" "}
+                    <span className="team-members-highlight">Sawt</span>
+                  </>
+                ) : (
+                  <>
+                    <span>أصوات توقفت من</span>{" "}
+                    <span className="team-members-highlight">صوت</span>
+                  </>
+                )}
+              </h2>
+              <div className="team-grid">
+                {formerMembers.map((member, index) => (
+                  <TeamMemberCard
+                    key={member.uuid || index}
+                    member={member}
+                    linkable={false}
+                  />
+                ))}
+              </div>
+            </div>
+          </section>
+        ) : null}
       </main>
     </>
   );

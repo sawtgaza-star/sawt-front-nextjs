@@ -7,7 +7,8 @@
    `countdown` is the autoplay's time to the next card: while it runs, the
    current tick fills up over exactly that long — down the rail on desktop,
    sideways on the row of dots under the deck (≤991px, media.css); `key`
-   restarts the fill with the timer. */
+   restarts the fill for a new card, and `running` false freezes it mid-way
+   while autoplay is stopped, so it resumes from there. */
 export default function MediaServicesRail({
   titles,
   active,
@@ -16,7 +17,7 @@ export default function MediaServicesRail({
 }: {
   titles: string[];
   active: number;
-  countdown?: { key: number; ms: number } | null;
+  countdown?: { key: number; ms: number; running: boolean } | null;
   onSelect: (i: number) => void;
 }) {
   return (
@@ -34,7 +35,10 @@ export default function MediaServicesRail({
             <span
               className="sm-rail-fill"
               key={countdown.key}
-              style={{ animationDuration: `${countdown.ms}ms` }}
+              style={{
+                animationDuration: `${countdown.ms}ms`,
+                animationPlayState: countdown.running ? "running" : "paused",
+              }}
             ></span>
           ) : null}
         </button>

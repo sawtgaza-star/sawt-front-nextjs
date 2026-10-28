@@ -2802,6 +2802,12 @@ color:#6D6D6D;
 .sm-pager-olive .sm-pager-arrow:hover {
   background: var(--sm-olive-700);
 }
+/* first/last stop: the sliders don't wrap round, so that arrow goes inert */
+.sm-pager-arrow:disabled {
+  opacity: 0.35;
+  cursor: default;
+  pointer-events: none;
+}
 .sm-pager-dots {
   display: inline-flex;
   align-items: center;
@@ -5371,21 +5377,41 @@ transform: rotate(-90deg);
   gap: 12px;
   margin-top: 26px;
 }
+/* the faces are the API's client logos — as many as it sends, so the row
+   wraps (and the stars/label drop under it) instead of running off the page */
+.sm-ct-trust {
+  flex-wrap: wrap;
+}
 .sm-ct-avatars {
   display: flex;
   flex-direction: row;
+  flex-wrap: wrap;
+  row-gap: 6px;
+  /* the first face's start edge cancels the overlap margin on wrapped rows */
+  padding-inline-start: 14px;
+  min-width: 0;
 }
 .sm-ct-avatars img {
   width: 41px;
   height: 41px;
   border-radius: 50%;
   object-fit: cover;
+  /* logos with transparent corners sit on white, not on the page tint */
+  background: #ffffff;
   border: 2px solid #ffffff;
-}
-/* the faces overlap towards the reading direction */
-.sm-ct-avatars img + img {
   margin-inline-start: -14px;
 }
+/* the skeleton's stand-in for a logo (MediaContactSkeleton) */
+.sm-ct-avatar-ph {
+  width: 41px;
+  height: 41px;
+  border-radius: 50%;
+  background: #e9ebe5;
+  border: 2px solid #ffffff;
+  margin-inline-start: -14px;
+}
+/* the faces overlap towards the reading direction (every face carries the
+   -14px start margin; the row's start padding absorbs the first one's) */
 .sm-ct-trust-text {
   display: flex;
   flex-direction: column;

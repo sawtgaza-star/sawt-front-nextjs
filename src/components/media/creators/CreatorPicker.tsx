@@ -8,8 +8,8 @@ import { CcArrow } from "./cc-icons";
 
 /* The row of small creator cards under the spotlight — avatar, name, role
    and a followers tag; the picked one is tinted with an orange dot. It
-   scrolls sideways, and the round arrow moves the pick to the next creator
-   (wrapping round), keeping it in view. */
+   scrolls sideways, and the round arrow moves the pick to the next creator,
+   keeping it in view; at the last one it goes inert (no wrapping round). */
 export default function CreatorPicker({
   creators,
   selected,
@@ -70,7 +70,8 @@ export default function CreatorPicker({
           type="button"
           className="sm-cc-next"
           aria-label={pick(CC_COPY.next, lang)}
-          onClick={() => onSelect((selected + 1) % creators.length)}
+          disabled={selected >= creators.length - 1}
+          onClick={() => onSelect(Math.min(creators.length - 1, selected + 1))}
         >
           <CcArrow />
         </button>

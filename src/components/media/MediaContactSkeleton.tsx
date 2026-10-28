@@ -19,7 +19,7 @@ const CHANNELS: [string, number, number][] = [
   ["whatsapp", 16, 19],
   ["email", 17, 17],
 ];
-const TRUST_PHOTO = encodeURI("/assets/images/Image (أحمد المنصور).png");
+/* plain circles while the clients' logos (trust.avatars) are on their way */
 const TRUST_FACES = 4;
 
 export default function MediaContactSkeleton() {
@@ -66,7 +66,7 @@ export default function MediaContactSkeleton() {
             <div className="sm-ct-trust">
               <span className="sm-ct-avatars" aria-hidden="true">
                 {Array.from({ length: TRUST_FACES }, (_, i) => (
-                  <img src={TRUST_PHOTO} alt="" key={i} />
+                  <span className="sm-ct-avatar-ph" key={i} />
                 ))}
               </span>
               <span className="sm-ct-trust-text">

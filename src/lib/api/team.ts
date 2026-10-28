@@ -69,6 +69,9 @@ export type TeamMember = {
   image?: string | null;
   name?: Localized;
   role?: Localized;
+  /** "active" for the current team; anything else (the API sends
+      "inactive") is a former member — see TeamListing. */
+  status?: string;
   major?: TeamMemberMajor;
 };
 

@@ -9,7 +9,11 @@
    1. the backdrop tone is the median lightness of the top row;
    2. every neutral (gray) pixel within TONE_TOLERANCE of it that is connected
       to the top edge or the sides is cleared (flood fill);
-   3. the mask is softened by one pixel so the hair edge is not jagged.
+   3. whatever is left that doesn't connect to the bottom edge (the subject)
+      is cleared too — text or a logo standing alone on the backdrop;
+   4. the mask is softened by one pixel so the hair edge is not jagged.
+   A photo whose backdrop this can't clear (not flat gray) is rejected — see
+   backdropCleared — and the card keeps its plain zoom.
 
    The image keeps its full frame (no crop), so it lines up 1:1 with the
    original under the same object-fit. Returns a blob: URL of a PNG; results
@@ -29,6 +33,9 @@ const NEUTRAL_SPREAD = 24; // max channel spread for a "gray" pixel
 const TONE_TOLERANCE = 22; // how far from the backdrop tone still counts
 const EDGE_BAND = 3; // px cleared along the top/sides (JPEG edge lines)
 const ERODE = 2; // px the subject is shrunk by, so no backdrop fringe rings the hair
+const BAND_HEIGHT = 0.18; // top share of the photo checked by backdropCleared
+const SIDE_SHARE = 0.25; // width of each side strip it checks
+const MAX_OPAQUE = 0.15; // share of those pixels allowed to survive the cut
 
 const cache = new Map<string, Promise<string>>();
 
@@ -59,11 +66,33 @@ async function run(url: string): Promise<string> {
   ctx.drawImage(img, 0, 0, w, h);
   const data = ctx.getImageData(0, 0, w, h);
   clearBackdrop(data.data, w, h);
+  // a busy backdrop (rubble, a banner, a coloured wall) isn't cleared, and the
+  // whole photo would rise over the card as a block — the caller keeps the
+  // plain zoom instead
+  if (!backdropCleared(data.data, w, h)) throw new Error("backdrop not cleared");
   ctx.putImageData(data, 0, 0);
 
   const blob = await new Promise<Blob | null>((resolve) => canvas.toBlob(resolve, "image/png"));
   if (!blob) throw new Error("toBlob failed");
   return URL.createObjectURL(blob);
+}
+
+/** Whether the cut worked where it shows: the top of the photo is what rises
+    above the card, and outside the (centred) head it must be cleared. Checks
+    the outer quarter on each side of the top band. */
+export function backdropCleared(px: Uint8ClampedArray, w: number, h: number): boolean {
+  const bottom = Math.max(EDGE_BAND + 1, Math.round(h * BAND_HEIGHT));
+  const side = Math.round(w * SIDE_SHARE);
+  let opaque = 0;
+  let n = 0;
+  for (let y = EDGE_BAND; y < bottom; y++) {
+    for (let x = 0; x < w; x++) {
+      if (x >= side && x < w - side) continue;
+      n++;
+      if (px[(y * w + x) * 4 + 3] > 128) opaque++;
+    }
+  }
+  return n === 0 || opaque / n <= MAX_OPAQUE;
 }
 
 /** The pixel work, DOM-free: clears the backdrop in `px` (RGBA, in place). */
@@ -98,6 +127,23 @@ export function clearBackdrop(px: Uint8ClampedArray, w: number, h: number): void
     if (i >= w) stack.push(i - w);
     if (i < total - w) stack.push(i + w);
   }
+
+  // the subject is what reaches the bottom edge: anything kept that doesn't
+  // connect to it — coloured text or a logo on an otherwise-cleared banner —
+  // is an island of backdrop and would float above the card on its own
+  const subject = new Uint8Array(total);
+  for (let x = 0; x < w; x++) stack.push(total - w + x);
+  while (stack.length) {
+    const i = stack.pop()!;
+    if (subject[i] || mark[i]) continue;
+    subject[i] = 1;
+    const x = i % w;
+    if (x > 0) stack.push(i - 1);
+    if (x < w - 1) stack.push(i + 1);
+    if (i >= w) stack.push(i - w);
+    if (i < total - w) stack.push(i + w);
+  }
+  for (let i = 0; i < total; i++) if (!subject[i]) mark[i] = 1;
 
   // a thin frame along the top and sides is always backdrop — a stray edge
   // line there would otherwise show as a border above the head
