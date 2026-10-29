@@ -1,0 +1,33 @@
+/* Smooth page scrolling on phones. Loaded from the root layout, for every
+   route group.
+
+   1. The legacy sheets (style.css, password.css) set `overflow-x: hidden` on
+      both <html> and <body>. `hidden` on one axis forces the other to `auto`,
+      so <body> becomes a second scroll container that never scrolls — and a
+      swipe on a phone (iOS Safari above all) can latch onto it, leaving the
+      page stuck for a moment. `clip` keeps the same "no sideways scroll"
+      without creating a scroll container (what course.css / media.css already
+      did for their pages). `:root` outranks the legacy `html` / `body`
+      selectors whatever the load order; browsers without `clip` keep `hidden`.
+
+   2. Decorative looping animations kept running after they had scrolled out
+      of view, and every one of them cost style + paint work on every frame of
+      the scroll. OffscreenAnimPause marks a page block that is off screen with
+      [data-anim-off]; its animations hold their frame there and carry on from
+      it when the block comes back, so nothing on screen changes. Dialogs,
+      modals and the (pinnable) navbar are left alone — they can be on screen
+      while the block that holds them is not. */
+
+@supports (overflow: clip) {
+  :root,
+  :root body {
+    overflow-x: clip;
+  }
+}
+
+[data-anim-off],
+[data-anim-off] :not(.modal, .modal *, [role="dialog"], [role="dialog"] *, .navbar, .navbar *),
+[data-anim-off] :not(.modal, .modal *, [role="dialog"], [role="dialog"] *, .navbar, .navbar *)::before,
+[data-anim-off] :not(.modal, .modal *, [role="dialog"], [role="dialog"] *, .navbar, .navbar *)::after {
+  animation-play-state: paused !important;
+}

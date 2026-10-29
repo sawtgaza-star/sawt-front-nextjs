@@ -28,6 +28,10 @@ function isAvatar(img: HTMLImageElement) {
 
 function handle(img: HTMLImageElement) {
   if (!img.isConnected || img.dataset.imgFallback) return;
+  // A team mic starts on the build's cutout, which is missing for a mic
+  // uploaded after the deploy; MicCutouts then swaps in its own cutout (or
+  // the raw upload). Hiding it here kept that swapped-in mic invisible.
+  if (img.dataset.micSrc) return;
 
   if (isAvatar(img)) {
     img.dataset.imgFallback = "avatar";

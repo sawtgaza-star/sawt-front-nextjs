@@ -5,6 +5,9 @@ import BackToTop from "@/components/site/BackToTop";
 import ScrollRestorer from "@/components/site/ScrollRestorer";
 import SessionKeepAlive from "@/components/site/SessionKeepAlive";
 import BrokenImageGuard from "@/components/site/BrokenImageGuard";
+import OffscreenAnimPause from "@/components/site/OffscreenAnimPause";
+/* no nested body scroller + off-screen animations paused (phones) */
+import "@/styles/mobile-scroll.css";
 
 /* The title here doubles as the home page's: (main)/page.tsx is a Client
    Component, and Next.js reads `metadata` from Server Components only, so `/`
@@ -54,6 +57,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       {children}
       <BackToTop />
       <ScrollRestorer />
+      <OffscreenAnimPause />
       <SessionKeepAlive />
       <BrokenImageGuard />
       <NetworkErrorScreen />

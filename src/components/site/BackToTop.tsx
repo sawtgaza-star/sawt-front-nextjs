@@ -19,7 +19,14 @@ export default function BackToTop() {
   const [shown, setShown] = useState(false);
 
   useEffect(() => {
-    const onScroll = () => setShown(window.scrollY > SHOW_AFTER);
+    // React only hears about crossing SHOW_AFTER, not every scroll frame
+    let last: boolean | null = null;
+    const onScroll = () => {
+      const next = window.scrollY > SHOW_AFTER;
+      if (next === last) return;
+      last = next;
+      setShown(next);
+    };
     onScroll();
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
