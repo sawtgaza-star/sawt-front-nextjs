@@ -10,6 +10,7 @@ import {
 import type { MediaWorkItem } from "@/lib/api/media-page";
 import { useLang } from "@/lib/use-lang";
 import MediaWorksFilterPanel, { type WorksFacet } from "./MediaWorksFilterPanel";
+import MediaWorksFilterSheet from "./MediaWorksFilterSheet";
 import MediaWorksTile, { type TileWork } from "./MediaWorksTile";
 
 /* Body of /media/works: the filter sidebar (right, as the design lays it out
@@ -23,6 +24,23 @@ import MediaWorksTile, { type TileWork } from "./MediaWorksTile";
    is also why the old initTranslate() replay after a filter change is gone: it
    would now be rewriting React's own text. The empty-state line is the one
    string the payload doesn't send, so it reads the dictionary directly. */
+type Selection = Record<string, string[]>;
+
+const countTicks = (picked: Selection) =>
+  Object.values(picked).reduce((n, values) => n + values.length, 0);
+
+/* OR inside a panel, AND across panels; an empty panel doesn't narrow */
+function filterWorks(projects: MediaWorkItem[], facets: WorksFacet[], picked: Selection) {
+  return projects.filter((work) =>
+    facets.every((facet) => {
+      const values = picked[facet.key] || [];
+      if (!values.length) return true;
+      const value = workFacetValue(work, facet.key);
+      return value !== undefined && values.includes(value);
+    }),
+  );
+}
+
 function resolveFacet(facet: MediaWorksFacet | undefined, lang: string): WorksFacet | null {
   const key = facet?.key;
   if (!key) return null;
@@ -48,7 +66,12 @@ export default function MediaWorksBrowser({
   lang?: string;
 }) {
   const { tr } = useLang();
-  const [selected, setSelected] = useState<Record<string, string[]>>({});
+  /* `selected` is what the grid shows. On desktop every tick applies at once,
+     so `draft` just mirrors it; in the phone sheet ticks only touch `draft`,
+     and "show results" is what copies it over (see MediaWorksFilterSheet). */
+  const [selected, setSelected] = useState<Selection>({});
+  const [draft, setDraft] = useState<Selection>({});
+  const [inSheet, setInSheet] = useState(false);
 
   const facets = useMemo(
     () =>
@@ -58,8 +81,8 @@ export default function MediaWorksBrowser({
     [filters, lang],
   );
 
-  const toggle = (facetKey: string, value: string) =>
-    setSelected((prev) => {
+  const toggle = (facetKey: string, value: string) => {
+    const next = (prev: Selection) => {
       const current = prev[facetKey] || [];
       return {
         ...prev,
@@ -67,19 +90,21 @@ export default function MediaWorksBrowser({
           ? current.filter((x) => x !== value)
           : [...current, value],
       };
-    });
+    };
+    setDraft(next);
+    if (!inSheet) setSelected(next);
+  };
 
-  const works = useMemo(() => {
-    const projects = sortItems(items);
-    return projects.filter((work) =>
-      facets.every((facet) => {
-        const picked = selected[facet.key] || [];
-        if (!picked.length) return true;
-        const value = workFacetValue(work, facet.key);
-        return value !== undefined && picked.includes(value);
-      }),
-    );
-  }, [items, facets, selected]);
+  const projects = useMemo(() => sortItems(items), [items]);
+  const works = useMemo(
+    () => filterWorks(projects, facets, selected),
+    [projects, facets, selected],
+  );
+  // what "show results (N)" would give — the sheet's live preview
+  const draftResults = useMemo(
+    () => filterWorks(projects, facets, draft).length,
+    [projects, facets, draft],
+  );
 
   const tiles: TileWork[] = works.map((work) => ({
     photo: work.image_url || "",
@@ -94,16 +119,33 @@ export default function MediaWorksBrowser({
     <section className="sm-wp-body">
       <div className="container">
         <div className="sm-wp-layout">
-          <aside className="sm-wp-side">
+          <MediaWorksFilterSheet
+            activeCount={countTicks(selected)}
+            draftCount={countTicks(draft)}
+            resultCount={draftResults}
+            onOpenChange={(open) => {
+              setInSheet(open);
+              setDraft(selected); // open fresh, and a dismissed sheet drops its ticks
+            }}
+            onClear={() => {
+              setInSheet(false);
+              setDraft({});
+              setSelected({});
+            }}
+            onApply={() => {
+              setInSheet(false);
+              setSelected(draft);
+            }}
+          >
             {facets.map((facet) => (
               <MediaWorksFilterPanel
                 key={facet.key}
                 facet={facet}
-                selected={selected[facet.key] || []}
+                selected={draft[facet.key] || []}
                 onToggle={toggle}
               />
             ))}
-          </aside>
+          </MediaWorksFilterSheet>
 
           <div className="sm-wp-grid">
             {tiles.map((tile, index) => (

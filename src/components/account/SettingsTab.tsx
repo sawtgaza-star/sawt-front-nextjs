@@ -1,4 +1,6 @@
 import { useLang } from "@/lib/use-lang";
+import { IconNavLogout } from "@/components/ui/icons";
+import NavLogoutButton from "@/components/site/NavLogoutButton";
 import AccountInfoForm from "./AccountInfoForm";
 import ChangePasswordForm from "./ChangePasswordForm";
 import type { AccountUser } from "./account-user";
@@ -39,6 +41,16 @@ export default function SettingsTab({
             <button type="button" className="acc-link-btn" onClick={() => onView("password")}>
               {tr("acc_password_change")}
             </button>
+          </div>
+          <div className="acc-card acc-logout-card">
+            <div className="acc-logout-text">
+              <h2 className="acc-card-title">{tr("acc_logout_title")}</h2>
+              <p className="acc-card-desc">{tr("acc_logout_desc")}</p>
+            </div>
+            <NavLogoutButton className="acc-logout-btn">
+              <IconNavLogout />
+              <span>{tr("acc_logout_btn")}</span>
+            </NavLogoutButton>
           </div>
         </>
       ) : null}

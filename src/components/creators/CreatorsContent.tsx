@@ -60,7 +60,7 @@ export default function CreatorsContent() {
   useEffect(() => {
     if (loading) return;
     import("@/lib/owl-sliders").then(({ initOwlSliders }) => initOwlSliders());
-  }, [loading]);
+  }, [loading, lang]);
 
   return (
     <>
@@ -71,7 +71,10 @@ export default function CreatorsContent() {
           <CreatorsSkeleton />
         ) : (
           <>
+            {/* keyed by `lang`: a toggle remounts the slider so Owl rebuilds it
+                in the new direction (RTL in Arabic, LTR in English) */}
             <CreatorsGrid
+              key={lang}
               data={page?.grid}
               contentTypes={page?.join?.form?.content_types}
               lang={lang}

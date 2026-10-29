@@ -398,7 +398,18 @@
   .ps-pill-title {
     writing-mode: horizontal-tb;
     transform: none;
-    margin-top: 1rem;
+    /* Arabic glyphs need room above/below — a tight line-height clips them
+       on some phones; on narrow screens the title shrinks/wraps instead of
+       running past the card's clipped edge. */
+    line-height: 1.4;
+    min-width: 0;
+    white-space: normal;
+    letter-spacing: 0;
+    font-size: clamp(1.25rem, 5.5vw, 1.75rem);
+  }
+
+  .ps-pill-icon {
+    flex: none;
   }
 
   .ps-pill {

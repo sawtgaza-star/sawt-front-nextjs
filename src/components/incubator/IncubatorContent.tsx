@@ -61,9 +61,9 @@ export default function IncubatorContent() {
             <LatestEvents data={page?.events} lang={lang} />
             <IncubatorAlbum data={page?.gallery} lang={lang} />
             <ExpertsTeam data={page?.experts} lang={lang} />
-            <IncubatorFaq data={page?.faq} lang={lang} />
             <GraduatesPartners data={page?.employers} lang={lang} />
             <IncubatorTestimonials data={page?.testimonials} lang={lang} />
+            <IncubatorFaq data={page?.faq} lang={lang} />
           </>
         )}
       </main>

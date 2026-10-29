@@ -93,6 +93,13 @@ export default function HomeContent({
     };
   }, [loading, version]);
 
+  // A language toggle remounts the four carousels (their keys carry `lang`) so
+  // Owl rebuilds them in the new direction — RTL in Arabic, LTR in English.
+  useEffect(() => {
+    if (loading) return;
+    import("@/lib/owl-sliders").then(({ initOwlSliders }) => initOwlSliders());
+  }, [loading, lang]);
+
   // …and the two that also have to follow every language toggle.
   useEffect(() => {
     if (loading) return;
@@ -124,12 +131,12 @@ export default function HomeContent({
         ) : (
           <>
             <SoutSection data={page?.who_we_are} lang={lang} />
-            <LatestNews key={contentKey(page?.news)} data={page?.news} lang={lang} />
-            <ContentCreators key={contentKey(page?.creators)} data={page?.creators} lang={lang} />
+            <LatestNews key={`${lang}-${contentKey(page?.news)}`} data={page?.news} lang={lang} />
+            <ContentCreators key={`${lang}-${contentKey(page?.creators)}`} data={page?.creators} lang={lang} />
             <PlatformSections data={page?.platform_sections} lang={lang} />
             <MidBanner data={page?.partners} lang={lang} />
-            <RealStories key={contentKey(page?.stories)} data={page?.stories} lang={lang} />
-            <TeamSection key={contentKey(page?.team)} data={page?.team} lang={lang} />
+            <RealStories key={`${lang}-${contentKey(page?.stories)}`} data={page?.stories} lang={lang} />
+            <TeamSection key={`${lang}-${contentKey(page?.team)}`} data={page?.team} lang={lang} />
             <JoinUs data={page?.join_cta} lang={lang} />
             <Reviews data={page?.reviews} lang={lang} />
           </>

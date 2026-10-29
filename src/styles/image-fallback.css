@@ -1,0 +1,15 @@
+/* Missing / broken images, site-wide — see BrokenImageGuard.tsx.
+
+   The guard marks a broken non-avatar image (and a box it was the only thing
+   in) as hidden. */
+[data-img-fallback="hidden"] {
+  display: none !important;
+}
+
+/* An avatar box the API gave no photo at all (its <img> is not rendered) gets
+   the same person icon the guard swaps broken avatar photos to
+   (person-icon.ts). Skeleton blocks, letter avatars, badges, placeholders and
+   the stacked-avatar groups are left alone. */
+[class*="avatar"]:empty:not([class*="sk"]):not([class*="smk"]):not([class*="badge"]):not([class*="-ph"]):not([class*="avatars"]):not([class*="initial"]):not([class*="indicator"]):not(.is-letter):not(.is-empty) {
+  background: url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2064%2064%22%3E%3Crect%20width%3D%2264%22%20height%3D%2264%22%20fill%3D%22%23E9EBE5%22%2F%3E%3Ccircle%20cx%3D%2232%22%20cy%3D%2225%22%20r%3D%2211%22%20fill%3D%22%239AA38F%22%2F%3E%3Cpath%20d%3D%22M12%2058c2-11%2010-17%2020-17s18%206%2020%2017z%22%20fill%3D%22%239AA38F%22%2F%3E%3C%2Fsvg%3E") center / cover no-repeat;
+}

@@ -1490,6 +1490,41 @@ svg {
   transform: scaleX(-1);
 }
 
+/* English: the sliders run left-to-right (lib/owl-sliders), so "previous"
+   moves to the left edge and "next" to the right — the mirror of the rules
+   below; the flip above already turns each arrow to face its new side */
+[dir="ltr"] .owl-nav .owl-prev {
+  right: auto;
+  left: -50px;
+}
+
+[dir="ltr"] .owl-nav .owl-next {
+  left: auto;
+  right: -50px;
+}
+
+[dir="ltr"] .team-carousel .owl-prev {
+  margin-right: 0;
+  margin-left: -25px;
+}
+
+[dir="ltr"] .team-carousel .owl-next {
+  margin-left: 0;
+  margin-right: -25px;
+}
+
+@media (max-width: 768px) {
+  [dir="ltr"] .owl-prev {
+    margin-right: 0 !important;
+    margin-left: 50px !important;
+  }
+
+  [dir="ltr"] .owl-next {
+    margin-left: 0 !important;
+    margin-right: 50px !important;
+  }
+}
+
 /* .owl-nav button:hover {
   background-color: rgba(222, 222, 222, 1) !important;
   color: rgba(145, 145, 145, 1) !important;
@@ -4148,6 +4183,11 @@ svg {
   color: rgba(72, 72, 72, 1);
 }
 
+/* وصف "أعضاء فريقنا" عادي لا عريض، بطلب المالك */
+.team-section .describ-p {
+  font-weight: 400;
+}
+
 .bg-scattered-photos {
   position: absolute;
   top: 0;
@@ -4380,6 +4420,11 @@ svg {
 
 .btn-view-profile:hover {
   background-color: rgb(229, 233, 223) !important;
+}
+
+/* English: the arrow points forward, i.e. to the right */
+[dir="ltr"] .btn-view-profile i {
+  transform: scaleX(-1);
 }
 
 .team-carousel .owl-nav {
@@ -8451,7 +8496,8 @@ svg {
 
   .sout-mobile-lead {
     font-size: 16px;
-    font-weight: 600;
+    /* وصف عادي لا عريض، بطلب المالك (كان 600) */
+    font-weight: 400;
   }
 
   .sout-mobile .image-swat {
@@ -8820,6 +8866,8 @@ svg {
 
   .team-section .describ-p {
     font-size: 16px;
+    /* وصف عادي لا عريض، بطلب المالك */
+    font-weight: 400;
   }
 
   /* القاعدة العامة ‎.owl-carousel .item{height:320px}‎ كانت تقصّ أسفل المايك
@@ -8851,10 +8899,11 @@ svg {
   }
 
   /* "عرض الملف الشخصي" في سطر واحد: خط أصغر وحشوة أقل حتى يتسع الزر للكلمتين */
+  /* ثم كُبّر قليلاً بطلب المالك: خط 12px وحشوة 8×14 (كان 10px و6×10) */
   .btn-view-profile {
-    font-size: 10px;
+    font-size: 12px;
     white-space: nowrap;
-    padding: 6px 10px;
+    padding: 8px 14px;
     gap: 6px;
   }
 
@@ -8898,23 +8947,17 @@ svg {
   }
 
   /* phones: not the desktop photo — "كون صوت 2.png" instead, cropped to the
-     shorter card, under a very light dark wash */
-  .join-creator-banner {
+     shorter card, under a very light dark wash. Every join banner shares it
+     (home/creators, incubator, about); the skeletons' placeholder spans
+     reuse these classes, so only banners with a real <img> are touched. */
+  .join-us-banner:has(> img.join-us-bg),
+  .join-us-banner-about:not(:has(> span.join-us-bg-about)) {
     background:
       linear-gradient(rgba(0, 0, 0, 0.18), rgba(0, 0, 0, 0.18)),
       url("/assets/images/كون صوت 2.png") center / cover no-repeat;
   }
-  .join-creator-banner .join-us-bg {
-    display: none;
-  }
-  /* the about page's banner, same idea: its photo's dark green room, the
-     orange sound wave glowing across the middle, the black of the desk below */
-  .join-us-banner-about {
-    background:
-      radial-gradient(ellipse 70% 38% at 45% 62%, rgba(234, 130, 40, 0.42) 0%, rgba(234, 130, 40, 0) 70%),
-      linear-gradient(170deg, #3b4a3a 0%, #283428 45%, #1a211b 75%, #121612 100%);
-  }
-  .join-us-banner-about .join-us-bg-about {
+  .join-us-banner > img.join-us-bg,
+  .join-us-banner-about > img.join-us-bg-about {
     display: none;
   }
 
@@ -8949,6 +8992,16 @@ svg {
     width: 96%;
     padding: 16px 0 !important;
     background: transparent;
+  }
+
+  /* the reviews close the home page: <main>'s my-5 already leaves room, so
+     the footer's 50px !important top margin is dropped here */
+  body:has(.reviews-section) .footer-shell.footer-shell {
+    margin-top: 0 !important;
+  }
+  /* …and <main>'s own my-5 (48px) under the reviews is cut down too */
+  main.my-5:has(.reviews-section) {
+    margin-bottom: 8px !important;
   }
 
   .reviews-section::before {

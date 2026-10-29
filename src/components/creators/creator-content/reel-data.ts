@@ -10,6 +10,8 @@
    numbers are Instagram's), so the visitor's own like / save / comment stay
    in the page's memory on top of these — see reel-social.ts. */
 
+import type { HomeReelCollaborator } from "@/lib/api/home";
+import { reelCollaborators } from "@/components/home/reviews/reel-meta";
 import type { Localized } from "@/lib/api/pages";
 import { localized } from "@/lib/api/pages";
 
@@ -45,8 +47,9 @@ export type ApiReelSocial = {
   /** Instagram insights — null unless the backend's token is scoped for them */
   views?: number | null;
   reach?: number | null;
-  /** usernames of the post's collaborators */
-  collaborators?: string[] | null;
+  /** the post's collaborators — plain usernames, or invite objects
+      ({ username, invite_status }) as on the home reels */
+  collaborators?: (string | HomeReelCollaborator)[] | null;
   /** category slugs the reel is filed under */
   categories?: string[] | null;
 };
@@ -165,7 +168,9 @@ export function reelDetails(item: ApiReelSocial, lang = "ar"): ReelDetails {
     postedAt: item.posted_at || "",
     views: maybeCount(item.views),
     reach: maybeCount(item.reach),
-    collaborators: names(item.collaborators),
+    /* reelCollaborators, not names(): the API sends objects here, which
+       String() printed as "@[object Object]" */
+    collaborators: reelCollaborators(item.collaborators ?? undefined, item.username || ""),
     categories: names(item.categories),
   };
 }

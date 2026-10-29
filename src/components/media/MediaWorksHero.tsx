@@ -39,7 +39,7 @@ export default function MediaWorksHero({
 
   return (
     <header
-      className={`sm-wp-hero sm-wp-hero-plain${loading ? " hero-bg-loading" : ""}`}
+      className={`sm-wp-hero sm-wp-hero-plain sm-wp-hero-works${loading ? " hero-bg-loading" : ""}`}
       style={
         image
           ? ({ "--sm-wp-hero-img": `url("${image}")` } as CSSProperties)

@@ -120,19 +120,7 @@
   transform: scale(1.08);
 }
 
-/* dark gradient over the bottom of the photo */
-.latest-news .news-card::before,
-.nws-related .news-card::before {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 224px;
-  z-index: 1;
-  background: linear-gradient(to top, rgba(0, 0, 0, 0.5), transparent);
-  pointer-events: none;
-}
+/* (photo overlay removed on request: the news photos show untinted) */
 
 /* the body sits above the zoomed photo, so the zoom never spills into it */
 .latest-news .news-card .card-body,
@@ -323,6 +311,28 @@ html.sawt-anim .nws-related .news-card .readmore:hover .arrow,
     width: 80vw;
   }
 
+  /* edge to edge: style.css leaves the section's container a 10px start
+     gutter (and none at the end); the strip takes that gutter back and the
+     stage keeps it as padding on both sides, so it moves to the other side
+     once the row is slid to its end (edgeToEdge in lib/owl-sliders) */
+  .latest-news .creators-carousel {
+    width: calc(100% + 10px);
+    margin-inline-start: -10px;
+  }
+  /* English: Owl's .owl-rtl makes the strip itself direction:rtl, so the
+     logical margin above lands on its right while the container's gutter is
+     on the left — take the gutter back on the left instead */
+  [dir="ltr"] .latest-news .creators-carousel {
+    margin-right: 0;
+    margin-left: -10px;
+  }
+  .latest-news .creators-carousel .owl-stage {
+    padding-inline: 10px;
+    /* Owl's inline width is the cards' track alone: the padding goes
+       outside it, or the last card wraps onto a second line */
+    box-sizing: content-box;
+  }
+
   .latest-news .creators-carousel .news-card {
     max-width: 360px;
   }
@@ -332,6 +342,8 @@ html.sawt-anim .nws-related .news-card .readmore:hover .arrow,
   .latest-news .news-card .card-footer,
   .nws-related .news-card .card-footer {
     padding-inline: 0.9rem;
+    /* !important: style.css forces every .card-footer to 30px on phones */
+    padding-bottom: 1rem !important;
     gap: 6px;
   }
 
@@ -340,6 +352,7 @@ html.sawt-anim .nws-related .news-card .readmore:hover .arrow,
   .latest-news .news-card .card-body,
   .nws-related .news-card .card-body {
     padding-inline: 0.9rem;
+    padding-top: 1rem;
   }
 
   .latest-news .news-card .card-footer > span:first-child,

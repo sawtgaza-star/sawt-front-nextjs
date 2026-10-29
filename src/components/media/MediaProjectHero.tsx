@@ -1,3 +1,4 @@
+import type { CSSProperties } from "react";
 import { localized } from "@/lib/api/pages";
 import type { MediaWorkHeroContent } from "@/lib/api/media-work";
 import { ctaHref } from "./media-page-view";
@@ -16,7 +17,11 @@ import SkeletonText from "@/components/ui/SkeletonText";
    The banner is NOT conditional on the payload: <MediaNav /> lives inside it
    and its `.language-btn` is bound once by initTranslate(), so the shell is on
    screen from the first paint and only its text is drawn as bars while
-   `loading` — see MediaHero for the full reasoning. */
+   `loading` — see MediaHero for the full reasoning.
+
+   The payload's photo goes in `--sm-wp-hero-img`, not an inline
+   `background-image`: an inline style would outrank the phone rule's
+   `background: none` and keep the collage on mobile. */
 export default function MediaProjectHero({
   data,
   lang = "ar",
@@ -33,8 +38,12 @@ export default function MediaProjectHero({
 
   return (
     <header
-      className={`sm-wp-hero sm-wp-hero-plain${loading ? " hero-bg-loading" : ""}`}
-      style={image ? { backgroundImage: `url("${image}")` } : undefined}
+      className={`sm-wp-hero sm-wp-hero-plain sm-wp-hero-project${loading ? " hero-bg-loading" : ""}`}
+      style={
+        image
+          ? ({ "--sm-wp-hero-img": `url("${image}")` } as CSSProperties)
+          : undefined
+      }
     >
       <span className="sm-wp-hero-veil" aria-hidden="true" />
 

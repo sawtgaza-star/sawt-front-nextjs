@@ -245,6 +245,24 @@ background-color: rgb(229, 233, 223);
     rgba(255, 255, 255, 0) 100%
   );
 }
+/* Phone: both glows are wider than the screen and overlap across the whole
+   hero, so the olive is lightened (about half its desktop strength) */
+@media (max-width: 767.98px) {
+  .sm-hero-glow-right {
+    background: radial-gradient(
+      42.49% 42.49% at 50% 50%,
+      rgba(43, 74, 26, 0.08) 0%,
+      rgba(255, 255, 255, 0) 100%
+    );
+  }
+  .sm-hero-glow-left {
+    background: radial-gradient(
+      42.49% 42.49% at 50% 50%,
+      rgba(43, 74, 26, 0.13) 0%,
+      rgba(255, 255, 255, 0) 100%
+    );
+  }
+}
 
 /* ---- navbar ---- */
 /* the bar rides over the hero's washes, glows and photo deck */
@@ -270,6 +288,20 @@ background-color: rgb(229, 233, 223);
 }
 .sm-nav-back:hover {
   background: rgba(76, 92, 55, 0.08);
+}
+/* the chevron sits right beside the label, at its start edge; it takes the
+   link's colour so it turns white with it on the dark banners */
+.sm-nav-back {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+.sm-nav-back i {
+  font-size: 11px;
+  color: inherit;
+}
+[dir="ltr"] .sm-nav-back i {
+  transform: rotate(180deg);
 }
 
 .sm-nav {
@@ -435,21 +467,6 @@ background-color: rgb(229, 233, 223);
   opacity: 1;
   visibility: visible;
   transform: none;
-}
-/* the bar gives up its bottom corners for as long as the panel hangs off it.
-   The delay is on the way back only: closing rounds them again once the panel
-   has faded, so the joint is never seen coming apart.
-   Scoped below lg like the panel itself, so resizing up to the desktop bar
-   while it is open can't leave that bar squared off with nothing under it. */
-@media (max-width: 991.98px) {
-  .sm-nav {
-    transition: border-radius 0.2s ease 0.18s;
-  }
-  html.sm-drawer-open .sm-nav {
-    border-bottom-left-radius: 0;
-    border-bottom-right-radius: 0;
-    transition-delay: 0s;
-  }
 }
 /* Set on <html> while the panel is up (MediaNavMobile).
    The panel is nested deep inside the page, so its own z-index only ever
@@ -1100,6 +1117,32 @@ html.sm-drawer-open .sm-nav-wrap > .container {
 .sm-services-body {
   position: relative;
 }
+/* The scroll deals the cards (MediaServicesSlider): the track is taller than
+   the deck by one step of scrolling per card, and the deck sticks inside it at
+   the `top` the slider measures. */
+.sm-services-track {
+  position: relative;
+}
+.sm-services-stick {
+  position: sticky;
+}
+/* the slider writes each card's transform from the scroll position, so the
+   card follows the scroll exactly — no easing lag behind it */
+.sm-services-view.is-scrubbed {
+  cursor: auto;
+  /* the next card waits below the deck, outside it — so nothing is clipped */
+  overflow: visible;
+}
+.sm-services-view.is-scrubbed .sm-svc-slide {
+  transition: none;
+}
+/* sticky needs the viewport as its scrollport: legacy style.css's
+   `body { overflow-x: hidden }` turns the body into a scroll container that
+   never scrolls, so nothing inside could stick. `clip` keeps the no-sideways-
+   scroll behaviour without that (same fix as course.css). */
+body:has(.sm-page) {
+  overflow-x: clip;
+}
 
 /* the slider viewport: every slide shares one grid cell, so the box is as tall
    as the tallest card and the slides move against each other inside it */
@@ -1158,10 +1201,9 @@ html.sm-drawer-open .sm-nav-wrap > .container {
   transform: translateY(0) scale(1);
   opacity: 1;
 }
-/* the lip of shadow that makes the top card sit on the one it covers */
+/* no shadow on the cards or their photos (removed on request) */
 .sm-svc-slide > .sm-svc {
   height: 100%;
-  box-shadow: 0 -18px 42px rgba(0, 0, 0, 0.14);
 }
 
 /* the thin scroll rail down the section's far edge — also the pagination */
@@ -1341,13 +1383,30 @@ html.sm-drawer-open .sm-nav-wrap > .container {
   border-radius: 18px;
   overflow: hidden;
   aspect-ratio: 4 / 3;
-  box-shadow: 0 14px 34px rgba(0, 0, 0, 0.18);
 }
 .sm-svc-media img {
   width: 100%;
   height: 100%;
   object-fit: cover;
   display: block;
+  transition: transform 0.6s cubic-bezier(0.2, 0.7, 0.3, 1);
+}
+/* hovering the card spreads its photo out inside the frame */
+.sm-svc:hover .sm-svc-media img {
+  transform: scale(1.08);
+}
+/* the whole card is the service's link: a hit area stretched over it, above
+   the copy and the photo (z 1), with the CTA raised over it so the button
+   keeps its own hover */
+.sm-svc-hit {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  border-radius: inherit;
+}
+.sm-svc-btn {
+  position: relative;
+  z-index: 3;
 }
 
 /* ---- per-card palettes, straight from the design ----
@@ -1431,7 +1490,9 @@ html.sm-drawer-open .sm-nav-wrap > .container {
 .sm-why-strip {
   display: flex;
   gap: 28px;
-  overflow-x: auto;
+  /* not hand-scrollable: the drift (MediaWhyStrip) never stops, and a
+     swipe's momentum would fight it — scrollLeft still moves it */
+  overflow-x: hidden;
   padding: 22px 0 34px;
   padding-inline-start: 30px;
   padding-inline-end: max(24px, calc((100vw - 1140px) / 2));
@@ -1442,29 +1503,27 @@ html.sm-drawer-open .sm-nav-wrap > .container {
 .sm-why-strip::-webkit-scrollbar {
   display: none;
 }
+/* each repeat of the cards (MediaWhyStrip's loop) is invisible to layout:
+   its cards are flex items of the strip itself, gaps included */
+.sm-why-set {
+  display: contents;
+}
+/* smaller than the design's 356px card, and no hover (the tilt is gone) */
 .sm-why-card {
   position: relative;
-  flex: 0 0 356px;
-  border-radius: 24px;
+  flex: 0 0 290px;
+  border-radius: 20px;
   border: 1px solid var(--sm-gray-300);
   background: #ffffff;
-  padding: 30px 28px 34px;
+  padding: 24px 22px 26px;
   text-align: start;
-  transition: transform 0.35s cubic-bezier(0.2, 0.7, 0.3, 1),
-    box-shadow 0.35s ease;
-}
-/* hover tilts the card, as the design's hover state shows it */
-.sm-why-card:hover,
-.sm-why-card:focus-within {
-  transform: rotate(-3deg) translateY(-6px);
-  z-index: 2;
 }
 /* --sm-why-accent is set per card (media-why-data.tsx) and is the same design
    token that paints that card's icon */
 .sm-why-dot {
   position: absolute;
-  top: 34px;
-  inset-inline-end: 28px;
+  top: 28px;
+  inset-inline-end: 22px;
   width: 10px;
   height: 10px;
   border-radius: 50%;
@@ -1472,8 +1531,8 @@ html.sm-drawer-open .sm-nav-wrap > .container {
 }
 .sm-why-icon svg,
 .sm-why-icon img {
-  width: 70px;
-  height: 70px;
+  width: 56px;
+  height: 56px;
 }
 /* the icon is an upload (GET /pages/media → why[].icon_url), so it is an <img>
    at whatever aspect ratio the editor saved it — contain rather than stretch */
@@ -1492,23 +1551,14 @@ html.sm-drawer-open .sm-nav-wrap > .container {
   );
 }
 .sm-why-card-title {
-  margin: 20px 0 0;
-  font-size: 24px;
+  margin: 16px 0 0;
+  font-size: 20px;
 }
 .sm-why-card-desc {
-  margin: 12px 0 0;
-  font-size: 15px;
-  line-height: 30px;
+  margin: 10px 0 0;
+  font-size: 14px;
+  line-height: 26px;
   color: #7F7F7F;
-}
-@media (prefers-reduced-motion: reduce) {
-  .sm-why-card {
-    transition: none;
-  }
-  .sm-why-card:hover,
-  .sm-why-card:focus-within {
-    transform: none;
-  }
 }
 @media (max-width: 575.98px) {
   .sm-why-strip {
@@ -1516,8 +1566,8 @@ html.sm-drawer-open .sm-nav-wrap > .container {
     padding-inline-start: 16px;
   }
   .sm-why-card {
-    flex: 0 0 min(300px, 82vw);
-    padding: 24px 22px 26px;
+    flex: 0 0 min(250px, 72vw);
+    padding: 20px 18px 22px;
   }
   .sm-why-dot {
     top: 28px;
@@ -1773,6 +1823,10 @@ html.sm-drawer-open .sm-nav-wrap > .container {
   border-radius: 20px;
   background: #EDEFEB;
   overflow: hidden;
+}
+/* the phones' two-row wall — shown in place of this one under 768px */
+.sm-works-wall.sm-works-wall-phone {
+  display: none;
 }
 .sm-works-col {
   overflow: hidden;
@@ -2434,6 +2488,15 @@ color:#6D6D6D;
 .sm-select option[value=""] {
   color: #b6b6b6;
 }
+/* nothing picked yet: the prompt reads as a placeholder (the select has no
+   `required`, so :invalid above never matches) — the real choices in the
+   open list keep the normal ink */
+.sm-select:has(option[value=""]:checked) {
+  color: #b6b6b6;
+}
+.sm-select option:not([value=""]) {
+  color: var(--sm-ink);
+}
 
 .sm-form-submit {
   width: 100%;
@@ -2719,6 +2782,8 @@ color:#6D6D6D;
 }
 .sm-pkg-orange .sm-pkg-cta {
   border-color: var(--sm-orange-300);
+  /* label (and chevron) in the same colour as the stroke */
+  color: var(--sm-orange-300) !important;
 }
 .sm-pkg-orange .sm-pkg-cta:hover {
   background: var(--sm-orange-300);
@@ -2739,6 +2804,8 @@ color:#6D6D6D;
 }
 .sm-pkg-olive .sm-pkg-cta {
   border-color: var(--sm-olive-400);
+  /* label (and chevron) in the same colour as the stroke */
+  color: var(--sm-olive-400) !important;
 }
 .sm-pkg-olive .sm-pkg-cta:hover {
   background: var(--sm-olive-400);
@@ -2759,6 +2826,8 @@ color:#6D6D6D;
 }
 .sm-pkg-gray .sm-pkg-cta {
   border-color: var(--sm-gray-800);
+  /* label (and chevron) in the same colour as the stroke */
+  color: var(--sm-gray-800) !important;
 }
 .sm-pkg-gray .sm-pkg-cta:hover {
   background: var(--sm-gray-800);
@@ -3332,12 +3401,12 @@ color:#6D6D6D;
     margin-top: 12px;
   }
   .sm-wp-crumb {
-    font-size: 13px !important;
-    line-height: 16px;
+    font-size: 12px !important;
+    line-height: 15px;
   }
   .sm-wp-hero-plain .sm-wp-hero-title {
-    font-size: 20px;
-    line-height: 1.25;
+    font-size: 18px;
+    line-height: 1.3;
   }
   /* keep the headline off the screen edges */
   .sm-wp-hero-plain .sm-wp-hero-text {
@@ -3439,9 +3508,14 @@ color:#6D6D6D;
   }
   .sm-about-desc {
     margin: 0;
-    font-size: 12px;
-    line-height: 26px;
+    font-size: 14px;
+    line-height: 28px;
     text-align: start;
+  }
+  /* the bold heading line inside the description (from the dashboard) */
+  .sm-about-desc strong,
+  .sm-about-desc b {
+    font-size: 16px;
   }
 
   .sm-about-collage {
@@ -3504,6 +3578,17 @@ color:#6D6D6D;
   .sm-stat-label {
     margin-top: 4px;
     font-size: 12px;
+    /* one line each ("حملة إعلامية منفذة" used to break in two) */
+    white-space: nowrap;
+  }
+  /* equal quarters were too narrow for the longest label, so on the phone
+     each stat takes the width its text needs and the row shares the rest */
+  .sm-stats-row {
+    flex-wrap: nowrap;
+    justify-content: space-between;
+  }
+  .sm-stats-row > .sm-stat {
+    flex: 1 1 auto;
   }
 
   /* ---- services: copy over a near-square still ---- */
@@ -3673,6 +3758,13 @@ color:#6D6D6D;
     width: 220px;
     height: 220px;
     border-radius: 10px;
+  }
+  /* phones draw the two-row wall (see MediaWorks) in place of the three-row one */
+  .sm-works-wall:not(.sm-works-wall-phone) {
+    display: none;
+  }
+  .sm-works-wall.sm-works-wall-phone {
+    display: flex;
   }
   .sm-pj-head {
     align-items: center !important  ;
@@ -3974,10 +4066,18 @@ background: rgba(0, 0, 0, 0.40);
   gap: 26px;
   align-items: start;
 }
-.sm-wp-side {
+.sm-wp-side,
+.sm-wp-sheet-body {
   display: flex;
   flex-direction: column;
   gap: 20px;
+}
+/* mobile-only pieces of the filter sheet (MediaWorksFilterSheet) */
+.sm-wp-filter-btn,
+.sm-wp-backdrop,
+.sm-wp-sheet-head,
+.sm-wp-sheet-foot {
+  display: none;
 }
 
 .sm-wp-panel {
@@ -4162,12 +4262,149 @@ background: rgba(0, 0, 0, 0.40);
   .sm-wp-layout {
     grid-template-columns: minmax(0, 1fr);
   }
-  .sm-wp-side {
-    flex-direction: row;
-    flex-wrap: wrap;
+  /* below lg the filters live in a bottom sheet opened by a button */
+  .sm-wp-filter-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    justify-self: start;
+    padding: 10px 18px;
+    border-radius: 999px;
+    border: 1px solid var(--sm-gray-300);
+    background: #ffffff;
+    color: #1e1e1e;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
   }
-  .sm-wp-panel {
-    flex: 1 1 260px;
+  .sm-wp-filter-count {
+    min-width: 22px;
+    height: 22px;
+    padding: 0 6px;
+    border-radius: 999px;
+    background: var(--sm-olive-500);
+    color: #ffffff;
+    font-size: 12px;
+    line-height: 22px;
+    text-align: center;
+  }
+  .sm-wp-backdrop {
+    display: block;
+    position: fixed;
+    inset: 0;
+    z-index: 1060;
+    background: rgba(0, 0, 0, 0.45);
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.25s ease, visibility 0.25s ease;
+  }
+  .sm-wp-backdrop.is-open {
+    opacity: 1;
+    visibility: visible;
+  }
+  /* the body's .container is z-index 10 inside .sm-page (a z-index: 0
+     context), and the footer's z-index-10 .container sits after .sm-page in
+     <body> — so both are lifted while the sheet is open, as the nav drawer
+     does with `.sm-drawer-open .sm-page` */
+  .sm-page:has(.sm-wp-side.is-open) {
+    z-index: 2500;
+  }
+  .sm-wp-body .container:has(.sm-wp-side.is-open) {
+    z-index: 1061;
+  }
+  .sm-wp-side {
+    position: fixed;
+    inset-inline: 0;
+    bottom: 0;
+    z-index: 1061;
+    max-height: 85vh;
+    max-height: 85dvh;
+    gap: 0;
+    background: #ffffff;
+    border-radius: 20px 20px 0 0;
+    box-shadow: 0 -8px 30px rgba(0, 0, 0, 0.12);
+    transform: translateY(100%);
+    visibility: hidden;
+    transition: transform 0.3s ease, visibility 0.3s ease;
+  }
+  .sm-wp-side.is-open {
+    transform: none;
+    visibility: visible;
+  }
+  .sm-wp-sheet-head {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 22px 20px 12px;
+    border-bottom: 1px solid #eeeeee;
+  }
+  .sm-wp-sheet-grip {
+    position: absolute;
+    top: 8px;
+    left: 50%;
+    width: 40px;
+    height: 4px;
+    margin-left: -20px;
+    border-radius: 4px;
+    background: #d9d9d9;
+  }
+  .sm-wp-sheet-title {
+    margin: 0;
+    font-size: 18px;
+    color: #1e1e1e;
+  }
+  .sm-wp-sheet-close {
+    border: 0;
+    background: transparent;
+    color: #5a5a5a;
+    font-size: 28px;
+    line-height: 1;
+    padding: 0 4px;
+    cursor: pointer;
+  }
+  /* min-height: 0 lets the list shrink below its content inside the capped
+     sheet and scroll — without it the sheet outgrows short screens and its
+     foot (clear / show results) falls off the bottom */
+  .sm-wp-sheet-head,
+  .sm-wp-sheet-foot {
+    flex: 0 0 auto;
+  }
+  .sm-wp-sheet-body {
+    flex: 1 1 auto;
+    min-height: 0;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    padding: 16px 20px;
+    gap: 16px;
+  }
+  .sm-wp-sheet-foot {
+    display: flex;
+    gap: 12px;
+    padding: 12px 20px calc(12px + env(safe-area-inset-bottom));
+    border-top: 1px solid #eeeeee;
+  }
+  .sm-wp-sheet-foot button {
+    flex: 1 1 0;
+    padding: 12px;
+    border-radius: 999px;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+  }
+  .sm-wp-sheet-clear {
+    border: 1px solid var(--sm-olive-500);
+    background: #ffffff;
+    color: var(--sm-olive-500);
+  }
+  .sm-wp-sheet-clear:disabled {
+    opacity: 0.45;
+    cursor: default;
+  }
+  .sm-wp-sheet-apply {
+    border: 1px solid var(--sm-olive-500);
+    background: var(--sm-olive-500);
+    color: #ffffff;
   }
   .sm-wp-hero-title {
     font-size: 28px;
@@ -4217,8 +4454,13 @@ background: rgba(0, 0, 0, 0.40);
     background-image: none;
     -webkit-text-fill-color: currentColor;
   }
+  /* the filter button sits right under the heading on phones (the works
+     listing only — the other plain banners keep their own bottom room) */
+  .sm-wp-hero-works .sm-wp-hero-text {
+    padding-bottom: 6px;
+  }
   .sm-wp-body {
-    padding: 34px 0 0px;
+    padding: 0;
   }
   .sm-wp-grid {
     grid-template-columns: minmax(0, 1fr);
@@ -4248,6 +4490,10 @@ background: rgba(0, 0, 0, 0.40);
   grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
   gap: 34px;
   align-items: center;
+}
+/* no still in the payload: the identity takes the whole row */
+.sm-pj-intro-row-solo {
+  grid-template-columns: minmax(0, 1fr);
 }
 .sm-pj-shot {
   margin: 0;
@@ -4816,7 +5062,12 @@ transform: rotate(-90deg);
   /* ---- intro: the identity stacks over the still (the row is already one
      column from 992px down), and the whole block steps down a type size ---- */
   .sm-pj-intro {
-    padding: 32px 0 20px;
+    padding: 14px 0 20px;
+  }
+  /* …and the case-study banner above it keeps only a little room under its
+     headline, so the two don't stack a wide white gap (on request) */
+  .sm-wp-hero-project .sm-wp-hero-text {
+    padding-bottom: 10px;
   }
   .sm-pj-intro-row {
     gap: 18px;
@@ -5558,6 +5809,11 @@ transform: rotate(-90deg);
    the hero clips everything else it holds, so only the bar shows the change. */
 .sm-wp-hero:has(.sm-nav-wrap.is-pinned) {
   z-index: 1030;
+}
+/* …and any other ancestor stops trapping it, on every صوت ميديا page
+   (dropped to auto, not raised — see site-nav.css). */
+body *:has(.sm-nav-wrap.is-pinned):not(.sm-wp-hero) {
+  z-index: auto !important;
 }
 .sm-nav-wrap.is-pinned.is-scroll-hidden {
   transform: translateY(calc(-100% - 20px));

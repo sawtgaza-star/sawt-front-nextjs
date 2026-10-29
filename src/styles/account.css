@@ -419,6 +419,57 @@ a.acc-btn-primary:hover {
   color: #6D6D6D;
 }
 
+/* ---- sign out (الإعدادات) ---------------------------------------------------- */
+.acc-logout-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.acc-logout-card .acc-card-desc {
+  margin-bottom: 0;
+}
+
+.acc-logout-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  height: 46px;
+  padding: 0 22px;
+  border: 1px solid #C0392B;
+  border-radius: 100px;
+  background: #FFFFFF;
+  color: #C0392B;
+  font-size: 15px;
+  font-weight: 700;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.acc-logout-btn svg {
+  width: 20px;
+  height: 20px;
+}
+
+[dir="ltr"] .acc-logout-btn svg {
+  transform: scaleX(-1);
+}
+
+.acc-logout-btn:hover {
+  background: #C0392B;
+  color: #FFFFFF;
+}
+
+@media (max-width: 575px) {
+  .acc-logout-btn {
+    width: 100%;
+  }
+}
+
 .acc-photo-row {
   display: flex;
   align-items: center;
@@ -910,6 +961,44 @@ ul.acc-msg {
 .acc-collab-add:hover {
   background: var(--acc-olive);
   color: #fff;
+}
+
+/* phones: the cards take the site slider's size (.creators-carousel2 under
+   600px — 58px stage padding, 12px gap, 275px portrait) and a longer list
+   swipes sideways, snapping card by card */
+@media (max-width: 599.98px) {
+  .acc-creators-grid {
+    display: flex;
+    gap: 12px;
+    overflow-x: auto;
+    overscroll-behavior-x: contain;
+    scroll-snap-type: x mandatory;
+    /* the row runs edge to edge of the screen (the container's gutter
+       pulled back on both sides) and keeps that gutter as padding: at rest
+       the first card lines up with the page's content and the next ones run
+       off the other edge; swiped to the end, the last card lines up there */
+    /* style.css's phone gutter for every .container */
+    --acc-gutter: 10px;
+    padding: 18px var(--acc-gutter) 4px;
+    margin-inline: calc(-1 * var(--acc-gutter));
+    scroll-padding-inline: var(--acc-gutter);
+    scrollbar-width: none;
+  }
+  .acc-creators-grid::-webkit-scrollbar {
+    display: none;
+  }
+  .acc-creators-grid > * {
+    /* the home slider's card (home-creator-card.css: 100vw − 10px − 2 × 58px);
+       this row's content box is 100vw − 2 × 10px */
+    flex: 0 0 calc(100% + 10px - 2 * 58px);
+    scroll-snap-align: start;
+  }
+  /* doubled class: outranks home-creator-card.css's .cr-creators-grid 240px */
+  .cr-creators-grid.acc-creators-grid .cc-card-pop,
+  .cr-creators-grid.acc-creators-grid .cc-card-portrait,
+  .cr-creators-grid.acc-creators-grid .cc-card-stage {
+    height: 275px;
+  }
 }
 
 @media (max-width: 575.98px) {

@@ -1779,9 +1779,11 @@ background: var(--White, #FFF);
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  background: #fff;
+  /* "متابعة" is the primary action (filled); once followed it turns into the
+     outlined "إلغاء المتابعة" (.is-following, below) */
+  background: #4c5c37;
   border: 1px solid #4C5C37;
-  color: #4c5c37;
+  color: #fff;
   border-radius: 24px;
   padding: 6px 14px;
   font-size: 14px;
@@ -1789,8 +1791,11 @@ background: var(--White, #FFF);
   cursor: pointer;
   transition: background 0.2s ease, color 0.2s ease;
 }
+.cr-profile-follow svg path {
+  fill: #fff;
+}
 .cr-profile-follow:hover {
-  background: #EDEFEB;
+  background: #3d4a2c;
 }
 .cr-profile-role {
   font-size: 18px;
@@ -2503,27 +2508,17 @@ background: var(--White, #FFF);
 .cr-reel-follow:hover {
   background: rgba(255, 255, 255, 0.16);
 }
-/* following: the real verified badge — a blue seal with a white tick. The
-   tick is cut out of the seal (evenodd), so a small white disc behind it is
-   what shows through; no ring around the button any more. */
+/* following: a filled white pill with the person+tick glyph — not the blue
+   seal, which is the "verified account" badge and means something else */
 .cr-reel-follow.is-following {
-  border-color: transparent;
-  color: #0095f6;
-  background: radial-gradient(circle, #fff 0 34%, transparent 36%);
-  filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.35));
+  background: #fff;
+  color: #4c5c37;
 }
 .cr-reel-follow.is-following:hover {
-  color: #1877f2;
-  background: radial-gradient(circle, #fff 0 34%, transparent 36%);
+  background: rgba(255, 255, 255, 0.85);
 }
 .cr-reel-follow svg {
   display: block;
-}
-/* the seal reads smaller than the person+ glyph at the same box, so the
-   followed state gets a bigger one — still inside the 34px button */
-.cr-reel-follow.is-following svg {
-  width: 28px;
-  height: 28px;
 }
 /* "تمت المتابعة", beside the button once it is on. Selector carries
    .cr-reel-user so it beats the 18px/700 of `.cr-reel-user span` above. */
@@ -3775,14 +3770,14 @@ display:none;
 /* "متابعة" once the creator is followed — reads "إلغاء المتابعة" (see
    CreatorProfileHero / lib/follows). */
 .cr-profile-follow.is-following {
-  background: #4c5c37;
-  color: #fff;
+  background: #fff;
+  color: #4c5c37;
 }
 .cr-profile-follow.is-following svg path {
-  fill: #fff;
+  fill: #4c5c37;
 }
 .cr-profile-follow.is-following:hover {
-  background: #3d4a2c;
+  background: #EDEFEB;
 }
 
 /* ---------- "ابرز التعاونات" on a creator's page (CreatorCollaborations) ----------
@@ -3814,11 +3809,31 @@ display:none;
   }
 }
 
+/* three to a row; a 4th card starts the next row under the first. With only
+   one or two cards the columns keep the same third-width and sit centred
+   instead of hugging the start side. */
 .cr-collab-cards {
+  --cr-collab-col: calc((100% - 40px) / 3);
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 360px));
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   justify-content: center;
   gap: 20px;
+}
+.cr-collab-cards:has(> :last-child:nth-child(1)) {
+  grid-template-columns: var(--cr-collab-col);
+}
+.cr-collab-cards:has(> :last-child:nth-child(2)) {
+  grid-template-columns: repeat(2, var(--cr-collab-col));
+}
+/* tablets: two to a row */
+@media (max-width: 991.98px) {
+  .cr-collab-cards,
+  .cr-collab-cards:has(> :last-child:nth-child(2)) {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .cr-collab-cards:has(> :last-child:nth-child(1)) {
+    grid-template-columns: calc((100% - 20px) / 2);
+  }
 }
 
 /* letter square on the start side, then the name and the field's tag */
@@ -3875,7 +3890,7 @@ display:none;
   border-radius: 999px;
   font-size: 13px;
   color: #3a3a3a;
-  /* follows the tag's own dir — a wrapped English field reads from the left */
+  /* follows the card's (= the site's) direction */
   text-align: start;
   overflow-wrap: anywhere;
 }
@@ -3892,7 +3907,10 @@ display:none;
     padding: 10px 0 30px;
   }
 
-  .cr-collab-cards {
+  /* the :has() variants too — they outrank the bare class */
+  .cr-collab-cards,
+  .cr-collab-cards:has(> :last-child:nth-child(1)),
+  .cr-collab-cards:has(> :last-child:nth-child(2)) {
     grid-template-columns: 1fr;
     gap: 12px;
   }

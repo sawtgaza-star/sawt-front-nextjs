@@ -39,13 +39,18 @@ export default function MediaServices({
   return (
     <section className="sm-services" id="sm-services">
       <div className="container">
-        <MediaSectionHead
-          pill={localized(data.eyebrow, lang)}
-          title={localized(data.title, lang)}
-          sub={localizedHtml(data.subtitle, lang)}
+        {/* the heading is pinned with the deck, so it stays on screen while
+            the scroll deals the cards */}
+        <MediaServicesSlider
+          cards={cards}
+          head={
+            <MediaSectionHead
+              pill={localized(data.eyebrow, lang)}
+              title={localized(data.title, lang)}
+              sub={localizedHtml(data.subtitle, lang)}
+            />
+          }
         />
-
-        <MediaServicesSlider cards={cards} />
       </div>
     </section>
   );

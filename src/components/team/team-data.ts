@@ -13,26 +13,62 @@ import type { TeamMember, TeamSocials } from "@/lib/api/team";
 /** Shown when a member has no uploaded photo. */
 export const PLACEHOLDER_PHOTO = "/assets/images/team.png";
 
-/* The social row of the profile. The payload is an object keyed by platform;
-   this is the order the mock draws them in and the Font Awesome class each
-   one uses — a platform the member left empty is simply skipped. */
-const SOCIAL_ICONS: { key: keyof TeamSocials; icon: string; label: string }[] = [
-  { key: "instagram", icon: "fa-instagram", label: "Instagram" },
-  { key: "twitter", icon: "fa-twitter", label: "Twitter" },
-  { key: "linkedin", icon: "fa-linkedin-in", label: "LinkedIn" },
-  { key: "facebook", icon: "fa-facebook-f", label: "Facebook" },
+/* The social row of the profile. The payload is a list of { label, url } in
+   the editor's order; each platform's Font Awesome class is found from the
+   label first ("X / Twitter" → twitter), then from the URL's host when the
+   label is one this list doesn't know. An entry with neither draws a generic
+   link icon rather than vanishing. */
+const SOCIAL_ICONS: { match: string[]; icon: string; label: string }[] = [
+  { match: ["instagram"], icon: "fa-instagram", label: "Instagram" },
+  { match: ["twitter", "x.com"], icon: "fa-twitter", label: "Twitter" },
+  { match: ["linkedin"], icon: "fa-linkedin-in", label: "LinkedIn" },
+  { match: ["facebook", "fb.com"], icon: "fa-facebook-f", label: "Facebook" },
+  { match: ["behance"], icon: "fa-behance", label: "Behance" },
+  { match: ["github"], icon: "fa-github", label: "GitHub" },
+  { match: ["youtube", "youtu.be"], icon: "fa-youtube", label: "YouTube" },
+  { match: ["tiktok"], icon: "fa-tiktok", label: "TikTok" },
+  { match: ["dribbble"], icon: "fa-dribbble", label: "Dribbble" },
 ];
+
+const FALLBACK_ICON = "fa-solid fa-link";
 
 export type TeamSocialLink = { icon: string; label: string; href: string };
 
-/** The member's links, in the mock's order, without the ones they don't use. */
+function findPlatform(text: string) {
+  const lower = text.toLowerCase();
+  return SOCIAL_ICONS.find((entry) => entry.match.some((m) => lower.includes(m)));
+}
+
+function hostOf(url: string): string {
+  try {
+    return new URL(url).hostname;
+  } catch {
+    return "";
+  }
+}
+
+/** The member's links, in the order they arrive, without empty ones. */
 export function toSocialLinks(socials: TeamSocials | undefined): TeamSocialLink[] {
   if (!socials) return [];
-  return SOCIAL_ICONS.filter((entry) => socials[entry.key]).map((entry) => ({
-    icon: entry.icon,
-    label: entry.label,
-    href: socials[entry.key] as string,
-  }));
+
+  // Older payload: an object keyed by platform.
+  const entries = Array.isArray(socials)
+    ? socials
+    : Object.entries(socials).map(([label, url]) => ({ label, url }));
+
+  return entries
+    .filter((entry): entry is { label?: string | null; url: string } =>
+      Boolean(entry?.url),
+    )
+    .map((entry) => {
+      const platform =
+        findPlatform(entry.label || "") || findPlatform(hostOf(entry.url));
+      return {
+        icon: platform ? `fab ${platform.icon}` : FALLBACK_ICON,
+        label: entry.label || platform?.label || hostOf(entry.url),
+        href: entry.url,
+      };
+    });
 }
 
 /** One member as the card draws it: already in the reader's language, so it

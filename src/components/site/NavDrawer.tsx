@@ -5,7 +5,6 @@ import { useEffect, useRef } from "react";
 import {
   IconNavAccount,
   IconNavLogin,
-  IconNavLogout,
   IconNavMic,
   IconNavSearch,
 } from "@/components/ui/icons";
@@ -15,8 +14,6 @@ import { socialMark } from "./social-icons";
 import NavLinks from "./NavLinks";
 import NavPills from "./NavPills";
 import NavAccountAvatar from "./NavAccountAvatar";
-import NavNotifications from "./NavNotifications";
-import NavLogoutButton from "./NavLogoutButton";
 import { firstName } from "./NavUserMenu";
 
 /* Phone/tablet menu (<992px): drops down from under the header card, at the
@@ -93,22 +90,24 @@ export default function NavDrawer({ nav, loading, open, onClose }) {
               </span>
             </span>
           </div>
+          {/* a new platform: signing up is the primary action, so "أنشئ حساب"
+              comes first and filled; "تسجيل الدخول" is the outlined one */}
           <div className="nav-drawer-auth">
-            <a className="nav-drawer-btn is-filled" href={nav.login.url}>
+            <a className="nav-drawer-btn is-filled" href={nav.register.url}>
+              <span>
+                {loading ? <span className="nsk-line" style={{ width: "60px" }} /> : nav.register.label}
+              </span>
+            </a>
+            <a className="nav-drawer-btn is-outline" href={nav.login.url}>
               <IconNavLogin />
               <span>
                 {loading ? <span className="nsk-line" style={{ width: "70px" }} /> : nav.login.label}
               </span>
             </a>
-            <a className="nav-drawer-btn is-outline" href={nav.register.url}>
-              <span>
-                {loading ? <span className="nsk-line" style={{ width: "60px" }} /> : nav.register.label}
-              </span>
-            </a>
           </div>
         </div>
 
-        {/* Signed in: who, a way to the profile, and the bell */}
+        {/* Signed in: who, and a way to the profile */}
         <div className="nav-drawer-card nav-drawer-user nav-authed-only">
           <a className="nav-drawer-who" href="/account#profile" onClick={onClose}>
             <span className="nav-drawer-avatar">
@@ -119,7 +118,6 @@ export default function NavDrawer({ nav, loading, open, onClose }) {
               <span data-i18n="nav_view_profile">عرض الملف الشخصي</span>
             </span>
           </a>
-          <NavNotifications className="nav-icon-btn" />
         </div>
 
         <div className="nav-drawer-search">
@@ -190,10 +188,6 @@ export default function NavDrawer({ nav, loading, open, onClose }) {
                   );
                 })}
           </div>
-          <NavLogoutButton className="nav-drawer-logout nav-authed-only">
-            <IconNavLogout />
-            <span data-i18n="nav_logout_short">خروج</span>
-          </NavLogoutButton>
         </div>
       </div>
     </div>

@@ -102,12 +102,12 @@ export default function TeamMemberProfile({
                   {socials.map((social) => (
                     <a
                       href={social.href}
-                      key={social.icon}
+                      key={social.href}
                       aria-label={social.label}
                       target="_blank"
                       rel="noreferrer"
                     >
-                      <i className={`fab ${social.icon}`}></i>
+                      <i className={social.icon}></i>
                     </a>
                   ))}
                 </div>

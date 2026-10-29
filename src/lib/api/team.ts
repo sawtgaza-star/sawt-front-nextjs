@@ -84,15 +84,21 @@ export type TeamPage = {
 
 /* ------------------------------------------------- one member's profile */
 
-/** The profile's social links, keyed by platform. A platform the member
-    doesn't use is absent rather than empty, so the icon row renders only what
-    is actually there. */
-export type TeamSocials = {
-  instagram?: string | null;
-  twitter?: string | null;
-  linkedin?: string | null;
-  facebook?: string | null;
-};
+/** One of the profile's social links: the platform the editor picked
+    ("LinkedIn", "X / Twitter", "Behance", …) and the member's URL on it. */
+export type TeamSocialEntry = { label?: string | null; url?: string | null };
+
+/** The profile's social links. The API sends a list of { label, url } in the
+    editor's order; the older payload was an object keyed by platform, still
+    accepted so either shape draws (see components/team/team-data). */
+export type TeamSocials =
+  | TeamSocialEntry[]
+  | {
+      instagram?: string | null;
+      twitter?: string | null;
+      linkedin?: string | null;
+      facebook?: string | null;
+    };
 
 export type TeamMemberDetail = {
   uuid?: string;

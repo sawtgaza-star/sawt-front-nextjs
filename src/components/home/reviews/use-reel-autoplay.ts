@@ -12,7 +12,15 @@ import { useEffect, type RefObject } from "react";
 
    Browsers refuse to start a video with sound before the visitor has
    interacted with the page: it tries with sound, falls back to muted, and
-   the visitor's first tap or key press anywhere turns the sound back on. */
+   the visitor's first tap or key press anywhere turns the sound back on.
+
+   While the "انضم إلينا" modal (#joinModal) is open, every reel is paused and
+   none starts; closing it hands playback back if the column is still in view. */
+
+/** The join modal is showing (lib/legacy-home toggles `.is-open` on it). */
+function joinModalOpen(modal: Element | null): boolean {
+  return !!modal?.classList.contains("is-open");
+}
 
 function setPlaying(item: Element, playing: boolean) {
   const overlay = item.querySelector<HTMLElement>(".play-overlay");
@@ -56,7 +64,10 @@ export function useReelAutoplay(ref: RefObject<HTMLElement | null>, enabled: boo
        on it leaves it alone, so a reel the visitor paused stays paused */
     let lastAuto: HTMLElement | null = null;
 
+    const joinModal = document.getElementById("joinModal");
+
     const play = async () => {
+      if (joinModalOpen(joinModal)) return;
       const item = currentReel(container);
       lastAuto = item;
       const video = item?.querySelector("video");
@@ -126,8 +137,16 @@ export function useReelAutoplay(ref: RefObject<HTMLElement | null>, enabled: boo
     container.addEventListener("scroll", onScroll, { passive: true });
     container.addEventListener("scrollend", settle);
 
+    /* the join modal opening pauses the reels; closing it resumes autoplay */
+    const modalObserver = new MutationObserver(() => {
+      if (joinModalOpen(joinModal)) pauseAll();
+      else if (inView) void play();
+    });
+    if (joinModal) modalObserver.observe(joinModal, { attributes: true, attributeFilter: ["class"] });
+
     return () => {
       observer.disconnect();
+      modalObserver.disconnect();
       window.clearTimeout(settleTimer);
       container.removeEventListener("scroll", onScroll);
       container.removeEventListener("scrollend", settle);

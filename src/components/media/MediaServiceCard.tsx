@@ -21,7 +21,11 @@ export type ServiceCard = {
 
    Everything the card says is GET /pages/media's; the palette and which side
    the photo takes are the design's, decided by the card's position in the list
-   (see MediaServicesSlider). */
+   (see MediaServicesSlider).
+
+   The whole card opens the service page: `.sm-svc-hit` is a link stretched
+   over the card (under the CTA, which stays its own link on top), labelled
+   with the title for screen readers. Hovering the card zooms its photo. */
 export default function MediaServiceCard({
   service,
   reverse,
@@ -35,6 +39,12 @@ export default function MediaServiceCard({
         "sm-svc sm-svc-" + service.theme + (reverse ? " sm-svc-reverse" : "")
       }
     >
+      <a
+        className="sm-svc-hit"
+        href={service.href}
+        aria-label={service.title}
+        tabIndex={-1}
+      ></a>
       <div className="sm-svc-copy">
         <span className="sm-svc-watermark" aria-hidden="true">
           {service.number}

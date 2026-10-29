@@ -1,0 +1,25 @@
+/* About page, phones: more room between sections that sat almost touching.
+   Doubled classes outrank style.css's mobile block; margins only, so the
+   legacy paddings (some !important) are left as they are. */
+@media (max-width: 767.98px) {
+  /* the intro image (with its "صوت" leaf) → the platform card */
+  .about-the-platform.about-the-platform {
+    margin-top: 48px;
+  }
+  /* the card itself: style.css's ≤992px block leaves it `padding: 0 12px`,
+     so the image and the last line touched its top and bottom edges */
+  .about-the-platform-card.about-the-platform-card {
+    padding-top: 20px;
+    padding-bottom: 20px;
+  }
+  /* platform card → "أهم القيم" heading: style.css's 90px !important top
+     padding left a 114px gap; 16px + the platform section's 24px bottom
+     padding = 40px, the same as every other gap on the page */
+  .core-values-section.core-values-section {
+    padding-top: 16px !important;
+  }
+  /* the core-values cards → the "قصة صوت" panel */
+  .sawt-story-section.sawt-story-section {
+    margin-top: 40px;
+  }
+}

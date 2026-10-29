@@ -857,6 +857,14 @@
   .nws-related-track > .item {
     flex: 0 0 80vw;
   }
+  /* edge to edge, as the home slider: the container keeps only a 10px start
+     gutter here; the strip takes it back and pads both sides with it, so the
+     gutter moves to the other side once the row is slid to its end */
+  .nws-related-track {
+    margin-inline-start: -10px;
+    padding-inline: 10px;
+    scroll-padding-inline: 10px;
+  }
 }
 
 /* a story card's `footer_title`, when it differs from the headline (StoryCard) */

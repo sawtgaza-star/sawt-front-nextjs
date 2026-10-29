@@ -53,9 +53,9 @@
    text-fill beats each title's own `color`. Left out on purpose: the
    incubator and the media landing heroes, whose titles are dark ink on a
    light background — a white fill would vanish there. The about page's
-   "صوت لمن لا صوت له" is plain white instead, on request. */
+   "صوت لمن لا صوت له" and the course page's title are plain white instead,
+   on request. */
 .cr-hero-title,
-.crs-hero-title,
 .sm-wp-hero-title {
   background-image: linear-gradient(to bottom, #fff, #9ca3af);
   -webkit-background-clip: text;
@@ -63,6 +63,32 @@
   -webkit-text-fill-color: transparent;
 }
 
-.about-hero-title {
+.about-hero-title,
+.crs-hero-title {
   color: #fff;
+}
+
+/* ---------- Phone: one size for every breadcrumb hero's text ----------
+   The صوت ميديا case-study banner's sizes (media.css), applied to all the
+   inner-page heroes on request: 18px headline, 12px breadcrumb. Size only —
+   each page still decides whether its title shows on a phone (most hide it).
+   !important because the page sheets (creators/content/support/course/
+   style.css) load after this one and set their own phone sizes. The creator
+   profile (.cr-detail-header) is left out: its title is the creator's name in
+   the profile card, not a page heading. */
+@media (max-width: 767.98px) {
+  .cr-header:not(.cr-detail-header) .cr-hero-title,
+  .about-hero-title,
+  .crs-hero-title,
+  .sm-wp-hero-title {
+    font-size: 18px !important;
+    line-height: 1.3 !important;
+  }
+  .cr-header:not(.cr-detail-header) .cr-breadcrumb,
+  .about-breadcrumb,
+  .crs-breadcrumb,
+  .sm-wp-crumb {
+    font-size: 12px !important;
+    line-height: 15px !important;
+  }
 }

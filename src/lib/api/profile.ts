@@ -91,7 +91,8 @@ function findCollaborations(data: any): unknown {
 export type FollowedCreator = {
   /** The profile route segment — /creators/{uuid}. */
   uuid: string;
-  name: string;
+  /** `{ ar, en }` from the API, or a plain string. */
+  name: Localized | string;
   avatar: string | null;
   role?: Localized;
   followers?: number | null;
@@ -115,7 +116,7 @@ export function normalizeFollowed(row: any): FollowedCreator | null {
   if (!uuid) return null;
   return {
     uuid: String(uuid),
-    name: String(c.name ?? c.username ?? ""),
+    name: c.name && typeof c.name === "object" ? c.name : String(c.name ?? c.username ?? ""),
     avatar: assetUrl(c.avatar_url ?? c.avatar ?? null) || null,
     role: c.role,
     followers: num(c.followers_count ?? c.stats?.followers),

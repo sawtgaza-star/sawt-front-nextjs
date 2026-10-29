@@ -55,7 +55,8 @@
   position: relative;
   isolation: isolate;
   overflow: visible;
-  background: linear-gradient(135deg, #5d6f44 0%, #4c5c37 55%, #3f4c2d 100%);
+  /* flat primary green — the exact colour of the drawer's button */
+  background: #4c5c37;
   border: 1px solid #4c5c37;
   color: #ffffff !important;
   box-shadow: 0 6px 16px -8px rgba(50, 59, 38, 0.7);
@@ -93,7 +94,7 @@
 }
 
 .nav-face .nav-cta-support:hover {
-  background: linear-gradient(135deg, #546440 0%, #3f4c2d 60%, #323b26 100%);
+  background: #323b26;
   transform: translateY(-1px);
   box-shadow: 0 10px 20px -8px rgba(50, 59, 38, 0.75);
 }
@@ -614,15 +615,16 @@ html.nav-drawer-open body {
   color: #ffffff !important;
 }
 
+/* the secondary action: green text + stroke on white */
 .nav-drawer-btn.is-outline {
   background: #ffffff;
-  border: 1px solid #cfcfcf;
-  color: #1e1e1e;
+  border: 1px solid #4c5c37;
+  color: #4c5c37 !important;
 }
 
 .nav-drawer-btn.is-outline:hover {
-  background: #f2f2ee;
-  color: #1e1e1e;
+  background: #edefeb;
+  color: #4c5c37 !important;
 }
 
 /* -- search -- */
@@ -770,16 +772,23 @@ html.nav-drawer-open body {
   padding-top: 18px;
 }
 
+/* the sub-site drawers' CTA pair (SubNavDrawer) takes the support button's
+   place at the top of the foot */
+.nav-drawer-foot > .nav-drawer-actions {
+  margin-top: 0;
+}
+
 .nav-drawer-support {
   display: flex;
   align-items: center;
   justify-content: center;
   gap: 8px;
   height: 52px;
-  border: 1px solid #8f8f8f;
+  /* the site's primary green, signed in or not — same as the top bar's pill */
+  border: 1px solid #4c5c37;
   border-radius: 100px;
-  background: #ffffff;
-  color: #1e1e1e;
+  background: #4c5c37;
+  color: #ffffff !important;
   font-size: 16px;
   font-weight: 700;
   text-decoration: none;
@@ -791,18 +800,6 @@ html.nav-drawer-open body {
 }
 
 .nav-drawer-support:hover {
-  background: #f2f2ee;
-  color: #1e1e1e;
-}
-
-/* signed in, it is the drawer's main action */
-.sawt-authed .nav-drawer .nav-drawer-support {
-  border-color: #4c5c37;
-  background: #4c5c37;
-  color: #ffffff !important;
-}
-
-.sawt-authed .nav-drawer .nav-drawer-support:hover {
   background: #323b26;
   color: #ffffff !important;
 }
@@ -826,22 +823,22 @@ html.nav-drawer-open body {
 .nav-drawer-social-icons {
   display: flex;
   align-items: center;
-  gap: 18px;
+  gap: 20px;
 }
 
-.nav-drawer-social-icons a {
+.nav-drawer .nav-drawer-social-icons a {
   display: inline-flex;
-  color: #4c5c37;
+  color: #4c5c37 !important;
 }
 
 .nav-drawer-social-icons svg {
   display: block;
-  width: 18px;
-  height: 18px;
+  width: 21px;
+  height: 21px;
 }
 
 .nav-drawer-social-icons i {
-  font-size: 17px;
+  font-size: 20px;
 }
 
 .nav-drawer-logout {
@@ -852,14 +849,14 @@ html.nav-drawer-open body {
   border: none;
   background: none;
   color: #c0392b;
-  font-size: 14px;
+  font-size: 15px;
   font-weight: 600;
   cursor: pointer;
 }
 
 .nav-drawer-logout svg {
-  width: 20px;
-  height: 20px;
+  width: 22px;
+  height: 22px;
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -883,6 +880,16 @@ html.nav-drawer-open body {
   padding-top: 0 !important;
   z-index: 1030;
   transition: transform 0.3s ease;
+}
+
+/* The bar's 1030 only counts inside its ancestors' stacking contexts — and
+   every hero makes one (.about-header z-index 3, `.about-header > *` 1, …),
+   so a later section stacked higher painted over the pinned bar. While it is
+   pinned, its ancestors drop their z-index so they stop trapping it — NOT
+   raised: lifting the home hero to 1030 laid it over the stats card that
+   overlaps its bottom edge. An ancestor that had no z-index is unchanged. */
+body *:has(.navbar.is-pinned) {
+  z-index: auto !important;
 }
 
 .navbar.is-pinned > .container {

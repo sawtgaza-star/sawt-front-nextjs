@@ -1,6 +1,7 @@
 "use client";
 import { useState } from "react";
-import { localized } from "@/lib/api/pages";
+import { localized, localizedHtml } from "@/lib/api/pages";
+import { localizedList } from "@/lib/api/media-page";
 import type { MediaWorkPage } from "@/lib/api/media-work";
 import MediaProjectAbout from "./MediaProjectAbout";
 import MediaProjectStages from "./MediaProjectStages";
@@ -14,8 +15,29 @@ import MediaProjectReview from "./MediaProjectReview";
    heading, so the two can never disagree. The old initTranslate() replay after
    a switch is gone with them: a panel now renders in the reader's language
    already, and re-running the DOM translator over React's own text is what
-   caused the removeChild crash on /about. */
+   caused the removeChild crash on /about.
+
+   A tab whose panel would have nothing in it is dropped with its panel, and
+   the whole bar goes when none is left — an empty project shows no section. */
 type TabId = "about" | "stages" | "client";
+
+function hasContent(id: TabId, page: MediaWorkPage, lang: string): boolean {
+  if (id === "about") {
+    const about = page.about;
+    return Boolean(
+      localizedHtml(about?.body, lang) ||
+        localized(about?.challenges?.title, lang) ||
+        localizedList(about?.challenges?.items, lang).length ||
+        localized(about?.solutions?.title, lang) ||
+        localizedList(about?.solutions?.items, lang).length ||
+        page.results?.items?.length ||
+        page.gallery?.items?.some((shot) => shot.url),
+    );
+  }
+  if (id === "stages") return Boolean(page.stages?.items?.length);
+  const client = page.client;
+  return Boolean(client?.name || localizedHtml(client?.quote, lang));
+}
 
 export default function MediaProjectTabs({
   page,
@@ -32,7 +54,7 @@ export default function MediaProjectTabs({
     ]
   )
     .map((entry) => ({ id: entry.id, label: localized(entry.tab?.label, lang) }))
-    .filter((entry) => entry.label);
+    .filter((entry) => entry.label && hasContent(entry.id, page, lang));
 
   const [active, setActive] = useState<TabId>("about");
   const current = tabs.find((tab) => tab.id === active) ?? tabs[0];

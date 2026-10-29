@@ -1,0 +1,9 @@
+/* Phones: the phone and email sit side by side (style.css turns
+   .contact-info-footer into a centred row). The phone line still carried
+   Bootstrap's `mb-2` (!important), so it sat 4px above the email — drop it
+   here so both rows share one baseline. Desktop keeps the stacked spacing. */
+@media (max-width: 767.98px) {
+  .contact-info-footer p.mb-2 {
+    margin-bottom: 0 !important;
+  }
+}

@@ -18,6 +18,7 @@ import {
   API_SORT,
   categoriesFromApi,
   filterReels,
+  playable,
   reelsFromApi,
   sortReels,
   type HeroSlide,
@@ -36,16 +37,16 @@ import {
    TWO LISTS, KEPT APART
    ---------------------
    - The FILTER section (pills + sort + grid) has its own request:
-     `?category={slug}` and `?sort=latest|oldest`. The slug is also written
-     into the page URL (`/content?category=economy`), so a filtered view can be
-     shared or reloaded. "الأكثر مشاهدة" in the sort has no server sort, so it
-     is ordered here (`sortReels`).
+     `?category={slug}` and `?sort=latest|oldest|most_viewed`. The slug is
+     also written into the page URL (`/content?category=economy`), so a
+     filtered view can be shared or reloaded. The API's `most_viewed` can't
+     rank while `views` is null, so every sort is applied here (`sortReels`).
    - The "الأكثر مشاهدة" ROW below is its own, unfiltered request — every
      reel, ordered by views (likes when the payload has no view counts). A pick
      in the filter never reloads it, never empties it, never reorders it. The
      hero strip and the pills come from this same unfiltered answer.
-   With the filter on "all" / newest the two would ask the same URL, so the
-   grid then reuses the unfiltered answer instead of sending a second request. */
+   On "all" every sort returns the same reels, so the grid then reuses the
+   unfiltered answer instead of sending a second request. */
 export default function Page() {
   const { lang } = useLang();
   const [category, setCategory] = useState("all");
@@ -72,8 +73,10 @@ export default function Page() {
 
   // the unfiltered answer: hero, pills, account, and the "الأكثر مشاهدة" row
   const { page, loading } = useContentPage();
-  // the filter's own answer — skipped while it would be the same request
-  const filtered = category !== "all" || API_SORT[sort] !== "latest";
+  /* the filter's own answer — skipped on "all": every sort returns the same
+     reels there (only the order differs), and the grid is re-ordered here
+     anyway (`sortReels`), so the unfiltered answer serves it as it is. */
+  const filtered = category !== "all";
   const gridQuery = useContentPage({
     category,
     sort: API_SORT[sort],
@@ -107,13 +110,18 @@ export default function Page() {
   // the API already narrowed the list to the slug; the local match only
   // guards against a stale answer drawn for a moment under the new pill
   const visible = sortReels(filterReels(gridReels, category), sort);
-  // covers still on their way and none in yet: hold the row's skeletons
+  // covers still on their way and none in yet: hold the hero strip's bars
   const rowProbing = all.pending > 0 && all.list.length === 0;
+  /* The "الأكثر مشاهدة" row waits for EVERY cover: reels join `all.list` as
+     their covers load, so drawing it earlier put whichever cover arrived
+     first at the head of the row, then reshuffled it as the rest came in. */
+  const rankPending = all.pending > 0;
 
   const heroReels: HeroSlide[] = all.list
     .filter((reel) => reel.poster)
     .map((reel) => ({ src: reel.poster as string, reelId: String(reel.id) }));
-  const mostViewed = sortReels(all.list, "views");
+  // the row's cards play inline, so a reel with no video file sits it out
+  const mostViewed = sortReels(all.list.filter(playable), "views");
 
   // the pills carry the API's own counts — the grid lists every reel they count
   const categories = categoriesFromApi(page?.categories, lang);
@@ -208,11 +216,13 @@ export default function Page() {
           </div>
         </section>
 
-        {(loading || rowProbing || mostViewed.length > 0) && (
+        {/* "الأكثر مشاهدة" belongs to the "الكل" tab only — a category tab
+            shows just its own grid */}
+        {category === "all" && (loading || rankPending || mostViewed.length > 0) && (
           <MostWatchedSection
             reels={mostViewed}
             title={rowTitle}
-            loading={loading || rowProbing}
+            loading={loading || rankPending}
           />
         )}
       </main>

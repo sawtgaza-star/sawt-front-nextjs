@@ -87,7 +87,12 @@ export default function Reviews({
          ten that come with the reel. */
       reels: reels.map((reel) => {
         const items = reviewComments(reel.comment_items, lang);
-        return { count: Math.max(reel.comments_count ?? 0, items.length), items };
+        return {
+          count: Math.max(reel.comments_count ?? 0, items.length),
+          items,
+          // a comment written here is sent to the reel on Instagram
+          permalink: reel.permalink || "",
+        };
       }),
     };
     (window as any).__sawtReviewComments = payload;

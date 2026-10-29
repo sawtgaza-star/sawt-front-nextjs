@@ -32,7 +32,8 @@ export default function TeamMemberCard({
       }
     >
       <div className="team-member-photo">
-        <img src={member.photo} alt={member.name} />
+        {/* not draggable: the phone slider is dragged by mouse (TeamMembersSlider) */}
+        <img src={member.photo} alt={member.name} draggable={false} />
         <div className="team-member-badge">
           {linkable ? (
             <Link
