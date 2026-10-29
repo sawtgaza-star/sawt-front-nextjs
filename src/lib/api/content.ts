@@ -27,8 +27,9 @@
 
    `categories` are the filter pills (name + reel count; "all" is one of them).
    `?category=` narrows `reels.items` to one slug and `?sort=` orders them —
-   the backend knows `latest` (its default) and `oldest`; any other value falls
-   back to `latest`, so "الأكثر مشاهدة" is sorted on the page. `reels.category`
+   `latest`, `oldest` and `most_viewed` (the default). The list is capped at 50
+   reels, with no paging. `most_viewed` can't rank anything while `views` is
+   null, so "الأكثر مشاهدة" is ordered on the page. `reels.category`
    / `reels.sort` echo what was applied, `status: "empty"` + `message` explain
    an empty list. Only the sort dropdown's options stay local chrome.
    ========================================================= */
@@ -72,8 +73,8 @@ export type ContentCategory = {
     the backend's token is scoped for them — `likes` is the number that is
     always there. `video_url` is a CDN link with an expiry baked into its query
     string, and it is empty on an item Instagram served no file for; such an
-    item is dropped rather than drawn as a black card (see `reelsFromApi` in
-    components/content/content-data). */
+    item is still listed in the grid, as its cover linking out to Instagram
+    (see `reelsFromApi` in components/content/content-data). */
 export type ContentReel = {
   id?: number | string;
   caption?: string | null;
@@ -129,8 +130,11 @@ export type ContentPage = {
   reels?: ContentReels;
 };
 
-/** What `?sort=` the backend understands. */
-export type ContentApiSort = "latest" | "oldest";
+/** What `?sort=` the backend understands. `most_viewed` is its default (what
+    `reels.sort` echoes with no `?sort=`), but while `views` is null it returns
+    the same order as `latest` — the page re-orders by likes (see sortReels in
+    components/content/content-data). */
+export type ContentApiSort = "latest" | "oldest" | "most_viewed";
 
 export type ContentQuery = {
   category?: string;

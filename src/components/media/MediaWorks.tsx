@@ -17,8 +17,38 @@ import MediaWorksCard, { type WorkTile } from "./MediaWorksCard";
    run out of tiles before it came round.
 
    The API sends one flat list of projects; ./media-page-view deals it into the
-   three columns. */
+   three columns. Phones get their own wall, dealt into two rows instead
+   (`.sm-works-wall-phone`); media.css shows exactly one of the two, so every
+   project stays on screen at both sizes. */
 const PASSES = [0, 1, 2];
+const PHONE_ROWS = 2;
+
+function WorksWall({ columns, className }: { columns: WorkTile[][]; className: string }) {
+  return (
+    <div className={className}>
+      {columns.map((column, c) => (
+        <div className={"sm-works-col sm-works-col-" + (c + 1)} key={c}>
+          <div className="sm-works-loop">
+            {PASSES.map((pass) =>
+              column.map((work, i) => (
+                <span className="sm-works-shot" key={`${pass}-${i}`}>
+                  {work.imageUrl ? (
+                    <img
+                      src={work.imageUrl}
+                      alt=""
+                      aria-hidden={pass > 0 || undefined}
+                    />
+                  ) : null}
+                  <MediaWorksCard work={work} duplicate={pass > 0} />
+                </span>
+              )),
+            )}
+          </div>
+        </div>
+      ))}
+    </div>
+  );
+}
 
 export default function MediaWorks({
   data,
@@ -49,28 +79,11 @@ export default function MediaWorks({
           sub={localizedHtml(data.subtitle, lang)}
         />
 
-        <div className="sm-works-wall">
-          {columns.map((column, c) => (
-            <div className={"sm-works-col sm-works-col-" + (c + 1)} key={c}>
-              <div className="sm-works-loop">
-                {PASSES.map((pass) =>
-                  column.map((work, i) => (
-                    <span className="sm-works-shot" key={`${pass}-${i}`}>
-                      {work.imageUrl ? (
-                        <img
-                          src={work.imageUrl}
-                          alt=""
-                          aria-hidden={pass > 0 || undefined}
-                        />
-                      ) : null}
-                      <MediaWorksCard work={work} duplicate={pass > 0} />
-                    </span>
-                  )),
-                )}
-              </div>
-            </div>
-          ))}
-        </div>
+        <WorksWall columns={columns} className="sm-works-wall" />
+        <WorksWall
+          columns={dealIntoColumns(tiles, PHONE_ROWS)}
+          className="sm-works-wall sm-works-wall-phone"
+        />
 
         {moreLabel ? (
           <div className="sm-works-more">

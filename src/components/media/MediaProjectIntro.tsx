@@ -7,7 +7,10 @@ import RichText from "@/components/ui/RichText";
 /* Top of the case study: the project's still on the left, its identity on the
    right (chips, name + specialty, the one-line brief) and the headline figures
    in the card underneath — the card whose top edge carries the design's
-   olive→orange hairline (media.css). */
+   olive→orange hairline (media.css).
+
+   Every piece the payload leaves empty is left out rather than drawn as an
+   empty box — no still means the identity takes the whole row. */
 export default function MediaProjectIntro({
   data,
   lang = "ar",
@@ -23,48 +26,63 @@ export default function MediaProjectIntro({
   const highlights = sortItems(data?.highlights);
 
   if (!data) return null;
+  const cover = data.cover_url;
 
   return (
     <section className="sm-pj-intro">
       <div className="container">
-        <div className="sm-pj-intro-row">
+        <div
+          className={"sm-pj-intro-row" + (cover ? "" : " sm-pj-intro-row-solo")}
+        >
           <div className="sm-pj-intro-copy">
-            <div className="sm-pj-chips">
-              {date ? (
-                <span className="sm-works-chip sm-works-chip-date">
-                  <IconCalendarDays />
-                  <span>{date}</span>
-                </span>
-              ) : null}
-              {tag ? (
-                <span className="sm-works-chip sm-works-chip-tag">{tag}</span>
-              ) : null}
-            </div>
+            {date || tag ? (
+              <div className="sm-pj-chips">
+                {date ? (
+                  <span className="sm-works-chip sm-works-chip-date">
+                    <IconCalendarDays />
+                    <span>{date}</span>
+                  </span>
+                ) : null}
+                {tag ? (
+                  <span className="sm-works-chip sm-works-chip-tag">{tag}</span>
+                ) : null}
+              </div>
+            ) : null}
 
-            <div className="sm-pj-title-row">
-              <h2 className="sm-pj-title">{title}</h2>
-              <span className="sm-pj-specialty">{category}</span>
-            </div>
+            {title || category ? (
+              <div className="sm-pj-title-row">
+                {title ? <h2 className="sm-pj-title">{title}</h2> : null}
+                {category ? (
+                  <span className="sm-pj-specialty">{category}</span>
+                ) : null}
+              </div>
+            ) : null}
 
-            <RichText as="p" className="sm-pj-desc" html={summary} />
+            {summary ? (
+              <RichText as="p" className="sm-pj-desc" html={summary} />
+            ) : null}
 
             {/* the figures count up when the card scrolls into view — that is
                 initCounters() in scroll-effects.ts, which reads the class */}
-            <div className="sm-pj-figures">
-              {highlights.map((figure, index) => (
-                <div className="sm-pj-figure" key={index}>
-                  <b className="sm-pj-figure-value">{figure.value}</b>
-                  <span className="sm-pj-figure-label">
-                    {localized(figure.label, lang)}
-                  </span>
-                </div>
-              ))}
-            </div>
+            {highlights.length ? (
+              <div className="sm-pj-figures">
+                {highlights.map((figure, index) => (
+                  <div className="sm-pj-figure" key={index}>
+                    <b className="sm-pj-figure-value">{figure.value}</b>
+                    <span className="sm-pj-figure-label">
+                      {localized(figure.label, lang)}
+                    </span>
+                  </div>
+                ))}
+              </div>
+            ) : null}
           </div>
 
-          <figure className="sm-pj-shot">
-            {data.cover_url ? <img src={data.cover_url} alt="" /> : null}
-          </figure>
+          {cover ? (
+            <figure className="sm-pj-shot">
+              <img src={cover} alt="" />
+            </figure>
+          ) : null}
         </div>
       </div>
     </section>

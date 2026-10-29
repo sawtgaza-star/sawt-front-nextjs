@@ -1,7 +1,6 @@
 "use client";
 import { useEffect, useRef, useState } from "react";
 import MediaServiceCard from "./MediaServiceCard";
-import MediaServicesRail from "./MediaServicesRail";
 import type { ServiceCard } from "./MediaServiceCard";
 
 /* The five service cards as a dealt deck: one card on screen at a time, the
@@ -12,221 +11,153 @@ import type { ServiceCard } from "./MediaServiceCard";
    stacking follows the card order so a card is always dealt over its
    predecessor — going back simply drops the top card off again.
 
-   The deck can be dragged with the mouse: the distance is published as
-   `--sm-drag-up` / `--sm-drag-down` and the one card that moves in that
-   direction follows it live (transition off), then snaps on release. Touch
-   pointers are left alone so a finger on the card still scrolls the page.
+   The page's own scroll moves the cards (no autoplay, on request), and moves
+   them by exactly as much as it scrolls: the deck is pinned (`position:
+   sticky`) inside a track taller than itself by one STEP per card, and over
+   each STEP the next card — queued just below the deck, outside it — rises
+   to rest on top — half a
+   step scrolled, half the card up; stop scrolling and it stops where it is;
+   scroll back and it slides back down. The page only moves on once the last
+   card is fully up. The transforms are written straight to the slides each
+   frame (no React re-render); `active` — the card mostly on top — only drives
+   aria-hidden and inert. (The side rail of dots was removed on request.)
 
-   Autoplay runs as soon as the section is on screen; it stops while a mouse
-   button or a finger is held down on the deck (hovering alone doesn't), while
-   something in it has keyboard focus, while dragging, while the section is
-   off-screen, and under prefers-reduced-motion. It moves on again once the
-   button/finger lifts. Each card is held for INTERVAL on a wide screen; on a
-   phone the first one turns quickly (PHONE_FIRST) and every later one is held
-   for PHONE_INTERVAL, long enough to read on a small screen. A stop doesn't
-   reset the card's time: it picks up where it left off, and so does the
-   rail's fill. */
-const INTERVAL = 3000;
-const PHONE_FIRST = 3000;
-const PHONE_INTERVAL = 7000;
-const PHONE_MEDIA = "(max-width: 767.98px)";
-/* how far a drag must travel to count as a page turn, and as a real drag */
-const SNAP = 70;
-const SLOP = 6;
+   What is pinned is the section heading AND the deck, so the heading doesn't
+   scroll away while the cards change. Pinned top: centred in the window under
+   the floating navbar when it all fits; otherwise (laptops, phones) it pins
+   the moment the whole card is on screen, BOTTOM_GAP above the window's
+   bottom edge, so the card stays readable. */
+const NAV_ROOM = 96;
+const EDGE = 16;
+/* the room left under the card once it is pinned: the moment the whole card
+   is on screen with this gap below it, the scroll starts dealing (on request) */
+const BOTTOM_GAP = 44;
+/* the space between a card and the one queued under it, while it waits */
+const GAP = 24;
+/* the card underneath shrinks this much once fully covered */
+const COVERED_SCALE = 0.015;
 
-export default function MediaServicesSlider({ cards }: { cards: ServiceCard[] }) {
+/* scroll distance over which one card rises — long enough to steer it */
+function stepFor(vh: number) {
+  return Math.round(Math.min(640, Math.max(360, vh * 0.6)));
+}
+
+export default function MediaServicesSlider({
+  cards,
+  head,
+}: {
+  cards: ServiceCard[];
+  /** the section heading, pinned together with the deck */
+  head?: React.ReactNode;
+}) {
   const count = cards.length;
   const [active, setActive] = useState(0);
-  const [paused, setPaused] = useState(false);
-  const [visible, setVisible] = useState(false);
-  const [dragging, setDragging] = useState(false);
-  /* a mouse button or a finger held down on the deck */
-  const [held, setHeld] = useState(false);
-  const [dir, setDir] = useState<"up" | "down" | null>(null);
-  /* the countdown to the next card, for the rail's filling tick: a fresh `key`
-     per card, so the fill starts over only when the card changes; `running`
-     false freezes it mid-way while autoplay is stopped */
-  const [countdown, setCountdown] = useState<{
-    key: number;
-    ms: number;
-    running: boolean;
-  } | null>(null);
-  /* how long the current card has already been on its timer, across stops */
-  const spent = useRef({ card: -1, ms: 0, key: 0 });
-  const viewRef = useRef<HTMLDivElement>(null);
-  const drag = useRef<{ id: number; y: number; moved: boolean } | null>(null);
-  const swallowClick = useRef(false);
+  const [pin, setPin] = useState({ top: NAV_ROOM, step: 480, height: 0 });
+  const trackRef = useRef<HTMLDivElement>(null);
+  const stickRef = useRef<HTMLDivElement>(null);
+  const slideRefs = useRef<(HTMLDivElement | null)[]>([]);
 
-  /* A mouse button can be let go anywhere — off the deck, or after a click
-     that never captured the pointer — so the hold is released from window. */
+  /* measure: where the deck pins and how long the track has to be */
   useEffect(() => {
-    if (!held) return;
-    const release = () => setHeld(false);
-    window.addEventListener("pointerup", release);
-    window.addEventListener("pointercancel", release);
-    return () => {
-      window.removeEventListener("pointerup", release);
-      window.removeEventListener("pointercancel", release);
+    const stick = stickRef.current;
+    if (!stick) return;
+    const measure = () => {
+      const vh = window.innerHeight;
+      const h = stick.offsetHeight;
+      /* centred under the navbar when everything fits; otherwise pinned as
+         soon as the card's bottom edge is BOTTOM_GAP above the window's —
+         the heading above may then be partly off the top */
+      const top =
+        h + NAV_ROOM + EDGE <= vh
+          ? Math.max(NAV_ROOM, Math.round((vh - h) / 2 + NAV_ROOM / 2))
+          : vh - h - BOTTOM_GAP;
+      setPin({ top, step: stepFor(vh), height: h });
     };
-  }, [held]);
-
-  useEffect(() => {
-    const el = viewRef.current;
-    if (!el) return;
-    /* A single high threshold never fires when the deck is taller than the
-       window — its ratio can't reach 0.35 — and the section then sat still
-       forever. So: a third of the deck on screen, OR the deck filling a third
-       of the window, whichever comes first. The threshold list is only there to
-       get callbacks as it scrolls through. */
-    const io = new IntersectionObserver(
-      ([e]) => {
-        const covers = e.intersectionRect.height >= window.innerHeight * 0.33;
-        setVisible(e.isIntersecting && (e.intersectionRatio >= 0.33 || covers));
-      },
-      { threshold: [0, 0.15, 0.33, 0.6, 1] }
-    );
-    io.observe(el);
-    return () => io.disconnect();
+    measure();
+    const ro = new ResizeObserver(measure);
+    ro.observe(stick);
+    window.addEventListener("resize", measure);
+    return () => {
+      ro.disconnect();
+      window.removeEventListener("resize", measure);
+    };
   }, []);
 
+  /* the scroll moves the cards */
   useEffect(() => {
-    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
-      setCountdown(null);
-      return;
-    }
-    const s = spent.current;
-    if (s.card !== active) spent.current = { card: active, ms: 0, key: s.key + 1 };
-    const { key } = spent.current;
-    const phone = window.matchMedia(PHONE_MEDIA).matches;
-    const ms = !phone ? INTERVAL : active > 0 ? PHONE_INTERVAL : PHONE_FIRST;
-    if (paused || held || dragging || !visible) {
-      /* freeze the fill where it is (none yet before the first run) */
-      setCountdown((c) => (c ? { key, ms, running: false } : null));
-      return;
-    }
-    setCountdown({ key, ms, running: true });
-    const start = Date.now();
-    const id = window.setTimeout(
-      () => setActive((i) => (i + 1) % count),
-      Math.max(0, ms - spent.current.ms)
-    );
-    return () => {
-      window.clearTimeout(id);
-      if (spent.current.card === active) spent.current.ms += Date.now() - start;
+    const track = trackRef.current;
+    if (!track) return;
+    let frame = 0;
+    const update = () => {
+      frame = 0;
+      const travelled = pin.top - track.getBoundingClientRect().top;
+      /* 0 … count-1: how many cards are up, fractions included */
+      const p = Math.max(0, Math.min(count - 1, travelled / pin.step));
+      slideRefs.current.forEach((el, i) => {
+        if (!el) return;
+        /* cards still to come queue below, one card height + GAP apart and
+           unclipped, so the next one is seen waiting under the current one
+           and rises in from outside the deck (0 = on top of the stack) */
+        const below = Math.max(0, i - p);
+        const covered = Math.max(0, Math.min(1, p - i));
+        el.style.transform =
+          `translateY(calc(${below.toFixed(4)} * (100% + ${GAP}px)))` +
+          ` scale(${(1 - covered * COVERED_SCALE).toFixed(4)})`;
+      });
+      setActive(Math.round(p));
     };
-  }, [paused, held, dragging, visible, count, active]);
-
-  /* dragging up pulls the next card in, dragging down pushes the top one off */
-  const setOffset = (dy: number) => {
-    const el = viewRef.current;
-    if (!el) return;
-    el.style.setProperty("--sm-drag-up", (dy < 0 ? dy : 0) + "px");
-    el.style.setProperty("--sm-drag-down", (dy > 0 ? dy : 0) + "px");
-    setDir(dy < 0 ? "up" : dy > 0 ? "down" : null);
-  };
-
-  const onPointerDown = (e: React.PointerEvent<HTMLDivElement>) => {
-    if (e.pointerType === "touch") {
-      setHeld(true);
-      return;
-    }
-    if (e.button !== 0) return;
-    setHeld(true);
-    swallowClick.current = false;
-    drag.current = { id: e.pointerId, y: e.clientY, moved: false };
-  };
-
-  const onPointerMove = (e: React.PointerEvent<HTMLDivElement>) => {
-    const d = drag.current;
-    if (!d || e.pointerId !== d.id) return;
-    let dy = e.clientY - d.y;
-    /* a few pixels of slack, so a plain click on the card's CTA is still a
-       click: the pointer is captured only once the drag is committed, because
-       capturing retargets the click and the link under it would never fire */
-    if (!d.moved && Math.abs(dy) < SLOP) return;
-    if (!d.moved) {
-      d.moved = true;
-      setDragging(true);
-      e.currentTarget.setPointerCapture(d.id);
-    }
-    /* nothing to deal past the ends — let the deck resist instead */
-    if ((active === 0 && dy > 0) || (active === count - 1 && dy < 0)) dy /= 3.5;
-    setOffset(dy);
-  };
-
-  const endDrag = (e: React.PointerEvent<HTMLDivElement>) => {
-    /* the finger lifted (or the browser took it over to scroll the page) */
-    if (e.pointerType === "touch") setHeld(false);
-    const d = drag.current;
-    if (!d || e.pointerId !== d.id) return;
-    drag.current = null;
-    if (!d.moved) return;
-    /* a drag that actually moved swallows the click it ends on */
-    swallowClick.current = true;
-    if (e.currentTarget.hasPointerCapture(d.id))
-      e.currentTarget.releasePointerCapture(d.id);
-    const dy = e.clientY - d.y;
-    setDragging(false);
-    setOffset(0);
-    if (dy <= -SNAP) setActive((i) => Math.min(count - 1, i + 1));
-    else if (dy >= SNAP) setActive((i) => Math.max(0, i - 1));
-  };
-
-  /* Only keyboard focus pauses: a mouse click focuses the rail's buttons and
-     the card's CTA too, and that would leave the deck stopped until the user
-     happened to click somewhere else. */
-  const onFocus = (e: React.FocusEvent<HTMLDivElement>) => {
-    if (e.target.matches(":focus-visible")) setPaused(true);
-  };
-
-  /* a drag that ended on a link/button must not also trigger it */
-  const onClickCapture = (e: React.MouseEvent<HTMLDivElement>) => {
-    if (!swallowClick.current) return;
-    swallowClick.current = false;
-    e.preventDefault();
-    e.stopPropagation();
-  };
+    const onScroll = () => {
+      if (!frame) frame = requestAnimationFrame(update);
+    };
+    update();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => {
+      window.removeEventListener("scroll", onScroll);
+      if (frame) cancelAnimationFrame(frame);
+    };
+  }, [pin, count]);
 
   return (
     <div
-      className="sm-services-body"
-      onFocusCapture={onFocus}
-      onBlurCapture={() => setPaused(false)}
+      className="sm-services-track"
+      ref={trackRef}
+      /* the deck's own height, one step of scrolling per card after the
+         first, and a little dwell on the last one before the page moves on */
+      style={
+        pin.height
+          ? { height: pin.height + (count - 1) * pin.step + pin.step * 0.4 }
+          : undefined
+      }
     >
-      <MediaServicesRail
-        titles={cards.map((card) => card.title)}
-        active={active}
-        countdown={countdown}
-        onSelect={setActive}
-      />
-
       <div
-        className={
-          "sm-services-view" +
-          (dragging ? " is-dragging" : "") +
-          (dragging && dir ? " is-drag-" + dir : "")
-        }
-        ref={viewRef}
-        onPointerDown={onPointerDown}
-        onPointerMove={onPointerMove}
-        onPointerUp={endDrag}
-        onPointerCancel={endDrag}
-        onClickCapture={onClickCapture}
+        className="sm-services-stick"
+        ref={stickRef}
+        style={{ top: pin.top }}
       >
-        {cards.map((card, i) => (
-          <div
-            className="sm-svc-slide"
-            key={i}
-            data-state={i === active ? "current" : i < active ? "prev" : "next"}
-            data-adj={Math.abs(i - active) === 1 ? "1" : undefined}
-            /* later cards stack over earlier ones: that is the deal order */
-            style={{ zIndex: i + 1 }}
-            aria-hidden={i === active ? undefined : true}
-            inert={i === active ? undefined : true}
-          >
-            <MediaServiceCard service={card} reverse={i % 2 === 1} />
+        {head}
+        <div className="sm-services-body">
+          <div className="sm-services-view is-scrubbed">
+            {cards.map((card, i) => (
+              <div
+                className="sm-svc-slide"
+                key={i}
+                ref={(el) => {
+                  slideRefs.current[i] = el;
+                }}
+                data-state={
+                  i === active ? "current" : i < active ? "prev" : "next"
+                }
+                data-adj={Math.abs(i - active) === 1 ? "1" : undefined}
+                /* later cards stack over earlier ones: that is the deal order */
+                style={{ zIndex: i + 1 }}
+                aria-hidden={i === active ? undefined : true}
+                inert={i === active ? undefined : true}
+              >
+                <MediaServiceCard service={card} reverse={i % 2 === 1} />
+              </div>
+            ))}
           </div>
-        ))}
+        </div>
       </div>
     </div>
   );

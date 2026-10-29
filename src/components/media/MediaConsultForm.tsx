@@ -244,7 +244,8 @@ export default function MediaConsultForm({
             defaultValue=""
             onChange={() => clear(serviceKey)}
           >
-            <option value="" disabled>
+            {/* the placeholder: shown in the closed field, never in the list */}
+            <option value="" disabled hidden>
               {localized(fields?.service?.placeholder, pageLang)}
             </option>
             {choices.map((choice) => (

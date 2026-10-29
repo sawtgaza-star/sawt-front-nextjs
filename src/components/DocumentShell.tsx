@@ -5,6 +5,7 @@ import "@/styles/animations.css";
 import "@/styles/i18n.css";
 import "@/styles/cairo.css";
 import "@/styles/hero-loading.css";
+import "@/styles/image-fallback.css";
 import PageAnimations from "@/components/PageAnimations";
 import AuthClassSync from "@/components/AuthClassSync";
 

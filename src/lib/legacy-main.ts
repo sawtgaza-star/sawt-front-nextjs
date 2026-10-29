@@ -392,7 +392,11 @@ function setReviewsComments(payload) {
   const reels = payload && Array.isArray(payload.reels) ? payload.reels : [];
   reelThreads = reels.map((r) => {
     const list = renumber(r && Array.isArray(r.items) ? r.items : []);
-    return { items: list, count: r && typeof r.count === "number" ? r.count : list.length };
+    return {
+      items: list,
+      count: r && typeof r.count === "number" ? r.count : list.length,
+      permalink: (r && r.permalink) || "",
+    };
   });
 
   if (reelThreads.length) {
@@ -644,10 +648,28 @@ function showLess() {
   btn.style.color = "#e1723b";
 }
 
+function openOnInstagram(permalink, text) {
+  // window.open أولاً وفي نفس النقرة، وإلا يحجبه مانع النوافذ المنبثقة
+  window.open(permalink, "_blank", "noopener,noreferrer");
+  try {
+    navigator.clipboard?.writeText(text).catch(() => {});
+  } catch (e) {}
+}
+
 function addComment() {
   const input = document.getElementById("newComment");
   const text = input.value.trim();
   if (!text) return;
+
+  /* التعليق الحقيقي مكانه انستقرام: إن كان للريل الظاهر رابط يُنسخ النصّ
+     ويُفتح الريل هناك ليلصقه الزائر في تعليقاته. */
+  const thread = reelThreads[activeReel];
+  if (thread && thread.permalink) {
+    openOnInstagram(thread.permalink, text);
+    input.value = "";
+    input.style.height = "auto";
+    return;
+  }
 
   const colors = ["av-green", "av-orange", "av-blue", "av-gray"];
   const randomColor = colors[Math.floor(Math.random() * colors.length)];

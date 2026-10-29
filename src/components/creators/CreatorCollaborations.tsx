@@ -3,7 +3,6 @@ import type { CreatorCollaborationsBlock } from "@/lib/api/creator-profile";
 import { IconTag } from "@/components/ui/icons";
 import { bySortOrder } from "./creators-text";
 import RichText from "@/components/ui/RichText";
-import { textDir } from "@/components/home/home-text";
 
 /* "ابرز التعاونات" on a creator's page (/creators/[id]), from the profile
    payload's `collaborations` block: the title + description centered on top
@@ -25,16 +24,16 @@ function CollabCard({ item, lang }: { item: Item; lang: string }) {
   // the first letter (not a leading "ال") stands in for a logo
   const letter = Array.from(item.name.replace(/^ال(?=\S{2})/, ""))[0] || "";
   return (
-    // each card reads in its company's own script — an English name lays
-    // out left-to-right even on the Arabic page, and the reverse
-    <article className="cr-collab-card" dir={textDir(item.name, lang === "en" ? "ltr" : "rtl")}>
+    // the card follows the site's direction, not the company name's script:
+    // on the Arabic page the letter sits on the right even for an English name
+    <article className="cr-collab-card" dir={lang === "en" ? "ltr" : "rtl"}>
       <span className="cr-collab-card-letter" aria-hidden="true">
         {letter}
       </span>
       <div className="cr-collab-card-text">
         <h3 className="cr-collab-card-name">{item.name}</h3>
         {item.field || item.sector ? (
-          <span className="cr-collab-card-tag" dir={textDir(item.field || item.sector, lang === "en" ? "ltr" : "rtl")}>
+          <span className="cr-collab-card-tag">
             <span className="cr-collab-card-tag-icon" aria-hidden="true">
               <IconTag />
             </span>

@@ -62,6 +62,15 @@ export default function ReelComments({
   const submit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!draft.trim()) return;
+    // The real thread lives on Instagram: open the reel there (in the same
+    // gesture, or the popup blocker eats it) with the text on the clipboard,
+    // ready to paste into its comments.
+    if (details?.permalink) {
+      window.open(details.permalink, "_blank", "noopener,noreferrer");
+      navigator.clipboard?.writeText(draft.trim()).catch(() => {});
+      setDraft("");
+      return;
+    }
     addComment(draft);
     setDraft("");
     // the new comment lands at the end of the thread — ride down to it once

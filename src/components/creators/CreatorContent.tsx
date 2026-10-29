@@ -21,7 +21,7 @@ import { useDragScroll } from "@/components/content/use-drag-scroll";
    list is empty and the whole section is left out (heading included). A
    reel without a
    playable URL is skipped. The payload has no categories, so the mock's
-   filter pills are gone. "رؤية المزيد" opens the creator's Instagram.
+   filter pills are gone, and so is the mobile "رؤية المزيد" link.
 
    The viewer's info bar names the creator (`meta`); the caption, time, likes
    and comments are each reel's own (`details`). */
@@ -49,9 +49,6 @@ export default function CreatorContent({ content, creator, lang }) {
   useDragScroll(trackRef, [isEmpty]);
 
   const title = localized(content?.title, lang) || tr("cr_content_title");
-  const viewMore = localized(content?.view_more, lang);
-  const instagram = (content?.instagram_username || creator?.instagram_username || "").trim();
-  const moreHref = instagram ? `https://instagram.com/${encodeURIComponent(instagram)}` : "";
   const meta = creator && {
     user: localized(creator.name, lang),
     avatar: creator.avatar_url || undefined,
@@ -80,12 +77,6 @@ export default function CreatorContent({ content, creator, lang }) {
           <h2 className="cr-content-title">
             <span className="cr-highlight">{title}</span>
           </h2>
-          {/* mobile mock only — sits opposite the title (hidden on desktop) */}
-          {!isEmpty && moreHref && viewMore ? (
-            <a className="cr-content-more" href={moreHref} target="_blank" rel="noopener noreferrer">
-              {viewMore}
-            </a>
-          ) : null}
         </div>
 
         {isEmpty ? (

@@ -395,8 +395,7 @@
 .inc-hero-badge span {
   font-size: 14px;
   font-weight: 500;
-  opacity: 0.9;
-  color:rgba(255, 255, 255, 0.70)
+  color: #ffffff;
 }
 .inc-hero-badge-green {
   background: #4c5c37;
@@ -1070,6 +1069,17 @@ button.inc-course-cta:disabled {
     grid-template-rows: 1fr;
     opacity: 1;
   }
+  /* no hover look on phones/tablets either: a tap focuses the card's link, and
+     :focus-within (which the hover-only PostCSS pass doesn't touch) would
+     otherwise latch the olive outline and the photo's slide */
+  .inc-course-card:not(.is-featured):hover,
+  .inc-course-card:not(.is-featured):focus-within {
+    border-color: #DADADA;
+  }
+  .inc-course-card:hover .inc-course-media img,
+  .inc-course-card:focus-within .inc-course-media img {
+    object-position: 50% 50%;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -1528,12 +1538,12 @@ button.inc-event-book {
   gap: 10px;
   font-size: 15px;
   font-weight: 800;
-  color: #4C5C37;
+  color: #6D6D6D;
 }
 .inc-event-type svg {
   font-size: 24px;
   flex: 0 0 auto;
-  color: #4c5c37;
+  color: #6D6D6D;
 }
 
 /* ============================================================
@@ -2617,7 +2627,9 @@ top: -23px;
      row is now the white card itself, since `.inc-nav` gave the plate up */
   /* the closed card is a fixed 70px row — a minimum, not a height, so the
      drawer can still grow the card past it when the burger opens it */
+  /* the phone drawer (SubNavDrawer) hangs off this card */
   .inc-nav-main {
+    position: relative;
     flex-wrap: wrap;
     gap: 0;
     min-height: 70px;
@@ -2970,11 +2982,11 @@ top: -23px;
     height: 26px;
   }
   .inc-stat-value {
-    font-size: 14px !important;
+    font-size: 16px !important;
     margin-bottom: 2px;
   }
   .inc-stat-label {
-    font-size: 10px !important;
+    font-size: 11.5px !important;
     line-height: 1.4;
   }
 
@@ -3302,10 +3314,12 @@ top: -23px;
     scrollbar-width: none;
     /* exactly the container's 10px gutter: the strip runs to the screen edge,
        and the matching end padding stops the LAST card at the page inset
-       instead of past the screen (it was -28px, 18px off-screen) */
-    margin-inline-end: -10px;
-    padding-inline-end: 10px;
-    scroll-padding-inline: 0 10px;
+       instead of past the screen (it was -28px, 18px off-screen). Both
+       edges, as the home sliders: the strip runs screen edge to screen edge
+       and the gutter moves to the other side at the row's end */
+    margin-inline: -10px;
+    padding-inline: 10px;
+    scroll-padding-inline: 10px;
     /* a scrolling strip starts at its edge — centring would clip card 1 */
     flex-wrap: nowrap;
     justify-content: flex-start;
@@ -3322,8 +3336,8 @@ top: -23px;
      (the strip gives back no edge, so the middle is the screen's middle).
      Two or more keep the swipe strip above. */
   .inc-expert-row:has(> .inc-expert-card:only-child) {
-    margin-inline-end: 0;
-    padding-inline-end: 0;
+    margin-inline: 0;
+    padding-inline: 0;
     justify-content: center;
     overflow: visible;
   }
@@ -3354,7 +3368,7 @@ top: -23px;
 
   /* ---------- يعمل خريجونا لدى جهات موثوقة ---------- */
   .inc-grads {
-    padding: 40px 0 40px;
+    padding: 20px 0 20px;
   }
   .inc-grads .inc-section-head {
     margin-bottom: 28px;
@@ -3368,7 +3382,9 @@ top: -23px;
 
   /* ---------- الأسئلة ---------- */
   .inc-faq {
-    padding: 40px 0 44px;
+    /* it is the page's last section: a short foot keeps the newsletter
+       box close below it */
+    padding: 40px 0 16px;
   }
   .inc-faq-visual,
   .inc-faq-leaf,
@@ -3512,6 +3528,12 @@ top: -23px;
   padding-top: 0;
   transition: transform 0.3s ease;
 }
+/* Same trap as SiteNav's (site-nav.css): while pinned, the bar's ancestors
+   drop their z-index so no hero's stacking context can sink it under a
+   section (not raised — that would lay the hero over what overlaps it). */
+body *:has(.inc-nav-wrap.is-pinned) {
+  z-index: auto !important;
+}
 .inc-nav-wrap.is-pinned.is-scroll-hidden {
   transform: translateY(calc(-100% - 20px));
 }
@@ -3557,5 +3579,13 @@ top: -23px;
     border-top-left-radius: 0;
     border-top-right-radius: 0;
     box-shadow: 0 4px 14px rgba(0, 0, 0, 0.08);
+  }
+}
+
+/* Phone: the FAQ closes the page, so the footer's 50px !important top margin
+   (style.css) is dropped here — the newsletter card's own 24px is enough */
+@media (max-width: 767.98px) {
+  body:has(.inc-faq) .footer-shell.footer-shell {
+    margin-top: 0 !important;
   }
 }

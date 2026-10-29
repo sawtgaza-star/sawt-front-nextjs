@@ -46,6 +46,46 @@
     padding-inline: 0;
     margin-inline: 0;
   }
+
+  /* edge to edge, as "أخر أخبارنا" (home-news.css): the strip takes back the
+     container's 10px gutters and the stage keeps that gutter as padding on
+     both sides, so it moves to the other side at the row's end (edgeToEdge
+     in lib/owl-sliders). On the home page style.css already dropped the end
+     gutter, so only the start one is taken back there. */
+  .creators-carousel2 {
+    width: calc(100% + 20px);
+    margin-inline: -10px;
+  }
+  .content-section .creators-carousel2 {
+    width: calc(100% + 10px);
+    margin-inline: -10px 0;
+  }
+  /* English: Owl's .owl-rtl makes the strip itself direction:rtl, so the
+     logical margins above swap sides while the container's gutter stays on
+     the left — take it back on the left instead */
+  [dir="ltr"] .content-section .creators-carousel2 {
+    margin-right: 0;
+    margin-left: -10px;
+  }
+  /* /creators keeps both container gutters, so the strip takes back both
+     ([dir] only to outrank the two rules above) */
+  [dir] .content-section.cr-grid-section .creators-carousel2 {
+    width: calc(100% + 20px);
+    margin-inline: -10px;
+  }
+  /* !important + the extra class: style.css zeroes this stage's right
+     padding (!important) for the old one-sided stagePadding */
+  .owl-carousel.creators-carousel2 .owl-stage {
+    padding-inline: 10px !important;
+    /* Owl's inline width is the cards' track alone: the padding goes
+       outside it, or the last card wraps onto a second line */
+    box-sizing: content-box;
+  }
+  /* the card keeps the width it had as the centred slide: the strip's old
+     width (100vw − the 10px gutter) less 2 × the old 58px stage padding */
+  .creators-carousel2 .item {
+    width: calc(100vw - 10px - 2 * 58px);
+  }
 }
 
 /* every creator the API returned fits on screen: loop is off (lib/owl-sliders),
@@ -55,6 +95,10 @@
 .creators-carousel2.cc-fits .owl-stage {
   margin-inline: auto;
   left: calc(var(--cc-gap, 0px) / -2);
+}
+/* English: the slider is LTR, so the trailing gap is on the right */
+[dir="ltr"] .creators-carousel2.cc-fits .owl-stage {
+  left: calc(var(--cc-gap, 0px) / 2);
 }
 .creators-carousel2 .owl-nav.disabled {
   display: none !important;

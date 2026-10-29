@@ -106,16 +106,6 @@ function Services() {
       <div className="container">
         <SkHead pill={SERVICES.pill} title={SERVICES.title} sub={SERVICES.sub} />
         <div className="sm-services-body">
-          <div className="sm-services-rail">
-            {SERVICES.cards.map((_, i) => (
-              <button
-                type="button"
-                className={"sm-rail-tick" + (i === 0 ? " active" : "")}
-                tabIndex={-1}
-                key={i}
-              ></button>
-            ))}
-          </div>
           <div className="sm-services-view">
             {SERVICES.cards.map(([title, tags], i) => (
               <div

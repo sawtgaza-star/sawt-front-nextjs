@@ -44,6 +44,15 @@
   }
 }
 
+/* mobile: "اكتشف المزيد" spans half the row — one feature tile's column
+   above it — and stays on the start side (style.css sizes it to fit-content) */
+@media (max-width: 767.98px) {
+  .sout-section .sout-mobile-btn {
+    width: 50%;
+    justify-content: center;
+  }
+}
+
 /* web: "اكتشف المزيد" at the hero buttons' size (.hh-btn in home-hero.css) —
    50px tall, 10px × 30px padding, a full pill. !important beats the
    Bootstrap px-4 / py-2 utilities on the link. */

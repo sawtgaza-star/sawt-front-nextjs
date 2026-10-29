@@ -44,7 +44,8 @@ public/assets/          # images (28MB), fonts, videos — legacy names incl. Ar
    - internal links between groups are plain `<a>` (full reload), and only `/` ↔ `/about` use `<Link>` (in `SiteNav`).
    Deduplicating the CSS (extracting the shared chunk) is the prerequisite for full `<Link>` navigation.
 4. **Converted pages** carry `// @ts-nocheck` + `/* eslint-disable */` on purpose (legacy inline styles like `"start !important"` break CSSProperties types). New hand-written components should be fully typed.
-5. **Owl sliders** (home) need jQuery on `window` — `owl-sliders.ts` handles that. Content page uses Swiper (that's what the legacy site used there).
+5. **No hover on touch screens**: `postcss.config.js` runs `scripts/postcss-hover-only.js`, which moves every `:hover` rule (ours, legacy, Bootstrap) into `@media (hover: hover) and (pointer: fine)` at build time. Write `:hover` normally — no need for new `@media (hover: none)` cancel blocks. The config also restates Next's default PostCSS plugins; keep them if you edit it.
+6. **Owl sliders** (home) need jQuery on `window` — `owl-sliders.ts` handles that. Content page uses Swiper (that's what the legacy site used there).
 
 ## Reusable primitives (extend these, don't duplicate markup)
 

@@ -2,6 +2,9 @@
 import { useEffect, useState } from "react";
 import type { Reel } from "./content-data";
 
+/** How long a cover may take before it is treated as failed. */
+const PROBE_TIMEOUT = 10000;
+
 /* Keeps only the reels whose cover actually loads.
 
    Instagram's thumbnail links are signed and expire, and a reel without a
@@ -19,14 +22,22 @@ export function useLoadedThumbs(reels: Reel[]): { list: Reel[]; pending: number 
   useEffect(() => {
     let alive = true;
     const posters = Array.from(new Set(reels.map((r) => r.poster).filter(Boolean))) as string[];
+    const timers: number[] = [];
     posters.forEach((src) => {
       const probe = new Image();
       probe.onload = () => alive && setStatus((s) => ({ ...s, [src]: true }));
       probe.onerror = () => alive && setStatus((s) => ({ ...s, [src]: false }));
       probe.src = src;
+      // a request that never settles counts as failed, so `pending` reaches 0
+      timers.push(
+        window.setTimeout(() => {
+          if (alive) setStatus((s) => (src in s ? s : { ...s, [src]: false }));
+        }, PROBE_TIMEOUT),
+      );
     });
     return () => {
       alive = false;
+      timers.forEach((t) => window.clearTimeout(t));
     };
     // `key` stands for `reels`' covers — a new array with the same covers
     // (every render) must not probe again

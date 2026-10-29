@@ -22,9 +22,9 @@ export default function IncubatorSkeleton() {
       <EventsSkeleton />
       <AlbumSkeleton />
       <ExpertsSkeleton />
-      <FaqSkeleton />
       <GradsSkeleton />
       <TestimonialsSkeleton />
+      <FaqSkeleton />
     </div>
   );
 }

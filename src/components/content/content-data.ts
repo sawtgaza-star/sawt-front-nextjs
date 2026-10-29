@@ -69,12 +69,13 @@ export const SORT_OPTIONS = [
 
 export type SortValue = (typeof SORT_OPTIONS)[number]["value"];
 
-/* The backend orders by date only; "views" asks for the latest and is then
+/* What each option asks the backend for. Its `most_viewed` returns the same
+   order as `latest` while every `views` is null, so every list is still
    re-ordered on the page by `sortReels`. */
 export const API_SORT: Record<SortValue, ContentApiSort> = {
   newest: "latest",
   oldest: "oldest",
-  views: "latest",
+  views: "most_viewed",
 };
 
 /** One reel card. The card draws `id` + `video`; `details` is what the
@@ -99,22 +100,34 @@ export function filterReels(list: Reel[], category: string): Reel[] {
   return list.filter((reel) => reel.details?.categories.includes(category));
 }
 
+const newestFirst = (a: Reel, b: Reel) =>
+  (b.publishedAt ?? "").localeCompare(a.publishedAt ?? "");
+
+/* "views" orders by `views` (likes when the payload has no view counts), then
+   by comments, then newest first — so equal counts still land in a stable,
+   meaningful order instead of the API's. */
 export function sortReels(list: Reel[], sort: SortValue): Reel[] {
   const copy = [...list];
-  if (sort === "views") return copy.sort((a, b) => (b.views ?? 0) - (a.views ?? 0));
-  return copy.sort((a, b) =>
-    sort === "newest"
-      ? (b.publishedAt ?? "").localeCompare(a.publishedAt ?? "")
-      : (a.publishedAt ?? "").localeCompare(b.publishedAt ?? ""),
-  );
+  if (sort === "views") {
+    return copy.sort(
+      (a, b) =>
+        (b.views ?? 0) - (a.views ?? 0) ||
+        (b.details?.commentsCount ?? 0) - (a.details?.commentsCount ?? 0) ||
+        newestFirst(a, b),
+    );
+  }
+  return copy.sort((a, b) => (sort === "newest" ? newestFirst(a, b) : newestFirst(b, a)));
 }
 
 /* The API's `reels.items` as cards this page can draw — the only source the
    grid and the "الأكثر مشاهدة" row have.
 
-   Items arrive in the editor's order (`sort_order`). An item whose `video_url`
-   is empty is dropped: Instagram serves no file for it, and the card would be
-   a black rectangle with a play button that does nothing.
+   Items arrive in the editor's order (`sort_order`). Every one is kept, so the
+   grid lists exactly what the pill counts. An item whose `video_url` is empty
+   (Instagram served no file for it) still has its cover and its permalink: the
+   grid draws it and sends a click to Instagram (see ReelThumbCard), and the
+   lists that play video inline leave it out (`playable`). Only an item with
+   nothing to show or link to at all is dropped.
 
    `views` is the reel's own view count when the backend's token is scoped for
    insights and `likes` when it isn't — the payload nulls `views` in that case,
@@ -159,5 +172,8 @@ export function reelsFromApi(
       views: item.views ?? item.likes ?? undefined,
       publishedAt: item.posted_at ?? undefined,
     }))
-    .filter((reel) => reel.video);
+    .filter((reel) => reel.video || reel.poster || reel.details.permalink);
 }
+
+/** Whether a reel has a file the viewer / an inline card can play. */
+export const playable = (reel: Reel) => Boolean(reel.video);

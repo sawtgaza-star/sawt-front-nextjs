@@ -7,8 +7,8 @@ import RichText from "@/components/ui/RichText";
 
 /* "لماذا صوت ميديا" — right-aligned heading over a horizontal card strip that
    deliberately bleeds past the container's left edge, exactly as the design
-   crops it. Each card is rendered once: MediaWhyStrip's auto-scroll runs to
-   the last card and stops there, no repeated set.
+   crops it. MediaWhyStrip repeats the cards and loops its auto-scroll
+   through them endlessly.
 
    The icons are uploads now (`icon_url`), so each card shows one only once an
    editor has added it. `accent` — a design token walked down the list — paints

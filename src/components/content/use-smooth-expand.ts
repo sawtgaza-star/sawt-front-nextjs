@@ -8,11 +8,13 @@ const EASE = "cubic-bezier(0.22, 1, 0.36, 1)";
 /* "عرض المزيد" opening the grid softly instead of in one jump. `open()` (the
    button's click) notes how many cards are drawn and calls `expand`; once
    React has drawn the extra ones, they fade and rise in, row by row —
+   `expanded` is how far the grid is open (a step count, or a flag): every
+   change to a truthy value plays the new cards in —
    opacity / transform only, so the browser does no layout work per frame.
    Skipped under prefers-reduced-motion. */
 export function useSmoothExpand(
   gridRef: RefObject<HTMLElement | null>,
-  expanded: boolean,
+  expanded: boolean | number,
   columns: number,
   expand: () => void,
 ) {

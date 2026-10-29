@@ -31,15 +31,24 @@
   padding-block: 3px;
 }
 
+/* English: the sliders are built left-to-right (lib/owl-sliders) */
+[dir="ltr"] .owl-carousel:not(.owl-loaded) {
+  direction: ltr;
+}
+
 .owl-carousel:not(.owl-loaded) > .item {
   flex: 0 0 auto;
   min-width: 0;
 }
 
 /* ---- آخر أخبارنا — .creators-carousel
-   0: autoWidth (the card's own 70vw), margin 12 · 600: 2, margin 20 · 1000: 3 */
+   0: autoWidth (the card's own 80vw), margin 12, stage padding 10 (edge to
+   edge — home-news.css) · 600: 2, margin 20 · 1000: 3 */
 .creators-carousel:not(.owl-loaded) {
   column-gap: 12px;
+}
+.creators-carousel:not(.owl-loaded) > .item:first-child {
+  margin-inline-start: 10px;
 }
 @media (min-width: 600px) {
   .creators-carousel:not(.owl-loaded) {
@@ -56,17 +65,15 @@
 }
 
 /* ---- صناع المحتوى — .creators-carousel2
-   0: 1, center, stagePadding 58, margin 12 · 600: 2 · 1100: 3 · 1300: 4 ·
-   1500: 5, margin 25 */
+   0: autoWidth (the card's own width), margin 12, stage padding 10 (edge to
+   edge — home-creator-card.css) · 600: 2 · 1100: 3 · 1300: 4 · 1500: 5,
+   margin 25 */
 .creators-carousel2:not(.owl-loaded) {
   column-gap: 12px;
 }
-.creators-carousel2:not(.owl-loaded) > .item {
-  width: calc(100% - 2 * 58px);
-}
 /* no loop: nothing fills the stage padding before the first card */
 .creators-carousel2:not(.owl-loaded) > .item:first-child {
-  margin-inline-start: 58px;
+  margin-inline-start: 10px;
 }
 @media (min-width: 600px) {
   .creators-carousel2:not(.owl-loaded) {

@@ -27,7 +27,7 @@ export default function FollowedCreatorCard({
     <CreatorCard
       creator={{
         uuid: creator.uuid,
-        name: creator.name,
+        name: localized(creator.name, lang),
         bio,
         avatar: creator.avatar,
         followers: formatFollowers(creator.followers),

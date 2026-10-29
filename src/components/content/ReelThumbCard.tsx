@@ -34,10 +34,13 @@ export default function ReelThumbCard({
   const [failed, setFailed] = useState(false);
   useEffect(() => setFailed(false), [reel.poster]);
   const broken = !reel.poster || failed;
+  // no cover, or no video file (Instagram served none): nothing for the
+  // viewer to play — the card links out to Instagram instead
+  const outbound = broken || !reel.video;
   useEffect(() => {
-    if (broken) onBroken?.(String(reel.id));
+    if (outbound) onBroken?.(String(reel.id));
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [broken, reel.id]);
+  }, [outbound, reel.id]);
 
   const { lang } = useLang();
   const d = reel.details;
@@ -48,7 +51,7 @@ export default function ReelThumbCard({
   const posted = d ? timeAgo(d.postedAt, lang) : "";
   const permalink = d?.permalink || "";
   const open = () => {
-    if (broken && permalink) {
+    if (outbound && permalink) {
       window.open(permalink, "_blank", "noopener,noreferrer");
     } else {
       onOpen(index);
@@ -120,7 +123,7 @@ export default function ReelThumbCard({
         tabIndex={-1}
         aria-hidden="true"
       >
-        <i className={broken && permalink ? "fa-brands fa-instagram" : "fa-solid fa-play"}></i>
+        <i className={outbound && permalink ? "fa-brands fa-instagram" : "fa-solid fa-play"}></i>
       </button>
     </div>
   );

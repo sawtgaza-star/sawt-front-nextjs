@@ -37,6 +37,9 @@ export default function MediaNav({ base = "" }: { base?: string }) {
           {/* back to the platform */}
           <div className="nav-switch">
             <a className="sm-nav-back" href={nav.back.href}>
+              {/* points "back" in the reading direction — flipped for
+                  English in media.css */}
+              <i className="fa-solid fa-angle-right" aria-hidden="true"></i>
               {loading ? (
                 <span className="nsk-line" style={{ width: "112px" }} />
               ) : (

@@ -17,20 +17,20 @@ export const SERVICE_THEMES = [
 ] as const;
 export type ServiceTheme = (typeof SERVICE_THEMES)[number];
 
-/** "لماذا صوت ميديا" — the token that paints each card's corner dot:
-    oliveGreen-300 → Orange-200 → oliveGreen-500 → Orange-300 → oliveGreen-700.
-    (The icon itself is an upload now, so it carries its own colour.) */
-export const WHY_ACCENTS = ["#879279", "#FFB181", "#4C5C37", "#FF7420", "#364127"];
+/** "لماذا صوت ميديا" — the colour that paints each card's corner dot and its
+    icon, walked down the list: the site's own green → orange → grey-green
+    (the same tones as the rest of the site, not the brighter design oranges
+    the cards used before). */
+export const WHY_ACCENTS = ["#4C5C37", "#E1723B", "#879279"];
 
 /** CSS filter that paints a card's icon in its accent: brightness(0) turns the
     upload into a black silhouette, the rest tints it. Uploads are <img>s from a
-    host without CORS, so a mask can't recolour them — a filter can. */
+    host without CORS, so a mask can't recolour them — a filter can. Each one
+    solved for its colour (CSS-filter SPSA solver, error < 0.1). */
 export const WHY_ICON_FILTERS: Record<string, string> = {
-  "#879279": "brightness(0) saturate(100%) invert(40%) sepia(67%) saturate(346%) hue-rotate(44deg) brightness(186%) contrast(16%)",
-  "#FFB181": "brightness(0) saturate(100%) invert(61%) sepia(68%) saturate(2393%) hue-rotate(324deg) brightness(151%) contrast(109%)",
-  "#4C5C37": "brightness(0) saturate(100%) invert(100%) sepia(100%) saturate(8473%) hue-rotate(24deg) brightness(26%) contrast(59%)",
-  "#FF7420": "brightness(0) saturate(100%) invert(50%) sepia(34%) saturate(6699%) hue-rotate(341deg) brightness(140%) contrast(162%)",
-  "#364127": "brightness(0) saturate(100%) invert(3%) sepia(49%) saturate(3650%) hue-rotate(67deg) brightness(276%) contrast(70%)",
+  "#4C5C37": "brightness(0) saturate(100%) invert(33%) sepia(19%) saturate(850%) hue-rotate(44deg) brightness(91%) contrast(86%)",
+  "#E1723B": "brightness(0) saturate(100%) invert(47%) sepia(100%) saturate(420%) hue-rotate(334deg) brightness(95%) contrast(85%)",
+  "#879279": "brightness(0) saturate(100%) invert(54%) sepia(16%) saturate(368%) hue-rotate(44deg) brightness(101%) contrast(88%)",
 };
 
 /** Bundle card tab colour / border / accent, cycling down the list. */

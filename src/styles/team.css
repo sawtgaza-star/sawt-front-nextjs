@@ -921,6 +921,10 @@ padding:0;
     /* the centred card's width; the neighbours are the same box shrunk down */
     --team-slide-w: min(340px, 80vw);
     display: flex;
+    /* NOT the desktop grid's `center`: in an overflowing flex track that
+       pushes half the cards past the start edge, where the track can't
+       scroll to them — it then only moved one way */
+    justify-content: flex-start;
     /* no gap of its own: the space either side of the centred card comes from
        the neighbours being scaled down inside their full-width boxes */
     gap: 0;
@@ -950,6 +954,23 @@ padding:0;
   .team-members-row .team-member-card.active {
     transform: none;
     z-index: 2;
+  }
+  /* the loop's jump between copies (TeamMembersSlider) — no scale animation,
+     so the card that becomes `.active` is simply already full size */
+  .team-members-row.is-looping .team-member-card {
+    transition: none;
+  }
+  /* mouse drag (useSnapSlider): a grab cursor, and no native image drag or
+     text selection to steal the gesture */
+  .team-members-row {
+    cursor: grab;
+    user-select: none;
+  }
+  .team-members-row.is-dragging {
+    cursor: grabbing;
+  }
+  .team-members-row img {
+    -webkit-user-drag: none;
   }
 }
 
@@ -982,5 +1003,14 @@ padding:0;
     content: "";
     position: absolute;
     inset: -1200px;
+  }
+}
+
+/* Phone: the members slider closes the page, so the footer's 50px !important
+   top margin (style.css) is dropped here — the newsletter card's own 24px
+   is enough below "عرض الكل" */
+@media (max-width: 767.98px) {
+  body:has(.team-members-section) .footer-shell.footer-shell {
+    margin-top: 0 !important;
   }
 }

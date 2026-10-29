@@ -7,7 +7,7 @@ import type {
   MediaWorkResults,
 } from "@/lib/api/media-work";
 import MediaProjectHead from "./MediaProjectHead";
-import { galleryLayout } from "./media-page-view";
+import MediaProjectGallery from "./MediaProjectGallery";
 import RichText from "@/components/ui/RichText";
 
 /* "عن المشروع" panel — the brief, the challenges/solutions pair (orange card on
@@ -16,6 +16,10 @@ import RichText from "@/components/ui/RichText";
 
    All three headings are the API's: the tab's own label opens the panel, then
    `results.title` and `gallery.title`. */
+function hasNote(note: MediaWorkNote | undefined, lang: string) {
+  return Boolean(localized(note?.title, lang) || localizedList(note?.items, lang).length);
+}
+
 function Note({
   note,
   lang,
@@ -67,19 +71,18 @@ export default function MediaProjectAbout({
   const shots = sortItems(gallery?.items)
     .map((shot) => shot.url)
     .filter((url): url is string => Boolean(url));
-  /* the artboard's block of five, repeated to cover however many frames the
-     payload carries — see galleryLayout */
-  const frames = galleryLayout(shots.length);
 
   return (
     <div className="sm-pj-panel">
       {title ? <MediaProjectHead title={title} /> : null}
       {body ? <RichText as="p" className="sm-pj-text" html={body} /> : null}
 
-      <div className="sm-pj-duo">
-        <Note note={data?.challenges} lang={lang} tone="orange" />
-        <Note note={data?.solutions} lang={lang} tone="olive" />
-      </div>
+      {hasNote(data?.challenges, lang) || hasNote(data?.solutions, lang) ? (
+        <div className="sm-pj-duo">
+          <Note note={data?.challenges} lang={lang} tone="orange" />
+          <Note note={data?.solutions} lang={lang} tone="olive" />
+        </div>
+      ) : null}
 
       {figures.length ? (
         <>
@@ -99,24 +102,7 @@ export default function MediaProjectAbout({
       ) : null}
 
       {shots.length ? (
-        <>
-          <MediaProjectHead title={localized(gallery?.title, lang)} />
-          <div className="sm-pj-gallery">
-            {shots.map((src, i) => (
-              <figure
-                className={
-                  "sm-pj-frame " +
-                  (frames[i] === "full"
-                    ? "sm-pj-frame-wide"
-                    : "sm-pj-frame-" + frames[i])
-                }
-                key={i}
-              >
-                <img src={src} alt="" />
-              </figure>
-            ))}
-          </div>
-        </>
+        <MediaProjectGallery title={localized(gallery?.title, lang)} shots={shots} />
       ) : null}
     </div>
   );

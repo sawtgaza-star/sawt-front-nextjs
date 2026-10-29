@@ -446,46 +446,28 @@ filter: drop-shadow(0 0 12px rgba(214, 232, 96, 0.75)) drop-shadow(0 4px 10px #0
 .ct-grid-more-wrap::before {
   background: linear-gradient(to right, rgba(76, 92, 55, 0.35), rgba(76, 92, 55, 0));
 }
-/* white pill, green rim and text — the site's outlined buttons (the nav's
-   "تسجيل الدخول"); pale green on hover, the chevron nudging down */
+/* no pill: just the green label and its chevron — no rim, no fill and no
+   hover change */
 .ct-grid-more {
   display: inline-flex;
   align-items: center;
-  gap: 10px;
-  min-height: 48px;
-  padding: 8px 14px 8px 26px;
-  border: 1.5px solid rgba(76, 92, 55, 1);
-  border-radius: 999px;
-  background: #fff;
+  gap: 8px;
+  min-height: 44px;
+  padding: 8px 4px;
+  border: 0;
+  background: none;
   color: rgba(76, 92, 55, 1);
   font-size: 15px;
   font-weight: 700;
   white-space: nowrap;
-  transition:
-    background-color 0.2s ease,
-    box-shadow 0.2s ease;
-}
-[dir="ltr"] .ct-grid-more {
-  padding: 8px 26px 8px 14px;
-}
-.ct-grid-more:hover {
-  background: #e5e9df;
-  box-shadow: 0 8px 20px -12px rgba(76, 92, 55, 0.6);
 }
 .ct-grid-more:focus-visible {
   outline: 3px solid rgba(76, 92, 55, 0.35);
   outline-offset: 3px;
+  border-radius: 6px;
 }
 .ct-grid-more i {
   font-size: 12px;
-  transition: transform 0.2s ease;
-}
-.ct-grid-more:hover i {
-  transform: translateY(2px);
-}
-/* "عرض أقل": the chevron points up and nudges up */
-.ct-grid-more.is-less:hover i {
-  transform: translateY(-2px);
 }
 @media (max-width: 575.98px) {
   .ct-grid-more-wrap {
@@ -493,13 +475,7 @@ filter: drop-shadow(0 0 12px rgba(214, 232, 96, 0.75)) drop-shadow(0 4px 10px #0
     margin-top: 24px;
   }
   .ct-grid-more {
-    min-height: 44px;
     font-size: 14px;
-  }
-}
-@media (prefers-reduced-motion: reduce) {
-  .ct-grid-more i {
-    transition: none;
   }
 }
 
@@ -735,6 +711,24 @@ body.ct-focus-mode::after {
 .ct-mw-section {
   padding: 30px 0 20px;
 }
+/* phones: tighter above (grid's "عرض المزيد/أقل" → heading was 60px) and
+   below (cards → footer newsletter was ~100px) */
+@media (max-width: 767.98px) {
+  .ct-grid-section {
+    padding-bottom: 10px;
+  }
+  .ct-mw-section {
+    padding: 34px 0 0;
+  }
+  .ct-mw-section .ct-mw-track {
+    padding-top: 16px;
+    padding-bottom: 14px;
+  }
+  /* style.css's 50px !important on every page's footer — only after this row */
+  body:has(.ct-mw-section) .footer-shell.footer-shell {
+    margin-top: 24px !important;
+  }
+}
 .ct-mw-head {
   display: flex;
   align-items: center;
@@ -930,6 +924,10 @@ body.ct-focus-mode::after {
     -webkit-overflow-scrolling: touch;
     scrollbar-width: none;
     padding-bottom: 4px;
+    /* the pills run out to the screen edge on the side they scroll away to
+       (left in Arabic, right in English) instead of stopping at the
+       container's gutter; the start side keeps its gutter */
+    margin-inline-end: calc(50% - 50vw);
   }
   .ct-filter-bar::-webkit-scrollbar {
     display: none;

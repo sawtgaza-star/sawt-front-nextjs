@@ -1,5 +1,6 @@
 // @ts-nocheck
 /* eslint-disable */
+import "@/styles/footer-contact.css";
 import NewsletterForm from "./NewsletterForm";
 /* Desktop newsletter form + phone/email contact column. Both the newsletter
    copy and the contact row come from GET /layout/footer and nothing else (see

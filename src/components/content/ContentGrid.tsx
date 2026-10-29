@@ -4,11 +4,12 @@ import ReelThumbCard from "./ReelThumbCard";
 import ReelViewer from "./ReelViewer";
 import ContentGridMore from "./ContentGridMore";
 import type { Reel } from "./content-data";
-import { REEL_BATCH, useReelBatches } from "./use-reel-batches";
+import { useReelBatches } from "./use-reel-batches";
 import { useGridColumns } from "./use-grid-columns";
 import { useSmoothExpand } from "./use-smooth-expand";
 
-/** Rows shown before the "عرض المزيد" button, at every width. */
+/** Rows shown before the "عرض المزيد" button, at every width — and the rows
+    each press of it adds (4 reels on a phone's two columns, 10 on desktop). */
 const PREVIEW_ROWS = 2;
 
 /* The hero-strip tap's highlight (see the focus effect): it starts once the
@@ -24,8 +25,9 @@ const SCROLL_AWAY = 80;
    the creator page's — where the video plays. Cards are drawn a batch at a
    time (useReelBatches); the viewer still gets the whole list. Only the
    first PREVIEW_ROWS rows show (as many reels as the grid has columns,
-   twice) until "عرض المزيد" is pressed — back to that on every new filter /
-   sort, or on "عرض أقل" under the open grid.
+   twice); each press of "عرض المزيد" adds that many again, and once every
+   reel is out the button becomes "عرض أقل" — back to the first rows then,
+   and on every new filter / sort.
 
    An empty grid says why when the API does: `reels.message` (e.g. the
    Instagram account's token expired) replaces the stock "nothing here" line. */
@@ -65,20 +67,21 @@ export default function ContentGrid({
   const resetKey = reels.map((r) => r.id).join(",");
   const columns = useGridColumns(gridRef, 5);
   const preview = PREVIEW_ROWS * columns;
-  const [expanded, setExpanded] = useState(false);
-  const [expandedKey, setExpandedKey] = useState(resetKey);
-  if (expandedKey !== resetKey) {
-    setExpandedKey(resetKey);
-    setExpanded(false);
+  // presses of "عرض المزيد" so far; each opens `preview` more reels
+  const [steps, setSteps] = useState(0);
+  const [stepsKey, setStepsKey] = useState(resetKey);
+  if (stepsKey !== resetKey) {
+    setStepsKey(resetKey);
+    setSteps(0);
   }
-  const collapsed = !expanded && reels.length > preview;
-  // collapsed, batches stop at the preview — else they'd keep loading unseen
-  const total = collapsed ? preview : reels.length;
-  const { shown: batch, reveal: revealBatch } = useReelBatches(total, gridRef, { resetKey });
-  const shown = collapsed ? Math.min(batch, preview) : batch;
-  // "عرض المزيد" draws one more batch in the same render that opens the grid
-  const showMore = useSmoothExpand(gridRef, expanded, columns, () =>
-    reveal(Math.min(reels.length, preview + REEL_BATCH) - 1),
+  const limit = preview * (steps + 1);
+  const hasMore = reels.length > limit;
+  // batches stop at the open rows — else they'd keep loading unseen
+  const total = Math.min(reels.length, limit);
+  const { shown, reveal: revealBatch } = useReelBatches(total, gridRef, { resetKey });
+  // "عرض المزيد" draws the next rows in the same render that opens them
+  const showMore = useSmoothExpand(gridRef, steps, columns, () =>
+    reveal(Math.min(reels.length, limit + preview) - 1),
   );
   /* "عرض أقل": fold back to the preview rows. The rows above the button
      vanish, which would leave the visitor far down the page — so the button
@@ -89,19 +92,19 @@ export default function ContentGrid({
   const foldFrom = useRef<number | null>(null);
   const showLess = () => {
     foldFrom.current = moreRef.current?.getBoundingClientRect().top ?? null;
-    setExpanded(false);
+    setSteps(0);
   };
   useLayoutEffect(() => {
     const before = foldFrom.current;
     foldFrom.current = null;
-    if (expanded || before === null || !moreRef.current) return;
+    if (steps || before === null || !moreRef.current) return;
     const after = moreRef.current.getBoundingClientRect().top;
     window.scrollBy({ top: after - before, behavior: "instant" as ScrollBehavior });
-  }, [expanded]);
+  }, [steps]);
 
-  /** Make sure reel `i` is drawn — past the preview, that opens it up. */
+  /** Make sure reel `i` is drawn — past the open rows, that opens enough more. */
   const reveal = (i: number) => {
-    if (i >= preview) setExpanded(true);
+    if (preview > 0) setSteps((s) => Math.max(s, Math.ceil((i + 1) / preview) - 1));
     revealBatch(i);
   };
 
@@ -251,8 +254,8 @@ export default function ContentGrid({
       {reels.length > preview && (
         <ContentGridMore
           ref={moreRef}
-          open={!collapsed}
-          onToggle={collapsed ? showMore : showLess}
+          open={!hasMore}
+          onToggle={hasMore ? showMore : showLess}
         />
       )}
 

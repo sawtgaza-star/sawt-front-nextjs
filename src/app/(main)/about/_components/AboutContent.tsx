@@ -10,6 +10,7 @@
    lands, or to nothing at all if the request fails — see lib/api/use-about-page
    for why an outage isn't surfaced. */
 
+import "@/styles/about-mobile.css";
 import { useAboutPage } from "@/lib/api/use-about-page";
 import { useLang } from "@/lib/use-lang";
 import AboutHero from "./AboutHero";

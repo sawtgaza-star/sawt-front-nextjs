@@ -34,6 +34,8 @@ export default function IncubatorTestimonials({
                   {head ? (
                     <>
                       <span>{head}</span>
+                      {/* the space keeps the two words apart where the
+                          phone CSS hides the line break */}{" "}
                       <br />
                     </>
                   ) : null}
