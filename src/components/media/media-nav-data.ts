@@ -24,10 +24,8 @@
       `url` — one wrong href in the payload is a dead end on every /media page.
 
    ORDER STAYS HERE TOO. The bar and the drawer list the same four links in
-   OPPOSITE orders — the design opens the bar with عن صوت ميديا (on the right,
-   next to the brand) and stacks منهجيتنا first in the drawer — so one of the
-   two has to be ordered locally whatever sequence the payload arrives in.
-   SECTIONS is the bar's order; MediaNavMobile walks it back.
+   the same order — عن صوت ميديا, خدماتنا, منهجيتنا, أعمالنا — whatever
+   sequence the payload arrives in. SECTIONS is that order.
    ========================================================= */
 
 import { localized, type Localized } from "@/lib/api/pages";
@@ -60,9 +58,9 @@ export type MediaNavView = {
    and is listed after the four below. */
 const SECTIONS: { key: string; href: string }[] = [
   { key: "about", href: "#sm-about" },
-  { key: "works", href: "#sm-works" },
   { key: "services", href: "#sm-services" },
   { key: "methodology", href: "#sm-process" },
+  { key: "works", href: "#sm-works" },
 ];
 
 /* The two entries that leave the page, by key — never by the payload's own

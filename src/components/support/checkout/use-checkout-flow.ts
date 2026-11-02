@@ -1,6 +1,7 @@
 "use client";
 import { useEffect, useRef, useState } from "react";
 import { ApiError } from "@/lib/api/client";
+import { localized } from "@/lib/api/pages";
 import {
   fetchSupportMethod,
   type SupportMethod,
@@ -32,10 +33,11 @@ import {
   type ContactField,
 } from "./contact-data";
 import { CURRENCIES } from "./currencies-data";
-import { startPaypalCheckout, usePaypalReturn } from "./paypal-return";
+import { startPaypalCheckout, startStripeCheckout, usePaypalReturn } from "./paypal-return";
 
 const FALLBACK_ERROR = "حدث خطأ غير متوقع. حاول مرة أخرى.";
 const PAYPAL_CANCELLED = "تم إلغاء الدفع عبر PayPal، يمكنك المحاولة مرة أخرى.";
+const STRIPE_CANCELLED = "تم إلغاء الدفع عبر Stripe، يمكنك المحاولة مرة أخرى.";
 const PROOF_SCREEN = CHECKOUT_SCREENS.findIndex((s) => s.value === "proof");
 
 /* Everything the donation wizard keeps between screens, and the API calls
@@ -46,7 +48,9 @@ const PROOF_SCREEN = CHECKOUT_SCREENS.findIndex((s) => s.value === "proof");
                          electronic category asks for the amount + currency
                          here instead of on screen 3; a PayPal platform
                          then leaves for PayPal (POST /support/{method}/
-                         paypal/order) and comes back straight to screen 3.
+                         paypal/order) and comes back straight to screen 3;
+                         a Stripe one does the same through POST /stripe/
+                         donations/checkout.
      screen 2  transfer  GET  /support/methods/{uuid}
      screen 3  proof     POST /support/requests/{uuid}/proof
      screen 4  contact   POST /support/requests/{uuid}/contact → /support
@@ -86,6 +90,13 @@ export function useCheckoutFlow() {
     (page?.category?.key || method?.category || "").trim().toLowerCase() === "electronic";
   const paypal =
     electronic && !!method && (!!method.is_paypal || method.provider === "paypal");
+  // by provider, or by name when the API leaves the provider blank
+  const stripe =
+    electronic &&
+    !!method &&
+    [method.provider, localized(method.name, "en"), localized(method.name, "ar")].some(
+      (v) => (v || "").trim().toLowerCase() === "stripe",
+    );
   /* the draft is opened on screen 1 when the amount is known there, else on
      the proof screen — and again if the platform changes after */
   const captchaHere =
@@ -106,8 +117,8 @@ export function useCheckoutFlow() {
     }
   }, []);
 
-  // back from PayPal: restore screen 1's picks and, if paid, go to the proof
-  usePaypalReturn((outcome, pending) => {
+  // back from PayPal / Stripe: restore screen 1's picks and, if paid, go to the proof
+  usePaypalReturn((outcome, pending, via) => {
     if (pending) {
       setPlatform(pending.method);
       setProof((p) => ({ ...p, amount: pending.amount, currency: pending.currency }));
@@ -117,7 +128,7 @@ export function useCheckoutFlow() {
       }
     }
     if (outcome === "success") setIndex(PROOF_SCREEN);
-    else setError(PAYPAL_CANCELLED);
+    else setError(via === "stripe" ? STRIPE_CANCELLED : PAYPAL_CANCELLED);
   });
 
   // the platform's full details for "بيانات التحويل", and its currency
@@ -198,12 +209,13 @@ export function useCheckoutFlow() {
       }
     }
 
-    if (screen.value === "platform" && paypal) {
-      // off to PayPal — a full navigation; the donor comes back on screen 3
+    if (screen.value === "platform" && (paypal || stripe)) {
+      // off to PayPal / Stripe — a full navigation; the donor comes back on screen 3
       let approval = "";
       const draft = request.current?.method === method!.uuid ? request.current.uuid : undefined;
+      const start = paypal ? startPaypalCheckout : startStripeCheckout;
       const ok = await run(async () => {
-        approval = await startPaypalCheckout(method!.uuid, proof, draft);
+        approval = await start(method!.uuid, proof, draft);
       });
       if (!ok) return;
       setBusy(true); // keep the button locked while the browser leaves
@@ -269,7 +281,13 @@ export function useCheckoutFlow() {
     captcha,
     captchaHere,
     platform: method?.uuid ?? platform,
-    setPlatform,
+    // a different platform starts with an empty amount
+    setPlatform(value: string) {
+      if (value === (method?.uuid ?? platform)) return;
+      setPlatform(value);
+      setProof((p) => ({ ...p, amount: "" }));
+      setProofErrors((e) => ({ ...e, amount: undefined }));
+    },
     proof,
     proofErrors,
     contact,

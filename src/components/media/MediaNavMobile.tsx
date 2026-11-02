@@ -59,8 +59,6 @@ export default function MediaNavMobile({
         {open ? <IconNavClose /> : <IconNavMenu />}
       </button>
 
-      {/* the design stacks منهجيتنا first, so the bar's list is walked
-          bottom-up (CSS column-reverse would break keyboard order) */}
       <SubNavDrawer
         id="sm-nav-panel"
         open={open}
@@ -68,7 +66,7 @@ export default function MediaNavMobile({
         togglerSelector=".sm-nav-toggler"
         lockClass="sm-drawer-open"
         loading={loading}
-        links={[...nav.links].reverse().map((link) => ({
+        links={nav.links.map((link) => ({
           key: link.key,
           label: link.label,
           href: base + link.href,
@@ -83,8 +81,9 @@ export default function MediaNavMobile({
                 <span>{nav.cta.label}</span>
               </a>
             )}
-            {/* Not in the payload — the second CTA is this drawer's own. */}
-            <a className="nav-drawer-btn is-outline" href="/media/contact" onClick={close}>
+            {/* Not in the payload — the second CTA is this drawer's own; it
+                lands on the consult form at the foot of /media. */}
+            <a className="nav-drawer-btn is-outline" href={base + "#sm-consult"} onClick={close}>
               <span data-i18n="sm_cta_consult">احجز استشارة</span>
             </a>
           </>

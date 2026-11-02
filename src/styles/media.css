@@ -1409,6 +1409,14 @@ body:has(.sm-page) {
   z-index: 3;
 }
 
+/* phone: a taller tap target */
+@media (max-width: 767.98px) {
+  .sm-svc-btn {
+    padding-top: 12px;
+    padding-bottom: 12px;
+  }
+}
+
 /* ---- per-card palettes, straight from the design ----
    The button is the one element that never changes: oliveGreen-500 on white,
    on all five cards — that is .sm-btn-green, so no card overrides it. */

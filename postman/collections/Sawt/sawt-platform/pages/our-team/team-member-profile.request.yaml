@@ -1,5 +1,5 @@
 $kind: http-request
-url: "{{Base_Url}}/pages/team/owjsk"
+url: "{{Base_Url}}/pages/team/vjbjg"
 method: GET
 headers:
   Accept: application/json

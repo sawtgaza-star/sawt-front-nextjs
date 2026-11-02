@@ -12,8 +12,10 @@ import {
   createSupportCheckout,
   type SupportCheckoutInterval,
 } from "@/lib/api/support-checkout";
+import { createStripeCheckout } from "@/lib/api/support-stripe";
 import { resolveDonate, type PlanValue, type ResolvedDonate } from "./donate-data";
 import RequiredMark from "@/components/ui/RequiredMark";
+import DonatePayMethod, { type DonatePay } from "./DonatePayMethod";
 
 /* Plan tab glyphs — kept here (not in donate-data.ts) since that file is
    plain .ts and can't hold JSX. */
@@ -35,8 +37,9 @@ const FAILED_MESSAGE = "تعذر بدء عملية الدفع. حاول مرة �
 /* Donation box: plan tabs (لمرة واحدة / شهري / سنوي), preset amount pills and
    a custom amount field. Client leaf — it owns the selection state. The tabs,
    presets and custom-amount limits come from GET /pages/support's `plans`
-   block (resolved in donate-data); submitting opens a PayPal checkout
-   (POST /support/checkout) and sends the donor to its approval_url. */
+   block (resolved in donate-data); submitting opens a card checkout
+   (POST /stripe/donations/checkout) or a PayPal one (POST /support/checkout),
+   per "طريقة الدفع", and sends the donor to its approval_url. */
 export default function DonateForm({
   donate = resolveDonate(undefined, "ar"),
   symbol = "$",
@@ -50,6 +53,7 @@ export default function DonateForm({
   const activePlan = donate.plans.find((p) => p.value === plan) ?? donate.plans[0];
   const [amount, setAmount] = useState<number>(activePlan.defaultAmount);
   const [custom, setCustom] = useState("");
+  const [pay, setPay] = useState<DonatePay>("card");
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
 
@@ -102,15 +106,18 @@ export default function DonateForm({
           setError("");
           try {
             const back = `${window.location.origin}/support`;
-            const { approvalUrl } = await createSupportCheckout({
+            const checkout = {
               amount: value,
-              currency,
               interval: INTERVAL[plan],
               // No /support/thank-you page exists yet — land back on /support.
               return_url: `${back}?payment=success`,
               cancel_url: `${back}?payment=cancelled`,
-            });
-            // Off-site to PayPal — a full navigation, not a router push.
+            };
+            const { approvalUrl } =
+              pay === "card"
+                ? await createStripeCheckout(checkout)
+                : await createSupportCheckout({ ...checkout, currency });
+            // Off-site to Stripe / PayPal — a full navigation, not a router push.
             window.location.href = approvalUrl;
           } catch (err) {
             setError(err instanceof ApiError && err.message ? err.message : FAILED_MESSAGE);
@@ -165,6 +172,8 @@ export default function DonateForm({
             </div>
           </>
         )}
+
+        <DonatePayMethod value={pay} onChange={setPay} />
 
         {activePlan.renew && (
           /* Native input stays in the DOM (keyboard + a11y) but is visually
