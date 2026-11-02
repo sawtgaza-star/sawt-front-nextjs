@@ -8,10 +8,13 @@ import { formatDuration } from "./hero-copy";
    no hover state and clicking it does nothing; the stack is turned by
    dragging, by its pager, or on its own.
 
-   `preview` (the stack decides: once the page has loaded) loads
-   the file's metadata for the duration badge and lets the front card play
-   muted, on a loop, while it stays in front. Instagram CDN links expire —
-   a file that fails simply leaves the poster up. */
+   `preview` (the stack decides: when the visitor engages, or some seconds
+   after load, and only while the stack is on screen) lets the front card play
+   muted, on a loop, while it stays in front. The reels are 8–15MB each and a
+   card is in front for 3s, so only the live card has a <video> at all: leaving
+   the front drops the element and aborts its download. The duration badge
+   keeps what it learned. Instagram CDN links expire — a file that fails simply
+   leaves the poster up. */
 export default function HeroReelCard({
   reel,
   index,
@@ -36,13 +39,17 @@ export default function HeroReelCard({
 
   useEffect(() => {
     const video = videoRef.current;
-    if (!video) return;
-    if (live) {
-      video.play().catch(() => setPlaying(false));
-    } else {
-      video.pause();
+    if (!live || !video) {
       setPlaying(false);
+      return;
     }
+    video.play().catch(() => setPlaying(false));
+    return () => {
+      // removing the element alone can leave its download running until GC
+      video.pause();
+      video.removeAttribute("src");
+      video.load();
+    };
   }, [live]);
 
   return (
@@ -62,7 +69,7 @@ export default function HeroReelCard({
             decoding={priority ? undefined : "async"}
           />
         ) : null}
-        {preview && reel.video_url && !failed ? (
+        {live ? (
           <video
             ref={videoRef}
             className={"hh-card-video" + (playing ? " is-playing" : "")}

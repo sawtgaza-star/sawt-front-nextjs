@@ -30,7 +30,7 @@ function TeamCard({ member, profileCta }) {
             {/* The build's ready-made cutout (lib/mic-cutout-file) is in the HTML
                 from the start; for a mic uploaded after the deploy it is missing
                 and <MicCutouts> cuts the upload in the browser instead. */}
-            <img data-mic-src={member.mic} src={micCutoutPath(member.mic) ?? undefined} className="mic-frame-composed is-ready" alt="" />
+            <img loading="lazy" decoding="async" data-mic-src={member.mic} src={micCutoutPath(member.mic) ?? undefined} className="mic-frame-composed is-ready" alt="" />
           </div>
         ) : (
           <>

@@ -41,7 +41,7 @@ export default function PlatformAccordion({
         const Icon = SECTION_ICONS[index] || SECTION_ICONS[0];
         // منصة صوت (first card) always carries the Sawt wordmark.
         const icon = index === 0 ? (
-          <img src={SAWT_LOGO} alt="" className="ps-logo-sawt" />
+          <img src={SAWT_LOGO} alt="" className="ps-logo-sawt" loading="lazy" decoding="async" />
         ) : item.iconUrl ? (
           <img src={item.iconUrl} alt="" loading="lazy" decoding="async" />
         ) : (

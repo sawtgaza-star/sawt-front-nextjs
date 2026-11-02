@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { cutoutPortrait } from "@/lib/portrait-cutout";
+import { canHover, queueCutout } from "@/lib/portrait-cutout";
 
 /* The hover layer of TeamMemberCard: the same portrait with its backdrop cut
    away, stacked exactly over the photo and clipped to the strip ABOVE the
@@ -12,8 +12,9 @@ export default function TeamMemberPop({ src }: { src: string }) {
   const [cutout, setCutout] = useState<string | null>(null);
 
   useEffect(() => {
+    if (!canHover()) return;
     let alive = true;
-    cutoutPortrait(src)
+    queueCutout(src)
       .then((url) => alive && setCutout(url))
       .catch(() => {});
     return () => {

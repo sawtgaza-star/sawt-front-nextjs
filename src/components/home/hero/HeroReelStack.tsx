@@ -27,15 +27,19 @@ import { applyPose, poseAt, wrapRel } from "./hero-pose";
    phones set to reduce motion (some turn it on in battery saver) that
    animation is off, so the stack never moved. The fill is only its picture
    now (its CSS duration matches TURN_MS). Dragging or the stack off screen
-   holds the turn; it starts its full TURN_MS over once they end. Once the
-   page has loaded the front reel plays muted (HeroReelCard). */
+   holds the turn; it starts its full TURN_MS over once they end. The front
+   reel plays muted (HeroReelCard) from the visitor's first swipe, tap, wheel or key,
+   or PREVIEW_DELAY after load — the poster is what the page opens on. */
 
 /** how long each reel stays in front — keep .hh-pager-fill's duration in step */
 const TURN_MS = 3000;
 
 const REDUCED_MOTION = "(prefers-reduced-motion: reduce)";
-/** after `load`, so the reels' files never compete with the page itself */
-const PREVIEW_DELAY = 1200;
+/** after `load`, so the reels' files (8–15MB each) never compete with the page itself */
+const PREVIEW_DELAY = 6000;
+/** the visitor engaging — starts the preview straight away. Input events, not
+    `scroll`: the page scrolls itself on load (scroll restoring, the header pin). */
+const ENGAGE_EVENTS = ["touchstart", "wheel", "pointerdown", "keydown"] as const;
 /** pixels of drag that turn the stack by one reel, as a share of a card's width */
 const DRAG_STEP = 0.75;
 /** how far a fling carries on: seconds of the release speed added to `pos` */
@@ -170,14 +174,19 @@ export default function HeroReelStack({
      switch the preview off, which read as "the video doesn't open" */
   useEffect(() => {
     let timer = 0;
+    const show = () => setPreview(true);
     const start = () => {
-      timer = window.setTimeout(() => setPreview(true), PREVIEW_DELAY);
+      timer = window.setTimeout(show, PREVIEW_DELAY);
     };
     if (document.readyState === "complete") start();
     else window.addEventListener("load", start, { once: true });
+    ENGAGE_EVENTS.forEach((type) =>
+      window.addEventListener(type, show, { once: true, passive: true }),
+    );
     return () => {
       window.removeEventListener("load", start);
       window.clearTimeout(timer);
+      ENGAGE_EVENTS.forEach((type) => window.removeEventListener(type, show));
     };
   }, []);
 
@@ -279,7 +288,7 @@ export default function HeroReelStack({
                   reel={reel}
                   index={index}
                   front={index === active}
-                  preview={preview}
+                  preview={preview && !offscreen}
                   priority={index === 0}
                 />
               ))}

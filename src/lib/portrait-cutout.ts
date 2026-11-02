@@ -49,6 +49,33 @@ export function cutoutPortrait(url: string): Promise<string> {
   return job;
 }
 
+/** The pop-out is a hover effect (the build moves every :hover rule under this
+    same media query — scripts/postcss-hover-only.js), so a phone never shows
+    it: no download or pixel work for it there. */
+export function canHover(): boolean {
+  return window.matchMedia("(hover: hover) and (pointer: fine)").matches;
+}
+
+let queue: Promise<unknown> = Promise.resolve();
+
+function idle(): Promise<void> {
+  return new Promise((resolve) => {
+    if (typeof requestIdleCallback === "function") {
+      requestIdleCallback(() => resolve(), { timeout: 2000 });
+    } else {
+      window.setTimeout(resolve, 200);
+    }
+  });
+}
+
+/** cutoutPortrait, one photo at a time and only while the page is idle: each
+    cut holds the main thread, and a page has a dozen of them to make. */
+export function queueCutout(url: string): Promise<string> {
+  const job = queue.then(idle).then(() => cutoutPortrait(url));
+  queue = job.catch(() => {});
+  return job;
+}
+
 /* readable even from a host that sends no CORS header — see lib/cors-image */
 const loadImage = loadCorsImage;
 
