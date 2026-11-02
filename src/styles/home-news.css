@@ -456,3 +456,14 @@ html.sawt-anim .nws-related .news-card .readmore:hover .arrow,
     transform: translateY(2.5rem);
   }
 }
+
+/* phone: tighter gap between the subtitle and the cards */
+@media (max-width: 767.98px) {
+  .latest-news .news-subtitle {
+    margin-bottom: 0;
+  }
+
+  .latest-news .owl-carousel .owl-stage-outer {
+    padding-top: 12px;
+  }
+}

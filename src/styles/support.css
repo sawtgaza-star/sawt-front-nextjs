@@ -157,7 +157,7 @@
    colour flows into the SVG's fill="currentColor". */
 .sp-tab-icon {
   display: block;
-  font-size: 25px;
+  font-size: 22px;
   line-height: 0;
   color: #5A5A5A;
   margin-bottom: 8px;
@@ -171,14 +171,14 @@
 }
 .sp-tab-label {
   display: block;
-  font-size: 28px;
+  font-size: 22px;
   font-weight: 700;
   color: #1c1c1c;
   margin-bottom: 4px;
 }
 .sp-tab-sub {
   display: block;
-  font-size: 18px;
+  font-size: 15px;
   color: #8b8b8b;
 }
 .sp-tab.active .sp-tab-sub {
@@ -190,7 +190,7 @@
   padding: 26px 24px 24px;
 }
 .sp-field-label {
-  font-size: 24px;
+  font-size: 19px;
   font-weight: 700;
   color: #1c1c1c;
   margin-bottom: 14px;
@@ -210,7 +210,7 @@
   border: 1px solid #5A5A5A;
   border-radius: 24px;
   padding: 12px 8px;
-  font-size: 20px;
+  font-size: 17px;
   font-weight: 700;
   color: #5A5A5A;
   cursor: pointer;
@@ -231,6 +231,18 @@
   position: relative;
   margin-bottom: 18px;
 }
+/* "طريقة الدفع" — the amount pills, with the brand marks beside the label */
+.sp-pay-method {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+}
+.sp-pay-method-logos {
+  display: inline-flex;
+  gap: 4px;
+  line-height: 0;
+}
 .sp-custom-input {
   width: 100%;
   border: 1px solid #DADADA;
@@ -239,7 +251,7 @@
      left, where the dollar glyph sits. Physical props on purpose — this page
      is RTL-only and logical props resolved the wrong way here. */
   padding: 14px 16px 14px 46px;
-  font-size: 16px;
+  font-size: 15px;
   color: #1c1c1c;
   outline: none;
   background: #ffffff;
@@ -257,7 +269,7 @@
   top: 50%;
   transform: translateY(-50%);
   color: #919191;
-  font-size: 22px;
+  font-size: 20px;
   line-height: 0;
   display: flex;
   align-items: center;
@@ -271,7 +283,7 @@
   gap: 8px;
   cursor: pointer;
   margin-bottom: 20px;
-  font-size: 18px;
+  font-size: 15px;
   color: #4C5C37;
   font-weight: 700;
 }
@@ -337,6 +349,10 @@
 .sp-btn-pill {
   border-radius: 999px;
 }
+/* a size down inside the donate form */
+.sp-donate-body .sp-btn-green {
+  font-size: 17px;
+}
 
 /* --- "تبرعك يعني..." checklist --- */
 .sp-pledge {
@@ -346,7 +362,7 @@
   padding: 24px;
 }
 .sp-pledge-title {
-  font-size: 28px;
+  font-size: 22px;
   font-weight: 800;
   color: #1c1c1c;
   margin-bottom: 18px;
@@ -361,7 +377,7 @@
   display: flex;
   align-items: flex-start;
   gap: 10px;
-  font-size: 18px;
+  font-size: 15px;
   color: #4a4a4a;
   padding: 9px 0;
 }
@@ -371,7 +387,7 @@
 .sp-pledge-check {
   flex: 0 0 auto;
   color: #E1723B;
-  font-size: 22px;
+  font-size: 19px;
   line-height: 0;
   margin-top: 3px;
   display: inline-flex;
@@ -386,7 +402,7 @@
   position: relative;
 }
 .sp-quote-text {
-  font-size: 18px;
+  font-size: 15px;
   color: #484848;
   line-height: 1.9;
   margin-bottom: 16px;
@@ -398,13 +414,13 @@
   gap: 12px;
 }
 .sp-quote-name {
-  font-size: 22px;
+  font-size: 18px;
   font-weight: 800;
   color: #374C1C;
   margin-bottom: 2px;
 }
 .sp-quote-place {
-  font-size: 18px;
+  font-size: 15px;
   color: #484848;
       text-align: start;
 }
@@ -1589,6 +1605,13 @@ text-align: center;
     min-width: 0;
     padding: 8px 4px;
     font-size: 14px;
+  }
+  .sp-pay-method {
+    gap: 6px;
+  }
+  .sp-pay-method-logos svg {
+    width: 28px;
+    height: auto;
   }
   .sp-renew {
     font-size: 14px;

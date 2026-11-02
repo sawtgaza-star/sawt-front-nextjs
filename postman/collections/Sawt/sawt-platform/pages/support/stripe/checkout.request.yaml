@@ -1,0 +1,16 @@
+$kind: http-request
+url: "{{Base_Url}}/stripe/donations/checkout"
+method: POST
+headers:
+  Accept: application/json
+  Content-Type: application/json
+body:
+  type: json
+  content: "{\r
+
+    \  \"amount\": 5,\r
+
+    \  \"interval\" : \"yearly\" /** on_time , monthly or yearly.  if interval is missing use one_time. **/\r
+
+    }"
+order: 1000
