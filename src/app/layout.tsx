@@ -23,12 +23,13 @@ import "@/styles/mobile-scroll.css";
    opaque). /media, /incubator and /courses each drop their own icon.svg next
    to their route so a section's tab wears its own mark. */
 /* iOS Safari zooms the page in when an input under 16px gets focus, which
-   throws the mobile layout off. `maximumScale: 1` stops that auto-zoom; iOS
-   still lets the visitor pinch-zoom manually. */
+   throws the mobile layout off. `maximum-scale=1` stops that auto-zoom and iOS
+   still lets the visitor pinch-zoom manually; Android, though, honours it and
+   blocks zooming altogether. So it is not set here: DocumentShell's inline
+   script adds it on iOS only. */
 export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
-  maximumScale: 1,
 };
 
 /* The link preview (WhatsApp, iMessage, Safari suggestions, X…): with no
@@ -41,6 +42,8 @@ export const viewport: Viewport = {
 export const metadata: Metadata = {
   metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || "https://sawtgaza.com"),
   title: "منصة صوت | Sawt Platform",
+  description:
+    "ننقل قصص الناس وقضاياهم بصدق، ونصنع محتوى إنسانياً يمنح الأصوات المهمشة مساحة لتصل إلى العالم.",
   openGraph: {
     siteName: "منصة صوت | Sawt Platform",
     type: "website",

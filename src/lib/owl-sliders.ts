@@ -169,6 +169,15 @@ export async function initOwlSliders() {
     },
   });
 
+  // Owl's dots are empty buttons: give screen readers something to announce
+  const labelDots = (event) => {
+    $(event.target)
+      .find(".owl-dot")
+      .each((index, dot) => {
+        dot.setAttribute("aria-label", `${rtl ? "الشريحة" : "Slide"} ${index + 1}`);
+      });
+  };
+
   $(".real-stories-carousel:not(.owl-loaded)").owlCarousel({
     loop: false,
     rewind: false,
@@ -176,6 +185,8 @@ export async function initOwlSliders() {
     rtl,
     nav: false,
     dots: true,
+    onInitialized: labelDots,
+    onRefreshed: labelDots,
     responsive: {
       0: { items: 1 },
       768: { items: 2 },

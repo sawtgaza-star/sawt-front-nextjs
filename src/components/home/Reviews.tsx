@@ -193,6 +193,7 @@ export default function Reviews({
                   ></textarea>
                   <button
                     className="rs-send"
+                    aria-label="إرسال"
                     onClick={() => {
                       (window as any).addComment();
                     }}

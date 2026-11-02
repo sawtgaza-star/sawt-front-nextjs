@@ -60,6 +60,14 @@ export default function DocumentShell({ children }: { children: React.ReactNode 
             that draw them load them (components/ui/CdnStylesheets). */}
       </head>
       <body dir="rtl" suppressHydrationWarning>
+        {/* iOS only: stops its auto-zoom on focused inputs — see the viewport
+            export in app/layout.tsx. */}
+        <script
+          dangerouslySetInnerHTML={{
+            __html:
+              'try{if(/iP(hone|ad|od)/.test(navigator.userAgent)||(navigator.platform==="MacIntel"&&navigator.maxTouchPoints>1)){var v=document.querySelector("meta[name=viewport]");if(v)v.content+=",maximum-scale=1"}}catch(e){}',
+          }}
+        />
         {/* Starts the page-entrance animation before first paint; skipped for
             reduced-motion users (see styles/animations.css). */}
         <script

@@ -32,6 +32,7 @@ export default function FooterBottomBar({ socials, copyright, brand }) {
                   <a
                     href={social.url}
                     className="text-white footer-social-icon"
+                    aria-label={social.platform}
                     key={index}
                     target={social.external ? "_blank" : undefined}
                     rel={social.external ? "noopener noreferrer" : undefined}

@@ -45,6 +45,7 @@ export default function NavSocialLinks({ label, socials, loading }) {
               <a
                 href={social.url}
                 className="text-white ms-2"
+                aria-label={social.platform}
                 key={index}
                 target={social.external ? "_blank" : undefined}
                 rel={social.external ? "noopener noreferrer" : undefined}

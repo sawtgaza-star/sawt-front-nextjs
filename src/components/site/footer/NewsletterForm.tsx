@@ -82,7 +82,7 @@ export default function NewsletterForm({
             disabled={busy}
           />{" "}
         </div>{" "}
-        <button className="rs-send" type="submit" disabled={busy} aria-busy={busy}>
+        <button className="rs-send" type="submit" aria-label="إرسال" disabled={busy} aria-busy={busy}>
           {" "}
           <i>
             {" "}
